@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CMS Content Editor Interface</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@300..800&amp;family=Funnel+Sans:ital,wght@0,300..800;1,300..800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Theme Configuration -->
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#DDF160", // Vibrant Lime
+                        "secondary": "#9F8BE7", // Soft Purple
+                        "background-light": "#FAF7F6",
+                        "background-dark": "#111e21", // Fallback for dark mode toggle if needed
+                        "surface": "#FFFFFF",
+                        "contrast": "#161616",
+                    },
+                    fontFamily: {
+                        "display": ['"Funnel Display"', "sans-serif"],
+                        "body": ['"Funnel Sans"', "sans-serif"],
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0px",
+                        "lg": "0px",
+                        "xl": "0px",
+                        "special": "50px",
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Funnel Sans', sans-serif;
+            background-color: #FAF7F6;
+            color: #161616;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Funnel Display', sans-serif;
+        }
+        /* Custom Scrollbar for Avant-Garde feel */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #e5e5e5;
+            border-radius: 0px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #d4d4d4;
+        }
+        
+        .focus-underline {
+            position: relative;
+        }
+        .focus-underline::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: #9F8BE7;
+            transition: width 0.3s ease;
+        }
+        .focus-underline:focus-within::after {
+            width: 100%;
+        }
+
+        /* Editor specific styles */
+        .editor-content:focus {
+            outline: none;
+        }
+    </style>
+</head>
+<body class="bg-background-light min-h-screen flex flex-col overflow-hidden">
+<!-- Top Navigation / Header -->
+<header class="h-16 border-b border-gray-200 bg-background-light flex items-center justify-between px-6 md:px-10 shrink-0 z-20">
+<!-- Left: Breadcrumbs -->
+<div class="flex items-center gap-3">
+<nav class="flex items-center gap-2 text-sm text-gray-500 font-body">
+<a class="hover:text-contrast transition-colors" href="#">Dashboard</a>
+<span class="text-gray-300">/</span>
+<a class="hover:text-contrast transition-colors" href="#">Blog</a>
+<span class="text-gray-300">/</span>
+<span class="text-contrast font-medium">Edit Post</span>
+</nav>
+<div class="h-4 w-[1px] bg-gray-300 mx-2"></div>
+<span class="bg-gray-200 text-gray-600 text-xs px-2 py-0.5 rounded-none font-medium uppercase tracking-wider">Draft</span>
+</div>
+<!-- Right: Actions -->
+<div class="flex items-center gap-4">
+<button class="text-contrast font-medium text-sm hover:text-secondary transition-colors px-3 py-2">
+                Preview
+            </button>
+<button class="border border-contrast text-contrast px-5 py-2 text-sm font-medium hover:bg-contrast hover:text-white transition-all duration-300">
+                Save Draft
+            </button>
+<button class="bg-primary text-contrast px-6 py-2 text-sm font-bold hover:bg-[#cbe045] transition-all duration-300 shadow-[2px_2px_0px_0px_rgba(22,22,22,1)] hover:translate-y-[1px] hover:shadow-none hover:translate-x-[1px]">
+                Publish
+            </button>
+</div>
+</header>
+<!-- Main Workspace -->
+<div class="flex flex-1 overflow-hidden">
+<!-- Left Column: Editor Canvas -->
+<main class="flex-1 flex flex-col relative overflow-y-auto" id="editor-canvas">
+<!-- Toolbar (Sticky) -->
+<div class="sticky top-6 z-10 flex justify-center px-4 mb-4">
+<div class="bg-contrast text-white px-4 py-2 flex items-center gap-1 shadow-lg rounded-none transform transition-transform duration-500 hover:scale-[1.02]">
+<button class="p-2 hover:text-primary transition-colors tooltip-trigger" title="Bold">
+<span class="material-symbols-outlined text-[20px]">format_bold</span>
+</button>
+<button class="p-2 hover:text-primary transition-colors" title="Italic">
+<span class="material-symbols-outlined text-[20px]">format_italic</span>
+</button>
+<button class="p-2 hover:text-primary transition-colors" title="Underline">
+<span class="material-symbols-outlined text-[20px]">format_underlined</span>
+</button>
+<div class="w-[1px] h-4 bg-gray-600 mx-1"></div>
+<button class="p-2 hover:text-primary transition-colors" title="H1">
+<span class="font-display font-bold text-lg leading-none">H1</span>
+</button>
+<button class="p-2 hover:text-primary transition-colors" title="H2">
+<span class="font-display font-bold text-base leading-none">H2</span>
+</button>
+<div class="w-[1px] h-4 bg-gray-600 mx-1"></div>
+<button class="p-2 hover:text-primary transition-colors" title="Link">
+<span class="material-symbols-outlined text-[20px]">link</span>
+</button>
+<button class="p-2 hover:text-primary transition-colors" title="Image">
+<span class="material-symbols-outlined text-[20px]">image</span>
+</button>
+<button class="p-2 hover:text-primary transition-colors" title="Quote">
+<span class="material-symbols-outlined text-[20px]">format_quote</span>
+</button>
+</div>
+</div>
+<!-- Content Area -->
+<div class="w-full max-w-[800px] mx-auto px-8 md:px-12 pb-32 pt-10">
+<!-- Title Input -->
+<div class="mb-8 focus-underline group">
+<input class="w-full bg-transparent border-none text-[48px] md:text-[64px] font-display font-bold text-contrast placeholder:text-gray-300 focus:ring-0 p-0 leading-[1.1]" placeholder="Page Title" type="text" value="Design Trends 2024"/>
+</div>
+<!-- Body Content -->
+<div class="editor-content font-body text-lg md:text-xl text-contrast leading-relaxed space-y-6" contenteditable="true">
+<p>The minimalist approach to design has been evolving rapidly over the last decade. We are seeing a shift towards more expressive typography and bold color choices.</p>
+<h2 class="text-3xl font-display font-bold mt-10 mb-4">The Return of Maximalism</h2>
+<p>While whitespace is still king, designers are becoming less afraid to fill the void. Vibrant gradients, brutalist layouts, and overlapping elements are creating a new visual language that speaks to a generation tired of sterile interfaces.</p>
+<div class="my-10 relative group">
+<img alt="Abstract geometric shapes with vibrant colors representing modern design trends" class="w-full h-auto object-cover grayscale group-hover:grayscale-0 transition-all duration-500 rounded-none" data-alt="Abstract geometric shapes with vibrant colors representing modern design trends" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA7y1xyx7KZ2F6xIVyoV8P6WUlyFRjzbL2yQjKGQtVIdU5bp-Zx3Vai2is6_AJw9HvPILBr_G9QvydXCdfgFS9vdJoSr5GG6tPQ5m67zWp-NZI8dwZ8IMj2A2XhqmsIB8WpLK6I1fNabBPC2BvgvkVR8_S-bY2eSVQeb63gK-k-bwziJUveWlZiO-n7wFbxFtgePAONdGIc4NpV3OgcnwezNVrgSZ1iCRf9ECrkS6RTm1NY7dC0ncCc1qlwAzSvkBZEl7yn1hm0cHo"/>
+<div class="absolute bottom-4 left-4 bg-white/90 backdrop-blur px-3 py-1 text-xs font-mono uppercase tracking-widest text-contrast opacity-0 group-hover:opacity-100 transition-opacity">
+                            Figure 1.1
+                        </div>
+</div>
+<p class="text-gray-500 italic border-l-2 border-primary pl-4">"Design is not just what it looks like and feels like. Design is how it works." — Steve Jobs</p>
+<p>However, functionality remains paramount. The challenge for 2024 is balancing this newfound expressiveness with the strict accessibility standards required for the modern web.</p>
+<p>Start writing your story here...</p>
+</div>
+</div>
+</main>
+<!-- Right Column: Settings Sidebar -->
+<aside class="w-[320px] lg:w-[380px] bg-white border-l border-gray-200 h-full overflow-y-auto hidden md:flex flex-col shrink-0">
+<div class="p-6">
+<h3 class="font-display font-bold text-xl mb-6 text-contrast">Page Settings</h3>
+<!-- General Settings Panel -->
+<div class="mb-6 group">
+<details class="group border-b border-gray-100 pb-4" open="">
+<summary class="flex justify-between items-center cursor-pointer list-none py-2 text-contrast font-medium group-hover:text-secondary transition-colors">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">tune</span>
+                                General
+                            </span>
+<span class="material-symbols-outlined transform group-open:rotate-180 transition-transform text-gray-400">expand_more</span>
+</summary>
+<div class="pt-4 space-y-4 animate-fadeIn">
+<label class="block">
+<span class="text-xs font-bold uppercase tracking-wider text-gray-500 mb-1 block">URL Slug</span>
+<div class="flex items-center bg-background-light px-3 py-2 focus-within:ring-1 focus-within:ring-secondary transition-all">
+<span class="text-gray-400 text-sm mr-1">/blog/</span>
+<input class="bg-transparent border-none p-0 text-sm text-contrast w-full focus:ring-0" type="text" value="design-trends-2024"/>
+</div>
+</label>
+<div class="grid grid-cols-2 gap-4">
+<label class="block">
+<span class="text-xs font-bold uppercase tracking-wider text-gray-500 mb-1 block">Author</span>
+<select class="w-full bg-background-light border-none text-sm text-contrast px-3 py-2 focus:ring-1 focus:ring-secondary cursor-pointer">
+<option>Alex M.</option>
+<option>Sarah J.</option>
+</select>
+</label>
+<label class="block">
+<span class="text-xs font-bold uppercase tracking-wider text-gray-500 mb-1 block">Date</span>
+<input class="w-full bg-background-light border-none text-sm text-contrast px-3 py-2 focus:ring-1 focus:ring-secondary" type="date"/>
+</label>
+</div>
+</div>
+</details>
+</div>
+<!-- SEO Panel -->
+<div class="mb-6 group">
+<details class="group border-b border-gray-100 pb-4">
+<summary class="flex justify-between items-center cursor-pointer list-none py-2 text-contrast font-medium group-hover:text-secondary transition-colors">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">search</span>
+                                SEO &amp; Metadata
+                            </span>
+<span class="material-symbols-outlined transform group-open:rotate-180 transition-transform text-gray-400">expand_more</span>
+</summary>
+<div class="pt-4 space-y-4">
+<label class="block">
+<span class="text-xs font-bold uppercase tracking-wider text-gray-500 mb-1 block">Meta Title</span>
+<input class="w-full bg-background-light border-none text-sm text-contrast px-3 py-2 focus:ring-1 focus:ring-secondary" type="text" value="Design Trends 2024 - Agency Blog"/>
+<span class="text-[10px] text-green-600 block mt-1 text-right">Optimal length</span>
+</label>
+<label class="block">
+<span class="text-xs font-bold uppercase tracking-wider text-gray-500 mb-1 block">Meta Description</span>
+<textarea class="w-full bg-background-light border-none text-sm text-contrast px-3 py-2 focus:ring-1 focus:ring-secondary resize-none" rows="4">Explore the top design trends dominating the digital landscape in 2024, from neobrutalism to advanced micro-interactions.</textarea>
+<div class="flex justify-between mt-1">
+<span class="text-[10px] text-gray-400">Make it punchy.</span>
+<span class="text-[10px] text-gray-400">145/160</span>
+</div>
+</label>
+</div>
+</details>
+</div>
+<!-- Featured Image Panel -->
+<div class="mb-6 group">
+<details class="group border-b border-gray-100 pb-4" open="">
+<summary class="flex justify-between items-center cursor-pointer list-none py-2 text-contrast font-medium group-hover:text-secondary transition-colors">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">image</span>
+                                Featured Image
+                            </span>
+<span class="material-symbols-outlined transform group-open:rotate-180 transition-transform text-gray-400">expand_more</span>
+</summary>
+<div class="pt-4">
+<!-- Dropzone / Preview -->
+<div class="relative w-full aspect-video bg-background-light group/image cursor-pointer overflow-hidden border border-dashed border-gray-300 hover:border-secondary transition-colors rounded-special">
+<img alt="Abstract colorful fluid gradient background" class="w-full h-full object-cover opacity-80 group-hover/image:scale-105 transition-transform duration-700" data-alt="Abstract colorful fluid gradient background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCqeZ5xIUzR9F6jpseqesI6jlK26p3p7zGC3HRCmZQ_cbJ2XxewdBAdQy_doiaO6QaBFzQSplFGGTvOcVAhz9pXs3wYMvpKd5FB7jKje5Xw-CRHnttao6dld6syd_3GTxSyY38mRmI7l_CSPOg1O2pj7mfw07ern1z9dm1-df4ydIuOp0f248_OCtlTLIbkWyYUhz6POl1Wqri2C3_TTAEfhc7jmldhh5E4YKpOJo44JdwmgtE_kRcGur0_zVu6GH6V4ngYvWKJAUs"/>
+<div class="absolute inset-0 flex flex-col items-center justify-center bg-black/20 group-hover/image:bg-black/10 transition-colors">
+<button class="bg-white text-contrast text-xs font-bold uppercase tracking-wider px-4 py-2 hover:bg-primary transition-colors shadow-lg">
+                                        Replace
+                                    </button>
+</div>
+</div>
+<p class="text-[10px] text-gray-400 mt-2 text-center">Recommended: 1200x630px, Max 2MB</p>
+</div>
+</details>
+</div>
+<!-- Advanced Properties -->
+<div class="mt-auto pt-6">
+<div class="bg-gray-50 p-4 border border-gray-100">
+<div class="flex justify-between items-center mb-2">
+<span class="text-xs font-bold uppercase text-gray-500">Visibility</span>
+<span class="text-xs font-medium text-contrast bg-primary/20 px-2 py-0.5 text-primary-dark rounded-none">Public</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-xs font-bold uppercase text-gray-500">Template</span>
+<span class="text-xs font-medium text-contrast">Standard Post</span>
+</div>
+</div>
+</div>
+</div>
+</aside>
+</div>
+</body></html>

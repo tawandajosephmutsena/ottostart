@@ -46,6 +46,37 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
+            'site' => [
+                'name' => 'Avant-Garde CMS',
+                'tagline' => 'Digital Innovation Redefined',
+                'description' => 'We create avant-garde digital experiences that push boundaries and inspire innovation through cutting-edge design and technology.',
+                'url' => config('app.url'),
+                'logo' => '/logo.svg',
+                'social' => [
+                    'twitter' => 'https://twitter.com/avantgarde',
+                    'linkedin' => 'https://linkedin.com/company/avantgarde',
+                    'github' => 'https://github.com/avantgarde',
+                    'instagram' => 'https://instagram.com/avantgarde',
+                ],
+                'contact' => [
+                    'email' => 'hello@avant-garde.com',
+                    'phone' => '+1 (555) 123-4567',
+                    'address' => 'San Francisco, CA',
+                ],
+            ],
+            'theme' => [
+                'colors' => [
+                    'primary' => '#1a1a1a',
+                    'secondary' => '#666666',
+                    'accent' => '#ff6b35',
+                    'neutral' => '#f5f5f5',
+                    'dark' => '#0a0a0a',
+                ],
+                'fonts' => [
+                    'display' => 'Inter',
+                    'body' => 'Inter',
+                ],
+            ],
         ];
     }
 }

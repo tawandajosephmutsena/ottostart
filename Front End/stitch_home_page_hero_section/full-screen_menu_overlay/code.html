@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Full-Screen Menu Overlay</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Noto+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#d8f060",
+                        "background-light": "#f8f8f6",
+                        "background-dark": "#1f2111",
+                        "secondary-dark": "#161616",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "body": ["Noto Sans", "sans-serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "9999px", "sm": "2px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar hide for the menu feeling */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        /* Menu Item Hover Animation */
+        .menu-link {
+            transition: color 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .menu-link:hover {
+            color: transparent;
+            -webkit-text-stroke: 1px #161616; /* Fallback for light mode */
+        }
+        .dark .menu-link:hover {
+            -webkit-text-stroke: 1px #f8f8f6;
+        }
+        
+        /* Staggered text fill effect on hover could be complex without JS, 
+           so we will stick to a CSS translation shift for the avant-garde feel */
+        .menu-item:hover .menu-link {
+            transform: translateX(20px);
+            color: #d8f060; /* Primary color */
+            -webkit-text-stroke: 0px;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display antialiased overflow-hidden text-secondary-dark dark:text-background-light">
+<!-- Full Screen Menu Overlay -->
+<!-- Ideally this would be hidden/shown via JS/Framer Motion. Here it is statically rendered as "Open" -->
+<div class="fixed inset-0 z-50 flex h-full w-full flex-col bg-background-light dark:bg-background-dark p-6 md:p-10 lg:p-14 overflow-y-auto no-scrollbar">
+<!-- Top Bar: Logo & Close -->
+<header class="flex w-full items-center justify-between mb-8 md:mb-0 shrink-0">
+<!-- Logo -->
+<div class="flex items-center gap-3 text-secondary-dark dark:text-white select-none">
+<div class="size-8 text-primary">
+<svg class="w-full h-full" fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_6_330)">
+<path clip-rule="evenodd" d="M24 0.757355L47.2426 24L24 47.2426L0.757355 24L24 0.757355ZM21 35.7574V12.2426L9.24264 24L21 35.7574Z" fill="currentColor" fill-rule="evenodd"></path>
+</g>
+<defs>
+<clippath id="clip0_6_330"><rect fill="white" height="48" width="48"></rect></clippath>
+</defs>
+</svg>
+</div>
+<h2 class="text-xl font-bold tracking-tight uppercase">Agency</h2>
+</div>
+<!-- Close Button -->
+<button class="group flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-[#f1f3e7] dark:bg-white/10 text-secondary-dark dark:text-white transition-transform hover:rotate-90 hover:bg-primary hover:text-secondary-dark">
+<span class="material-symbols-outlined text-2xl font-medium">close</span>
+</button>
+</header>
+<!-- Main Content Grid -->
+<div class="flex flex-1 flex-col lg:grid lg:grid-cols-12 lg:gap-12 items-center h-full min-h-[600px]">
+<!-- Left Column: Navigation Links -->
+<nav class="flex w-full flex-col justify-center gap-2 lg:col-span-7 xl:col-span-8 self-center py-10 lg:py-0">
+<ul class="flex flex-col gap-0">
+<li class="menu-item group flex cursor-pointer items-baseline gap-4 overflow-hidden">
+<span class="text-sm font-medium text-gray-400 dark:text-gray-500 font-mono pt-4 md:pt-8 opacity-0 transition-opacity group-hover:opacity-100">01</span>
+<a class="menu-link block text-[13vw] lg:text-[7rem] xl:text-[8.5rem] font-bold leading-[0.85] tracking-tighter text-secondary-dark dark:text-white uppercase" href="#">
+                            Work
+                        </a>
+</li>
+<li class="menu-item group flex cursor-pointer items-baseline gap-4 overflow-hidden">
+<span class="text-sm font-medium text-gray-400 dark:text-gray-500 font-mono pt-4 md:pt-8 opacity-0 transition-opacity group-hover:opacity-100">02</span>
+<a class="menu-link block text-[13vw] lg:text-[7rem] xl:text-[8.5rem] font-bold leading-[0.85] tracking-tighter text-secondary-dark dark:text-white uppercase" href="#">
+                            Agency
+                        </a>
+</li>
+<li class="menu-item group flex cursor-pointer items-baseline gap-4 overflow-hidden">
+<span class="text-sm font-medium text-gray-400 dark:text-gray-500 font-mono pt-4 md:pt-8 opacity-0 transition-opacity group-hover:opacity-100">03</span>
+<a class="menu-link block text-[13vw] lg:text-[7rem] xl:text-[8.5rem] font-bold leading-[0.85] tracking-tighter text-secondary-dark dark:text-white uppercase" href="#">
+                            Services
+                        </a>
+</li>
+<li class="menu-item group flex cursor-pointer items-baseline gap-4 overflow-hidden">
+<span class="text-sm font-medium text-gray-400 dark:text-gray-500 font-mono pt-4 md:pt-8 opacity-0 transition-opacity group-hover:opacity-100">04</span>
+<a class="menu-link block text-[13vw] lg:text-[7rem] xl:text-[8.5rem] font-bold leading-[0.85] tracking-tighter text-secondary-dark dark:text-white uppercase" href="#">
+                            Culture
+                        </a>
+</li>
+</ul>
+</nav>
+<!-- Right Column: Contextual Content -->
+<div class="flex w-full flex-col justify-center gap-8 lg:col-span-5 xl:col-span-4 lg:h-full lg:border-l lg:border-gray-200 dark:lg:border-white/10 lg:pl-12">
+<!-- Animated Caption -->
+<div class="relative overflow-hidden">
+<p class="text-xl md:text-2xl font-medium leading-tight text-secondary-dark dark:text-white max-w-md">
+<span class="inline-block animate-pulse">🦄</span> 
+                        Innovative design and cutting-edge development for brands that dare to lead.
+                    </p>
+</div>
+<!-- Promo Video Module -->
+<div class="group relative aspect-video w-full max-w-md overflow-hidden rounded-lg bg-gray-100 dark:bg-white/5">
+<!-- Placeholder for video -->
+<img alt="Promo video thumbnail" class="h-full w-full object-cover opacity-80 transition-transform duration-700 group-hover:scale-105" data-alt="Abstract colorful light trails representing creative energy and motion" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAS5mRlDByAxnrY5w7wTFlLuPWNHW70YPKYp6oka3RlzHBLeXA7b1CxBCPXb_rGMqEnNJQv_-eywIwq7nvQd_p_aX6h2zNrWy6fwY2pape1FkBNmY9QxwLucnHD1s3lp4fclHzaRyIQL9Ho9PVEBQ-8tj2JRAytlicEssDmpu00-JOROng8-wIgZiyJEKNHTMdxRtewZy7778ojNLvqD9L7St1tEts44zD5oWnsydxo4G02VgqPabe98AxrSj_TnLAHkC5FCu4Mg4Y"/>
+<div class="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/10 transition-colors">
+<div class="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 backdrop-blur-md transition-transform group-hover:scale-110">
+<span class="material-symbols-outlined text-white">play_arrow</span>
+</div>
+</div>
+<!-- Tag overlay -->
+<div class="absolute bottom-3 left-3 rounded bg-black/50 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-white backdrop-blur-sm">
+                        Showreel 2024
+                    </div>
+</div>
+<!-- CTA Button -->
+<div class="pt-4">
+<a class="group relative flex w-full max-w-md items-center justify-between overflow-hidden rounded-full bg-primary px-8 py-5 text-secondary-dark transition-all hover:bg-[#ccec30]" href="#">
+<span class="relative z-10 text-lg font-bold tracking-tight">Say Hello</span>
+<div class="relative z-10 flex h-8 w-8 items-center justify-center rounded-full bg-black/10 transition-transform group-hover:translate-x-1 group-hover:bg-black/20">
+<span class="material-symbols-outlined text-lg">arrow_outward</span>
+</div>
+</a>
+</div>
+</div>
+</div>
+<!-- Footer Info -->
+<footer class="mt-8 flex w-full flex-col justify-between gap-6 border-t border-gray-200 dark:border-white/10 pt-6 md:flex-row md:items-end lg:mt-0 shrink-0">
+<!-- Socials -->
+<div class="flex flex-col gap-3">
+<span class="text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">Follow Us</span>
+<div class="flex gap-6">
+<a class="text-sm font-semibold text-secondary-dark hover:text-primary dark:text-white transition-colors" href="#">Instagram</a>
+<a class="text-sm font-semibold text-secondary-dark hover:text-primary dark:text-white transition-colors" href="#">LinkedIn</a>
+<a class="text-sm font-semibold text-secondary-dark hover:text-primary dark:text-white transition-colors" href="#">Twitter / X</a>
+<a class="text-sm font-semibold text-secondary-dark hover:text-primary dark:text-white transition-colors" href="#">Awwwards</a>
+</div>
+</div>
+<!-- Meta -->
+<div class="flex flex-col gap-1 text-right md:text-right">
+<div class="flex items-center justify-end gap-2 text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">
+<span class="material-symbols-outlined text-[14px]">public</span>
+<span data-location="Tokyo, Japan">Tokyo, JP</span>
+</div>
+<p class="text-sm text-secondary-dark dark:text-white opacity-60">© 2024 Agency Design Inc.</p>
+</div>
+</footer>
+</div>
+</body></html>

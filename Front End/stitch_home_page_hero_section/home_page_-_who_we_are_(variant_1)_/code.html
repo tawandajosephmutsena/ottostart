@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Agency - Who We Are</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#d1ee44",
+                        "background-light": "#f8f8f6",
+                        "background-dark": "#1f2210",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "body": ["Noto Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for better aesthetic */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1f2210;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #d1ee44;
+        }
+    </style>
+</head>
+<body class="relative flex min-h-screen w-full flex-col bg-background-light dark:bg-background-dark font-display text-[#161616] dark:text-white overflow-x-hidden antialiased selection:bg-primary selection:text-background-dark">
+<!-- Top Navigation -->
+<div class="w-full border-b border-[#414724]/30 dark:border-[#414724]">
+<div class="px-6 md:px-10 lg:px-40 flex justify-center">
+<header class="flex w-full max-w-[1280px] items-center justify-between py-6">
+<!-- Logo -->
+<div class="flex items-center gap-3">
+<div class="size-6 text-primary">
+<svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_6_535)">
+<path clip-rule="evenodd" d="M47.2426 24L24 47.2426L0.757355 24L24 0.757355L47.2426 24ZM12.2426 21H35.7574L24 9.24264L12.2426 21Z" fill="currentColor" fill-rule="evenodd"></path>
+</g>
+<defs>
+<clippath id="clip0_6_535"><rect fill="white" height="48" width="48"></rect></clippath>
+</defs>
+</svg>
+</div>
+<h2 class="text-lg font-bold tracking-tight uppercase">AGENCY</h2>
+</div>
+<!-- Desktop Menu -->
+<div class="hidden md:flex items-center gap-10">
+<nav class="flex items-center gap-8">
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Work</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Services</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">About</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Contact</a>
+</nav>
+<button class="flex items-center justify-center rounded-lg h-10 px-5 bg-primary text-background-dark text-sm font-bold hover:bg-white transition-all duration-300">
+                        Start a Project
+                    </button>
+</div>
+<!-- Mobile Menu Icon -->
+<div class="md:hidden text-white">
+<span class="material-symbols-outlined cursor-pointer">menu</span>
+</div>
+</header>
+</div>
+</div>
+<!-- Main Content Area -->
+<main class="flex-1 w-full px-6 md:px-10 lg:px-40 py-20 lg:py-32 flex justify-center">
+<div class="w-full max-w-[1280px]">
+<!-- Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-10">
+<!-- Left Column: Sticky Title -->
+<div class="lg:col-span-4 relative">
+<div class="sticky top-32 flex flex-col gap-4">
+<div class="flex items-center gap-3">
+<span class="block w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<h2 class="text-sm font-bold tracking-[0.2em] uppercase text-gray-400">01 — Who We Are</h2>
+</div>
+<div class="hidden lg:block w-full h-[1px] bg-gradient-to-r from-[#414724] to-transparent mt-4"></div>
+<p class="hidden lg:block text-xs text-gray-500 mt-2 max-w-[200px]">
+                            Scroll to explore our philosophy and the digital landscapes we create.
+                        </p>
+</div>
+</div>
+<!-- Right Column: Narrative Text -->
+<div class="lg:col-span-8 relative">
+<!-- The prompt asks for a "reveal" effect. We simulate the visual state of being partially scrolled. -->
+<div class="flex flex-col gap-16">
+<h1 class="text-3xl md:text-5xl lg:text-[64px] font-medium leading-[1.1] tracking-tight">
+<!-- Fully Opaque Section (Simulating read/active) -->
+<span class="text-current transition-opacity duration-300">
+                                We are a collective of digital artisans redefining the boundary between function and art.
+                            </span>
+<span class="inline-block w-full h-8"></span>
+<!-- Partially Opaque Section -->
+<span class="text-current/80">
+                                We don't just build websites; we architect 
+                            </span>
+<!-- Highlighted Keyword -->
+<span class="text-primary opacity-100 font-semibold">
+                                digital ecosystems
+                            </span>
+<!-- Fading Out Section (Simulating upcoming text) -->
+<span class="text-current/40">
+                                that breathe, move, and convert. 
+                            </span>
+<!-- Ghost Text (Simulating future scroll content) -->
+<span class="text-current/20">
+                                Born in the void, raised by the 
+                                <span class="text-primary/20">code</span>.
+                                We turn chaos into clarity and vision into 
+                                <span class="text-primary/20">reality</span>.
+                            </span>
+</h1>
+<!-- Decorative Image Grid (Optional visual context) -->
+<div class="grid grid-cols-2 gap-4 mt-12 opacity-40 hover:opacity-100 transition-opacity duration-700">
+<div class="aspect-video w-full rounded-lg overflow-hidden bg-white/5 border border-white/10 relative group">
+<div class="absolute inset-0 bg-gradient-to-tr from-background-dark to-transparent z-10"></div>
+<div class="w-full h-full bg-cover bg-center" data-alt="Abstract dark fluid waves creating a digital landscape pattern" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDjoYw4AdB-J0J3iqlTwA1xB_QH540lCxabmdd3NSmR5Ny_zOTkiJP0FOoeKPPzR-KHoh_zhluu6-w738L0sLzrT8udk0YCfbwBgvujHbuRbknP0e8gz7rWhn6zsCbBfQQPi9eFrnDeEfdLJeTTVVUVaj7eGHHFGc5OGedVcO2pNO70JBrpFQVbFu2SK3HHt7NY3LmvPXKZZz1X0pRYSdFKiFVcBzw2RtEeMwV1UvJdBLfIH2AO0RcfzwCzXmhQPbE32Fyyi_9jVuc');"></div>
+</div>
+<div class="aspect-video w-full rounded-lg overflow-hidden bg-white/5 border border-white/10 relative group mt-12">
+<div class="absolute inset-0 bg-gradient-to-bl from-background-dark to-transparent z-10"></div>
+<div class="w-full h-full bg-cover bg-center" data-alt="Geometric light lines on dark background representing code structure" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC7HNL3O4Jzgl02P2-zIEwnKMFMxm9iBVaWXovK_okiOyni_ZsXT6ScJ2qybvBSYp6_8wjORSWW5DVGw4KAEHQJQ9SickweM7HvC5RQ9yVtT7vS3zS05ELKx3Q-Gv9BCA_VAD4O5dgjK0sQb3W_JBhZ4cWz9tpeSUPYTJSf9IDDZ1kmvcwhoCIm5FlGJIthLUAhe1yZPSxKCpgTrfXwgJm6zXxt2Xp71GeNt2xog3Z6teGZzqp45OZN0Z5pvjWAc_gHj531NN4lGPc');"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<div class="border-t border-[#414724]/30 dark:border-[#414724] bg-background-light dark:bg-background-dark">
+<div class="px-6 md:px-10 lg:px-40 flex justify-center py-12">
+<div class="w-full max-w-[1280px]">
+<footer class="flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">
+<div class="flex flex-col gap-2">
+<p class="text-gray-400 text-sm">© 2024 Agency. All Rights Reserved.</p>
+<div class="flex gap-4 justify-center md:justify-start">
+<a class="text-gray-500 hover:text-primary text-sm transition-colors" href="#">Privacy Policy</a>
+<a class="text-gray-500 hover:text-primary text-sm transition-colors" href="#">Terms of Service</a>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<a class="group" href="#">
+<div class="text-gray-400 group-hover:text-primary transition-colors duration-300 p-2 border border-transparent group-hover:border-primary/20 rounded-full">
+<span class="material-symbols-outlined text-[24px]">public</span> <!-- Representing generic social/web -->
+</div>
+</a>
+<a class="group" href="#">
+<div class="text-gray-400 group-hover:text-primary transition-colors duration-300 p-2 border border-transparent group-hover:border-primary/20 rounded-full">
+<span class="material-symbols-outlined text-[24px]">alternate_email</span> <!-- Representing generic contact/twitter -->
+</div>
+</a>
+<a class="group" href="#">
+<div class="text-gray-400 group-hover:text-primary transition-colors duration-300 p-2 border border-transparent group-hover:border-primary/20 rounded-full">
+<span class="material-symbols-outlined text-[24px]">work</span> <!-- Representing LinkedIn/Professional -->
+</div>
+</a>
+</div>
+</footer>
+</div>
+</div>
+</div>
+</body></html>

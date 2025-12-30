@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Home Page - Services</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#d8f060",
+                        "secondary": "#9F8BE7",
+                        "background-light": "#FAF7F6",
+                        "background-dark": "#161616", // Deep contrast from prompt
+                        "card-dark": "#191b0e",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "body": ["Space Grotesk", "sans-serif"], // Using Space Grotesk for body as well for the 'mono-adjacent' tech feel
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "2xl": "1rem",
+                        "3xl": "1.5rem",
+                        "avant": "50px", // Specific requested radius
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for better aesthetic */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FAF7F6;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d8f060;
+            border-radius: 4px;
+        }
+        
+        /* Smooth scrolling for the page */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Utility for the sticky stacking effect */
+        .card-stack-wrapper {
+            position: relative;
+            padding-bottom: 5vh; /* spacing at bottom */
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-[#161616] font-display antialiased overflow-x-hidden selection:bg-primary selection:text-black">
+<!-- Main Layout Container -->
+<div class="relative min-h-screen w-full flex flex-col">
+<!-- Section Header (Stickyish Intro) -->
+<header class="w-full px-6 py-12 md:px-12 lg:px-24 flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+<div class="max-w-2xl">
+<span class="inline-block py-1 px-3 rounded-full border border-[#161616]/10 bg-white text-xs font-bold uppercase tracking-widest mb-4">
+                    Our Expertise
+                </span>
+<h1 class="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter leading-[0.9] text-[#161616]">
+                    Constructing <br/> <span class="text-[#161616]/40 italic">Digital Reality.</span>
+</h1>
+</div>
+<div class="max-w-xs pb-2">
+<p class="text-lg font-medium leading-relaxed text-[#161616]/70">
+                    We blend brutalist aesthetics with refined interaction to deliver award-winning digital experiences.
+                </p>
+<div class="h-px w-full bg-[#161616]/20 mt-4"></div>
+</div>
+</header>
+<!-- Stacking Cards Section -->
+<div class="card-stack-wrapper w-full px-4 md:px-8 lg:px-16 pb-24 flex flex-col gap-4">
+<!-- Card 01: Digital Art -->
+<article class="sticky top-20 min-h-[85vh] w-full rounded-t-3xl border-t border-white/10 bg-[#161616] text-white shadow-2xl overflow-hidden group transition-transform duration-500">
+<div class="absolute top-0 right-0 p-8 md:p-12 opacity-20 pointer-events-none">
+<span class="text-[12rem] md:text-[20rem] font-bold leading-none tracking-tighter text-white/5">01</span>
+</div>
+<div class="h-full w-full flex flex-col lg:flex-row p-6 md:p-12 gap-8 lg:gap-16">
+<!-- Left Content -->
+<div class="flex-1 flex flex-col justify-between z-10">
+<div>
+<div class="flex items-center gap-2 mb-6">
+<span class="material-symbols-outlined text-primary text-3xl">palette</span>
+<span class="text-primary font-bold tracking-widest uppercase text-sm">Service 01</span>
+</div>
+<h2 class="text-5xl md:text-7xl font-bold tracking-tighter mb-8 leading-[0.9]">
+                                Digital Art
+                            </h2>
+<div class="flex flex-wrap gap-2 mb-8">
+<span class="px-4 py-2 rounded-full border border-white/20 text-sm hover:bg-white hover:text-black transition-colors cursor-default">3D Modeling</span>
+<span class="px-4 py-2 rounded-full border border-white/20 text-sm hover:bg-white hover:text-black transition-colors cursor-default">Motion Design</span>
+<span class="px-4 py-2 rounded-full border border-white/20 text-sm hover:bg-white hover:text-black transition-colors cursor-default">Illustration</span>
+</div>
+<p class="text-xl text-white/60 max-w-md font-light leading-relaxed">
+                                We craft immersive visual narratives that transcend traditional boundaries. From hyper-realistic 3D renders to abstract motion pieces, our art defines your brand's visual language.
+                            </p>
+</div>
+<div class="mt-12 lg:mt-0">
+<button class="group/btn flex items-center gap-4 text-primary hover:text-white transition-colors">
+<div class="h-14 w-14 rounded-full bg-primary text-black flex items-center justify-center group-hover/btn:scale-110 transition-transform duration-300">
+<span class="material-symbols-outlined -rotate-45 group-hover/btn:rotate-0 transition-transform duration-300">arrow_forward</span>
+</div>
+<span class="text-xl font-medium tracking-wide">Explore Case Studies</span>
+</button>
+</div>
+</div>
+<!-- Right Visual -->
+<div class="flex-1 h-[400px] lg:h-auto relative">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-avant z-0"></div>
+<div class="w-full h-full object-cover rounded-avant bg-cover bg-center grayscale hover:grayscale-0 transition-all duration-700 ease-out shadow-2xl relative z-10 overflow-hidden" data-alt="Abstract 3D digital art featuring fluid shapes and neon lighting" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDtaJ_rO5z42nloHLpL_3RBW1hJ86ZptKxTcUTZHo14XmmCS0rNnD3eNsCTg3HEv51hrm8kjjBFScfIETjJprP_HHgkLROsZg2ZLR6yyP_IjAuP5B4TvyNnrbCmQIHZKtb8qcJ8-aX4vBcxzmY8oz7koyijebkccmqg1i117wIHLN9NjmxpstGXzBzoIwZJSQvNK6MGcAWz-83Ele11ZrEHBwoBOn2dwjGe4H_No3uW9RltuGDBm2MdduI_qyEp1Znh4uSdiPh7pFM");'>
+<div class="absolute inset-0 bg-black/20 hover:bg-transparent transition-colors duration-500"></div>
+</div>
+</div>
+</div>
+</article>
+<!-- Card 02: Development -->
+<article class="sticky top-24 min-h-[85vh] w-full rounded-t-3xl border-t border-white/10 bg-[#1A1A1A] text-white shadow-2xl overflow-hidden group">
+<div class="absolute top-0 right-0 p-8 md:p-12 opacity-20 pointer-events-none">
+<span class="text-[12rem] md:text-[20rem] font-bold leading-none tracking-tighter text-white/5">02</span>
+</div>
+<div class="h-full w-full flex flex-col lg:flex-row p-6 md:p-12 gap-8 lg:gap-16">
+<div class="flex-1 flex flex-col justify-between z-10">
+<div>
+<div class="flex items-center gap-2 mb-6">
+<span class="material-symbols-outlined text-primary text-3xl">terminal</span>
+<span class="text-primary font-bold tracking-widest uppercase text-sm">Service 02</span>
+</div>
+<h2 class="text-5xl md:text-7xl font-bold tracking-tighter mb-8 leading-[0.9]">
+                                Development
+                            </h2>
+<div class="flex flex-wrap gap-2 mb-8">
+<span class="px-4 py-2 rounded-full border border-white/20 text-sm hover:bg-white hover:text-black transition-colors cursor-default">Creative Coding</span>
+<span class="px-4 py-2 rounded-full border border-white/20 text-sm hover:bg-white hover:text-black transition-colors cursor-default">Full Stack</span>
+<span class="px-4 py-2 rounded-full border border-white/20 text-sm hover:bg-white hover:text-black transition-colors cursor-default">WebGL</span>
+</div>
+<p class="text-xl text-white/60 max-w-md font-light leading-relaxed">
+                                Architecture meets alchemy. We build robust, scalable platforms powered by cutting-edge technologies like Three.js and React to deliver seamless performance.
+                            </p>
+</div>
+<div class="mt-12 lg:mt-0">
+<button class="group/btn flex items-center gap-4 text-primary hover:text-white transition-colors">
+<div class="h-14 w-14 rounded-full bg-primary text-black flex items-center justify-center group-hover/btn:scale-110 transition-transform duration-300">
+<span class="material-symbols-outlined -rotate-45 group-hover/btn:rotate-0 transition-transform duration-300">arrow_forward</span>
+</div>
+<span class="text-xl font-medium tracking-wide">View Tech Stack</span>
+</button>
+</div>
+</div>
+<div class="flex-1 h-[400px] lg:h-auto relative">
+<div class="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-avant z-0"></div>
+<div class="w-full h-full object-cover rounded-avant bg-cover bg-center grayscale hover:grayscale-0 transition-all duration-700 ease-out shadow-2xl relative z-10 overflow-hidden" data-alt="Computer screen displaying complex code syntax with dark background" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC3l2YPh7USR9FMSy8XfgEPv-kup9qOAZkioHBhxyAgmYsYmF_EWUmoIMFMvnQJUTgzDL_GOB5x8B8HQzN0BW2bIBKtoY7g5sLwMoEYcuohiWiPDdio_pTu4cqDNaQIgnqcYyoRdYURXYiGyJRbEIApip0-ruljjaq7FcEIij2TgEUYNpN_EQS4mFE4_i2aSpzk0PEY83VOMc0wxM0UIF5gThag1RaqvQ9O5gI9NSFZt7_S_3DrGXUEqdS-ZPv2n8V6Im1NnJBNQP8");'>
+<div class="absolute inset-0 bg-black/30 hover:bg-transparent transition-colors duration-500"></div>
+</div>
+</div>
+</div>
+</article>
+<!-- Card 03: Branding -->
+<article class="sticky top-28 min-h-[85vh] w-full rounded-t-3xl border-t border-white/10 bg-[#1E1E1E] text-white shadow-2xl overflow-hidden group">
+<div class="absolute top-0 right-0 p-8 md:p-12 opacity-20 pointer-events-none">
+<span class="text-[12rem] md:text-[20rem] font-bold leading-none tracking-tighter text-white/5">03</span>
+</div>
+<div class="h-full w-full flex flex-col lg:flex-row p-6 md:p-12 gap-8 lg:gap-16">
+<div class="flex-1 flex flex-col justify-between z-10">
+<div>
+<div class="flex items-center gap-2 mb-6">
+<span class="material-symbols-outlined text-primary text-3xl">fingerprint</span>
+<span class="text-primary font-bold tracking-widest uppercase text-sm">Service 03</span>
+</div>
+<h2 class="text-5xl md:text-7xl font-bold tracking-tighter mb-8 leading-[0.9]">
+                                Branding
+                            </h2>
+<div class="flex flex-wrap gap-2 mb-8">
+<span class="px-4 py-2 rounded-full border border-white/20 text-sm hover:bg-white hover:text-black transition-colors cursor-default">Identity</span>
+<span class="px-4 py-2 rounded-full border border-white/20 text-sm hover:bg-white hover:text-black transition-colors cursor-default">Strategy</span>
+<span class="px-4 py-2 rounded-full border border-white/20 text-sm hover:bg-white hover:text-black transition-colors cursor-default">Typography</span>
+</div>
+<p class="text-xl text-white/60 max-w-md font-light leading-relaxed">
+                                We distill the essence of your business into a potent visual identity. Bold typography, strategic color theory, and memorable logos that stand the test of time.
+                            </p>
+</div>
+<div class="mt-12 lg:mt-0">
+<button class="group/btn flex items-center gap-4 text-primary hover:text-white transition-colors">
+<div class="h-14 w-14 rounded-full bg-primary text-black flex items-center justify-center group-hover/btn:scale-110 transition-transform duration-300">
+<span class="material-symbols-outlined -rotate-45 group-hover/btn:rotate-0 transition-transform duration-300">arrow_forward</span>
+</div>
+<span class="text-xl font-medium tracking-wide">See Brand Books</span>
+</button>
+</div>
+</div>
+<div class="flex-1 h-[400px] lg:h-auto relative">
+<div class="absolute inset-0 bg-gradient-to-br from-pink-500/20 to-orange-500/20 rounded-avant z-0"></div>
+<div class="w-full h-full object-cover rounded-avant bg-cover bg-center grayscale hover:grayscale-0 transition-all duration-700 ease-out shadow-2xl relative z-10 overflow-hidden" data-alt="Minimalist branding mockup with high contrast typography" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBu4SeFtV4ouaU1Y4S-ds1p3w5hobugYgmlNQQxGD3eOSE6jhXOJZJ4jLhFR_H5AO_5fzJqCPsnkRIjbi5R4fWbv5Ie9OQ-U5upwHadO_0EGy6Qn1T4cpJOryrGSFghgdIjNWjyq3S2410Bs2PPfhUX_rZA9i-BTWqnyHowHdPO5rlHIiZ7ddkOU4LxuorRaVi-ai-4vbw7SfFOqQX1kqHDqq1wNqDC-D3h707zCCf8peqLbTS9wtScSIEjWKEdIT_s-gXIp2RWCik");'>
+<div class="absolute inset-0 bg-black/20 hover:bg-transparent transition-colors duration-500"></div>
+</div>
+</div>
+</div>
+</article>
+<!-- Card 04: Marketing -->
+<article class="sticky top-32 min-h-[85vh] w-full rounded-t-3xl border-t border-white/10 bg-[#222] text-white shadow-2xl overflow-hidden group">
+<!-- Secondary accent gradient for last card -->
+<div class="absolute inset-0 bg-gradient-to-t from-secondary/10 to-transparent opacity-50 pointer-events-none"></div>
+<div class="absolute top-0 right-0 p-8 md:p-12 opacity-20 pointer-events-none">
+<span class="text-[12rem] md:text-[20rem] font-bold leading-none tracking-tighter text-white/5">04</span>
+</div>
+<div class="h-full w-full flex flex-col lg:flex-row p-6 md:p-12 gap-8 lg:gap-16">
+<div class="flex-1 flex flex-col justify-between z-10">
+<div>
+<div class="flex items-center gap-2 mb-6">
+<span class="material-symbols-outlined text-secondary text-3xl">trending_up</span>
+<span class="text-secondary font-bold tracking-widest uppercase text-sm">Service 04</span>
+</div>
+<h2 class="text-5xl md:text-7xl font-bold tracking-tighter mb-8 leading-[0.9]">
+                                Marketing
+                            </h2>
+<div class="flex flex-wrap gap-2 mb-8">
+<span class="px-4 py-2 rounded-full border border-white/20 text-sm hover:bg-white hover:text-black transition-colors cursor-default">SEO</span>
+<span class="px-4 py-2 rounded-full border border-white/20 text-sm hover:bg-white hover:text-black transition-colors cursor-default">Social Campaigns</span>
+<span class="px-4 py-2 rounded-full border border-white/20 text-sm hover:bg-white hover:text-black transition-colors cursor-default">Analytics</span>
+</div>
+<p class="text-xl text-white/60 max-w-md font-light leading-relaxed">
+                                Data-driven strategies that amplify your voice. We connect your brand with the right audience through targeted campaigns and rigorous performance analysis.
+                            </p>
+</div>
+<div class="mt-12 lg:mt-0">
+<button class="group/btn flex items-center gap-4 text-secondary hover:text-white transition-colors">
+<div class="h-14 w-14 rounded-full bg-secondary text-white flex items-center justify-center group-hover/btn:scale-110 transition-transform duration-300">
+<span class="material-symbols-outlined -rotate-45 group-hover/btn:rotate-0 transition-transform duration-300">arrow_forward</span>
+</div>
+<span class="text-xl font-medium tracking-wide">Grow With Us</span>
+</button>
+</div>
+</div>
+<div class="flex-1 h-[400px] lg:h-auto relative">
+<div class="absolute inset-0 bg-gradient-to-br from-green-400/20 to-teal-500/20 rounded-avant z-0"></div>
+<div class="w-full h-full object-cover rounded-avant bg-cover bg-center grayscale hover:grayscale-0 transition-all duration-700 ease-out shadow-2xl relative z-10 overflow-hidden" data-alt="Data analytics dashboard visualization with glowing charts" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC3kiODh_XspzzePj2he9BQP1hGPCsuwzWvSYZOKJsqpH45QmhugOj81IbZ-z2JhDPt8MbWJL4yC1GDKv7Std6PvyFiTSl71qal5P5V-O8jtN92_zlTmaPdiCwu7UweI-sqmTuZuXFLnJnDAhA9Y_UoxVEn9yABS7HtscE8MTC75l3NFHZbH7E6Dk0dE-kRJ1UuUAJFsJIhZiJop8TS1Y6LWeMjuw2G44JaU346DvWami5bWobku8IE0WbUZkFxWpIciG0m6KsW2cI");'>
+<div class="absolute inset-0 bg-black/20 hover:bg-transparent transition-colors duration-500"></div>
+</div>
+</div>
+</div>
+</article>
+</div>
+<!-- Footer / End of Section Spacer -->
+<div class="w-full py-24 bg-background-light flex justify-center items-center">
+<div class="text-center">
+<p class="text-[#161616] font-bold text-lg mb-4">Ready to start a project?</p>
+<button class="px-8 py-3 bg-[#161616] text-white rounded-full font-bold hover:bg-primary hover:text-black transition-colors duration-300">
+                     Contact Us
+                 </button>
+</div>
+</div>
+</div>
+</body></html>

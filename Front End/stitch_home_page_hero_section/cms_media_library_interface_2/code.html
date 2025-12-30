@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CMS Media Library</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#17b0cf",
+                        "background-light": "#f6f8f8",
+                        "background-dark": "#111e21",
+                        "surface-dark": "#1a2629",
+                        "surface-darker": "#111f22",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"],
+                        "sans": ["Inter", "sans-serif"],
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "2xl": "2rem", 
+                        "3xl": "3rem", // For the 50px requirement approx
+                        "full": "9999px"
+                    },
+                    transitionTimingFunction: {
+                        'spring': 'cubic-bezier(0.68, -0.6, 0.32, 1.6)',
+                    }
+                },
+            },
+        }
+    </script>
+<style>::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #244147;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #17b0cf;
+        }
+        .avant-garde-card {
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .avant-garde-card:hover {
+            transform: scale(1.02) translateY(-4px);
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+        }
+    </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-slate-900 dark:text-white transition-colors duration-300">
+<div class="flex h-screen w-full overflow-hidden">
+<aside class="w-20 lg:w-72 hidden md:flex flex-col border-r border-gray-200 dark:border-[#244147] bg-white dark:bg-surface-darker shrink-0 z-20">
+<div class="p-6 flex items-center gap-3">
+<div class="bg-primary/20 p-2 rounded-xl">
+<span class="material-symbols-outlined text-primary text-3xl">auto_awesome_mosaic</span>
+</div>
+<div class="hidden lg:flex flex-col">
+<h1 class="text-base font-bold leading-tight">Agency OS</h1>
+<p class="text-gray-500 dark:text-[#93bfc8] text-xs">Admin Console</p>
+</div>
+</div>
+<nav class="flex-1 px-4 flex flex-col gap-2 mt-4">
+<a class="flex items-center gap-3 px-4 py-3 text-gray-500 dark:text-[#93bfc8] hover:bg-gray-100 dark:hover:bg-[#244147] rounded-xl transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">grid_view</span>
+<span class="hidden lg:block font-medium text-sm">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-gray-500 dark:text-[#93bfc8] hover:bg-gray-100 dark:hover:bg-[#244147] rounded-xl transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">article</span>
+<span class="hidden lg:block font-medium text-sm">Content</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 bg-primary/10 dark:bg-[#244147] text-primary dark:text-white rounded-xl transition-colors" href="#">
+<span class="material-symbols-outlined text-primary dark:text-white" style="font-variation-settings: 'FILL' 1;">perm_media</span>
+<span class="hidden lg:block font-medium text-sm">Media Library</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-gray-500 dark:text-[#93bfc8] hover:bg-gray-100 dark:hover:bg-[#244147] rounded-xl transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">settings</span>
+<span class="hidden lg:block font-medium text-sm">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-gray-500 dark:text-[#93bfc8] hover:bg-gray-100 dark:hover:bg-[#244147] rounded-xl transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">group</span>
+<span class="hidden lg:block font-medium text-sm">Users</span>
+</a>
+</nav>
+<div class="p-4 border-t border-gray-200 dark:border-[#244147]">
+<div class="flex items-center gap-3 p-2">
+<div class="h-10 w-10 rounded-full bg-cover bg-center ring-2 ring-primary/30" data-alt="User profile picture of a woman" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC-b2XoRr_aAB6dfpkRuVYOX70TB89jNwoNEJySvbhJxpNuvRdHUFwkWlqDO8azS1I1drPpDIFF1aOt5GGfxxjtpSjOc6pbOjhgbSqNNopQPN9WNrzRs5op2lpb1zdvQePBVam1-leqhuRxeOMCVrKivWom45_LLSuXTOE8YnXOs6QXD-CjQtXn4Ly2RUFNUv2RqawUHrR_FXpATaClUo8y_Xe8BmgbFhKw9djnhhoFsgx1I6veJPSjSGaDVOqYelJ14lNEnvlIRAA')"></div>
+<div class="hidden lg:flex flex-col">
+<span class="text-sm font-semibold">Elara V.</span>
+<span class="text-xs text-gray-500 dark:text-[#93bfc8]">Lead Designer</span>
+</div>
+</div>
+</div>
+</aside>
+<main class="flex-1 flex flex-col h-full overflow-hidden bg-background-light dark:bg-background-dark relative">
+<header class="flex-none px-6 py-6 md:px-10 border-b border-transparent dark:border-[#244147] z-10 bg-background-light/80 dark:bg-background-dark/95 backdrop-blur-md sticky top-0">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+<div class="flex flex-col gap-1">
+<h2 class="text-3xl md:text-4xl font-black tracking-tight text-slate-900 dark:text-white">Media Assets</h2>
+<p class="text-slate-500 dark:text-[#93bfc8] text-sm">Manage creative assets for your next award-winning project.</p>
+</div>
+<div class="flex items-center gap-3">
+<label class="relative hidden md:flex items-center group">
+<span class="material-symbols-outlined absolute left-4 text-slate-400 dark:text-[#93bfc8] group-focus-within:text-primary transition-colors">search</span>
+<input class="h-12 w-64 lg:w-80 bg-white dark:bg-[#1a2629] border-none rounded-2xl pl-12 pr-4 text-sm focus:ring-2 focus:ring-primary/50 dark:text-white placeholder:text-slate-400 dark:placeholder:text-[#587a82] transition-all shadow-sm" placeholder="Search by name or tag..." type="text"/>
+</label>
+<button class="flex items-center justify-center gap-2 h-12 px-6 bg-primary hover:bg-cyan-400 text-surface-darker font-bold rounded-2xl transition-all hover:scale-105 active:scale-95 shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined">cloud_upload</span>
+<span>Upload Media</span>
+</button>
+</div>
+</div>
+<div class="mt-8 flex flex-wrap items-center justify-between gap-4">
+<div class="flex gap-2 p-1 bg-white/50 dark:bg-[#1a2629]/50 rounded-2xl backdrop-blur-sm">
+<button class="px-5 py-2 rounded-xl bg-white dark:bg-[#244147] shadow-sm text-slate-900 dark:text-white text-sm font-semibold transition-all">All</button>
+<button class="px-5 py-2 rounded-xl text-slate-500 dark:text-[#93bfc8] hover:bg-white/50 dark:hover:bg-[#244147]/50 text-sm font-medium transition-all">Images</button>
+<button class="px-5 py-2 rounded-xl text-slate-500 dark:text-[#93bfc8] hover:bg-white/50 dark:hover:bg-[#244147]/50 text-sm font-medium transition-all">Videos</button>
+<button class="px-5 py-2 rounded-xl text-slate-500 dark:text-[#93bfc8] hover:bg-white/50 dark:hover:bg-[#244147]/50 text-sm font-medium transition-all">Documents</button>
+</div>
+<div class="flex items-center gap-3 text-slate-500 dark:text-[#93bfc8]">
+<span class="text-xs font-medium uppercase tracking-wider opacity-70">Sort by</span>
+<button class="flex items-center gap-1 text-sm font-medium hover:text-primary transition-colors">
+                            Date Added
+                            <span class="material-symbols-outlined text-lg">arrow_drop_down</span>
+</button>
+<div class="h-4 w-px bg-slate-300 dark:bg-[#244147]"></div>
+<button class="p-2 hover:bg-white dark:hover:bg-[#244147] rounded-lg transition-colors text-primary">
+<span class="material-symbols-outlined text-xl">grid_view</span>
+</button>
+<button class="p-2 hover:bg-white dark:hover:bg-[#244147] rounded-lg transition-colors">
+<span class="material-symbols-outlined text-xl">view_list</span>
+</button>
+</div>
+</div>
+</header>
+<div class="flex-1 overflow-y-auto px-6 md:px-10 py-6 scroll-smooth">
+<div class="border-2 border-dashed border-slate-300 dark:border-[#244147] rounded-xl p-8 mb-8 flex flex-col items-center justify-center gap-2 text-center hover:border-primary/50 hover:bg-primary/5 transition-all cursor-pointer group">
+<span class="material-symbols-outlined text-4xl text-slate-400 dark:text-[#587a82] group-hover:text-primary transition-colors">cloud_upload</span>
+<p class="text-slate-500 dark:text-[#93bfc8] text-sm font-medium">Drag and drop files here to upload instantly</p>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6 pb-20">
+<div class="group relative aspect-[4/5] rounded-xl overflow-hidden bg-surface-dark cursor-pointer avant-garde-card ring-1 ring-white/10 dark:ring-0">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" data-alt="Abstract minimal architectural shapes with shadows" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDKoJhE41GrnECphvy8zkJRaWKWcc9qZTv6yKu8p4BLxq1ypzurVZVxxKhVFrO39xixfGtFtzieec15pT-h2OtB1bSEYMdl5Y4sMwgdmVQ3XVD5YZgbjHZZvpuOOZgiNrMudC16aqWicXfPvnFm_ZVGcIZN4JESm78evtr9KuSuBCu9mgtuER670-t5XZYmYw_ClzyJa2PKNweX1g1y96KohqqsvBZsbnS_aE9wwAHnvoporePneyw_OtDLTtbkcF-ziq5Zig89MWY')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
+<h3 class="text-white font-medium truncate">Architecture_V1.jpg</h3>
+<p class="text-gray-300 text-xs mt-1">2.4 MB • JPG</p>
+</div>
+<div class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+<div class="h-6 w-6 rounded-full border-2 border-white/50 hover:border-primary hover:bg-primary transition-colors"></div>
+</div>
+</div>
+<div class="group relative aspect-[4/5] rounded-xl overflow-hidden bg-surface-dark cursor-pointer ring-4 ring-primary avant-garde-card z-10 shadow-2xl shadow-primary/20">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-700" data-alt="Abstract fluid blue and orange gradient background" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBYqQRAq9VpeQBPiVwMH99UVcnE7ljaK5hZjd6sqmcVMz3M8DaAau4HX4_swICyWOWnIvBDNGZLDg5vnWYCW06RR3zckXp3BVyZvheeen9lsvW5vBtdu6KbGaCFM1e6J8pnQJAnEm7LTdtaLjJCFCLVaY4rxMVxh5EF8UMF6LLwysR9A50Df0IMD9tjCLt7ySMrirmEcP9HSFIzELjYTlqiZ3Isd9uHJiScISi53Z9YUvH1X17hi4JBgHoVZXl8KivB-Nc_xSYQUGU')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-100 flex flex-col justify-end p-4">
+<h3 class="text-white font-medium truncate">Fluid_Gradient_Hero.png</h3>
+<p class="text-gray-300 text-xs mt-1">4.1 MB • PNG</p>
+</div>
+<div class="absolute top-3 right-3">
+<div class="h-6 w-6 rounded-full bg-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-sm">check</span>
+</div>
+</div>
+</div>
+<div class="group relative aspect-[4/5] rounded-xl overflow-hidden bg-surface-dark cursor-pointer avant-garde-card ring-1 ring-white/10 dark:ring-0">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" data-alt="Neon moody urban street photography" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAcntkwJicJgZ3qEgc4muyiekQg2fdILyMk9hlYpYmY7jT8hzcdKfm1C90X9OOkx4P-V5BMsypgcYnIEInZeFzQPNiD0sCXRU_Dmrdh0Lblu-zGJios1v0m0V50FJdzb9TiCXhvU1HZaz3J2AS8dSAhk6gOvZ-F06HMCnxEscYq5AAfuMFEVllfv-iw_yxRYVzESTbtLAKi7qXotytDvKZ7aeeFv6dDSkmdPD4GSxQfMB1NytXTzjiWv0HI0f1QVgVDDLieUaE4st0')"></div>
+<div class="absolute inset-0 bg-black/40 flex items-center justify-center group-hover:bg-black/20 transition-all">
+<div class="h-12 w-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</div>
+</div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
+<h3 class="text-white font-medium truncate">Campaign_Teaser.mp4</h3>
+<p class="text-gray-300 text-xs mt-1">12.5 MB • MP4</p>
+</div>
+</div>
+<div class="group relative aspect-[4/5] rounded-xl overflow-hidden bg-surface-dark cursor-pointer avant-garde-card ring-1 ring-white/10 dark:ring-0">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" data-alt="Minimalist plant leaves with stark shadow" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDa_xluyo6PJ25KvOfCD1JMfYxtZBLDkEF23O35usSt3xXLFGuBxeG3GBcK6m-JpVi-NirckJG-ZAuh_eJeyqdprN9La-g4lUMBLBBlbiaxaAVWR1XVtItAZ5u32RdohBaq4beiWlX-um6AvfClUyTFDWCvm8V41-A1SBTxDB59Fcaj3Wjj50n5jb-1v7O4o3tr-zZ29pzJb9oRNew_Cezibv6fhBdIeAYdClI5MSNHk4_c5p9wupPokOYbagdYgp33OM0Ag2Awxb0')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
+<h3 class="text-white font-medium truncate">Plant_Study_04.jpg</h3>
+<p class="text-gray-300 text-xs mt-1">1.2 MB • JPG</p>
+</div>
+</div>
+<div class="group relative aspect-[4/5] rounded-xl overflow-hidden bg-surface-dark cursor-pointer avant-garde-card ring-1 ring-white/10 dark:ring-0">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" data-alt="3D abstract glass texture render" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAa6VPNQwqW3P0VlLFIIoK01EtOFHr-ido9EZgkRQCGz01M_E0wm4J-9MLqMTSwJ39VpfScq2WnCnYCIWZK4WGjlO4k8I6bQAKgM6plPpqrDawgqSaz-W0_wN_wP48oN12H3bK-Iq-O4ACo28CvuubHWinAfKxggHcaH1RMkz30OhsOCf9qn64S848K0VT1Su5cZHEkhVWSsBZJF8bnkQvdmkbG5mg3-HWrcuACP-y4PalonuxmHdYI_TQuLyTbI5JSAMsBmL5DusA')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
+<h3 class="text-white font-medium truncate">Glass_Morph_Render.png</h3>
+<p class="text-gray-300 text-xs mt-1">5.8 MB • PNG</p>
+</div>
+</div>
+<div class="group relative aspect-[4/5] rounded-xl overflow-hidden bg-surface-dark cursor-pointer avant-garde-card ring-1 ring-white/10 dark:ring-0">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" data-alt="Retro computer setup with glitch aesthetics" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCnFVwQFXuvQ8VPadSk2xdTOITL7UP66oNGi07R8bsTdxgmIK97nWdqZNwmYRsItAeJUTotWP-GMHc10rtGmw0zPfBWbaf79RUbHHIQ1vJi90dtEcA_-Pkz40uGjlHRHtltP0KXnqEuaWPAZXc7Rqb3j01NQ2h1iDzDEYeqPpl3jDIwALrQCWk2-AEww0csTiqRZPd8AZ13dtsZ6JmnPvkCYlbjjdnC-c46ErfmL3Dy3dHAQZgmONwO4kcB04MPA5peRpMhb_CqBb8')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
+<h3 class="text-white font-medium truncate">Retro_Tech_Bg.jpg</h3>
+<p class="text-gray-300 text-xs mt-1">3.1 MB • JPG</p>
+</div>
+</div>
+<div class="group relative aspect-[4/5] rounded-xl overflow-hidden bg-surface-dark cursor-pointer avant-garde-card ring-1 ring-white/10 dark:ring-0">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" data-alt="Mountain landscape during sunset" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCHlF91-IcA5OO_T_zYO3jHEtThFYLMuueYYZ_2UT9S-LAYb_TsnKQjAviwS0IsmFmZuBuV7SYW4tsYClz0qPrRR6mb8WMe2bBsdRjkxl8dt3zfxNxk6NgpSvRn-1ZyySnPB0YgsQN7M6XjL6mhyo1r7PkGR0TEWA8_mY44Vaplm5RkbwJ_-nMuwOCGaCTVe4KeZrr8r0zGQK5OsrJqg3xc6Ba4PoULvWabTP-pmdj_3dvqVWSHDXf85ZSwpiGi6A82d3lbgK1rUxs')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
+<h3 class="text-white font-medium truncate">Nature_Hero_Header.jpg</h3>
+<p class="text-gray-300 text-xs mt-1">6.2 MB • JPG</p>
+</div>
+</div>
+<div class="group relative aspect-[4/5] rounded-xl overflow-hidden bg-surface-dark cursor-pointer avant-garde-card ring-1 ring-white/10 dark:ring-0">
+<div class="absolute inset-0 bg-slate-800 flex items-center justify-center group-hover:bg-slate-700 transition-colors">
+<span class="material-symbols-outlined text-6xl text-slate-600 group-hover:text-slate-500">description</span>
+</div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
+<h3 class="text-white font-medium truncate">Brand_Guidelines_V3.pdf</h3>
+<p class="text-gray-300 text-xs mt-1">1.8 MB • PDF</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<aside class="w-96 bg-white dark:bg-surface-darker border-l border-gray-200 dark:border-[#244147] flex flex-col shrink-0 shadow-2xl relative z-30 transition-transform duration-500 transform translate-x-0">
+<div class="p-6 border-b border-gray-200 dark:border-[#244147] flex items-center justify-between">
+<h3 class="font-bold text-lg dark:text-white">File Details</h3>
+<button class="text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<div class="flex-1 overflow-y-auto p-6 flex flex-col gap-6">
+<div class="aspect-video rounded-2xl bg-surface-dark overflow-hidden ring-1 ring-white/10 relative group">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="Abstract fluid blue and orange gradient background preview" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAJZlCf9Uh0i82Z1plGkAfZ_0RMEpt9TiVqMjE80Knu7CXJwtGaWv23WrzhASC9wgxVE4cH9CRQVLHD3rEwCdGhzL1XjN9iKUJKtefRDoITVbYPJ7vIdo8eiK49dhDZXq1cg2_BleMwFH6UmxhadrtwBJX4Xca1km1hagXiUiKwDo93aW-GyQAnTaC1Vo7EiY0jCHpkrKUS-7-R5BT6PGiNSnIPTeiAYXPB0dIBu0qO2WoPlDQ5vo2HLcalKj_gU2URik_EgnFlBr8')"></div>
+<div class="absolute bottom-2 right-2 bg-black/60 backdrop-blur rounded-lg px-2 py-1 text-xs text-white">
+                         1920 x 1080
+                     </div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="p-3 rounded-xl bg-gray-50 dark:bg-[#1a2629]">
+<p class="text-xs text-gray-500 dark:text-[#93bfc8] mb-1">File Size</p>
+<p class="text-sm font-semibold dark:text-white">4.1 MB</p>
+</div>
+<div class="p-3 rounded-xl bg-gray-50 dark:bg-[#1a2629]">
+<p class="text-xs text-gray-500 dark:text-[#93bfc8] mb-1">Type</p>
+<p class="text-sm font-semibold dark:text-white">PNG Image</p>
+</div>
+<div class="p-3 rounded-xl bg-gray-50 dark:bg-[#1a2629]">
+<p class="text-xs text-gray-500 dark:text-[#93bfc8] mb-1">Created</p>
+<p class="text-sm font-semibold dark:text-white">Oct 24, 2023</p>
+</div>
+<div class="p-3 rounded-xl bg-gray-50 dark:bg-[#1a2629]">
+<p class="text-xs text-gray-500 dark:text-[#93bfc8] mb-1">Uploaded By</p>
+<p class="text-sm font-semibold dark:text-white">Elara V.</p>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex flex-col gap-2">
+<label class="text-sm font-medium dark:text-[#93bfc8]">File Name</label>
+<div class="flex items-center gap-2 bg-gray-50 dark:bg-[#1a2629] rounded-xl px-3 py-2 border border-transparent focus-within:border-primary/50 transition-colors">
+<input class="bg-transparent border-none text-sm w-full focus:ring-0 dark:text-white p-0" type="text" value="Fluid_Gradient_Hero.png"/>
+<span class="text-xs text-gray-400">.png</span>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-sm font-medium dark:text-[#93bfc8]">Alt Text</label>
+<textarea class="bg-gray-50 dark:bg-[#1a2629] border-transparent rounded-xl text-sm w-full focus:ring-0 focus:border-primary/50 dark:text-white resize-none p-3 placeholder:text-gray-400" placeholder="Describe the image for accessibility..." rows="3">Abstract fluid shapes with blue and orange gradients.</textarea>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-sm font-medium dark:text-[#93bfc8]">Tags</label>
+<div class="flex flex-wrap gap-2">
+<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium border border-primary/20">
+                                Abstract <button class="hover:text-red-400"><span class="material-symbols-outlined text-[14px]">close</span></button>
+</span>
+<button class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-gray-100 dark:bg-[#244147] text-gray-500 dark:text-[#93bfc8] text-xs font-medium border border-transparent hover:border-gray-300 dark:hover:border-[#93bfc8] transition-colors">
+<span class="material-symbols-outlined text-[14px]">add</span> Add Tag
+                             </button>
+</div>
+</div>
+</div>
+</div>
+<div class="p-6 border-t border-gray-200 dark:border-[#244147] bg-gray-50/50 dark:bg-[#151c1f]">
+<div class="flex gap-3 mb-3">
+<button class="flex-1 bg-primary text-surface-darker font-bold py-3 rounded-xl hover:bg-cyan-400 transition-colors shadow-lg shadow-primary/20 text-sm">
+                        Insert Media
+                    </button>
+<button class="bg-white dark:bg-[#244147] text-slate-700 dark:text-white p-3 rounded-xl hover:bg-gray-100 dark:hover:bg-[#325259] transition-colors border border-gray-200 dark:border-transparent">
+<span class="material-symbols-outlined">download</span>
+</button>
+</div>
+<button class="w-full text-red-500 dark:text-red-400 text-sm font-medium py-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-lg">delete</span>
+                    Delete Permanently
+                </button>
+</div>
+</aside>
+</div>
+
+</body></html>

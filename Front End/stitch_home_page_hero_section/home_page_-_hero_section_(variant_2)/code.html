@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Rayo Creative Agency</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1337ec",
+                        "background-light": "#FAF7F6",
+                        "background-dark": "#101322",
+                        "text-main": "#161616",
+                        "accent-lime": "#DDF160",
+                        "accent-purple": "#9F8BE7",
+                    },
+                    fontFamily: {
+                        "display": ["Funnel Display", "sans-serif"],
+                        "body": ["Funnel Sans", "sans-serif"],
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0px",
+                        "lg": "0px",
+                        "xl": "0px",
+                        "special": "50px",
+                    },
+                    backgroundImage: {
+                        'grid-pattern': "linear-gradient(to right, #232948 1px, transparent 1px), linear-gradient(to bottom, #232948 1px, transparent 1px)",
+                    }
+                },
+            },
+        }
+    </script>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@300..900&amp;family=Funnel+Sans:ital,wght@0,300..800;1,300..800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        /* Custom Animations */
+        @keyframes float {
+            0% { transform: translate(0, 0); }
+            50% { transform: translate(-10px, -15px); }
+            100% { transform: translate(0, 0); }
+        }
+        
+        @keyframes morph {
+            0% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+            50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+            100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        @keyframes text-bloom {
+            0% { opacity: 0; filter: blur(12px); transform: scale(0.9) translateY(20px); }
+            100% { opacity: 1; filter: blur(0px); transform: scale(1) translateY(0); }
+        }
+
+        .animate-float {
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .animate-morph {
+            animation: morph 8s ease-in-out infinite alternate;
+        }
+
+        .animate-marquee {
+            animation: marquee 25s linear infinite;
+        }
+
+        .text-bloom-char {
+            display: inline-block;
+            animation: text-bloom 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            opacity: 0; 
+        }
+
+        /* Stagger delays for bloom effect */
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+        .delay-5 { animation-delay: 0.5s; }
+        .delay-6 { animation-delay: 0.6s; }
+
+        /* Custom Scrollbar hide */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-text-main dark:text-white font-body selection:bg-accent-lime selection:text-black">
+<div class="relative flex min-h-screen w-full flex-col overflow-hidden">
+<!-- Background Abstract Blob -->
+<div class="fixed inset-0 z-0 pointer-events-none flex items-center justify-center opacity-40 dark:opacity-20 mix-blend-multiply dark:mix-blend-screen">
+<div class="w-[600px] h-[600px] bg-gradient-to-tr from-primary to-accent-purple blur-[100px] animate-morph animate-float"></div>
+</div>
+<!-- Background Marquee (Client Names) -->
+<div class="absolute top-1/2 -translate-y-1/2 w-full z-0 opacity-[0.03] pointer-events-none overflow-hidden whitespace-nowrap select-none font-display font-black text-[12vw] leading-none uppercase text-current">
+<div class="animate-marquee flex w-fit">
+<span>Google — Nike — Spotify — Apple — Tesla — Airbnb — Netflix — </span>
+<span>Google — Nike — Spotify — Apple — Tesla — Airbnb — Netflix — </span>
+</div>
+</div>
+<!-- Glassmorphic Header -->
+<header class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-5 md:px-12 backdrop-blur-md bg-white/5 dark:bg-[#111422]/60 border-b border-white/10 transition-all duration-300">
+<div class="flex items-center gap-3 text-current">
+<div class="size-8 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[32px]">bolt</span>
+</div>
+<h2 class="text-xl font-bold font-display tracking-tight uppercase">Rayo Template</h2>
+</div>
+<div class="flex items-center gap-4">
+<button class="group relative flex items-center justify-center overflow-hidden h-11 px-8 bg-primary text-white text-sm font-bold tracking-wider uppercase transition-all hover:bg-accent-lime hover:text-black hover:scale-105 rounded-none border border-transparent hover:border-black/10">
+<span class="relative z-10">Say Hello</span>
+</button>
+<button class="flex items-center justify-center size-11 bg-transparent border border-current/20 hover:border-current hover:bg-current/5 text-current transition-all rounded-none group">
+<span class="material-symbols-outlined group-hover:rotate-90 transition-transform duration-300">menu</span>
+</button>
+</div>
+</header>
+<!-- Main Hero Content -->
+<main class="relative z-10 flex flex-1 flex-col items-center justify-center px-4 pt-20">
+<div class="layout-content-container flex flex-col items-center justify-center max-w-[1200px] w-full text-center">
+<!-- Dynamic Tagline -->
+<div class="mb-6 flex items-center gap-2">
+<span class="h-[1px] w-8 bg-accent-lime"></span>
+<h2 class="text-sm font-medium tracking-[0.2em] uppercase text-current/70 font-display">
+                        Digital Experience Design / Est. 2024
+                    </h2>
+<span class="h-[1px] w-8 bg-accent-lime"></span>
+</div>
+<!-- Main H1 with Bloom Animation -->
+<h1 class="relative font-display font-black text-6xl md:text-8xl lg:text-9xl leading-[0.9] tracking-tighter uppercase mb-10 text-transparent bg-clip-text bg-gradient-to-b from-current to-current/70 mix-blend-overlay dark:mix-blend-normal">
+<span class="block mb-2 overflow-visible">
+<span class="text-bloom-char delay-1">I</span><span class="text-bloom-char delay-2">n</span><span class="text-bloom-char delay-3">n</span><span class="text-bloom-char delay-4">o</span><span class="text-bloom-char delay-5">v</span><span class="text-bloom-char delay-6">a</span><span class="text-bloom-char delay-1">t</span><span class="text-bloom-char delay-2">e</span>
+<span class="text-primary">.</span>
+</span>
+<span class="block text-4xl md:text-6xl lg:text-7xl opacity-50 font-medium tracking-tight mt-4">
+                        Create &amp; Elevate
+                    </span>
+</h1>
+<!-- CTA Area -->
+<div class="flex flex-col md:flex-row gap-4 items-center mt-8">
+<button class="flex items-center gap-3 px-8 py-4 bg-transparent border border-current text-current font-bold uppercase tracking-wider hover:bg-current hover:text-background-light dark:hover:text-background-dark transition-all duration-300 group rounded-none">
+<span>View Selected Works</span>
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+</main>
+<!-- Bottom UI Elements -->
+<div class="absolute bottom-10 left-0 right-0 z-20 px-6 md:px-12 flex justify-between items-end pointer-events-none">
+<!-- Scroll Indicator -->
+<div class="hidden md:flex flex-col items-center gap-2 animate-bounce pointer-events-auto cursor-pointer">
+<span class="text-[10px] uppercase tracking-widest font-bold rotate-90 origin-left translate-x-3 mb-8">Scroll</span>
+<span class="h-12 w-[1px] bg-current"></span>
+</div>
+<!-- Stats / Socials -->
+<div class="flex gap-8 pointer-events-auto">
+<div class="flex flex-col">
+<span class="text-xs uppercase text-current/50 font-bold tracking-widest mb-1">Location</span>
+<span class="font-display font-bold">New York, NY</span>
+</div>
+<div class="flex flex-col">
+<span class="text-xs uppercase text-current/50 font-bold tracking-widest mb-1">Follow Us</span>
+<div class="flex gap-2 text-current">
+<a class="hover:text-primary transition-colors" href="#">IG</a>
+<a class="hover:text-primary transition-colors" href="#">TW</a>
+<a class="hover:text-primary transition-colors" href="#">LN</a>
+</div>
+</div>
+</div>
+</div>
+<!-- Decorative Grid Overlay (Subtle) -->
+<div class="fixed inset-0 pointer-events-none z-[-1] opacity-[0.03]" style="background-image: linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px); background-size: 40px 40px;"></div>
+</div>
+</body></html>

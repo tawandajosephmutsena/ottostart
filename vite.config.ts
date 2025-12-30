@@ -24,4 +24,12 @@ export default defineConfig({
     esbuild: {
         jsx: 'automatic',
     },
+    optimizeDeps: {
+        include: ['gsap', 'lenis'],
+    },
+    build: {
+        rollupOptions: {
+            external: [],
+        },
+    },
 });

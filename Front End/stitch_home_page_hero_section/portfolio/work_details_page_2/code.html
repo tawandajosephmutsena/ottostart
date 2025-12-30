@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Project Details - Avant-Garde Agency</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@300;400;500;600;700;800&amp;family=Funnel+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<script src="https://unpkg.com/@phosphor-icons/web"></script>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        "bg-base": "#FAF7F6",
+                        "text-main": "#161616",
+                        "accent-lime": "#DDF160",
+                        "accent-purple": "#9F8BE7",
+                        "surface-dark": "#1a1a1a",
+                    },
+                    fontFamily: {
+                        "display": ['"Funnel Display"', "sans-serif"],
+                        "sans": ['"Funnel Sans"', "sans-serif"],
+                    },
+                    borderRadius: {
+                        "zero": "0px",
+                        "brand": "50px", 
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #FAF7F6;
+            color: #161616;
+        }::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FAF7F6; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #DDF160; 
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #cce050; 
+        }
+        .smooth-image {
+            transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .smooth-image:hover {
+            transform: scale(1.02);
+        }.sticky-sidebar {
+            position: sticky;
+            top: 6rem;
+            align-self: start;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased text-text-main selection:bg-accent-lime selection:text-text-main">
+<header class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-5 bg-[#FAF7F6]/90 backdrop-blur-md border-b border-gray-200">
+<div class="flex items-center gap-2">
+<div class="size-8 flex items-center justify-center bg-text-main text-accent-lime">
+<i class="ph-bold ph-asterisk-simple text-xl"></i>
+</div>
+<span class="font-display font-bold text-xl tracking-tight uppercase">Avant-Garde</span>
+</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="font-medium text-sm uppercase tracking-wide hover:text-accent-purple transition-colors" href="#">Work</a>
+<a class="font-medium text-sm uppercase tracking-wide hover:text-accent-purple transition-colors" href="#">Agency</a>
+<a class="font-medium text-sm uppercase tracking-wide hover:text-accent-purple transition-colors" href="#">News</a>
+</nav>
+<button class="hidden md:flex items-center gap-2 px-6 py-2 bg-text-main text-white text-sm font-semibold uppercase tracking-wider hover:bg-accent-purple hover:text-text-main transition-colors duration-300">
+            Start Project
+            <i class="ph ph-arrow-right"></i>
+</button>
+<button class="md:hidden text-text-main">
+<i class="ph ph-list text-2xl"></i>
+</button>
+</header>
+<main class="pt-20">
+<section class="relative w-full h-[85vh] overflow-hidden">
+<div class="absolute inset-0 bg-black/20 z-10"></div>
+<div class="w-full h-full bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuARzjrTt7UDV-vPyfFvWbUFpwfnWNcPb43D5Uwv4EGpDTNeZL9TDcC4ieedZK52zwyoJ1OLfs_9Z69xIkJlC8doWcPAGUp_PZgIM3K6jH37m_mnODtrLMC4K-Txh5iaCc4a40RB7wriCwRWgXjWgMNYtC39B2Ktin8NCdkB7Q_5sDfwsiCnTmZ3SMc9upMZZzPWsZYqoAh8zwE_YxoHvVtFzWh7d-o4RPGfhFJAysSUU8fXojRZRfoLEhWYCSXtcV89VJtqViDpSMI'); background-position: center top;"></div>
+<div class="absolute bottom-0 left-0 w-full z-20 px-6 py-12 md:px-12 md:py-16 bg-gradient-to-t from-black/80 to-transparent">
+<div class="max-w-[1400px] mx-auto">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-8">
+<div>
+<span class="inline-block px-3 py-1 mb-4 bg-accent-lime text-text-main text-xs font-bold uppercase tracking-widest">FinTech • UI/UX</span>
+<h1 class="font-display text-6xl md:text-8xl lg:text-9xl font-bold text-white leading-none tracking-tighter">
+                                Apex Finance
+                            </h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="size-16 rounded-full bg-accent-purple text-text-main flex items-center justify-center hover:scale-110 transition-transform duration-300">
+<i class="ph-fill ph-play text-2xl"></i>
+</button>
+<span class="text-white font-medium uppercase tracking-wide text-sm">Play Case Study</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<div class="max-w-[1600px] mx-auto px-6 py-16 md:px-12 md:py-24">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24">
+<aside class="lg:col-span-4 relative">
+<div class="sticky-sidebar flex flex-col gap-10 border-t-2 border-text-main pt-8">
+<div>
+<h3 class="font-display text-3xl font-semibold mb-6">Project Data</h3>
+<div class="space-y-6">
+<div class="grid grid-cols-2 gap-4">
+<div>
+<span class="block text-gray-500 text-xs uppercase tracking-widest font-bold mb-1">Client</span>
+<span class="text-lg font-medium">Apex Finance Inc.</span>
+</div>
+<div>
+<span class="block text-gray-500 text-xs uppercase tracking-widest font-bold mb-1">Year</span>
+<span class="text-lg font-medium">2023</span>
+</div>
+</div>
+<div>
+<span class="block text-gray-500 text-xs uppercase tracking-widest font-bold mb-1">Services</span>
+<div class="flex flex-wrap gap-2 mt-2">
+<span class="px-3 py-1 border border-gray-300 text-sm">Product Strategy</span>
+<span class="px-3 py-1 border border-gray-300 text-sm">UI/UX Design</span>
+<span class="px-3 py-1 border border-gray-300 text-sm">Frontend Dev</span>
+</div>
+</div>
+<div>
+<span class="block text-gray-500 text-xs uppercase tracking-widest font-bold mb-1">Outcome</span>
+<span class="text-2xl font-display font-bold text-accent-purple">+140% Conversion</span>
+</div>
+</div>
+</div>
+<div class="hidden lg:block w-full h-px bg-gray-200 my-4"></div>
+<div class="hidden lg:flex flex-col gap-4">
+<p class="text-sm text-gray-500 font-medium uppercase tracking-wide">Share Project</p>
+<div class="flex gap-4">
+<a class="size-10 flex items-center justify-center border border-gray-300 hover:bg-text-main hover:text-white transition-colors" href="#">
+<i class="ph ph-linkedin-logo text-xl"></i>
+</a>
+<a class="size-10 flex items-center justify-center border border-gray-300 hover:bg-text-main hover:text-white transition-colors" href="#">
+<i class="ph ph-twitter-logo text-xl"></i>
+</a>
+<a class="size-10 flex items-center justify-center border border-gray-300 hover:bg-text-main hover:text-white transition-colors" href="#">
+<i class="ph ph-link text-xl"></i>
+</a>
+</div>
+</div>
+</div>
+</aside>
+<div class="lg:col-span-8 flex flex-col gap-24">
+<section>
+<h2 class="font-display text-4xl md:text-5xl font-bold mb-8">The Brief</h2>
+<p class="text-xl md:text-2xl leading-relaxed text-gray-800 font-light">
+                            Apex Finance approached us with a platform suffering from significant legacy debt. Their user interface hadn't been updated in six years, resulting in a disjointed experience that was driving new users away during the onboarding process.
+                        </p>
+<p class="mt-6 text-lg text-gray-600 leading-relaxed">
+                            Our goal was twofold: modernize the visual language to compete with neobank startups, while preserving the dense, data-rich utility that their power users relied on daily. We needed to bridge the gap between complexity and usability.
+                        </p>
+</section>
+<section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="w-full h-[400px] rounded-brand overflow-hidden relative group">
+<div class="w-full h-full bg-cover bg-center smooth-image" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDq8H8EZVLmdZlaXlgwS5ZM7fRXE-MhX1KLWBPpjEeN4aQHm7N9tTrMNXb2rafn-mSQYZM76A6pIGcLary7180OtPczIkKXgkRjrjnTas10D7x0O9QCFuHRpr32pUr7iHE3ZJkucWkndE62bmJnXLpUaTAa8BtYIyASc3C84uProSzUHRRBKS2aX9YAZ1rV3yjUCbFMNA8hLbqIhKholPs2UHQMzZaPc1qTPQC24fQxWjl957aqbod24AcWM8UXgVaULAzWllDd9SE');"></div>
+<div class="absolute bottom-6 left-6 bg-white/90 backdrop-blur px-4 py-2 rounded-full">
+<span class="text-xs font-bold uppercase tracking-wider">Mobile Interface</span>
+</div>
+</div>
+<div class="w-full h-[400px] rounded-brand overflow-hidden bg-surface-dark flex flex-col items-center justify-center text-center p-8 group relative">
+<div class="absolute inset-0 bg-[url('https://lh3.googleusercontent.com/aida-public/AB6AXuB8zItdK1rEgn53He4CtOAeWfiozXE40Kq5AVxVlkH6h2P3MhQfU4ixULgooWMXUDyK3lge0Z8C8qkB5DV2N-S7FjZvhUKv4jZSOxW6pMNElvqKU-5t8gB-MSIjpLx0_LTH7CfL77OWIvJR4AOaXfV2-rlfd32rx1XAipy0NmIMXfs0yoYfuStNpqlb643pZoX-BmqDuRI5vlG-aA5zcpjFP32s09F6H3kcskmIRyVLxagK1f9EL3UTJj6Z8HpopUmu5akyptFOhx4')] bg-cover bg-center opacity-40 group-hover:opacity-20 transition-opacity"></div>
+<div class="relative z-10">
+<span class="block text-accent-lime text-6xl font-display font-bold mb-2">400%</span>
+<span class="text-white text-lg font-medium">Faster Load Times</span>
+</div>
+</div>
+</section>
+<section>
+<div class="flex items-center gap-3 mb-6">
+<div class="w-3 h-3 bg-accent-lime rounded-full"></div>
+<span class="uppercase tracking-widest text-sm font-bold text-gray-500">The Challenge</span>
+</div>
+<h3 class="font-display text-3xl md:text-4xl font-bold mb-6">Fragmented Systems &amp; User Friction</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+<div>
+<p class="text-gray-600 leading-relaxed">
+                                    Users were forced to navigate three different sub-domains to complete a single international transfer. The friction was palpable, with a 65% drop-off rate at the "Verification" step. The legacy backend required a complete overhaul of the frontend architecture to support real-time data without page reloads.
+                                </p>
+</div>
+<ul class="space-y-4 pt-2">
+<li class="flex items-start gap-3">
+<i class="ph-bold ph-x text-red-500 mt-1"></i>
+<span class="text-gray-800 font-medium">High churn rate during onboarding</span>
+</li>
+<li class="flex items-start gap-3">
+<i class="ph-bold ph-x text-red-500 mt-1"></i>
+<span class="text-gray-800 font-medium">Inconsistent visual language across tools</span>
+</li>
+<li class="flex items-start gap-3">
+<i class="ph-bold ph-x text-red-500 mt-1"></i>
+<span class="text-gray-800 font-medium">Slow rendering of market data (WebGL issues)</span>
+</li>
+</ul>
+</div>
+<div class="w-full aspect-video rounded-brand overflow-hidden border border-gray-200">
+<div class="w-full h-full bg-cover bg-center smooth-image" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAZ6-wqbPoEcSkcXcwRFy7BOmH8TDQwN2ZXvj2Fj4l1ZewdMFPTGiNX5xFo9yPpmC6qnBFuG9UKPb7CkcNo2AxGtysliDgmKJqcxkVaQrzKn0791Q5kT0-_YDsYYNkJcf-M5zjY4aONUc4Dzkrks-naUqd-XxTl6Pz8QkFx4HhrFHwH1U7CQoSirJBl_wfm9a97Sq4xNXJSlI6SkKDnDPw9r4DBDAnotnCoD9gWYsiiku_Oi8ow5jcO9e91wq7k3EcjPIxBe7B0LwQ'); filter: grayscale(100%);"></div>
+</div>
+<p class="text-xs text-gray-400 mt-2 text-right">Initial wireframe sketches</p>
+</section>
+<section class="bg-surface-dark text-white p-8 md:p-12 rounded-brand relative overflow-hidden">
+<div class="absolute top-0 right-0 w-64 h-64 bg-accent-purple blur-[100px] opacity-20 pointer-events-none"></div>
+<div class="flex items-center gap-3 mb-6 relative z-10">
+<div class="w-3 h-3 bg-accent-lime rounded-full"></div>
+<span class="uppercase tracking-widest text-sm font-bold text-gray-400">The Solution</span>
+</div>
+<h3 class="font-display text-3xl md:text-4xl font-bold mb-8 relative z-10">Unified Dashboard Architecture</h3>
+<p class="text-gray-300 text-lg leading-relaxed mb-10 relative z-10 max-w-2xl">
+                            We collapsed the fragmented architecture into a Single Page Application (SPA). A persistent sidebar navigation gives users instant access to all tools, while contextual drawers handle complex tasks without leaving the main view.
+                        </p>
+<div class="relative z-10 rounded-xl overflow-hidden shadow-2xl border border-white/10">
+<div class="w-full h-[400px] bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD7hy337XnkYBulmDCr5-nKq37QN0P2grsbcsnglBvkoQ-UeW9wRJljWmeZ5CxMLoWoWuNL-BGR4KMhSvSTbve5SvGDm3zXxIY1lMmrg9bZ0Xm8xFlxAUNO0oC4ljj8jHmLT33NaW13BGFys7U0kDuEaiUzpOnzgd8-Q4zufTJYXHZk8wrGWbPF2iykjfPn5OWSlY82xXFg_fNM5AP9aTBySUDPPP_4UBp2IxfkDiBG7g5CK3bTbLx6xMol_QY7aNncz7Lhym08Zgw');"></div>
+</div>
+<div class="mt-8 flex flex-wrap gap-4 relative z-10">
+<span class="px-4 py-2 bg-white/5 border border-white/10 rounded-full text-sm font-medium">React.js</span>
+<span class="px-4 py-2 bg-white/5 border border-white/10 rounded-full text-sm font-medium">Tailwind CSS</span>
+<span class="px-4 py-2 bg-white/5 border border-white/10 rounded-full text-sm font-medium">GSAP</span>
+<span class="px-4 py-2 bg-white/5 border border-white/10 rounded-full text-sm font-medium">WebGL</span>
+</div>
+</section>
+<section class="flex justify-center py-8">
+<button class="group relative inline-flex items-center gap-3 px-8 py-4 bg-text-main text-white rounded-full overflow-hidden transition-all hover:bg-accent-lime hover:text-text-main">
+<span class="relative z-10 font-bold uppercase tracking-wide">View Live Prototype</span>
+<i class="ph-bold ph-arrow-up-right relative z-10 group-hover:rotate-45 transition-transform duration-300"></i>
+</button>
+</section>
+</div>
+</div>
+</div>
+<section class="bg-accent-lime text-text-main py-24 px-6 md:px-12">
+<div class="max-w-[1400px] mx-auto">
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-12 mb-16 border-b border-black/10 pb-12">
+<h2 class="font-display text-5xl md:text-7xl font-bold">The Impact</h2>
+<p class="text-xl font-medium max-w-md">Measured 3 months post-launch compared to previous fiscal year data.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<div class="p-8 border-l-2 border-text-main">
+<span class="block text-7xl font-display font-bold mb-2">140%</span>
+<span class="text-sm font-bold uppercase tracking-widest opacity-70">Conversion Rate</span>
+</div>
+<div class="p-8 border-l-2 border-text-main">
+<span class="block text-7xl font-display font-bold mb-2">4.8</span>
+<span class="text-sm font-bold uppercase tracking-widest opacity-70">App Store Rating</span>
+</div>
+<div class="p-8 border-l-2 border-text-main">
+<span class="block text-7xl font-display font-bold mb-2">-45%</span>
+<span class="text-sm font-bold uppercase tracking-widest opacity-70">Support Tickets</span>
+</div>
+</div>
+</div>
+</section>
+<section class="relative h-[60vh] flex items-center justify-center overflow-hidden bg-text-main text-white group cursor-pointer">
+<div class="absolute inset-0 opacity-40 group-hover:opacity-60 transition-opacity duration-700 bg-cover bg-center scale-100 group-hover:scale-105 transition-transform ease-out" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBKv9rBUonWUQQN0cgooWjjO6l2g19ottN_v-Q440hAJQfZz1xdRz6dB--KOBtsLUbWxCd1hOKDWwMqkK96apX4PTrdx3PwjW305G3BJesdM5Wzw_W7N0oNaVXmJFVVDFRnCbDfDqKJOPfVZ3E6KhR2R2C1f09ZSQ-2iuwpqdquVuphn0g-szOJZNVxBUmOKid-dg7zbwtxP-J_Y_F31wAwv8SUXZIHqBc913BdwoHuNXGmwFbn7xm375Rr9nuLbPeLhtNBZyKBA2U');"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+<div class="relative z-10 text-center">
+<p class="text-accent-purple font-bold tracking-widest uppercase text-sm mb-4">Next Project</p>
+<h2 class="font-display text-6xl md:text-8xl font-bold mb-8">Neon Estates</h2>
+<div class="inline-flex items-center justify-center size-20 rounded-full border border-white/30 group-hover:bg-accent-lime group-hover:border-accent-lime group-hover:text-text-main transition-all duration-300">
+<i class="ph-bold ph-arrow-right text-3xl"></i>
+</div>
+</div>
+</section>
+</main>
+<footer class="bg-bg-base text-text-main border-t border-gray-200 px-6 py-16 md:px-12">
+<div class="max-w-[1400px] mx-auto flex flex-col md:flex-row justify-between gap-12">
+<div class="flex flex-col gap-6">
+<div class="flex items-center gap-2">
+<i class="ph-fill ph-asterisk-simple text-2xl"></i>
+<span class="font-display font-bold text-2xl tracking-tight uppercase">Avant-Garde</span>
+</div>
+<p class="text-gray-500 max-w-xs">
+                    Crafting digital experiences that define the future of brands. Based in San Francisco.
+                </p>
+</div>
+<div class="grid grid-cols-2 gap-x-12 gap-y-4">
+<a class="text-lg font-medium hover:text-accent-purple transition-colors" href="#">Instagram</a>
+<a class="text-lg font-medium hover:text-accent-purple transition-colors" href="#">LinkedIn</a>
+<a class="text-lg font-medium hover:text-accent-purple transition-colors" href="#">Twitter</a>
+<a class="text-lg font-medium hover:text-accent-purple transition-colors" href="#">Dribbble</a>
+</div>
+</div>
+<div class="max-w-[1400px] mx-auto mt-16 pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
+<p>© 2023 Avant-Garde Agency. All rights reserved.</p>
+<div class="flex gap-6 mt-4 md:mt-0">
+<a class="hover:text-text-main" href="#">Privacy Policy</a>
+<a class="hover:text-text-main" href="#">Terms of Service</a>
+</div>
+</div>
+</footer>
+
+</body></html>

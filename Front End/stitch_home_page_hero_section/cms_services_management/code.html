@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+
+<html class="" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CMS Services Management</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@300..800&amp;family=Funnel+Sans:wght@300..800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#17b0cf",
+                        "background-light": "#FAF7F6",
+                        "background-dark": "#111e21",
+                        "text-main": "#161616",
+                        "accent-lime": "#DDF160",
+                        "accent-purple": "#9F8BE7",
+                    },
+                    fontFamily: {
+                        "display": ['"Funnel Display"', "sans-serif"],
+                        "sans": ['"Funnel Sans"', "sans-serif"],
+                        "inter": ['"Inter"', "sans-serif"],
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0px",
+                        "lg": "0px",
+                        "xl": "0px",
+                        "full": "9999px",
+                        "content": "50px", // Special radius for content images
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light text-text-main font-sans antialiased selection:bg-accent-lime selection:text-text-main">
+<div class="flex h-screen w-full overflow-hidden">
+<!-- Sidebar Navigation -->
+<aside class="w-20 lg:w-64 border-r border-[#E0E0E0] bg-[#FAF7F6] flex flex-col justify-between py-8 px-4 lg:px-6">
+<div class="flex flex-col gap-12">
+<!-- Logo Area -->
+<div class="flex items-center gap-3">
+<div class="size-8 bg-text-main rounded-none flex items-center justify-center text-white font-display font-bold text-xl">A</div>
+<span class="hidden lg:block font-display font-bold text-xl tracking-tight">AGENCY</span>
+</div>
+<!-- Nav Menu -->
+<nav class="flex flex-col gap-2">
+<a class="flex items-center gap-4 p-3 text-gray-400 hover:text-text-main hover:bg-gray-100 transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">dashboard</span>
+<span class="hidden lg:block font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-4 p-3 bg-text-main text-white transition-colors" href="#">
+<span class="material-symbols-outlined">layers</span>
+<span class="hidden lg:block font-medium">Services</span>
+</a>
+<a class="flex items-center gap-4 p-3 text-gray-400 hover:text-text-main hover:bg-gray-100 transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">folder_open</span>
+<span class="hidden lg:block font-medium">Projects</span>
+</a>
+<a class="flex items-center gap-4 p-3 text-gray-400 hover:text-text-main hover:bg-gray-100 transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">article</span>
+<span class="hidden lg:block font-medium">Journal</span>
+</a>
+</nav>
+</div>
+<!-- User -->
+<div class="flex items-center gap-3 mt-auto cursor-pointer">
+<div class="size-10 bg-gray-200 rounded-full bg-cover bg-center" data-alt="Profile picture of a man" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBtffFcYuUZ-vFNg63E6rmVIhAhDwnIhDx2HcSCkI9vcE-GkxE5QPjQmwpPK-CBp8DDEXJEfYgX23AgLjbgPVxifvUy73mkB1Ez5D7X4QaRipThDSZPQQibaMFoFV5VGBy1tjd6z_nuJDmHF4sC-3Yt2pCNNbk87aV7NR77O637YRxhVHsBOnnhhPP6czWC1zK8NeEN_vhxYkKp3G68vmYABAV7_0eCFNludlmXqqKFxPIse2DBtanQTmghyOQGXme2kBA0rUnwH5w')"></div>
+<div class="hidden lg:flex flex-col">
+<span class="text-sm font-bold leading-none">Alex M.</span>
+<span class="text-xs text-gray-500 leading-none mt-1">Admin</span>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col h-full overflow-hidden relative">
+<!-- Top Bar -->
+<header class="flex items-center justify-between px-8 py-6 border-b border-[#E0E0E0] bg-[#FAF7F6] z-10">
+<div>
+<h1 class="font-display text-4xl font-bold tracking-tight">Services Directory</h1>
+<p class="text-gray-500 mt-1 font-inter text-sm">Manage offerings and detailed descriptions.</p>
+</div>
+<div class="flex items-center gap-6">
+<!-- Search -->
+<div class="relative group">
+<input class="bg-transparent border-b border-gray-300 py-2 pl-0 pr-8 w-64 focus:outline-0 focus:ring-0 focus:border-text-main placeholder-gray-400 transition-all font-inter text-sm" placeholder="Search services..." type="text"/>
+<span class="material-symbols-outlined absolute right-0 top-2 text-gray-400 group-focus-within:text-text-main">search</span>
+</div>
+<!-- Add Button -->
+<button class="bg-primary hover:bg-text-main text-white px-6 py-3 font-bold text-sm tracking-wide uppercase transition-all flex items-center gap-2 group relative overflow-hidden">
+<span class="relative z-10 group-hover:translate-x-1 transition-transform">Add New Service</span>
+<span class="material-symbols-outlined text-lg relative z-10 group-hover:rotate-90 transition-transform">add</span>
+<div class="absolute inset-0 bg-text-main transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out"></div>
+</button>
+</div>
+</header>
+<!-- Scrollable Content Container -->
+<div class="flex flex-1 overflow-hidden">
+<!-- List View (Left) -->
+<div class="w-full lg:w-1/2 flex flex-col border-r border-[#E0E0E0] overflow-y-auto custom-scrollbar">
+<!-- Stats Row -->
+<div class="flex border-b border-[#E0E0E0]">
+<div class="flex-1 p-6 border-r border-[#E0E0E0]">
+<span class="block text-xs uppercase tracking-widest text-gray-500 font-inter mb-1">Total</span>
+<span class="block text-3xl font-display font-bold">14</span>
+</div>
+<div class="flex-1 p-6 border-r border-[#E0E0E0]">
+<span class="block text-xs uppercase tracking-widest text-gray-500 font-inter mb-1">Active</span>
+<span class="block text-3xl font-display font-bold text-text-main">10</span>
+</div>
+<div class="flex-1 p-6 bg-accent-purple/10">
+<span class="block text-xs uppercase tracking-widest text-gray-500 font-inter mb-1">Drafts</span>
+<span class="block text-3xl font-display font-bold text-accent-purple">4</span>
+</div>
+</div>
+<!-- Services Table/List -->
+<div class="flex flex-col">
+<!-- Header -->
+<div class="grid grid-cols-12 gap-4 px-6 py-3 bg-[#F4F1F0] border-b border-[#E0E0E0] text-xs font-inter uppercase tracking-wider text-gray-500 sticky top-0 z-10">
+<div class="col-span-6">Service Name</div>
+<div class="col-span-3">Status</div>
+<div class="col-span-3 text-right">Modified</div>
+</div>
+<!-- Item 1 (Active) -->
+<div class="group cursor-pointer grid grid-cols-12 gap-4 px-6 py-5 border-b border-[#E0E0E0] hover:bg-white transition-colors items-center relative">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary scale-y-0 group-hover:scale-y-100 transition-transform origin-center"></div>
+<div class="col-span-6">
+<h3 class="font-display text-xl font-bold group-hover:text-primary transition-colors">Brand Identity</h3>
+<p class="text-sm text-gray-500 truncate mt-1">Strategic visual systems for modern brands.</p>
+</div>
+<div class="col-span-3">
+<span class="inline-flex items-center gap-1.5 px-2 py-1 bg-accent-lime/20 text-text-main text-xs font-bold uppercase tracking-wider border border-accent-lime/50">
+<span class="size-1.5 rounded-full bg-black"></span> Live
+                                </span>
+</div>
+<div class="col-span-3 text-right text-sm font-inter text-gray-400 group-hover:text-text-main">
+                                Oct 24
+                            </div>
+</div>
+<!-- Item 2 (Active) -->
+<div class="group cursor-pointer grid grid-cols-12 gap-4 px-6 py-5 border-b border-[#E0E0E0] bg-white transition-colors items-center relative border-l-4 border-l-text-main">
+<div class="col-span-6">
+<h3 class="font-display text-xl font-bold text-text-main">Web Design</h3>
+<p class="text-sm text-gray-500 truncate mt-1">Immersive digital experiences.</p>
+</div>
+<div class="col-span-3">
+<span class="inline-flex items-center gap-1.5 px-2 py-1 bg-accent-lime/20 text-text-main text-xs font-bold uppercase tracking-wider border border-accent-lime/50">
+<span class="size-1.5 rounded-full bg-black"></span> Live
+                                </span>
+</div>
+<div class="col-span-3 text-right text-sm font-inter text-gray-400">
+                                Oct 20
+                            </div>
+</div>
+<!-- Item 3 (Draft) -->
+<div class="group cursor-pointer grid grid-cols-12 gap-4 px-6 py-5 border-b border-[#E0E0E0] hover:bg-white transition-colors items-center relative">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary scale-y-0 group-hover:scale-y-100 transition-transform origin-center"></div>
+<div class="col-span-6">
+<h3 class="font-display text-xl font-bold group-hover:text-primary transition-colors">Art Direction</h3>
+<p class="text-sm text-gray-500 truncate mt-1">Visual storytelling and concept.</p>
+</div>
+<div class="col-span-3">
+<span class="inline-flex items-center gap-1.5 px-2 py-1 bg-accent-purple/20 text-text-main text-xs font-bold uppercase tracking-wider border border-accent-purple/50">
+<span class="size-1.5 rounded-full bg-accent-purple"></span> Draft
+                                </span>
+</div>
+<div class="col-span-3 text-right text-sm font-inter text-gray-400 group-hover:text-text-main">
+                                Oct 15
+                            </div>
+</div>
+<!-- Item 4 (Active) -->
+<div class="group cursor-pointer grid grid-cols-12 gap-4 px-6 py-5 border-b border-[#E0E0E0] hover:bg-white transition-colors items-center relative">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary scale-y-0 group-hover:scale-y-100 transition-transform origin-center"></div>
+<div class="col-span-6">
+<h3 class="font-display text-xl font-bold group-hover:text-primary transition-colors">Motion Graphics</h3>
+<p class="text-sm text-gray-500 truncate mt-1">Animation and kinetic typography.</p>
+</div>
+<div class="col-span-3">
+<span class="inline-flex items-center gap-1.5 px-2 py-1 bg-accent-lime/20 text-text-main text-xs font-bold uppercase tracking-wider border border-accent-lime/50">
+<span class="size-1.5 rounded-full bg-black"></span> Live
+                                </span>
+</div>
+<div class="col-span-3 text-right text-sm font-inter text-gray-400 group-hover:text-text-main">
+                                Sep 12
+                            </div>
+</div>
+</div>
+</div>
+<!-- Editor Panel (Right) -->
+<div class="hidden lg:flex w-1/2 flex-col bg-white overflow-y-auto relative custom-scrollbar">
+<!-- Editor Header -->
+<div class="sticky top-0 z-20 bg-white/90 backdrop-blur-sm border-b border-[#E0E0E0] px-8 py-4 flex items-center justify-between">
+<span class="text-xs font-inter uppercase tracking-widest text-gray-400">Editing: Web Design</span>
+<div class="flex gap-2">
+<button class="size-10 flex items-center justify-center border border-transparent hover:bg-gray-100 text-gray-500 hover:text-red-500 transition-colors">
+<span class="material-symbols-outlined text-lg">delete</span>
+</button>
+<button class="h-10 px-6 bg-text-main text-white text-xs font-bold uppercase tracking-widest hover:bg-primary transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">save</span> Save
+                            </button>
+</div>
+</div>
+<!-- Editor Content -->
+<div class="p-8 lg:p-10 flex flex-col gap-10 pb-20">
+<!-- Title Input -->
+<div class="group">
+<label class="block text-xs uppercase tracking-widest text-gray-400 mb-2 font-inter">Service Title</label>
+<input class="w-full text-5xl font-display font-bold text-text-main bg-transparent border-0 border-b-2 border-gray-100 focus:border-text-main focus:ring-0 px-0 py-2 placeholder-gray-200 transition-colors" type="text" value="Web Design"/>
+</div>
+<!-- Status Toggle -->
+<div class="flex items-center gap-4">
+<label class="block text-xs uppercase tracking-widest text-gray-400 font-inter">Visibility</label>
+<div class="flex items-center gap-2">
+<button class="px-4 py-2 text-xs font-bold uppercase tracking-wider bg-accent-lime text-text-main border border-accent-lime transition-all">Published</button>
+<button class="px-4 py-2 text-xs font-bold uppercase tracking-wider bg-transparent text-gray-400 border border-transparent hover:border-gray-200 transition-all">Draft</button>
+</div>
+</div>
+<!-- Description (Rich Text Mock) -->
+<div class="group">
+<div class="flex justify-between items-end mb-2">
+<label class="block text-xs uppercase tracking-widest text-gray-400 font-inter">Description</label>
+<div class="flex gap-2 text-gray-400">
+<button class="hover:text-text-main"><span class="material-symbols-outlined text-lg">format_bold</span></button>
+<button class="hover:text-text-main"><span class="material-symbols-outlined text-lg">format_italic</span></button>
+<button class="hover:text-text-main"><span class="material-symbols-outlined text-lg">link</span></button>
+<button class="hover:text-text-main"><span class="material-symbols-outlined text-lg">list</span></button>
+</div>
+</div>
+<textarea class="w-full text-lg font-sans leading-relaxed text-gray-600 bg-gray-50 border border-transparent focus:bg-white focus:border-gray-200 focus:ring-0 p-4 resize-none transition-colors" rows="6">We build immersive digital experiences that prioritize user engagement and brand storytelling. Our web design process integrates motion, typography, and intuitive layouts to create sites that are not just functional, but memorable.</textarea>
+</div>
+<!-- Featured Imagery (Avant-Garde Shape) -->
+<div>
+<label class="block text-xs uppercase tracking-widest text-gray-400 mb-4 font-inter">Cover Imagery</label>
+<div class="grid grid-cols-2 gap-4">
+<!-- Existing Image -->
+<div class="relative group aspect-[4/3] w-full bg-gray-100 rounded-content overflow-hidden">
+<img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" data-alt="Abstract minimal web interface mockup" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCXed6-G9tSlNUOZNvgNUAQV_G16bKybUDqZJZAKT-80npeQdazqFTDq7PaKHvtb0jY4XROpzQC73esw2y65yN0VcXtGGk7ylAoNMlJ7dXfOhi1AbpHU0ZOEz5F5XKh0uuwD7QPqL99f-01mcgPUi7Qlspr8fTH93qUQ2RUzOBB34XEgz-fhLaB59Xm7BzsTZsl8yFMnmkel1JdDG26AtNVtE1CvQlJelLlxun5OnGqzV_U1MZQjy09KEJAmq4xCkkFlv-TGpTRIUs"/>
+<div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+<button class="text-white hover:text-accent-lime"><span class="material-symbols-outlined">edit</span></button>
+<button class="text-white hover:text-red-500"><span class="material-symbols-outlined">delete</span></button>
+</div>
+<div class="absolute bottom-4 left-4 bg-text-main text-white text-[10px] uppercase font-bold px-2 py-1 rounded-none">Main</div>
+</div>
+<!-- Upload Area -->
+<div class="aspect-[4/3] w-full border-2 border-dashed border-gray-300 rounded-content flex flex-col items-center justify-center text-gray-400 hover:border-primary hover:text-primary hover:bg-primary/5 transition-all cursor-pointer group">
+<span class="material-symbols-outlined text-4xl mb-2 group-hover:scale-110 transition-transform">cloud_upload</span>
+<span class="text-xs uppercase font-bold tracking-widest">Upload Media</span>
+</div>
+</div>
+</div>
+<!-- Related Projects -->
+<div>
+<label class="block text-xs uppercase tracking-widest text-gray-400 mb-4 font-inter">Related Case Studies</label>
+<div class="flex flex-wrap gap-2">
+<div class="px-3 py-2 bg-gray-100 hover:bg-gray-200 text-sm font-medium flex items-center gap-2 transition-colors cursor-pointer border border-transparent hover:border-gray-300">
+<span>Nike: Move to Zero</span>
+<button class="text-gray-400 hover:text-text-main"><span class="material-symbols-outlined text-sm">close</span></button>
+</div>
+<div class="px-3 py-2 bg-gray-100 hover:bg-gray-200 text-sm font-medium flex items-center gap-2 transition-colors cursor-pointer border border-transparent hover:border-gray-300">
+<span>Aesop: Digital Store</span>
+<button class="text-gray-400 hover:text-text-main"><span class="material-symbols-outlined text-sm">close</span></button>
+</div>
+<button class="px-3 py-2 border border-dashed border-gray-400 text-gray-400 hover:border-text-main hover:text-text-main text-sm font-medium transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">add</span> Connect Project
+                                </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<style>
+        /* Custom scrollbar for modern feel */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #e5e7eb;
+            border-radius: 0px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background-color: #d1d5db;
+        }
+    </style>
+</body></html>

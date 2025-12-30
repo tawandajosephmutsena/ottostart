@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Rayo Template - Avant-Garde Hero</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "primary": "#cceb2d",
+                "background-light": "#f8f8f6",
+                "background-dark": "#1f2111",
+              },
+              fontFamily: {
+                "display": ["Space Grotesk", "sans-serif"]
+              },
+              borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+              animation: {
+                'marquee': 'marquee 25s linear infinite',
+              },
+              keyframes: {
+                marquee: {
+                  '0%': { transform: 'translateX(0%)' },
+                  '100%': { transform: 'translateX(-50%)' },
+                }
+              }
+            },
+          },
+        }
+      </script>
+<style>
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        .text-outline {
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.1);
+            color: transparent;
+        }
+        /* Hide scrollbar for clean look */
+        ::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white overflow-x-hidden selection:bg-primary selection:text-background-dark">
+<!-- Glassmorphic Header -->
+<nav class="fixed top-0 left-0 w-full z-50 transition-all duration-300">
+<div class="absolute inset-0 bg-background-dark/70 backdrop-blur-md border-b border-[#414724]"></div>
+<div class="relative px-6 md:px-10 py-4 max-w-[1440px] mx-auto flex items-center justify-between">
+<!-- Logo -->
+<div class="flex items-center gap-2 group cursor-pointer">
+<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-background-dark">
+<span class="material-symbols-outlined font-bold text-xl">bolt</span>
+</div>
+<h2 class="text-white text-xl font-bold tracking-tight">Rayo Template</h2>
+</div>
+<!-- Actions -->
+<div class="flex items-center gap-4">
+<button class="hidden sm:flex items-center gap-2 bg-primary hover:bg-[#b8d620] text-[#1f2211] px-6 py-2.5 rounded-full font-bold text-sm transition-transform hover:scale-105 active:scale-95 shadow-[0_0_15px_rgba(203,235,45,0.3)]">
+<span>Say Hello</span>
+<span class="material-symbols-outlined text-sm">arrow_outward</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-[#414724] hover:bg-[#525a2d] text-white transition-colors cursor-pointer group">
+<span class="material-symbols-outlined group-hover:rotate-180 transition-transform duration-500">grid_view</span>
+</button>
+</div>
+</div>
+</nav>
+<!-- Hero Section -->
+<main class="relative w-full h-screen min-h-[800px] flex items-center justify-center overflow-hidden pt-20">
+<!-- Background Marquee -->
+<div class="absolute top-1/2 left-0 -translate-y-1/2 w-full select-none pointer-events-none opacity-20 z-0">
+<div class="relative flex overflow-x-hidden group">
+<div class="animate-marquee whitespace-nowrap py-12 flex gap-8">
+<span class="text-[15vw] leading-none font-bold text-outline uppercase">Tech Tech Tech Tech</span>
+<span class="text-[15vw] leading-none font-bold text-outline uppercase">Tech Tech Tech Tech</span>
+</div>
+<div class="absolute top-0 animate-marquee2 whitespace-nowrap py-12 flex gap-8 hidden">
+<span class="text-[15vw] leading-none font-bold text-outline uppercase">Tech Tech Tech Tech</span>
+<span class="text-[15vw] leading-none font-bold text-outline uppercase">Tech Tech Tech Tech</span>
+</div>
+</div>
+</div>
+<!-- Floating Parallax Images (Absolute Positioned) -->
+<!-- Image 1: Top Left -->
+<div class="absolute top-[15%] left-[5%] md:left-[10%] w-48 md:w-64 aspect-[4/5] z-10 hidden md:block opacity-0 animate-[fadeIn_1s_ease-out_0.5s_forwards] hover:z-30 hover:scale-105 transition-all duration-500 group perspective-1000">
+<div class="w-full h-full relative rounded-[50px] overflow-hidden border border-white/10 shadow-2xl rotate-[-6deg] hover:rotate-0 transition-transform duration-500 ease-out">
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10"></div>
+<img alt="Abstract liquid chrome 3d render" class="w-full h-full object-cover" data-alt="Abstract liquid chrome 3d render" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCO9oZevRB2Nm5biTWMGIMzdv-svZIw46cZYVwEWn0qNozN0-SvRESNMTUuNGcBMo_jUSFsRkeJkUBXCCpF19NCME07RlqONCTb76A6mBZR5L1j_G_PI_TidngZlnZ5Qh5yBmSChBs7fND-lsHituOvENKVAQq38D_WeSRB_xjxAXLs46QWDR98IJux4GVJpYYhzSMoVXou2MzuxtsduawbpuaHe79VXgGWZj8WltH2vBTiRVnoFRS33a7rjcIqWL37Bbxb84SFDHo"/>
+<div class="absolute bottom-4 left-6 z-20">
+<p class="text-xs text-primary font-bold tracking-wider uppercase mb-1">Project 01</p>
+<p class="text-white font-medium text-sm">Chrome Fluidity</p>
+</div>
+</div>
+</div>
+<!-- Image 2: Bottom Right -->
+<div class="absolute bottom-[10%] right-[5%] md:right-[8%] w-56 md:w-72 aspect-square z-10 hidden md:block opacity-0 animate-[fadeIn_1s_ease-out_0.8s_forwards] hover:z-30 hover:scale-105 transition-all duration-500">
+<div class="w-full h-full relative rounded-[50px] overflow-hidden border border-white/10 shadow-2xl rotate-[3deg] hover:rotate-0 transition-transform duration-500 ease-out">
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10"></div>
+<img alt="Geometric dark shapes pattern" class="w-full h-full object-cover" data-alt="Geometric dark shapes pattern" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBzbpYIQIam5M1f_DVN9XI8yjnh77EngoTP-bH2v7FVQPG38jiEMZPz5bn2FPFd2Pfwnc_aMPk2mKMaz_ZqzvoVBrlJNGp8PuCBU1XHtTaacNT7cdfOniA5hjd-SZTs2Ie9XbhfLjBjdO91WN6ClxCDOb-Q2DflLtmJVB8ga4LUhHcxLvGfH8l7OGh29LSJ_A0gAfUJfhoa3gy0USVqOtTJMgJD_mgxsGebClP3uQWUwQF7966OJVbBKIBsgNMrDOFBFXiB1QcnaOw"/>
+<div class="absolute bottom-4 left-6 z-20">
+<p class="text-xs text-primary font-bold tracking-wider uppercase mb-1">Project 02</p>
+<p class="text-white font-medium text-sm">Dark Matter</p>
+</div>
+</div>
+</div>
+<!-- Image 3: Small Accent Floating -->
+<div class="absolute top-[25%] right-[20%] w-32 aspect-[3/4] z-10 hidden lg:block opacity-0 animate-[fadeIn_1s_ease-out_1.1s_forwards]">
+<div class="w-full h-full relative rounded-3xl overflow-hidden border border-white/10 shadow-2xl rotate-[12deg] opacity-80 grayscale hover:grayscale-0 transition-all duration-500">
+<img alt="Cyberpunk neon lighting tech" class="w-full h-full object-cover" data-alt="Cyberpunk neon lighting tech" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAeuueaTuBoLMMozvbmrtvybUVuv9DOOvGCwtDQCo4u5M2PDiRKdBOYADWC18LPRuLg5AkmmiJZuTAXOHb1R26t77xXHY8KNZf2Yau42GZcjMdTXAGa4anGVW4nLHzLTH1lbPQPSa_PHSUPkzjL3zWlVKgYO-gQIeEmAsMjWj_PUbuNsHrV087RBbB2m3ntChvz4haliv8X8AZhf_grSfv1RWkdBmEMqH0Ep9pI-1m05KNS0ue_KyXP4_WZRqDMtg8Rclfm0iyy1vY"/>
+</div>
+</div>
+<!-- Main Content -->
+<div class="relative z-20 max-w-5xl mx-auto px-6 text-center">
+<div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm mb-8 animate-[slideUp_0.8s_ease-out_forwards] opacity-0">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+</span>
+<span class="text-xs font-medium text-white/80 tracking-widest uppercase">Available for work</span>
+</div>
+<h1 class="text-6xl md:text-8xl lg:text-[7.5rem] font-bold leading-[0.9] tracking-tighter text-white mb-8">
+<span class="block overflow-hidden">
+<span class="block animate-[revealText_1s_cubic-bezier(0.16,1,0.3,1)_0.2s_forwards] translate-y-full">Design,</span>
+</span>
+<span class="block overflow-hidden relative">
+<!-- Tech accent glow -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-20 bg-primary/20 blur-[80px] rounded-full pointer-events-none"></div>
+<span class="block animate-[revealText_1s_cubic-bezier(0.16,1,0.3,1)_0.3s_forwards] translate-y-full">
+<span class="text-primary">Tech,</span>
+</span>
+</span>
+<span class="block overflow-hidden">
+<span class="block animate-[revealText_1s_cubic-bezier(0.16,1,0.3,1)_0.4s_forwards] translate-y-full">and some <span class="italic font-light text-white/70">magic.</span></span>
+</span>
+</h1>
+<p class="max-w-xl mx-auto text-lg text-white/60 font-light leading-relaxed animate-[fadeIn_1s_ease-out_0.8s_forwards] opacity-0">
+                We are an award-winning creative agency crafting digital experiences that blend avant-garde aesthetics with professional precision.
+            </p>
+<div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 animate-[fadeIn_1s_ease-out_1s_forwards] opacity-0">
+<button class="w-full sm:w-auto px-8 py-4 bg-white text-background-dark font-bold text-lg rounded-full hover:bg-gray-200 transition-colors flex items-center justify-center gap-2 group">
+                    Start a project
+                    <span class="material-symbols-outlined text-[20px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+<button class="w-full sm:w-auto px-8 py-4 bg-transparent border border-white/20 text-white font-bold text-lg rounded-full hover:bg-white/5 transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[20px]">play_circle</span>
+                    Showreel
+                </button>
+</div>
+</div>
+<!-- Scroll Indicator -->
+<div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-50 animate-bounce">
+<span class="text-[10px] uppercase tracking-[0.2em] text-white">Scroll</span>
+<span class="material-symbols-outlined text-white text-sm">keyboard_arrow_down</span>
+</div>
+</main>
+<script>
+        // Custom keyframes for the reveal animation not natively in Tailwind config easily without plugin
+        const styleSheet = document.createElement("style");
+        styleSheet.innerText = `
+            @keyframes revealText {
+                from { transform: translateY(100%); }
+                to { transform: translateY(0%); }
+            }
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+            @keyframes slideUp {
+                from { transform: translateY(20px); opacity: 0; }
+                to { transform: translateY(0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(styleSheet);
+    </script>
+</body></html>

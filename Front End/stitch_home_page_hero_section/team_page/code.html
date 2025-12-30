@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Team Page - Avant-Garde Agency</title>
+<!-- Google Fonts: Funnel Display & Funnel Sans as requested -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@300..800&amp;family=Funnel+Sans:wght@300..800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols as per system requirements -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#DDF160", // Vibrant Lime Accent
+                        secondary: "#9F8BE7", // Purple Accent
+                        surface: "#FAF7F6", // Light Mode Base
+                        ink: "#161616", // Deep Contrast Text
+                        "ink-light": "#4A4A4A", // Softer Text
+                    },
+                    fontFamily: {
+                        display: ['"Funnel Display"', "sans-serif"],
+                        body: ['"Funnel Sans"', "sans-serif"],
+                    },
+                    borderRadius: {
+                        "none": "0px",
+                        "pill": "50px", // Specific for images
+                    },
+                    keyframes: {
+                        slideUpFade: {
+                            '0%': { opacity: '0', transform: 'translateY(40px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    },
+                    animation: {
+                        'slide-up': 'slideUpFade 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar to mimic the clean 'Lenis' feel */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FAF7F6;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #DDF160; 
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #9F8BE7;
+        }
+
+        /* Staggered animation delays */
+        .stagger-1 { animation-delay: 100ms; }
+        .stagger-2 { animation-delay: 200ms; }
+        .stagger-3 { animation-delay: 300ms; }
+        .stagger-4 { animation-delay: 400ms; }
+        .stagger-5 { animation-delay: 500ms; }
+        .stagger-6 { animation-delay: 600ms; }
+        .stagger-7 { animation-delay: 700ms; }
+        .stagger-8 { animation-delay: 800ms; }
+
+        /* Hover utility for image scaling */
+        .card-image-wrapper {
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .group:hover .card-image-wrapper {
+            transform: scale(0.98);
+        }
+        
+        .card-bio {
+            transition: max-height 0.4s ease-out, opacity 0.4s ease-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .group:hover .card-bio {
+            max-height: 100px;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-surface text-ink font-body antialiased overflow-x-hidden selection:bg-primary selection:text-ink">
+<div class="relative flex h-auto min-h-screen w-full flex-col">
+<!-- Navbar -->
+<header class="sticky top-0 z-50 w-full border-b border-ink/10 bg-surface/90 backdrop-blur-md">
+<div class="px-6 md:px-12 xl:px-20 h-20 flex items-center justify-between">
+<!-- Logo -->
+<div class="flex items-center gap-3 group cursor-pointer">
+<div class="size-8 bg-ink text-primary flex items-center justify-center rounded-none group-hover:bg-primary group-hover:text-ink transition-colors duration-300">
+<span class="material-symbols-outlined text-xl">shape_line</span>
+</div>
+<span class="font-display text-2xl font-bold tracking-tight uppercase">Agency</span>
+</div>
+<!-- Desktop Nav -->
+<nav class="hidden md:flex items-center gap-10">
+<a class="text-sm font-medium uppercase tracking-widest hover:text-secondary transition-colors" href="#">Work</a>
+<a class="text-sm font-medium uppercase tracking-widest text-primary bg-ink px-2 py-1" href="#">Team</a>
+<a class="text-sm font-medium uppercase tracking-widest hover:text-secondary transition-colors" href="#">Services</a>
+<a class="text-sm font-medium uppercase tracking-widest hover:text-secondary transition-colors" href="#">Contact</a>
+</nav>
+<!-- Mobile Menu Icon -->
+<button class="md:hidden p-2 text-ink">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</header>
+<main class="flex-1 flex flex-col">
+<!-- Hero / Heading -->
+<section class="px-6 md:px-12 xl:px-20 py-16 md:py-24 max-w-[1400px] mx-auto w-full">
+<div class="flex flex-col gap-6 animate-slide-up">
+<h1 class="font-display text-6xl md:text-8xl lg:text-[7rem] font-black leading-[0.9] tracking-tighter text-ink uppercase">
+                        The Minds<br/>
+<span class="text-transparent bg-clip-text bg-gradient-to-r from-ink via-ink to-ink/50">Behind the Magic</span>
+</h1>
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-8 mt-4 border-t border-ink pt-8">
+<p class="font-body text-xl md:text-2xl text-ink-light max-w-2xl leading-relaxed">
+                            We are a collective of dreamers, doers, and digital artisans crafting the future of brand experiences.
+                        </p>
+<div class="flex gap-4">
+<div class="h-12 w-12 bg-primary rounded-full flex items-center justify-center animate-spin-slow">
+<span class="material-symbols-outlined">arrow_downward</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Filters -->
+<section class="sticky top-20 z-40 bg-surface/95 border-b border-ink/5 py-4 backdrop-blur-sm">
+<div class="px-6 md:px-12 xl:px-20 max-w-[1400px] mx-auto w-full overflow-x-auto no-scrollbar">
+<div class="flex items-center gap-2 md:gap-4 whitespace-nowrap animate-slide-up stagger-1 opacity-0">
+<button class="px-6 py-2 bg-ink text-white text-sm font-bold uppercase tracking-wider hover:bg-ink/90 transition-all rounded-none ring-2 ring-ink ring-offset-2 ring-offset-surface">
+                            All Talent
+                        </button>
+<button class="px-6 py-2 bg-transparent text-ink border border-ink/20 text-sm font-bold uppercase tracking-wider hover:bg-primary hover:border-primary hover:text-ink transition-all rounded-none">
+                            Creative
+                        </button>
+<button class="px-6 py-2 bg-transparent text-ink border border-ink/20 text-sm font-bold uppercase tracking-wider hover:bg-primary hover:border-primary hover:text-ink transition-all rounded-none">
+                            Strategy
+                        </button>
+<button class="px-6 py-2 bg-transparent text-ink border border-ink/20 text-sm font-bold uppercase tracking-wider hover:bg-primary hover:border-primary hover:text-ink transition-all rounded-none">
+                            Technology
+                        </button>
+<button class="px-6 py-2 bg-transparent text-ink border border-ink/20 text-sm font-bold uppercase tracking-wider hover:bg-primary hover:border-primary hover:text-ink transition-all rounded-none">
+                            Operations
+                        </button>
+</div>
+</div>
+</section>
+<!-- Team Grid -->
+<section class="px-6 md:px-12 xl:px-20 py-12 md:py-20 max-w-[1400px] mx-auto w-full">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-16">
+<!-- Team Member 1 -->
+<div class="group flex flex-col gap-4 animate-slide-up stagger-1 opacity-0 cursor-pointer">
+<div class="relative w-full aspect-[3/4] overflow-hidden rounded-pill bg-gray-200">
+<div class="card-image-wrapper w-full h-full bg-cover bg-center" data-alt="Portrait of a woman with curly hair looking confident" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCtPcc5waFGwftDxfPEDsCCH6VB2piHpkxSLubtZRh0i_htNp_GN_7U0f_RZo0GAsjDnh1T0Wt2CIdWEdC8nFMMtkyNcd4S0S8KIvEJt7DfetijKwY_ouQbHhXBXucvWuD0e8kg9yh9imyer-Q4mznA-LgwDSf5HdbzzBYix8CmmPE9ywU_HmQvbG-gl0wne86cxI0wERuWjbbV6K7rL3rjeyFJilEl-pcbRCA9D--_NB3d9GW3j5K-Up0phOhHVPU7pUHRZFCv6Tg');"></div>
+<div class="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none mix-blend-multiply"></div>
+<!-- Floating Socials -->
+<div class="absolute bottom-4 right-4 flex flex-col gap-2 translate-y-10 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+<button class="size-10 bg-white text-ink rounded-full flex items-center justify-center hover:bg-ink hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-lg">mail</span>
+</button>
+<button class="size-10 bg-white text-ink rounded-full flex items-center justify-center hover:bg-ink hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-lg">link</span>
+</button>
+</div>
+</div>
+<div class="flex flex-col border-t border-ink/10 pt-4 group-hover:border-primary transition-colors duration-300">
+<h3 class="font-display text-3xl font-bold text-ink leading-tight group-hover:text-secondary transition-colors">Elara Vane</h3>
+<p class="font-body text-sm font-medium uppercase tracking-widest text-ink/60 mt-1">Creative Director</p>
+<div class="card-bio mt-2">
+<p class="text-ink text-base leading-snug">Award-winning conceptualist with a love for minimal brutalism and typography.</p>
+</div>
+</div>
+</div>
+<!-- Team Member 2 -->
+<div class="group flex flex-col gap-4 animate-slide-up stagger-2 opacity-0 cursor-pointer">
+<div class="relative w-full aspect-[3/4] overflow-hidden rounded-pill bg-gray-200">
+<div class="card-image-wrapper w-full h-full bg-cover bg-center" data-alt="Portrait of a smiling man with glasses" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDIMcg0HQeLKWUBFNzxIxxQFCk-H9W1W6sx1ArBzDNhGQW4OZuSiaxhb3mcBQRSMmx9xH1j-zX-5tPLf--P6YI35WR_rswjtKS22cIDy1Wcz1gqKiPAOEL0GYUOL0oeO_vLWJPEtSAUU7UdtMOcSD2xBLuVUQfPHNsWt3pPzFvPkXksprHFL-LPrQJBtkRxE4AKJiKqYFL1EpisY3usKBTGAadrv2e48QugEEb2l1HK2_TOtE2aDcVsUWNHi-h4BLMPxROg5eSLEio');"></div>
+<div class="absolute inset-0 bg-secondary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none mix-blend-multiply"></div>
+<!-- Floating Socials -->
+<div class="absolute bottom-4 right-4 flex flex-col gap-2 translate-y-10 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+<button class="size-10 bg-white text-ink rounded-full flex items-center justify-center hover:bg-ink hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-lg">mail</span>
+</button>
+</div>
+</div>
+<div class="flex flex-col border-t border-ink/10 pt-4 group-hover:border-primary transition-colors duration-300">
+<h3 class="font-display text-3xl font-bold text-ink leading-tight group-hover:text-secondary transition-colors">Marcus Chen</h3>
+<p class="font-body text-sm font-medium uppercase tracking-widest text-ink/60 mt-1">CTO</p>
+<div class="card-bio mt-2">
+<p class="text-ink text-base leading-snug">Code wizard specializing in WebGL, shaders, and high-performance React.</p>
+</div>
+</div>
+</div>
+<!-- Team Member 3 -->
+<div class="group flex flex-col gap-4 animate-slide-up stagger-3 opacity-0 cursor-pointer">
+<div class="relative w-full aspect-[3/4] overflow-hidden rounded-pill bg-gray-200">
+<div class="card-image-wrapper w-full h-full bg-cover bg-center" data-alt="Portrait of a professional woman in a suit" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDig8GHNKclgwxNUhu6Lo-chJpumeM7VemZuMNZAZXUbec5C1Ooht0uXtbPxGIm3vOPw2LyzL6ZkgPwuYBwiLAr-_cQb5T8VHw9wMksbIbYNCHw_oFKSBHNC_kV9EVfdiR6Kfyr-a2SUIFdQCDn72nOocbX7qRQ4uaj63BBD5bjpVSK-CHjAxS5dUKWMtVHXudn_iNLkcCKwolYdE2auK7mKJiHolA4WwsvG2FXM9CAGoqx7HNcK99TwaWcj_CSbSAalL_t6c2rmt4');"></div>
+<div class="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none mix-blend-multiply"></div>
+<div class="absolute bottom-4 right-4 flex flex-col gap-2 translate-y-10 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+<button class="size-10 bg-white text-ink rounded-full flex items-center justify-center hover:bg-ink hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-lg">mail</span>
+</button>
+</div>
+</div>
+<div class="flex flex-col border-t border-ink/10 pt-4 group-hover:border-primary transition-colors duration-300">
+<h3 class="font-display text-3xl font-bold text-ink leading-tight group-hover:text-secondary transition-colors">Sarah Jenks</h3>
+<p class="font-body text-sm font-medium uppercase tracking-widest text-ink/60 mt-1">Lead Strategist</p>
+<div class="card-bio mt-2">
+<p class="text-ink text-base leading-snug">Turning chaotic data into crystal clear brand narratives and visions.</p>
+</div>
+</div>
+</div>
+<!-- Team Member 4 -->
+<div class="group flex flex-col gap-4 animate-slide-up stagger-4 opacity-0 cursor-pointer">
+<div class="relative w-full aspect-[3/4] overflow-hidden rounded-pill bg-gray-200">
+<div class="card-image-wrapper w-full h-full bg-cover bg-center" data-alt="Portrait of a man with an afro looking to the side" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDvPv5WH_XrBP7lRvWjNwKrjYYzEFxC4arKop80GTeLYejPnNm9yOpf9LwBumCVuSSN-oD4AkWLVXoSTmsx8ZwlkgBw7_ldnT9cGjsD6ejLA3fHaowHXDvxWN_ce0hH58chOtVNz54b1E78LV6fXXOnlZHgZYm9hfbCXCGitTnAg1n62fP-6_MSnNhivve2C-69g9H7SiY5O27jYn3_rD3n_Yw4mRCaJHb4mQskvcDdsT_Ov7VtPqasPCbWWqHAtr1QgPBHJvsHjhg');"></div>
+<div class="absolute inset-0 bg-secondary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none mix-blend-multiply"></div>
+<div class="absolute bottom-4 right-4 flex flex-col gap-2 translate-y-10 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+<button class="size-10 bg-white text-ink rounded-full flex items-center justify-center hover:bg-ink hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-lg">mail</span>
+</button>
+</div>
+</div>
+<div class="flex flex-col border-t border-ink/10 pt-4 group-hover:border-primary transition-colors duration-300">
+<h3 class="font-display text-3xl font-bold text-ink leading-tight group-hover:text-secondary transition-colors">David Kalu</h3>
+<p class="font-body text-sm font-medium uppercase tracking-widest text-ink/60 mt-1">Copywriter</p>
+<div class="card-bio mt-2">
+<p class="text-ink text-base leading-snug">Wordsmith crafting unique voices for global brands.</p>
+</div>
+</div>
+</div>
+<!-- Team Member 5 -->
+<div class="group flex flex-col gap-4 animate-slide-up stagger-5 opacity-0 cursor-pointer">
+<div class="relative w-full aspect-[3/4] overflow-hidden rounded-pill bg-gray-200">
+<div class="card-image-wrapper w-full h-full bg-cover bg-center" data-alt="Portrait of a smiling woman" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDBjZAKCDVg0RkRuaSyHf9uPLbHQdpFhIPmq9OfCuz1BAVGd7uQQ1g5HTlLu50Y4dMtMWyF4kLyQ5Ld8LvfYeBeFInv9xkdWCjXctQlI2x158jxb4U4vI_LDoA1yTtsUot9YVDSCBe1Uafc7w_zJTDD3PaayyBLOghYyRKinlp42qyB_ftvmB90e0GFF1RU5THUfbp4RmPvfs3y4rs1BQPoWSPOyGLz-6N5DRhNjR3K_KYBNZETclCN1yPbwdP9Eb1t9axZVDbIJF4');"></div>
+<div class="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none mix-blend-multiply"></div>
+<div class="absolute bottom-4 right-4 flex flex-col gap-2 translate-y-10 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+<button class="size-10 bg-white text-ink rounded-full flex items-center justify-center hover:bg-ink hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-lg">mail</span>
+</button>
+</div>
+</div>
+<div class="flex flex-col border-t border-ink/10 pt-4 group-hover:border-primary transition-colors duration-300">
+<h3 class="font-display text-3xl font-bold text-ink leading-tight group-hover:text-secondary transition-colors">Priya Patel</h3>
+<p class="font-body text-sm font-medium uppercase tracking-widest text-ink/60 mt-1">Frontend Dev</p>
+<div class="card-bio mt-2">
+<p class="text-ink text-base leading-snug">React expert and UI animation enthusiast obsessed with detail.</p>
+</div>
+</div>
+</div>
+<!-- Team Member 6 -->
+<div class="group flex flex-col gap-4 animate-slide-up stagger-6 opacity-0 cursor-pointer">
+<div class="relative w-full aspect-[3/4] overflow-hidden rounded-pill bg-gray-200">
+<div class="card-image-wrapper w-full h-full bg-cover bg-center" data-alt="Portrait of a serious man in a dark shirt" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCIc0bCKsiOfx1xY2rzNDrtcHx5TOZhMarVV6GByW7eGYsAx70HORZlydl5GvMZY1JuUA-ddDNGwj3bOIYJKgy7QvSI4dgq9oieZFjws67jpww-hVUJLy43eBSkHMQ0Iwsbr66xCPnHlk0d132ARhnJ26RIcCWxfQh0gV_YVX02cxFeiWhAjxJe6V71DW5wkbuAV7-PbnaH0ka55-eK8_g0XK40Bew5yuqtiEhWifC50JXOx70ByYW-IPbaC1FnqDJfr75kaUdzXrk');"></div>
+<div class="absolute inset-0 bg-secondary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none mix-blend-multiply"></div>
+<div class="absolute bottom-4 right-4 flex flex-col gap-2 translate-y-10 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+<button class="size-10 bg-white text-ink rounded-full flex items-center justify-center hover:bg-ink hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-lg">mail</span>
+</button>
+</div>
+</div>
+<div class="flex flex-col border-t border-ink/10 pt-4 group-hover:border-primary transition-colors duration-300">
+<h3 class="font-display text-3xl font-bold text-ink leading-tight group-hover:text-secondary transition-colors">Tom O'Neil</h3>
+<p class="font-body text-sm font-medium uppercase tracking-widest text-ink/60 mt-1">Project Manager</p>
+<div class="card-bio mt-2">
+<p class="text-ink text-base leading-snug">Keeping the chaos organized, on time, and under budget.</p>
+</div>
+</div>
+</div>
+<!-- Team Member 7 -->
+<div class="group flex flex-col gap-4 animate-slide-up stagger-7 opacity-0 cursor-pointer">
+<div class="relative w-full aspect-[3/4] overflow-hidden rounded-pill bg-gray-200">
+<div class="card-image-wrapper w-full h-full bg-cover bg-center" data-alt="Portrait of a creative woman with glasses and short hair" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDreOGGqujF7S8S8vwJsk4bCEK-diqThxPJKjS3VYhm6NKMuCmVsu4p6iGqq7hJ7n7OxoF5Rz3dx2t2p_t3XBq_GKzO23h1i4m9SZ_A11T44qQjfEMVOns-H0VpEqj2rgP8h0hwOdeCFaAL_nwDyqzL9IoK9UMCYfzsXqwcKWDuoSQMXXMAZSf4djPBKbkTy1xHgqZFL3_iLS4YoKD86iTjHdwh1twYpDnaMGZ5UGhzgzDqL9rgbfLjLNQZSlzFpZhyu-OnD7Srj1w');"></div>
+<div class="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none mix-blend-multiply"></div>
+<div class="absolute bottom-4 right-4 flex flex-col gap-2 translate-y-10 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+<button class="size-10 bg-white text-ink rounded-full flex items-center justify-center hover:bg-ink hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-lg">mail</span>
+</button>
+</div>
+</div>
+<div class="flex flex-col border-t border-ink/10 pt-4 group-hover:border-primary transition-colors duration-300">
+<h3 class="font-display text-3xl font-bold text-ink leading-tight group-hover:text-secondary transition-colors">Zoe Liu</h3>
+<p class="font-body text-sm font-medium uppercase tracking-widest text-ink/60 mt-1">UX Researcher</p>
+<div class="card-bio mt-2">
+<p class="text-ink text-base leading-snug">Uncovering user needs through deep empathy and data analysis.</p>
+</div>
+</div>
+</div>
+<!-- Team Member 8 -->
+<div class="group flex flex-col gap-4 animate-slide-up stagger-8 opacity-0 cursor-pointer">
+<div class="relative w-full aspect-[3/4] overflow-hidden rounded-pill bg-gray-200">
+<div class="card-image-wrapper w-full h-full bg-cover bg-center" data-alt="Portrait of a man looking focused" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuB9ZpEdP7qkwX5GZQObYBbYH08q1XhmIfKTh98yUoN6XiECerCHAcW31AVw98RI1lO8aIGGwyu8td7UpjmzxlFMIz6EYbtUBQwRkg8JRhd0GF7egeLULTWirw6vPliuV4aY50yFuSXZTopgLfBHQ2nlYeZS35EYieq2c9BTaV-ci3mYXTKEkIo_fkoZXPgBbsNXLTQ-bTkwEG4twYYd_qXL1OlQ8faeoDOSwACPxLfNLGi9a2ZMEHgtJ1ogR2Q3Lk5jlBG0RTGgOy0');"></div>
+<div class="absolute inset-0 bg-secondary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none mix-blend-multiply"></div>
+<div class="absolute bottom-4 right-4 flex flex-col gap-2 translate-y-10 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+<button class="size-10 bg-white text-ink rounded-full flex items-center justify-center hover:bg-ink hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-lg">mail</span>
+</button>
+</div>
+</div>
+<div class="flex flex-col border-t border-ink/10 pt-4 group-hover:border-primary transition-colors duration-300">
+<h3 class="font-display text-3xl font-bold text-ink leading-tight group-hover:text-secondary transition-colors">Alex Rivera</h3>
+<p class="font-body text-sm font-medium uppercase tracking-widest text-ink/60 mt-1">Motion Designer</p>
+<div class="card-bio mt-2">
+<p class="text-ink text-base leading-snug">Bringing static designs to life with fluid motion and timing.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Recruitment CTA -->
+<section class="bg-ink py-24 md:py-32 relative overflow-hidden group/cta">
+<div class="absolute inset-0 bg-primary/10 scale-0 rounded-full blur-3xl group-hover/cta:scale-150 transition-transform duration-1000 origin-center"></div>
+<div class="px-6 md:px-12 xl:px-20 max-w-[1400px] mx-auto w-full relative z-10 flex flex-col items-center text-center">
+<h2 class="font-display text-5xl md:text-7xl font-bold text-white mb-6 uppercase tracking-tight max-w-4xl">
+                        We are always looking for <span class="text-primary italic">new perspectives</span>
+</h2>
+<p class="font-body text-lg md:text-xl text-white/70 max-w-2xl mb-12">
+                        Think you have what it takes to join the avant-garde? We don't just hire employees; we curate talent. Check out our open positions.
+                    </p>
+<a class="group relative inline-flex items-center justify-center px-8 py-4 bg-primary overflow-hidden rounded-none transition-transform hover:scale-105 active:scale-95" href="#">
+<span class="absolute w-0 h-0 transition-all duration-500 ease-out bg-white rounded-full group-hover:w-72 group-hover:h-72 opacity-30"></span>
+<span class="relative flex items-center gap-3 font-display text-lg font-black uppercase tracking-wider text-ink">
+                            View Openings
+                            <span class="material-symbols-outlined">arrow_outward</span>
+</span>
+</a>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface border-t border-ink/10 py-12">
+<div class="px-6 md:px-12 xl:px-20 max-w-[1400px] mx-auto w-full flex flex-col md:flex-row justify-between items-center gap-6">
+<div class="flex items-center gap-2">
+<span class="font-display font-bold text-ink uppercase tracking-wider">Agency © 2024</span>
+</div>
+<div class="flex gap-8">
+<a class="text-ink-light hover:text-primary transition-colors text-sm uppercase font-bold tracking-widest" href="#">Instagram</a>
+<a class="text-ink-light hover:text-primary transition-colors text-sm uppercase font-bold tracking-widest" href="#">LinkedIn</a>
+<a class="text-ink-light hover:text-primary transition-colors text-sm uppercase font-bold tracking-widest" href="#">Twitter</a>
+</div>
+</div>
+</footer>
+</div>
+</body></html>

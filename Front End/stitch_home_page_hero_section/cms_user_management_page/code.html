@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CMS User Management</title>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+            extend: {
+                colors: {
+                "primary": "#17b0cf",
+                "background-light": "#f6f8f8",
+                "background-dark": "#111e21",
+                "surface-dark": "#1a2c32",
+                "surface-light": "#ffffff",
+                },
+                fontFamily: {
+                "display": ["Inter", "sans-serif"]
+                },
+                borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+            },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for modern look */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111e21; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #244147; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #17b0cf; 
+        }
+        
+        .glass-panel {
+            background: rgba(26, 44, 50, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display antialiased overflow-x-hidden transition-colors duration-300">
+<div class="relative min-h-screen flex flex-col">
+<!-- Top Navigation -->
+<header class="sticky top-0 z-40 w-full border-b border-[#244147] bg-[#111f22]/90 backdrop-blur-md">
+<div class="px-6 md:px-10 py-4 flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="size-8 text-primary">
+<svg class="w-full h-full" fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M24 4C12.95 4 4 12.95 4 24H24V4Z" fill="currentColor"></path>
+<path d="M24 4C35.05 4 44 12.95 44 24H24V4Z" fill="currentColor" fill-opacity="0.6"></path>
+<path d="M4 24C4 35.05 12.95 44 24 44V24H4Z" fill="currentColor" fill-opacity="0.6"></path>
+<path d="M44 24C44 35.05 35.05 44 24 44V24H44Z" fill="currentColor" fill-opacity="0.3"></path>
+</svg>
+</div>
+<h1 class="text-xl font-bold tracking-tight text-white">Agency<span class="text-primary">OS</span></h1>
+<div class="h-6 w-px bg-[#244147] mx-2 hidden md:block"></div>
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-sm font-medium text-gray-400 hover:text-white transition-colors" href="#">Dashboard</a>
+<a class="text-sm font-medium text-white border-b-2 border-primary pb-0.5" href="#">Team</a>
+<a class="text-sm font-medium text-gray-400 hover:text-white transition-colors" href="#">Projects</a>
+<a class="text-sm font-medium text-gray-400 hover:text-white transition-colors" href="#">Reports</a>
+</nav>
+</div>
+<div class="flex items-center gap-6">
+<button class="text-gray-400 hover:text-white transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="flex items-center gap-3 pl-6 border-l border-[#244147]">
+<div class="text-right hidden sm:block">
+<p class="text-sm font-medium text-white leading-none">Elena Fisher</p>
+<p class="text-xs text-gray-400 mt-1">Super Admin</p>
+</div>
+<div class="size-10 rounded-full bg-gray-700 bg-cover bg-center border-2 border-[#244147]" data-alt="Portrait of Elena Fisher" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAdd2YmjAMoyI62ska373pdpj57_AyzYwtloZZXgN3cWtNC0MdYXyL64vrHVW8KeNv4E_ZXMDOc7t7XzJ9uxgmlRexkYd-yDqjBaxVeQGoPrDxASIKy9BEmRLLx5NVV3cZOgs6PO3nacfstzcAp0pMu1Hs62tlrVVHgqhzTzwlbErartHILJrfwq24Op4gDPUg5DS9SlaGb1qj2zxOy1feDbeVmVB7svkdXl5_hU9g3LI2WKfP_f51FDUeL-GAurJxsVbjzxdbwufs');"></div>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-1 px-6 md:px-10 py-8 max-w-[1400px] mx-auto w-full">
+<!-- Page Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+<div>
+<h2 class="text-3xl font-bold text-white mb-2 tracking-tight">User Management</h2>
+<p class="text-[#93bfc8] max-w-2xl">Manage system access, assign roles, and monitor team activity across your organization.</p>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center gap-2 px-4 py-2.5 rounded-lg border border-[#244147] text-white hover:bg-[#1a2c32] transition-colors text-sm font-medium">
+<span class="material-symbols-outlined text-[20px]">file_download</span>
+                        Export CSV
+                    </button>
+<button class="group flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary hover:bg-[#1390aa] text-white shadow-lg shadow-primary/20 transition-all text-sm font-bold">
+<span class="material-symbols-outlined text-[20px] group-hover:scale-110 transition-transform">add</span>
+                        Add New User
+                    </button>
+</div>
+</div>
+<!-- Stats Overview (Optional Avant-Garde Touch) -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+<div class="p-5 rounded-xl border border-[#244147] bg-surface-dark/50 flex flex-col justify-between h-32 relative overflow-hidden group">
+<div class="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-6xl text-primary">group</span>
+</div>
+<p class="text-gray-400 text-sm font-medium">Total Users</p>
+<div class="flex items-end gap-3">
+<span class="text-3xl font-bold text-white">1,248</span>
+<span class="text-emerald-400 text-xs font-medium bg-emerald-400/10 px-2 py-1 rounded mb-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">trending_up</span> +12%
+                        </span>
+</div>
+</div>
+<div class="p-5 rounded-xl border border-[#244147] bg-surface-dark/50 flex flex-col justify-between h-32 relative overflow-hidden group">
+<div class="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-6xl text-emerald-400">verified_user</span>
+</div>
+<p class="text-gray-400 text-sm font-medium">Active Now</p>
+<div class="flex items-end gap-3">
+<span class="text-3xl font-bold text-white">86</span>
+<span class="text-gray-500 text-xs mb-1">users online</span>
+</div>
+</div>
+<div class="p-5 rounded-xl border border-[#244147] bg-surface-dark/50 flex flex-col justify-between h-32 relative overflow-hidden group">
+<div class="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-6xl text-amber-400">pending_actions</span>
+</div>
+<p class="text-gray-400 text-sm font-medium">Pending Approvals</p>
+<div class="flex items-end gap-3">
+<span class="text-3xl font-bold text-white">12</span>
+<span class="text-amber-400 text-xs font-medium bg-amber-400/10 px-2 py-1 rounded mb-1">Requires action</span>
+</div>
+</div>
+</div>
+<!-- Filters & Search Toolbar -->
+<div class="flex flex-col lg:flex-row gap-4 mb-6 items-start lg:items-center justify-between p-1">
+<!-- Search -->
+<div class="relative w-full lg:max-w-md group">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-gray-400 group-focus-within:text-primary transition-colors">search</span>
+</div>
+<input class="block w-full pl-10 pr-3 py-2.5 border border-[#244147] rounded-lg leading-5 bg-[#1a2c32] text-white placeholder-gray-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary sm:text-sm transition-all" placeholder="Search users by name, email or role..." type="text"/>
+</div>
+<!-- Filters -->
+<div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
+<div class="flex items-center gap-2 px-1 text-sm text-gray-400 mr-2">
+<span class="material-symbols-outlined text-[20px]">filter_list</span>
+<span>Filter by:</span>
+</div>
+<div class="relative">
+<select class="appearance-none bg-[#1a2c32] border border-[#244147] text-white text-sm rounded-lg focus:ring-primary focus:border-primary block w-32 md:w-40 p-2.5 pr-8 cursor-pointer hover:border-gray-500 transition-colors">
+<option selected="">All Roles</option>
+<option value="admin">Administrator</option>
+<option value="editor">Editor</option>
+<option value="viewer">Viewer</option>
+</select>
+<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-white">
+<span class="material-symbols-outlined text-[18px]">expand_more</span>
+</div>
+</div>
+<div class="relative">
+<select class="appearance-none bg-[#1a2c32] border border-[#244147] text-white text-sm rounded-lg focus:ring-primary focus:border-primary block w-32 md:w-40 p-2.5 pr-8 cursor-pointer hover:border-gray-500 transition-colors">
+<option selected="">Any Status</option>
+<option value="active">Active</option>
+<option value="inactive">Inactive</option>
+<option value="suspended">Suspended</option>
+</select>
+<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-white">
+<span class="material-symbols-outlined text-[18px]">expand_more</span>
+</div>
+</div>
+<button class="p-2.5 rounded-lg border border-[#244147] bg-[#1a2c32] text-gray-400 hover:text-white hover:border-gray-500 transition-colors ml-auto lg:ml-0" title="More filters">
+<span class="material-symbols-outlined text-[20px] block">tune</span>
+</button>
+</div>
+</div>
+<!-- Data Table -->
+<div class="w-full overflow-hidden rounded-xl border border-[#244147] bg-[#1a2c32]/50 shadow-xl">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-[#1a2c32] border-b border-[#244147] text-xs uppercase tracking-wider text-gray-400 font-semibold">
+<th class="px-6 py-4 w-12">
+<input class="rounded border-gray-600 bg-transparent text-primary focus:ring-offset-[#1a2c32] focus:ring-primary h-4 w-4" type="checkbox"/>
+</th>
+<th class="px-6 py-4 cursor-pointer hover:text-white transition-colors group">
+<div class="flex items-center gap-1">User <span class="material-symbols-outlined text-[16px] opacity-0 group-hover:opacity-100 transition-opacity">arrow_downward</span></div>
+</th>
+<th class="px-6 py-4 cursor-pointer hover:text-white transition-colors group">
+<div class="flex items-center gap-1">Role <span class="material-symbols-outlined text-[16px] opacity-0 group-hover:opacity-100 transition-opacity">unfold_more</span></div>
+</th>
+<th class="px-6 py-4 cursor-pointer hover:text-white transition-colors group">
+<div class="flex items-center gap-1">Status <span class="material-symbols-outlined text-[16px] opacity-0 group-hover:opacity-100 transition-opacity">unfold_more</span></div>
+</th>
+<th class="px-6 py-4 cursor-pointer hover:text-white transition-colors group hidden md:table-cell">
+<div class="flex items-center gap-1">Last Login <span class="material-symbols-outlined text-[16px] opacity-0 group-hover:opacity-100 transition-opacity">unfold_more</span></div>
+</th>
+<th class="px-6 py-4 text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-[#244147]">
+<!-- Row 1 -->
+<tr class="group hover:bg-[#1f363d] transition-colors">
+<td class="px-6 py-4">
+<input class="rounded border-gray-600 bg-transparent text-primary focus:ring-offset-[#1a2c32] focus:ring-primary h-4 w-4" type="checkbox"/>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-4">
+<div class="relative">
+<div class="h-10 w-10 rounded-full bg-cover bg-center border border-gray-600" data-alt="Portrait of Sarah Jenkins" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAo9QRRfzCfC9Tc5BpFjOg_N0qLB5U5toTJYoIoT73sUKoHfS-3PDoh8iexLA5CKvtgcNfZWkv4hJCPyNLYOCsXprpnO8PZlOoInNsjfP6n14-gzBEAY56T8qJeMe3C8OvBwJIDwDFjKo6LqypiGLKVapIrTMMy3ph7HVBZAtI5jlPNqhIo4gi_mqU_jztZ6Z6xLdMIQXMkQ3zLF8BbNODfWbOZq4tJIvnbj6pNqijAPnUAGO3sDg2NVBoZLKyil5jU_3bljrwz5W4')"></div>
+<div class="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-emerald-500 border-2 border-[#1a2c32]"></div>
+</div>
+<div>
+<div class="font-medium text-white group-hover:text-primary transition-colors">Sarah Jenkins</div>
+<div class="text-sm text-gray-500">sarah.j@agency.os</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-purple-500/10 text-purple-400 border border-purple-500/20">
+<span class="w-1.5 h-1.5 rounded-full bg-purple-400"></span>
+                                        Administrator
+                                    </span>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400">Active</span>
+</td>
+<td class="px-6 py-4 hidden md:table-cell">
+<div class="text-sm text-gray-300">2 mins ago</div>
+<div class="text-xs text-gray-500">From London, UK</div>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex items-center justify-end gap-2 opacity-60 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 rounded-lg hover:bg-[#244147] text-gray-400 hover:text-white transition-colors" title="Edit User">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-1.5 rounded-lg hover:bg-red-500/20 text-gray-400 hover:text-red-400 transition-colors" title="Delete User">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="group hover:bg-[#1f363d] transition-colors">
+<td class="px-6 py-4">
+<input class="rounded border-gray-600 bg-transparent text-primary focus:ring-offset-[#1a2c32] focus:ring-primary h-4 w-4" type="checkbox"/>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-4">
+<div class="relative">
+<div class="h-10 w-10 rounded-full bg-cover bg-center border border-gray-600" data-alt="Portrait of Michael Chen" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDiPkxzanKEJ2KLiZoT_2Px7QOvYcRkoTeqXI1BrKKZJN-76Y2vrPhn428IJn-IflVG_SmMRX5-QWm3mZw2STxUbZN0uHYGYjIL-Gw3GQz01bVVeZn3QheKduo6tXTNfsK216RczonjC1RIaWupOjIbqQ6Z7Bdwv3c3EElLL4Z38c6w-VP0WkFK95GAfpDXtG7wtsBj3X0WX8OcdWMCc1ndv4-PHrg3JY0sMgIBs8btkpqKKxao2X0cGT-1Emad0OU2HXQUnmywSvY')"></div>
+</div>
+<div>
+<div class="font-medium text-white group-hover:text-primary transition-colors">Michael Chen</div>
+<div class="text-sm text-gray-500">m.chen@agency.os</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20">
+<span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
+                                        Editor
+                                    </span>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-500/10 text-amber-400">Away</span>
+</td>
+<td class="px-6 py-4 hidden md:table-cell">
+<div class="text-sm text-gray-300">4 hours ago</div>
+<div class="text-xs text-gray-500">From New York, USA</div>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex items-center justify-end gap-2 opacity-60 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 rounded-lg hover:bg-[#244147] text-gray-400 hover:text-white transition-colors" title="Edit User">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-1.5 rounded-lg hover:bg-red-500/20 text-gray-400 hover:text-red-400 transition-colors" title="Delete User">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="group hover:bg-[#1f363d] transition-colors">
+<td class="px-6 py-4">
+<input class="rounded border-gray-600 bg-transparent text-primary focus:ring-offset-[#1a2c32] focus:ring-primary h-4 w-4" type="checkbox"/>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-4">
+<div class="relative">
+<div class="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-sm border border-primary/30">
+                                                JD
+                                            </div>
+</div>
+<div>
+<div class="font-medium text-white group-hover:text-primary transition-colors">Jessica Davis</div>
+<div class="text-sm text-gray-500">jess.d@agency.os</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-gray-500/10 text-gray-400 border border-gray-500/20">
+<span class="w-1.5 h-1.5 rounded-full bg-gray-400"></span>
+                                        Viewer
+                                    </span>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400">Active</span>
+</td>
+<td class="px-6 py-4 hidden md:table-cell">
+<div class="text-sm text-gray-300">1 day ago</div>
+<div class="text-xs text-gray-500">From Toronto, CA</div>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex items-center justify-end gap-2 opacity-60 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 rounded-lg hover:bg-[#244147] text-gray-400 hover:text-white transition-colors" title="Edit User">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-1.5 rounded-lg hover:bg-red-500/20 text-gray-400 hover:text-red-400 transition-colors" title="Delete User">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="group hover:bg-[#1f363d] transition-colors">
+<td class="px-6 py-4">
+<input class="rounded border-gray-600 bg-transparent text-primary focus:ring-offset-[#1a2c32] focus:ring-primary h-4 w-4" type="checkbox"/>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-4">
+<div class="relative">
+<div class="h-10 w-10 rounded-full bg-cover bg-center border border-gray-600" data-alt="Portrait of Alex Morgan" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC9G4-DMhPE3CI0b1CsFhGj1ujuxvxk5-y43phS47VC3zhbQDrv3F5SjCZnH8eq6iwiC70X7sQothHklbcXxCTX-3OYnJtUmctS06Hhpr6rKilvov_UlMamKCAcmAAxRmebzLLdMByMTit3UKhXxDXX08zenfGq_v8KoOa2qGu2WTFXw4vZg-RA3UpOGSDxDcQyMGCb-yP6tyC7fzYEqGFIAssYhRdm_nmMdTuPh4Kncb0fv4AFgeQdsLZy19R1oENDGd9FkiWIZdU')"></div>
+</div>
+<div>
+<div class="font-medium text-white group-hover:text-primary transition-colors">Alex Morgan</div>
+<div class="text-sm text-gray-500">alex.m@agency.os</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20">
+<span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
+                                        Editor
+                                    </span>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-500/10 text-red-400">Suspended</span>
+</td>
+<td class="px-6 py-4 hidden md:table-cell">
+<div class="text-sm text-gray-300">2 weeks ago</div>
+<div class="text-xs text-gray-500">From Berlin, DE</div>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex items-center justify-end gap-2 opacity-60 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 rounded-lg hover:bg-[#244147] text-gray-400 hover:text-white transition-colors" title="Edit User">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-1.5 rounded-lg hover:bg-red-500/20 text-gray-400 hover:text-red-400 transition-colors" title="Delete User">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="bg-[#1a2c32] px-6 py-4 border-t border-[#244147] flex items-center justify-between">
+<p class="text-sm text-gray-400">
+                        Showing <span class="font-medium text-white">1</span> to <span class="font-medium text-white">4</span> of <span class="font-medium text-white">128</span> results
+                    </p>
+<nav class="flex items-center gap-1">
+<button class="p-2 rounded hover:bg-[#244147] text-gray-400 hover:text-white disabled:opacity-50">
+<span class="material-symbols-outlined text-[20px]">chevron_left</span>
+</button>
+<button class="px-3 py-1 rounded bg-primary text-white text-sm font-medium">1</button>
+<button class="px-3 py-1 rounded hover:bg-[#244147] text-gray-400 text-sm font-medium transition-colors">2</button>
+<button class="px-3 py-1 rounded hover:bg-[#244147] text-gray-400 text-sm font-medium transition-colors">3</button>
+<span class="px-2 text-gray-500">...</span>
+<button class="px-3 py-1 rounded hover:bg-[#244147] text-gray-400 text-sm font-medium transition-colors">12</button>
+<button class="p-2 rounded hover:bg-[#244147] text-gray-400 hover:text-white">
+<span class="material-symbols-outlined text-[20px]">chevron_right</span>
+</button>
+</nav>
+</div>
+</div>
+</main>
+</div>
+<!-- Hidden Sidebar for "Add User" (To demonstrate structure) -->
+<!-- In a real app, this would be toggled visible via JS/State -->
+<div class="fixed inset-y-0 right-0 w-[400px] glass-panel border-l border-[#244147] shadow-2xl z-50 transform translate-x-full transition-transform duration-300 ease-in-out hidden">
+<div class="flex flex-col h-full">
+<div class="p-6 border-b border-[#244147] flex items-center justify-between">
+<h3 class="text-xl font-bold text-white">Add New User</h3>
+<button class="text-gray-400 hover:text-white">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<div class="p-6 flex-1 overflow-y-auto">
+<form class="space-y-6">
+<div>
+<label class="block text-sm font-medium text-gray-400 mb-2">Profile Photo</label>
+<div class="flex items-center gap-4">
+<div class="size-16 rounded-full bg-[#1a2c32] border border-[#244147] flex items-center justify-center">
+<span class="material-symbols-outlined text-gray-500 text-3xl">person</span>
+</div>
+<button class="text-sm text-primary font-medium hover:underline">Upload Photo</button>
+</div>
+</div>
+<div class="space-y-4">
+<div>
+<label class="block text-sm font-medium text-gray-400 mb-1">Full Name</label>
+<input class="w-full bg-[#111f22] border border-[#244147] rounded-lg px-4 py-2.5 text-white focus:ring-primary focus:border-primary" type="text"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-400 mb-1">Email Address</label>
+<input class="w-full bg-[#111f22] border border-[#244147] rounded-lg px-4 py-2.5 text-white focus:ring-primary focus:border-primary" type="email"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-400 mb-1">Role</label>
+<select class="w-full bg-[#111f22] border border-[#244147] rounded-lg px-4 py-2.5 text-white focus:ring-primary focus:border-primary">
+<option>Viewer</option>
+<option>Editor</option>
+<option>Administrator</option>
+</select>
+</div>
+</div>
+</form>
+</div>
+<div class="p-6 border-t border-[#244147] bg-[#1a2c32]">
+<div class="flex gap-3">
+<button class="flex-1 py-2.5 rounded-lg border border-[#244147] text-gray-300 font-medium hover:bg-[#111f22] transition-colors">Cancel</button>
+<button class="flex-1 py-2.5 rounded-lg bg-primary text-white font-bold hover:bg-[#1390aa] transition-colors">Create User</button>
+</div>
+</div>
+</div>
+</div>
+</body></html>

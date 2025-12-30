@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Stats Section - Avant Garde</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Noto+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#d1ee44",
+                        "background-light": "#f8f8f6",
+                        "background-dark": "#1f2210",
+                        "card-dark": "#2a2d18", // Slightly lighter than bg-dark
+                        "card-light": "#ffffff",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "body": ["Noto Sans", "sans-serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark transition-colors duration-300 min-h-screen flex flex-col font-display antialiased selection:bg-primary selection:text-background-dark">
+<main class="flex-grow flex items-center justify-center p-4 md:p-10 lg:p-20">
+<div class="w-full max-w-7xl mx-auto flex flex-col gap-12">
+<!-- Headline Section -->
+<header class="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-4 border-b border-black/10 dark:border-white/10">
+<div class="max-w-2xl">
+<h2 class="text-primary font-medium tracking-widest text-sm uppercase mb-3">Our Track Record</h2>
+<h1 class="text-4xl md:text-6xl font-bold text-background-dark dark:text-white leading-[0.9]">
+                        Impact by the <br class="hidden md:block"/> <span class="italic text-primary">Numbers</span>
+</h1>
+</div>
+<div class="max-w-xs mb-2">
+<p class="text-background-dark/70 dark:text-white/60 text-base leading-relaxed">
+                        We build digital experiences that drive measurable growth and lasting engagement for global brands.
+                    </p>
+</div>
+</header>
+<!-- Bento Grid Stats -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 auto-rows-[minmax(280px,auto)]">
+<!-- Card 1: Happy Clients (Wide) -->
+<div class="group relative col-span-1 md:col-span-2 overflow-hidden rounded-xl bg-card-light dark:bg-card-dark border border-black/5 dark:border-white/5 p-8 md:p-12 flex flex-col justify-between">
+<!-- Decor -->
+<div class="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -mr-16 -mt-16 transition-opacity duration-500 group-hover:opacity-100 opacity-50"></div>
+<div class="relative z-10 flex justify-between items-start">
+<div class="p-3 bg-background-light dark:bg-background-dark rounded-full border border-black/5 dark:border-white/5 inline-flex">
+<span class="material-symbols-outlined text-background-dark dark:text-white">sentiment_satisfied</span>
+</div>
+<div class="text-right">
+<div class="text-sm font-medium uppercase tracking-wider text-background-dark/50 dark:text-white/50">Global Reach</div>
+</div>
+</div>
+<div class="relative z-10 mt-8">
+<div class="flex items-baseline gap-2">
+<span class="text-7xl md:text-9xl font-bold text-background-dark dark:text-white tracking-tighter">150</span>
+<span class="text-4xl md:text-6xl font-medium text-primary">+</span>
+</div>
+<h3 class="text-2xl font-bold text-background-dark dark:text-white mt-2">Happy Clients</h3>
+<p class="text-background-dark/60 dark:text-white/60 mt-2 max-w-md">
+                            Delivering award-winning creative solutions across 12 distinct industries ranging from Fintech to Fashion.
+                        </p>
+</div>
+</div>
+<!-- Card 2: Retention Rate (Tall/Vertical) -->
+<div class="group relative col-span-1 md:row-span-2 rounded-xl bg-primary text-background-dark p-8 md:p-10 flex flex-col justify-between overflow-hidden">
+<!-- Abstract Illustration Background -->
+<div class="absolute inset-0 z-0 opacity-20 pointer-events-none">
+<svg class="w-full h-full animate-[spin_20s_linear_infinite]" viewbox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+<path d="M44.7,-76.4C58.9,-69.2,71.8,-59.1,81.6,-46.6C91.4,-34.1,98.1,-19.2,95.8,-5.3C93.5,8.6,82.2,21.5,70.6,32.2C59,42.9,47.1,51.4,34.8,58.3C22.5,65.2,9.8,70.5,-1.9,73.8C-13.6,77.1,-24.3,78.4,-34.8,73.6C-45.3,68.8,-55.6,57.9,-64.8,46.1C-74,34.3,-82.1,21.6,-83.9,8C-85.7,-5.6,-81.2,-20.1,-72.6,-32.2C-64,-44.3,-51.3,-54,-38.3,-61.8C-25.3,-69.6,-12.7,-75.5,1.5,-78.1C15.7,-80.7,31.4,-80,44.7,-76.4Z" fill="#1f2210" transform="translate(100 100)"></path>
+</svg>
+</div>
+<div class="relative z-10">
+<div class="p-3 bg-background-dark/10 rounded-full inline-flex mb-6 backdrop-blur-sm">
+<span class="material-symbols-outlined text-background-dark">sync</span>
+</div>
+<h3 class="text-xl font-bold uppercase tracking-wide border-b border-background-dark/20 pb-4 mb-4">Retention Rate</h3>
+<p class="font-medium opacity-80 mb-6">Our partners stay because we consistently evolve their brand narrative.</p>
+</div>
+<div class="relative z-10 mt-auto">
+<div class="flex flex-col">
+<span class="text-[8rem] leading-[0.8] font-bold tracking-tighter -ml-2">98<span class="text-5xl align-top">%</span></span>
+<div class="mt-4 flex items-center gap-2">
+<div class="h-2 w-2 rounded-full bg-background-dark"></div>
+<span class="text-sm font-bold uppercase tracking-widest">+2% Year over Year</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 3: Years Experience (Wide) -->
+<div class="group relative col-span-1 md:col-span-2 rounded-xl bg-card-light dark:bg-card-dark border border-black/5 dark:border-white/5 p-8 md:p-12 overflow-hidden flex flex-col md:flex-row gap-8 items-start md:items-center">
+<div class="flex-1 z-10">
+<div class="p-3 bg-background-light dark:bg-background-dark rounded-full border border-black/5 dark:border-white/5 inline-flex mb-6">
+<span class="material-symbols-outlined text-background-dark dark:text-white">history_edu</span>
+</div>
+<div class="flex items-baseline gap-2 mb-2">
+<span class="text-6xl md:text-8xl font-bold text-background-dark dark:text-white tracking-tighter">12</span>
+<span class="text-3xl md:text-5xl font-medium text-primary">+</span>
+</div>
+<h3 class="text-xl font-medium text-background-dark/70 dark:text-white/70">Years of Experience</h3>
+<p class="text-sm text-background-dark/40 dark:text-white/40 mt-2">Established 2012</p>
+</div>
+<!-- Visual Graph Representation -->
+<div class="flex-1 w-full h-full min-h-[160px] relative bg-background-light dark:bg-background-dark/30 rounded-lg p-6 flex items-end justify-between gap-2 border border-black/5 dark:border-white/5">
+<!-- Bars -->
+<div class="w-full bg-primary/20 hover:bg-primary/40 transition-all h-[30%] rounded-t-sm"></div>
+<div class="w-full bg-primary/30 hover:bg-primary/50 transition-all h-[45%] rounded-t-sm"></div>
+<div class="w-full bg-primary/40 hover:bg-primary/60 transition-all h-[40%] rounded-t-sm"></div>
+<div class="w-full bg-primary/50 hover:bg-primary/70 transition-all h-[60%] rounded-t-sm"></div>
+<div class="w-full bg-primary/60 hover:bg-primary/80 transition-all h-[55%] rounded-t-sm"></div>
+<div class="w-full bg-primary/80 hover:bg-primary transition-all h-[75%] rounded-t-sm"></div>
+<div class="w-full bg-primary hover:bg-white transition-all h-[90%] rounded-t-sm relative group/bar">
+<div class="absolute -top-10 left-1/2 -translate-x-1/2 bg-white text-background-dark text-xs font-bold py-1 px-2 rounded opacity-0 group-hover/bar:opacity-100 transition-opacity whitespace-nowrap">
+                                Current
+                            </div>
+</div>
+<!-- Overlay Text -->
+<div class="absolute top-4 left-4 text-xs font-bold uppercase tracking-wider text-background-dark/30 dark:text-white/30">
+                            Growth Trend
+                        </div>
+</div>
+</div>
+</div>
+<!-- Bottom Label -->
+<div class="flex justify-center md:justify-start">
+<div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-black/10 dark:border-white/10 text-xs font-medium text-background-dark/60 dark:text-white/60 uppercase tracking-widest">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+</span>
+                    Live Metrics
+                </div>
+</div>
+</div>
+</main>
+</body></html>

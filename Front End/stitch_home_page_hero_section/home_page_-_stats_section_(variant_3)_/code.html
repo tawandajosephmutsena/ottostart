@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Avant-Garde Stats Section</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#d1ee44", // Acid Green
+                        "secondary": "#9F8BE7", // Vibrant Purple
+                        "background-light": "#FAF7F6",
+                        "background-dark": "#1f2210", // Deep dark green/black
+                        "surface-dark": "#161616", // Deep Contrast
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "body": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0px", 
+                        "lg": "0.5rem", 
+                        "xl": "0.75rem", 
+                        "2xl": "1.5rem",
+                        "3xl": "2.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar hiding */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        /* Smooth transitions */
+        .card-hover-effect {
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .card-hover-effect:hover {
+            transform: scale(1.02);
+        }
+        .group:hover .icon-rotate {
+            transform: rotate(12deg) scale(1.1);
+        }
+        .icon-rotate {
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#161616] dark:text-white transition-colors duration-300">
+<!-- Top Navigation -->
+<nav class="fixed top-0 left-0 w-full z-50 transition-all duration-300 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-black/5 dark:border-white/10">
+<div class="max-w-[1440px] mx-auto px-6 lg:px-12 h-20 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="size-8 text-primary">
+<svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M42.4379 44C42.4379 44 36.0744 33.9038 41.1692 24C46.8624 12.9336 42.2078 4 42.2078 4L7.01134 4C7.01134 4 11.6577 12.932 5.96912 23.9969C0.876273 33.9029 7.27094 44 7.27094 44L42.4379 44Z" fill="currentColor"></path>
+</svg>
+</div>
+<span class="text-xl font-bold tracking-tight">AGENCY</span>
+</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Work</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Services</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">About</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Contact</a>
+</div>
+<button class="bg-surface-dark dark:bg-primary text-white dark:text-surface-dark px-6 py-2.5 text-sm font-bold rounded-full hover:opacity-90 transition-opacity hidden sm:block">
+                Start Project
+            </button>
+</div>
+</nav>
+<!-- Main Content Wrapper -->
+<main class="pt-20 min-h-screen flex flex-col">
+<!-- Hero / Section Header Area -->
+<section class="relative px-6 lg:px-12 pt-24 pb-12 max-w-[1440px] mx-auto w-full">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16 border-b border-black/10 dark:border-white/10 pb-12">
+<div class="max-w-2xl">
+<span class="inline-block py-1 px-3 border border-primary text-primary text-xs font-bold uppercase tracking-wider mb-6 rounded-full">
+                        Our Impact
+                    </span>
+<h1 class="text-5xl md:text-7xl lg:text-8xl font-bold leading-[0.9] tracking-tighter">
+                        RESULTS <br/>
+<span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">THAT SCALE</span>
+</h1>
+</div>
+<div class="md:max-w-xs">
+<p class="text-lg opacity-80 leading-relaxed">
+                        We don't just build brands; we engineer growth engines. Our numbers speak the language of success across industries.
+                    </p>
+</div>
+</div>
+</section>
+<!-- Stats Vertical List Section (Variant 3) -->
+<section class="relative px-6 lg:px-12 pb-32 max-w-[1440px] mx-auto w-full">
+<div class="grid grid-cols-1 gap-6">
+<!-- Stat Card 1 -->
+<div class="group relative card-hover-effect cursor-pointer w-full">
+<div class="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-3xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+<div class="relative bg-[#E8E6E5] dark:bg-[#2A2D1B] rounded-3xl p-8 md:p-12 border border-black/5 dark:border-white/5 overflow-hidden">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-8 z-10 relative">
+<!-- Icon & Label -->
+<div class="flex items-center gap-6">
+<div class="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-white dark:bg-white/10 flex items-center justify-center text-surface-dark dark:text-primary shadow-sm icon-rotate">
+<span class="material-symbols-outlined text-4xl md:text-5xl">rocket_launch</span>
+</div>
+<div class="flex flex-col">
+<span class="text-sm md:text-base font-medium uppercase tracking-widest opacity-60">Success Metric</span>
+<h3 class="text-2xl md:text-3xl font-bold mt-1">Products Launched</h3>
+</div>
+</div>
+<!-- Big Stat -->
+<div class="flex flex-col md:items-end">
+<span class="text-6xl md:text-8xl lg:text-9xl font-bold tracking-tighter text-surface-dark dark:text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-primary group-hover:to-secondary transition-all duration-300">
+                                    300+
+                                </span>
+<p class="text-sm md:text-base max-w-[200px] md:text-right opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform translate-y-4 group-hover:translate-y-0">
+                                    Digital products shipped globally with 99.9% uptime.
+                                </p>
+</div>
+</div>
+<!-- Decorative Abstract Shape -->
+<div class="absolute -right-20 -bottom-20 w-64 h-64 bg-primary/10 rounded-full blur-3xl group-hover:bg-primary/20 transition-colors duration-500"></div>
+</div>
+</div>
+<!-- Stat Card 2 -->
+<div class="group relative card-hover-effect cursor-pointer w-full">
+<div class="absolute inset-0 bg-gradient-to-r from-secondary/20 to-primary/20 rounded-3xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+<div class="relative bg-surface-dark text-white rounded-3xl p-8 md:p-12 border border-white/10 overflow-hidden">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-8 z-10 relative">
+<div class="flex items-center gap-6">
+<div class="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-white/10 flex items-center justify-center text-primary shadow-sm icon-rotate">
+<span class="material-symbols-outlined text-4xl md:text-5xl">monetization_on</span>
+</div>
+<div class="flex flex-col">
+<span class="text-sm md:text-base font-medium uppercase tracking-widest opacity-60 text-white/60">Client Growth</span>
+<h3 class="text-2xl md:text-3xl font-bold mt-1">Revenue Generated</h3>
+</div>
+</div>
+<div class="flex flex-col md:items-end">
+<span class="text-6xl md:text-8xl lg:text-9xl font-bold tracking-tighter text-white group-hover:text-primary transition-colors duration-300">
+                                    $2B
+                                </span>
+<p class="text-sm md:text-base max-w-[200px] md:text-right opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform translate-y-4 group-hover:translate-y-0 text-white/80">
+                                    Total client revenue generated through our campaigns.
+                                </p>
+</div>
+</div>
+<!-- Decorative Abstract Shape -->
+<div class="absolute -left-20 -top-20 w-64 h-64 bg-secondary/10 rounded-full blur-3xl group-hover:bg-secondary/20 transition-colors duration-500"></div>
+</div>
+</div>
+<!-- Stat Card 3 -->
+<div class="group relative card-hover-effect cursor-pointer w-full">
+<div class="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-3xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+<div class="relative bg-[#E8E6E5] dark:bg-[#2A2D1B] rounded-3xl p-8 md:p-12 border border-black/5 dark:border-white/5 overflow-hidden">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-8 z-10 relative">
+<div class="flex items-center gap-6">
+<div class="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-white dark:bg-white/10 flex items-center justify-center text-surface-dark dark:text-primary shadow-sm icon-rotate">
+<span class="material-symbols-outlined text-4xl md:text-5xl">public</span>
+</div>
+<div class="flex flex-col">
+<span class="text-sm md:text-base font-medium uppercase tracking-widest opacity-60">Global Reach</span>
+<h3 class="text-2xl md:text-3xl font-bold mt-1">Countries Served</h3>
+</div>
+</div>
+<div class="flex flex-col md:items-end">
+<span class="text-6xl md:text-8xl lg:text-9xl font-bold tracking-tighter text-surface-dark dark:text-white group-hover:text-secondary transition-colors duration-300">
+                                    15
+                                </span>
+<p class="text-sm md:text-base max-w-[200px] md:text-right opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform translate-y-4 group-hover:translate-y-0">
+                                    Active markets across North America, Europe and Asia.
+                                </p>
+</div>
+</div>
+<div class="absolute right-10 top-10 w-40 h-40 bg-gradient-to-tr from-primary/10 to-transparent rounded-full blur-2xl"></div>
+</div>
+</div>
+<!-- Stat Card 4 -->
+<div class="group relative card-hover-effect cursor-pointer w-full">
+<div class="absolute inset-0 bg-gradient-to-r from-secondary/20 to-primary/20 rounded-3xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+<div class="relative bg-[#E8E6E5] dark:bg-[#2A2D1B] rounded-3xl p-8 md:p-12 border border-black/5 dark:border-white/5 overflow-hidden">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-8 z-10 relative">
+<div class="flex items-center gap-6">
+<div class="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-white dark:bg-white/10 flex items-center justify-center text-surface-dark dark:text-primary shadow-sm icon-rotate">
+<span class="material-symbols-outlined text-4xl md:text-5xl">favorite</span>
+</div>
+<div class="flex flex-col">
+<span class="text-sm md:text-base font-medium uppercase tracking-widest opacity-60">Loyalty</span>
+<h3 class="text-2xl md:text-3xl font-bold mt-1">Client Retention</h3>
+</div>
+</div>
+<div class="flex flex-col md:items-end">
+<span class="text-6xl md:text-8xl lg:text-9xl font-bold tracking-tighter text-surface-dark dark:text-white group-hover:text-primary transition-colors duration-300">
+                                    98%
+                                </span>
+<p class="text-sm md:text-base max-w-[200px] md:text-right opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform translate-y-4 group-hover:translate-y-0">
+                                    We build long-term partnerships, not one-off projects.
+                                </p>
+</div>
+</div>
+<div class="absolute left-10 bottom-10 w-32 h-32 bg-secondary/10 rounded-full blur-2xl"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Footer -->
+<footer class="mt-auto border-t border-black/5 dark:border-white/5 bg-[#E8E6E5] dark:bg-[#16180c]">
+<div class="max-w-[1440px] mx-auto px-6 lg:px-12 py-16">
+<div class="flex flex-col md:flex-row justify-between items-center gap-8">
+<div class="flex flex-col gap-4 text-center md:text-left">
+<div class="flex items-center gap-2 justify-center md:justify-start">
+<div class="size-6 text-primary">
+<svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M42.4379 44C42.4379 44 36.0744 33.9038 41.1692 24C46.8624 12.9336 42.2078 4 42.2078 4L7.01134 4C7.01134 4 11.6577 12.932 5.96912 23.9969C0.876273 33.9029 7.27094 44 7.27094 44L42.4379 44Z" fill="currentColor"></path>
+</svg>
+</div>
+<h2 class="text-lg font-bold">Agency</h2>
+</div>
+<p class="text-sm opacity-60">© 2024 Agency Name. All rights reserved.</p>
+</div>
+<div class="flex gap-8">
+<a class="text-surface-dark dark:text-[#bfc892] hover:text-primary dark:hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">flutter_dash</span> <!-- Using generic icon for social -->
+</a>
+<a class="text-surface-dark dark:text-[#bfc892] hover:text-primary dark:hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">photo_camera</span> <!-- Using generic icon for social -->
+</a>
+<a class="text-surface-dark dark:text-[#bfc892] hover:text-primary dark:hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">alternate_email</span> <!-- Using generic icon for social -->
+</a>
+</div>
+<div class="flex gap-6 text-sm font-medium">
+<a class="hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-primary transition-colors" href="#">Terms of Service</a>
+</div>
+</div>
+</div>
+</footer>
+</main>
+</body></html>

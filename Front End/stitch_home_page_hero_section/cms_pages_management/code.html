@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CMS Pages Management</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@300..800&amp;family=Funnel+Sans:wght@300..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#DDF160", // Vibrant Lime
+                        "secondary": "#9F8BE7", // Vibrant Purple
+                        "background-light": "#FAF7F6", // Bone/Off-white
+                        "background-dark": "#161616", // Deep Contrast
+                        "surface": "#FFFFFF",
+                        "border-color": "#E5E5E5",
+                        "text-main": "#161616",
+                        "text-muted": "#6B6B6B",
+                    },
+                    fontFamily: {
+                        "display": ["'Funnel Display'", "sans-serif"],
+                        "body": ["'Funnel Sans'", "sans-serif"],
+                    },
+                    borderRadius: {
+                        "none": "0px",
+                        "sm": "0px", 
+                        "DEFAULT": "0px", // Enforcing sharp edges generally
+                        "md": "0px",
+                        "lg": "0px",
+                        "xl": "0px",
+                        "2xl": "0px",
+                        "special": "50px", // For specific images
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for sleek look */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #e5e5e5;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #d4d4d4;
+        }
+        
+        .tree-line {
+            position: absolute;
+            left: 28px;
+            top: -10px;
+            bottom: 0;
+            width: 1px;
+            background-color: #E5E5E5;
+            z-index: 0;
+        }
+        .tree-connector {
+            position: absolute;
+            left: 28px;
+            top: 28px; /* Center of a 56px row roughly */
+            width: 24px;
+            height: 1px;
+            background-color: #E5E5E5;
+            z-index: 0;
+        }
+        
+        /* Interactive hover effects */
+        .group:hover .hover-trigger {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-background-light text-text-main font-body overflow-hidden h-screen flex selection:bg-primary selection:text-black">
+<!-- Sidebar -->
+<aside class="w-20 lg:w-64 bg-background-light border-r border-[#E0E0E0] flex flex-col justify-between shrink-0 h-full z-20">
+<div class="flex flex-col">
+<!-- Logo Area -->
+<div class="h-20 flex items-center px-6 lg:px-8">
+<div class="flex items-center gap-3">
+<div class="size-8 bg-black text-white flex items-center justify-center font-display font-bold text-xl">A</div>
+<span class="font-display font-bold text-xl tracking-tight hidden lg:block">AVANT CMS</span>
+</div>
+</div>
+<!-- Nav Items -->
+<nav class="flex flex-col gap-1 px-4 mt-8">
+<a class="flex items-center gap-4 px-4 py-3 text-text-muted hover:text-black hover:bg-white transition-colors group" href="#">
+<span class="material-symbols-outlined text-[24px]">dashboard</span>
+<span class="font-medium hidden lg:block">Dashboard</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 bg-white border border-[#E0E0E0] shadow-[4px_4px_0px_0px_rgba(0,0,0,0.05)] text-black group relative" href="#">
+<span class="absolute left-0 top-0 bottom-0 w-1 bg-primary"></span>
+<span class="material-symbols-outlined text-[24px] filled">article</span>
+<span class="font-medium hidden lg:block">Pages</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 text-text-muted hover:text-black hover:bg-white transition-colors group" href="#">
+<span class="material-symbols-outlined text-[24px]">perm_media</span>
+<span class="font-medium hidden lg:block">Media</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 text-text-muted hover:text-black hover:bg-white transition-colors group" href="#">
+<span class="material-symbols-outlined text-[24px]">group</span>
+<span class="font-medium hidden lg:block">Users</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 text-text-muted hover:text-black hover:bg-white transition-colors group" href="#">
+<span class="material-symbols-outlined text-[24px]">settings</span>
+<span class="font-medium hidden lg:block">Settings</span>
+</a>
+</nav>
+</div>
+<div class="p-6 border-t border-[#E0E0E0]">
+<div class="flex items-center gap-3">
+<div class="size-10 bg-gray-200 overflow-hidden relative" style="border-radius: 50px;">
+<img alt="Portrait of a female user with a neutral expression" class="object-cover w-full h-full" data-alt="User profile picture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC2bifX89WbbKXj8OcXeeBsKFVbyPvOg7c2KgehtzMbqTf7kDhhTY3pyV8eb2XE8GZI0mWvq4Vmjn9NJC3rwOhUcidpIUKzf_g7WTUtbpHrNWj8Tqg8NDMRKnCBlmHph5pH7pyy64vJQALA9h_6aeEgpLhj4LDxJ_0KJs2qvCcNCxxEJBtdp31L0utSqnfv7qbYm9jv7HZ0nN3oEcf0jif-lKuw738fyOATY_iL_gUZCjKimIIflOvFvcDEIZVKRx5SpaXBUhbJ-_g"/>
+</div>
+<div class="hidden lg:flex flex-col">
+<span class="text-sm font-bold leading-none">Sarah J.</span>
+<span class="text-xs text-text-muted mt-1">Editor</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col min-w-0 relative bg-white">
+<!-- Top Header -->
+<header class="h-20 border-b border-[#E0E0E0] flex items-center justify-between px-8 bg-white/80 backdrop-blur-md sticky top-0 z-10">
+<div class="flex flex-col justify-center">
+<div class="flex items-center text-xs text-text-muted uppercase tracking-wider gap-2 mb-1">
+<span>CMS</span>
+<span class="material-symbols-outlined text-[12px]">chevron_right</span>
+<span>Management</span>
+</div>
+<h1 class="text-2xl font-display font-semibold tracking-tight">Site Architecture</h1>
+</div>
+<div class="flex items-center gap-6">
+<!-- Search -->
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-0 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-black transition-colors">search</span>
+<input class="pl-8 pr-4 py-2 bg-transparent border-b border-[#E0E0E0] focus:border-black focus:ring-0 w-64 text-sm outline-none transition-colors placeholder:text-gray-400" placeholder="Find a page..." type="text"/>
+</div>
+<!-- Primary Action -->
+<button class="bg-primary hover:bg-[#d1e64b] text-black px-5 py-2.5 font-bold text-sm flex items-center gap-2 transition-transform active:scale-95 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]">
+<span class="material-symbols-outlined text-[20px]">add</span>
+                    Add New Page
+                </button>
+</div>
+</header>
+<!-- Page Tree Area -->
+<div class="flex-1 overflow-y-auto p-8 bg-[#FAF7F6]">
+<!-- Filter Tabs -->
+<div class="flex gap-1 mb-8 border-b border-[#E0E0E0] pb-0">
+<button class="px-6 py-3 text-sm font-medium border-b-2 border-black text-black">All Pages (24)</button>
+<button class="px-6 py-3 text-sm font-medium border-b-2 border-transparent text-text-muted hover:text-black transition-colors">Published</button>
+<button class="px-6 py-3 text-sm font-medium border-b-2 border-transparent text-text-muted hover:text-black transition-colors">Drafts</button>
+<button class="px-6 py-3 text-sm font-medium border-b-2 border-transparent text-text-muted hover:text-black transition-colors">Archived</button>
+</div>
+<!-- Tree Structure -->
+<div class="flex flex-col gap-2 max-w-5xl">
+<!-- Node 1: Home (Root) -->
+<div class="group relative flex items-center bg-white border border-[#E5E5E5] p-2 pr-4 hover:border-black transition-colors cursor-move">
+<!-- Drag Handle -->
+<div class="w-8 flex justify-center text-gray-300 cursor-grab group-hover:text-black">
+<span class="material-symbols-outlined text-[20px]">drag_indicator</span>
+</div>
+<!-- Content -->
+<div class="flex-1 flex items-center gap-4 py-2">
+<div class="size-10 bg-[#F5F5F5] flex items-center justify-center border border-[#E5E5E5]">
+<span class="material-symbols-outlined text-black">home</span>
+</div>
+<div class="flex flex-col">
+<h3 class="font-display font-medium text-lg leading-tight">Home</h3>
+<span class="text-xs text-text-muted font-mono">/</span>
+</div>
+</div>
+<!-- Meta -->
+<div class="flex items-center gap-6">
+<span class="text-xs font-mono text-text-muted">Last edited 2h ago</span>
+<span class="bg-black text-white text-[10px] uppercase font-bold px-2 py-1 tracking-wider">Published</span>
+<!-- Actions -->
+<div class="opacity-0 group-hover:opacity-100 flex gap-2 transition-opacity">
+<button class="size-8 flex items-center justify-center hover:bg-gray-100">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+<button class="size-8 flex items-center justify-center hover:bg-gray-100 text-red-500">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Node 2: Work (Parent) -->
+<div class="group relative flex items-center bg-white border border-[#E5E5E5] p-2 pr-4 mt-2 hover:border-black transition-colors cursor-move">
+<div class="w-8 flex justify-center text-gray-300 cursor-grab group-hover:text-black">
+<span class="material-symbols-outlined text-[20px]">drag_indicator</span>
+</div>
+<div class="flex-1 flex items-center gap-4 py-2">
+<div class="size-10 bg-[#F5F5F5] flex items-center justify-center border border-[#E5E5E5]">
+<span class="material-symbols-outlined text-black">work</span>
+</div>
+<div class="flex flex-col">
+<h3 class="font-display font-medium text-lg leading-tight">Work</h3>
+<span class="text-xs text-text-muted font-mono">/work</span>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<span class="text-xs font-mono text-text-muted">Last edited 1d ago</span>
+<span class="bg-black text-white text-[10px] uppercase font-bold px-2 py-1 tracking-wider">Published</span>
+<div class="opacity-0 group-hover:opacity-100 flex gap-2 transition-opacity">
+<button class="size-8 flex items-center justify-center hover:bg-gray-100"><span class="material-symbols-outlined text-[18px]">edit</span></button>
+<button class="size-8 flex items-center justify-center hover:bg-gray-100"><span class="material-symbols-outlined text-[18px]">add</span></button>
+</div>
+</div>
+</div>
+<!-- Nested: Project Alpha -->
+<div class="relative pl-12">
+<div class="tree-line"></div>
+<div class="tree-connector"></div>
+<div class="group relative flex items-center bg-white border border-[#E5E5E5] p-2 pr-4 hover:border-black transition-colors cursor-move">
+<div class="w-8 flex justify-center text-gray-300 cursor-grab group-hover:text-black">
+<span class="material-symbols-outlined text-[20px]">drag_indicator</span>
+</div>
+<div class="flex-1 flex items-center gap-4 py-2">
+<div class="size-10 bg-[#F5F5F5] flex items-center justify-center border border-[#E5E5E5]">
+<span class="material-symbols-outlined text-black">folder_open</span>
+</div>
+<div class="flex flex-col">
+<h3 class="font-display font-medium text-lg leading-tight">Project Alpha</h3>
+<span class="text-xs text-text-muted font-mono">/work/project-alpha</span>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<span class="text-xs font-mono text-text-muted">Last edited 4h ago</span>
+<span class="bg-black text-white text-[10px] uppercase font-bold px-2 py-1 tracking-wider">Published</span>
+<div class="opacity-0 group-hover:opacity-100 flex gap-2 transition-opacity">
+<button class="size-8 flex items-center justify-center hover:bg-gray-100"><span class="material-symbols-outlined text-[18px]">edit</span></button>
+</div>
+</div>
+</div>
+</div>
+<!-- Nested: Project Beta (Draft) -->
+<div class="relative pl-12 mt-2">
+<div class="tree-line top-[-30px]"></div>
+<div class="tree-connector"></div>
+<div class="group relative flex items-center bg-[#F8F8F8] border border-dashed border-[#CCCCCC] p-2 pr-4 hover:border-black transition-colors cursor-move">
+<div class="w-8 flex justify-center text-gray-300 cursor-grab group-hover:text-black">
+<span class="material-symbols-outlined text-[20px]">drag_indicator</span>
+</div>
+<div class="flex-1 flex items-center gap-4 py-2">
+<div class="size-10 bg-white flex items-center justify-center border border-[#E5E5E5]">
+<span class="material-symbols-outlined text-gray-400">edit_note</span>
+</div>
+<div class="flex flex-col">
+<h3 class="font-display font-medium text-lg leading-tight text-gray-600">Project Beta</h3>
+<span class="text-xs text-text-muted font-mono">/work/project-beta</span>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<span class="text-xs font-mono text-text-muted">Unsaved changes</span>
+<span class="bg-secondary text-white text-[10px] uppercase font-bold px-2 py-1 tracking-wider">Draft</span>
+<div class="opacity-0 group-hover:opacity-100 flex gap-2 transition-opacity">
+<button class="size-8 flex items-center justify-center hover:bg-gray-100"><span class="material-symbols-outlined text-[18px]">edit</span></button>
+<button class="size-8 flex items-center justify-center hover:bg-gray-100 text-red-500"><span class="material-symbols-outlined text-[18px]">delete</span></button>
+</div>
+</div>
+</div>
+</div>
+<!-- Node 3: About -->
+<div class="group relative flex items-center bg-white border border-[#E5E5E5] p-2 pr-4 mt-2 hover:border-black transition-colors cursor-move">
+<div class="w-8 flex justify-center text-gray-300 cursor-grab group-hover:text-black">
+<span class="material-symbols-outlined text-[20px]">drag_indicator</span>
+</div>
+<div class="flex-1 flex items-center gap-4 py-2">
+<div class="size-10 bg-[#F5F5F5] flex items-center justify-center border border-[#E5E5E5]">
+<span class="material-symbols-outlined text-black">info</span>
+</div>
+<div class="flex flex-col">
+<h3 class="font-display font-medium text-lg leading-tight">About Agency</h3>
+<span class="text-xs text-text-muted font-mono">/about</span>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<span class="text-xs font-mono text-text-muted">Last edited 5d ago</span>
+<span class="bg-black text-white text-[10px] uppercase font-bold px-2 py-1 tracking-wider">Published</span>
+<div class="opacity-0 group-hover:opacity-100 flex gap-2 transition-opacity">
+<button class="size-8 flex items-center justify-center hover:bg-gray-100"><span class="material-symbols-outlined text-[18px]">edit</span></button>
+</div>
+</div>
+</div>
+<!-- Node 4: Contact -->
+<div class="group relative flex items-center bg-white border border-[#E5E5E5] p-2 pr-4 mt-2 hover:border-black transition-colors cursor-move">
+<div class="w-8 flex justify-center text-gray-300 cursor-grab group-hover:text-black">
+<span class="material-symbols-outlined text-[20px]">drag_indicator</span>
+</div>
+<div class="flex-1 flex items-center gap-4 py-2">
+<div class="size-10 bg-[#F5F5F5] flex items-center justify-center border border-[#E5E5E5]">
+<span class="material-symbols-outlined text-black">mail</span>
+</div>
+<div class="flex flex-col">
+<h3 class="font-display font-medium text-lg leading-tight">Contact Us</h3>
+<span class="text-xs text-text-muted font-mono">/contact</span>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<span class="text-xs font-mono text-text-muted">Last edited 1w ago</span>
+<span class="bg-black text-white text-[10px] uppercase font-bold px-2 py-1 tracking-wider">Published</span>
+<div class="opacity-0 group-hover:opacity-100 flex gap-2 transition-opacity">
+<button class="size-8 flex items-center justify-center hover:bg-gray-100"><span class="material-symbols-outlined text-[18px]">edit</span></button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Right Inspector Panel -->
+<aside class="w-[340px] bg-white border-l border-[#E0E0E0] hidden xl:flex flex-col overflow-y-auto shrink-0 z-10 shadow-[-10px_0_30px_rgba(0,0,0,0.02)]">
+<!-- Panel Header -->
+<div class="h-16 flex items-center justify-between px-6 border-b border-[#E0E0E0]">
+<h3 class="font-display font-bold text-lg">Page Details</h3>
+<button class="text-text-muted hover:text-black">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<div class="p-6 flex flex-col gap-8">
+<!-- Selected Item Preview -->
+<div class="flex flex-col gap-4">
+<div class="relative w-full aspect-video bg-gray-100 overflow-hidden shadow-sm group cursor-pointer" style="border-radius: 50px 0px 50px 0px;">
+<div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors z-10"></div>
+<img alt="Abstract geometric shapes with orange and blue lighting" class="w-full h-full object-cover" data-alt="Page hero preview image" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCiJ3U7NwOTi6HEzxlhM7RHgZCiM6sa8mHT-cS2TdZb5hUvbo8aDE7w_Ikew5Yr1InS_1B0QEpnswLZvQEB-urQIQYwVgpuuPJxmqjcvCnW7dEAGHSoFUqBjSOYu-wutSu-pM7zqsOoWmdDlxuywfPu80W_-wXIt19k-HeWyZZcSOPTm5Vgj9Ds1rB_xNVbR2SuXWw0VHCDU7RWhde3aKAvSgnvHZ7L1-eSOpisSjMnD3OG78faFDZ9-BknwRXWcnC_O6If0Tu-tyc"/>
+<div class="absolute top-4 right-4 z-20">
+<span class="bg-primary text-black text-[10px] font-bold px-2 py-1 uppercase shadow-sm">Active</span>
+</div>
+</div>
+<div>
+<h2 class="text-2xl font-display font-bold leading-tight">Project Alpha</h2>
+<a class="text-secondary hover:underline text-sm font-mono mt-1 block" href="#">avant.agency/work/project-alpha</a>
+</div>
+</div>
+<!-- Stats Grid -->
+<div class="grid grid-cols-2 gap-4">
+<div class="p-4 border border-[#E5E5E5] flex flex-col gap-1">
+<span class="text-xs text-text-muted uppercase tracking-wider">Views</span>
+<span class="text-xl font-bold font-display">12.4k</span>
+<span class="text-[10px] text-green-600 flex items-center">
+<span class="material-symbols-outlined text-[12px] mr-0.5">trending_up</span>
+                        +12%
+                    </span>
+</div>
+<div class="p-4 border border-[#E5E5E5] flex flex-col gap-1">
+<span class="text-xs text-text-muted uppercase tracking-wider">Bounce</span>
+<span class="text-xl font-bold font-display">42%</span>
+<span class="text-[10px] text-gray-500">-2% vs avg</span>
+</div>
+</div>
+<!-- Metadata Form -->
+<div class="flex flex-col gap-4">
+<h4 class="font-bold text-sm uppercase tracking-wider border-b border-[#E5E5E5] pb-2">Metadata</h4>
+<div class="flex flex-col gap-1">
+<label class="text-xs font-bold text-text-muted">SEO Title</label>
+<input class="w-full bg-[#FAF7F6] border-none text-sm p-3 focus:ring-1 focus:ring-black placeholder:text-gray-400 font-medium" type="text" value="Project Alpha - Award Winning Design"/>
+</div>
+<div class="flex flex-col gap-1">
+<label class="text-xs font-bold text-text-muted">Description</label>
+<textarea class="w-full bg-[#FAF7F6] border-none text-sm p-3 focus:ring-1 focus:ring-black placeholder:text-gray-400 font-medium h-24 resize-none">A deep dive into the rebranding of Alpha Corp, featuring motion design and 3D rendering.</textarea>
+</div>
+<div class="flex flex-col gap-1">
+<label class="text-xs font-bold text-text-muted">Featured Image</label>
+<div class="flex items-center gap-3 p-2 border border-dashed border-gray-300 bg-[#FAF7F6] hover:bg-gray-100 transition-colors cursor-pointer group">
+<div class="size-10 bg-gray-200 shrink-0">
+<img alt="Thumbnail of project alpha cover" class="w-full h-full object-cover" data-alt="Thumbnail preview" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA3R2Xh60cmldj-uPbArBGFKi3Vb9qerFqICxv1XhdDBgWye4YOtB2EUI9rs-0HB-hSynOipDD669Q_zT9A4kFZXUK8Q2E3M4Xho2T2p8JeilnnMPhOIm_6h-P6Ilt3RfyhQtWrxTFWAJo-l0APVJQ7v3PBy2dwkJ0XOF5tbEv45ZHfZxyzjchKJkin1m2h7KeKDVDw-AxElnGZpirO7L2_KXuX7Iyc-GzCTw2J89cNnoZxBsGZqD16q1Bzuk4U9ilsgUSfHji1Kgc"/>
+</div>
+<div class="flex flex-col overflow-hidden">
+<span class="text-xs font-medium truncate">alpha_cover_v2.jpg</span>
+<span class="text-[10px] text-text-muted">2.4 MB</span>
+</div>
+<span class="material-symbols-outlined ml-auto text-gray-400 group-hover:text-black">upload_file</span>
+</div>
+</div>
+</div>
+<!-- Main Actions -->
+<div class="mt-auto pt-6 flex flex-col gap-3">
+<button class="w-full py-3 bg-black text-white font-bold hover:bg-gray-800 transition-colors flex items-center justify-center gap-2">
+                    Open Editor
+                    <span class="material-symbols-outlined text-[16px]">arrow_outward</span>
+</button>
+<button class="w-full py-3 bg-white border border-black text-black font-bold hover:bg-gray-50 transition-colors">
+                    Preview Page
+                </button>
+</div>
+<div class="pt-4 text-center">
+<button class="text-xs text-red-500 hover:text-red-700 underline decoration-red-500/30">Delete this page</button>
+</div>
+</div>
+</aside>
+</body></html>
