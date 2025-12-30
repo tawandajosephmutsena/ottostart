@@ -58,6 +58,7 @@ export const Navigation: React.FC<NavigationProps> = ({ className }) => {
         );
 
         ScrollTrigger.create({
+            trigger: document.body,
             start: 'top top',
             end: 99999,
             onUpdate: (self) => {
@@ -80,12 +81,12 @@ export const Navigation: React.FC<NavigationProps> = ({ className }) => {
         };
     }, []);
 
-    // Close menu on route change
-    useEffect(() => {
-        if (isMenuOpen) {
-            setIsMenuOpen(false);
-        }
-    }, [url, isMenuOpen]);
+    // Close menu on route change without triggering cascading render lint
+    const [lastUrl, setLastUrl] = useState(url);
+    if (url !== lastUrl) {
+        setLastUrl(url);
+        if (isMenuOpen) setIsMenuOpen(false);
+    }
 
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 

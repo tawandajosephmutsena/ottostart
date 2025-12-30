@@ -81,10 +81,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     ref={image1Ref}
                     className="absolute top-[18%] left-[5%] md:left-[10%] hidden md:block"
                 >
-                    <div className="w-40 md:w-56 aspect-[3/4] bg-gray-200 rounded-brand overflow-hidden shadow-2xl transition-transform duration-500 ease-out hover:scale-105 pointer-events-auto [transform:rotate(-6deg)]">
-                        <div 
-                            style={{ '--bg-image': `url(${backgroundImages[0] || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop'})` } as React.CSSProperties} 
-                            className="w-full h-full bg-cover bg-center transition-transform duration-700 hover:scale-110 [background-image:var(--bg-image)]"
+                    <div className="w-40 md:w-56 aspect-[3/4] bg-gray-200 rounded-brand overflow-hidden shadow-2xl transition-transform duration-500 ease-out hover:scale-105 pointer-events-auto -rotate-6">
+                        <img 
+                            src={backgroundImages[0] || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop'} 
+                            alt=""
+                            className="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
                         />
                     </div>
                 </div>
@@ -94,10 +95,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     ref={image2Ref}
                     className="absolute top-[35%] right-[5%] md:right-[12%] hidden md:block"
                 >
-                    <div className="w-48 md:w-64 aspect-square bg-gray-200 rounded-brand overflow-hidden shadow-2xl transition-transform duration-500 ease-out hover:scale-105 pointer-events-auto [transform:rotate(3deg)]">
-                        <div 
-                            style={{ '--bg-image': `url(${backgroundImages[1] || 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?q=80&w=2670&auto=format&fit=crop'})` } as React.CSSProperties} 
-                            className="w-full h-full bg-cover bg-center transition-transform duration-700 hover:scale-110 [background-image:var(--bg-image)]"
+                    <div className="w-48 md:w-64 aspect-square bg-gray-200 rounded-brand overflow-hidden shadow-2xl transition-transform duration-500 ease-out hover:scale-105 pointer-events-auto rotate-3">
+                        <img 
+                            src={backgroundImages[1] || 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?q=80&w=2670&auto=format&fit=crop'} 
+                            alt=""
+                            className="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
                         />
                     </div>
                 </div>
@@ -107,10 +109,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     ref={image3Ref}
                     className="absolute bottom-[10%] left-[15%] md:left-[20%] hidden lg:block"
                 >
-                    <div className="w-36 md:w-48 aspect-[4/3] bg-gray-200 rounded-brand overflow-hidden shadow-2xl transition-transform duration-500 ease-out hover:scale-105 pointer-events-auto [transform:rotate(5deg)]">
-                        <div 
-                            style={{ '--bg-image': `url(${backgroundImages[2] || 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2670&auto=format&fit=crop'})` } as React.CSSProperties} 
-                            className="w-full h-full bg-cover bg-center transition-transform duration-700 hover:scale-110 [background-image:var(--bg-image)]"
+                    <div className="w-36 md:w-48 aspect-[4/3] bg-gray-200 rounded-brand overflow-hidden shadow-2xl transition-transform duration-500 ease-out hover:scale-105 pointer-events-auto rotate-6">
+                        <img 
+                            src={backgroundImages[2] || 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2670&auto=format&fit=crop'} 
+                            alt=""
+                            className="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
                         />
                     </div>
                 </div>

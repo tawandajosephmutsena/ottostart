@@ -1,30 +1,23 @@
 import AnimatedSection from '@/components/AnimatedSection';
 import MainLayout from '@/layouts/MainLayout';
-import { Mail, MapPin, Phone, Send } from 'lucide-react';
-import React, { useState } from 'react';
+import { Mail, MapPin, Phone, Send, CheckCircle2 } from 'lucide-react';
+import React from 'react';
+import { useForm } from '@inertiajs/react';
+import { cn } from '@/lib/utils';
 
 export default function Contact() {
-    const [formData, setFormData] = useState({
+    const { data, setData, post, processing, errors, reset, wasSuccessful } = useForm({
         name: '',
         email: '',
-        subject: '',
-        message: '',
         type: 'general',
+        message: '',
     });
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log('Form submitted:', formData);
-    };
-
-    const handleChange = (
-        e: React.ChangeEvent<
-            HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-        >,
-    ) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value,
+        post('/contact', {
+            preserveScroll: true,
+            onSuccess: () => reset(),
         });
     };
 
@@ -76,7 +69,7 @@ export default function Contact() {
             </section>
 
             {/* Contact Form & Info - Premium Side-by-Side */}
-            <section className="bg-agency-secondary dark:bg-[#0a0a0a] py-40 border-y border-agency-primary/5 dark:border-white/5">
+            <section id="contact-form" className="bg-agency-secondary dark:bg-[#0a0a0a] py-40 border-y border-agency-primary/5 dark:border-white/5">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-24">
                         {/* Info Column */}
@@ -117,66 +110,96 @@ export default function Contact() {
 
                         {/* Form Column */}
                         <AnimatedSection animation="slide-up">
-                            <div className="p-12 md:p-16 rounded-[40px] bg-white dark:bg-black/20 border border-agency-primary/5 dark:border-white/5">
-                                <form onSubmit={handleSubmit} className="space-y-8">
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] font-bold uppercase tracking-widest opacity-40 px-4" htmlFor="name-input">Full Name</label>
-                                        <input
-                                            id="name-input"
-                                            type="text"
-                                            name="name"
-                                            value={formData.name}
-                                            onChange={handleChange}
-                                            placeholder="WHAT IS YOUR NAME?"
-                                            className="w-full h-16 rounded-full bg-agency-primary/5 dark:bg-white/5 border-none px-8 text-xs font-bold uppercase tracking-widest focus:ring-2 focus:ring-agency-accent transition-all"
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] font-bold uppercase tracking-widest opacity-40 px-4" htmlFor="email-input">Email Address</label>
-                                        <input
-                                            id="email-input"
-                                            type="email"
-                                            name="email"
-                                            value={formData.email}
-                                            onChange={handleChange}
-                                            placeholder="HOW CAN WE REACH YOU?"
-                                            className="w-full h-16 rounded-full bg-agency-primary/5 dark:bg-white/5 border-none px-8 text-xs font-bold uppercase tracking-widest focus:ring-2 focus:ring-agency-accent transition-all"
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] font-bold uppercase tracking-widest opacity-40 px-4" htmlFor="type-select">Inquiry Type</label>
-                                        <select
-                                            id="type-select"
-                                            name="type"
-                                            title="Inquiry Type"
-                                            value={formData.type}
-                                            onChange={handleChange}
-                                            className="w-full h-16 rounded-full bg-agency-primary/5 dark:bg-white/5 border-none px-8 text-xs font-bold uppercase tracking-widest focus:ring-2 focus:ring-agency-accent transition-all appearance-none"
+                            <div className="p-12 md:p-16 rounded-[40px] bg-white dark:bg-black/20 border border-agency-primary/5 dark:border-white/5 relative overflow-hidden">
+                                {wasSuccessful ? (
+                                    <div className="py-20 text-center animate-in fade-in zoom-in duration-700">
+                                        <div className="size-24 bg-agency-accent/10 rounded-full flex items-center justify-center mx-auto mb-8">
+                                            <CheckCircle2 className="size-12 text-agency-accent" />
+                                        </div>
+                                        <h3 className="text-3xl font-black uppercase tracking-tighter mb-4">Message Sent!</h3>
+                                        <p className="text-agency-primary/60 dark:text-white/60 mb-12">
+                                            Thank you for reaching out. Our team will review your inquiry and get back to you shortly.
+                                        </p>
+                                        <button 
+                                            onClick={() => reset()}
+                                            className="text-xs font-black uppercase tracking-widest text-agency-accent hover:underline"
                                         >
-                                            <option value="general">GENERAL INQUIRY</option>
-                                            <option value="project">NEW PROJECT</option>
-                                            <option value="career">CAREER OPPORTUNITY</option>
-                                        </select>
+                                            Send another message
+                                        </button>
                                     </div>
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] font-bold uppercase tracking-widest opacity-40 px-4" htmlFor="message-input">Your Message</label>
-                                        <textarea
-                                            id="message-input"
-                                            name="message"
-                                            rows={6}
-                                            value={formData.message}
-                                            onChange={handleChange}
-                                            placeholder="TELL US ABOUT YOUR VISION..."
-                                            className="w-full rounded-[30px] bg-agency-primary/5 dark:bg-white/5 border-none p-8 text-xs font-bold uppercase tracking-widest focus:ring-2 focus:ring-agency-accent transition-all resize-none"
-                                        />
-                                    </div>
-                                    <button
-                                        type="submit"
-                                        className="w-full h-20 rounded-full bg-agency-accent text-agency-primary text-xs font-black uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-agency-accent/20 flex items-center justify-center gap-4"
-                                    >
-                                        SEND MESSAGE <Send className="size-4" />
-                                    </button>
-                                </form>
+                                ) : (
+                                    <form onSubmit={handleSubmit} className="space-y-8">
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-bold uppercase tracking-widest opacity-40 px-4" htmlFor="name">Full Name</label>
+                                            <input
+                                                id="name"
+                                                type="text"
+                                                name="name"
+                                                value={data.name}
+                                                onChange={(e) => setData('name', e.target.value)}
+                                                placeholder="WHAT IS YOUR NAME?"
+                                                className={cn(
+                                                    "w-full h-16 rounded-full bg-agency-primary/5 dark:bg-white/5 border-none px-8 text-xs font-bold uppercase tracking-widest focus:ring-2 focus:ring-agency-accent transition-all",
+                                                    errors.name && "ring-2 ring-destructive"
+                                                )}
+                                            />
+                                            {errors.name && <p className="text-destructive text-[10px] font-bold px-4">{errors.name}</p>}
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-bold uppercase tracking-widest opacity-40 px-4" htmlFor="email">Email Address</label>
+                                            <input
+                                                id="email"
+                                                type="email"
+                                                name="email"
+                                                value={data.email}
+                                                onChange={(e) => setData('email', e.target.value)}
+                                                placeholder="HOW CAN WE REACH YOU?"
+                                                className={cn(
+                                                    "w-full h-16 rounded-full bg-agency-primary/5 dark:bg-white/5 border-none px-8 text-xs font-bold uppercase tracking-widest focus:ring-2 focus:ring-agency-accent transition-all",
+                                                    errors.email && "ring-2 ring-destructive"
+                                                )}
+                                            />
+                                            {errors.email && <p className="text-destructive text-[10px] font-bold px-4">{errors.email}</p>}
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-bold uppercase tracking-widest opacity-40 px-4" htmlFor="type">Inquiry Type</label>
+                                            <select
+                                                id="type"
+                                                name="type"
+                                                value={data.type}
+                                                onChange={(e) => setData('type', e.target.value)}
+                                                className="w-full h-16 rounded-full bg-agency-primary/5 dark:bg-white/5 border-none px-8 text-xs font-bold uppercase tracking-widest focus:ring-2 focus:ring-agency-accent transition-all appearance-none"
+                                            >
+                                                <option value="general">GENERAL INQUIRY</option>
+                                                <option value="project">NEW PROJECT</option>
+                                                <option value="career">CAREER OPPORTUNITY</option>
+                                            </select>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-bold uppercase tracking-widest opacity-40 px-4" htmlFor="message">Your Message</label>
+                                            <textarea
+                                                id="message"
+                                                name="message"
+                                                rows={6}
+                                                value={data.message}
+                                                onChange={(e) => setData('message', e.target.value)}
+                                                placeholder="TELL US ABOUT YOUR VISION..."
+                                                className={cn(
+                                                    "w-full rounded-[30px] bg-agency-primary/5 dark:bg-white/5 border-none p-8 text-xs font-bold uppercase tracking-widest focus:ring-2 focus:ring-agency-accent transition-all resize-none",
+                                                    errors.message && "ring-2 ring-destructive"
+                                                )}
+                                            />
+                                            {errors.message && <p className="text-destructive text-[10px] font-bold px-4">{errors.message}</p>}
+                                        </div>
+                                        <button
+                                            type="submit"
+                                            disabled={processing}
+                                            className="w-full h-20 rounded-full bg-agency-accent text-agency-primary text-xs font-black uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-agency-accent/20 flex items-center justify-center gap-4 disabled:opacity-50"
+                                        >
+                                            {processing ? 'SENDING...' : 'SEND MESSAGE'} <Send className="size-4" />
+                                        </button>
+                                    </form>
+                                )}
                             </div>
                         </AnimatedSection>
                     </div>

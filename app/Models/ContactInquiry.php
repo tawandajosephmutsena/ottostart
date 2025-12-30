@@ -16,6 +16,11 @@ class ContactInquiry extends Model
         'message',
         'type',
         'status',
+        'metadata',
+    ];
+
+    protected $casts = [
+        'metadata' => 'array',
     ];
 
     protected $attributes = [

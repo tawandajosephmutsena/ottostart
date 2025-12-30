@@ -13,6 +13,14 @@ interface MainLayoutProps {
     showFooter?: boolean;
 }
 
+interface CustomWindow extends Window {
+    scrollControls?: {
+        scrollTo: (target: string | number, options?: { offset?: number; duration?: number }) => void;
+        stop: () => void;
+        start: () => void;
+    };
+}
+
 /**
  * Main layout component for the avant-garde CMS frontend
  * Includes navigation, footer, smooth scrolling and animation initialization
@@ -34,7 +42,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
     useEffect(() => {
         if (typeof window !== 'undefined') {
             // Make scroll controls available globally for components that need them
-            (window as any).scrollControls = { scrollTo, stop, start };
+            (window as unknown as CustomWindow).scrollControls = { scrollTo, stop, start };
         }
     }, [scrollTo, stop, start]);
 

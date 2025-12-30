@@ -1,47 +1,35 @@
 import AnimatedSection from '@/components/AnimatedSection';
 import MainLayout from '@/layouts/MainLayout';
-import { Link } from '@inertiajs/react';
-import { ArrowRight, Code, Cpu, Layout, Palette } from 'lucide-react';
+import { Service } from '@/types';
+import { Link, Head } from '@inertiajs/react';
+import { ArrowRight, Code, Cpu, Layout, Palette, Shield, Rocket, Globe, Zap, LucideIcon } from 'lucide-react';
 import React from 'react';
 
-export default function Services() {
-    const services = [
-        {
-            title: 'Digital Branding',
-            description: 'We craft unique digital identities that resonate with your audience and stand out in a crowded market.',
-            icon: Palette,
-            features: ['Visual Identity', 'Brand Voice', 'Design Systems', 'Logo Design'],
-            color: 'bg-blue-500',
-            image: 'https://images.unsplash.com/photo-1626785774573-4b799315345d?q=80&w=2671&auto=format&fit=crop'
-        },
-        {
-            title: 'Experience Design',
-            description: 'Creating intuitive, engaging, and memorable user experiences across all digital touchpoints.',
-            icon: Layout,
-            features: ['UX Research', 'UI Design', 'Prototyping', 'User Testing'],
-            color: 'bg-agency-accent',
-            image: 'https://images.unsplash.com/photo-1586717791821-3f44a563eb4c?q=80&w=2670&auto=format&fit=crop'
-        },
-        {
-            title: 'Tech Architectures',
-            description: 'Building robust, scalable, and high-performance technical foundations for your digital products.',
-            icon: Code,
-            features: ['Frontend Dev', 'Backend Systems', 'Mobile Apps', 'Cloud Infra'],
-            color: 'bg-purple-500',
-            image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=2670&auto=format&fit=crop'
-        },
-        {
-            title: 'AI Integration',
-            description: 'Leveraging cutting-edge artificial intelligence to automate processes and enhance user experiences.',
-            icon: Cpu,
-            features: ['Machine Learning', 'NLP', 'Data Science', 'Automations'],
-            color: 'bg-orange-500',
-            image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=2664&auto=format&fit=crop'
-        }
-    ];
+interface Props {
+    services: Service[];
+}
+
+const iconMap: Record<string, LucideIcon> = {
+    palette: Palette,
+    layout: Layout,
+    code: Code,
+    cpu: Cpu,
+    shield: Shield,
+    rocket: Rocket,
+    globe: Globe,
+    zap: Zap,
+};
+
+export default function Services({ services }: Props) {
+    const renderIcon = (iconName: string | null) => {
+        const Icon = iconMap[iconName?.toLowerCase() || 'zap'] || Zap;
+        return <Icon className="size-8 text-agency-accent group-hover:text-white dark:group-hover:text-agency-primary" />;
+    };
 
     return (
         <MainLayout title="Services - Avant-Garde">
+            <Head title="Our Services" />
+            
             {/* Artistic Hero Section */}
             <section className="relative min-h-[80vh] flex flex-col items-center justify-center overflow-hidden bg-agency-secondary dark:bg-agency-dark pt-32">
                 <div className="absolute inset-0 z-0 opacity-[0.03] select-none pointer-events-none">
@@ -66,16 +54,18 @@ export default function Services() {
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-agency-primary/5 dark:bg-white/5 border border-agency-primary/5 dark:border-white/5 overflow-hidden rounded-[40px]">
                         {services.map((service, i) => (
-                            <div key={i} className="group relative bg-white dark:bg-agency-dark p-12 md:p-20 overflow-hidden min-h-[500px] flex flex-col justify-between transition-all duration-700 hover:bg-agency-primary dark:hover:bg-agency-accent">
+                            <div key={service.id} className="group relative bg-white dark:bg-agency-dark p-12 md:p-20 overflow-hidden min-h-[500px] flex flex-col justify-between transition-all duration-700 hover:bg-agency-primary dark:hover:bg-agency-accent">
                                 {/* Image Reveal on Hover */}
-                                <div className="absolute inset-x-0 bottom-0 top-0 opacity-0 group-hover:opacity-20 transition-all duration-700 scale-110 group-hover:scale-100 pointer-events-none">
-                                    <img src={service.image} alt={service.title} className="w-full h-full object-cover filter grayscale" />
-                                </div>
+                                {service.featured_image && (
+                                    <div className="absolute inset-x-0 bottom-0 top-0 opacity-0 group-hover:opacity-20 transition-all duration-700 scale-110 group-hover:scale-100 pointer-events-none">
+                                        <img src={service.featured_image} alt={service.title} className="w-full h-full object-cover filter grayscale" />
+                                    </div>
+                                )}
 
                                 <div className="relative z-10">
                                     <div className="flex items-center justify-between mb-8">
                                         <div className="size-16 rounded-2xl bg-agency-primary/5 dark:bg-white/5 flex items-center justify-center group-hover:bg-white/20 transition-colors">
-                                            <service.icon className="size-8 text-agency-accent group-hover:text-white dark:group-hover:text-agency-primary" />
+                                            {renderIcon(service.icon)}
                                         </div>
                                         <span className="text-5xl font-black opacity-10 font-display group-hover:text-white dark:group-hover:text-agency-primary group-hover:opacity-30">0{i + 1}</span>
                                     </div>
@@ -91,14 +81,17 @@ export default function Services() {
 
                                 <div className="relative z-10">
                                     <div className="flex flex-wrap gap-2 mb-10 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 delay-100">
-                                        {service.features.map((feature, j) => (
-                                            <span key={j} className="text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border border-current/20">
-                                                {feature}
+                                        {service.price_range && (
+                                            <span className="text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border border-current/20">
+                                                Starting at {service.price_range}
                                             </span>
-                                        ))}
+                                        )}
                                     </div>
                                     
-                                    <Link href="/contact" className="inline-flex items-center gap-4 text-xs font-black uppercase tracking-widest text-agency-accent group-hover:text-white dark:group-hover:text-agency-primary">
+                                    <Link 
+                                        href={`/services/${service.slug}`} 
+                                        className="inline-flex items-center gap-4 text-xs font-black uppercase tracking-widest text-agency-accent group-hover:text-white dark:group-hover:text-agency-primary"
+                                    >
                                         Explore Scope <ArrowRight className="size-4 group-hover:translate-x-2 transition-transform" />
                                     </Link>
                                 </div>

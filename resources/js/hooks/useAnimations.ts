@@ -362,8 +362,7 @@ export const useStackedCards = (
     useEffect(() => {
         if (typeof window === 'undefined' || !containerRef.current) return;
 
-        const container = containerRef.current;
-        const cards = cardRefs.map((ref) => ref.current).filter(Boolean);
+        const cards = cardRefs.map((ref) => ref.current).filter((ref): ref is HTMLElement => ref !== null);
 
         if (cards.length === 0) return;
 

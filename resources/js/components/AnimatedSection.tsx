@@ -65,7 +65,7 @@ export const AnimatedSection: React.FC<AnimatedSectionProps> = ({
         const container = containerRef.current;
 
         // Set initial state based on animation type
-        const initialState: Record<string, any> = {
+        const initialState: Record<string, string | number> = {
             opacity: 0,
         };
 

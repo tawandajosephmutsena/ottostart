@@ -22,9 +22,9 @@ import {
     Image,
     Settings,
     Home,
+    MessageSquare,
 } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
-import { cn } from '@/lib/utils';
 
 const mainNavItems = [
     {
@@ -54,6 +54,11 @@ const contentNavItems = [
         title: 'Team',
         href: '/admin/team',
         icon: Users,
+    },
+    {
+        title: 'Inquiries',
+        href: '/admin/contact-inquiries',
+        icon: MessageSquare,
     },
 ];
 

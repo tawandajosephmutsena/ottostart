@@ -12,29 +12,26 @@ Route::get('/about', function () {
     return Inertia::render('About');
 })->name('about');
 
-Route::get('/services', function () {
-    return Inertia::render('Services');
-})->name('services');
+Route::get('/services', [App\Http\Controllers\ServiceController::class, 'index'])->name('services');
+Route::get('/services/{slug}', [App\Http\Controllers\ServiceController::class, 'show'])->name('services.show');
 
-Route::get('/portfolio', function () {
-    return Inertia::render('Portfolio');
-})->name('portfolio');
+Route::get('/portfolio', [App\Http\Controllers\PortfolioController::class, 'index'])->name('portfolio');
+Route::get('/portfolio/{slug}', [App\Http\Controllers\PortfolioController::class, 'show'])->name('portfolio.show');
 
-Route::get('/team', function () {
-    return Inertia::render('Team');
-})->name('team');
+Route::get('/team', [App\Http\Controllers\TeamController::class, 'index'])->name('team');
 
-Route::get('/blog', function () {
-    return Inertia::render('Blog');
-})->name('blog');
+Route::get('/blog', [App\Http\Controllers\BlogController::class, 'index'])->name('blog');
+Route::get('/blog/{slug}', [App\Http\Controllers\BlogController::class, 'show'])->name('blog.show');
 
 Route::get('/contact', function () {
     return Inertia::render('Contact');
 })->name('contact');
 
+Route::post('/contact', [App\Http\Controllers\ContactController::class, 'store'])->name('contact.store');
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
+        return redirect()->route('admin.dashboard');
     })->name('dashboard');
 });
 
@@ -81,6 +78,9 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
     Route::get('media-search', [App\Http\Controllers\Admin\MediaController::class, 'search'])->name('media.search');
     Route::get('media/{mediaAsset}/embed', [App\Http\Controllers\Admin\MediaController::class, 'embed'])->name('media.embed');
     Route::post('media/bulk-action', [App\Http\Controllers\Admin\MediaController::class, 'bulkAction'])->name('media.bulk-action');
+
+    // Contact Inquiries management
+    Route::resource('contact-inquiries', App\Http\Controllers\Admin\ContactInquiryController::class);
 });
 
 require __DIR__.'/settings.php';

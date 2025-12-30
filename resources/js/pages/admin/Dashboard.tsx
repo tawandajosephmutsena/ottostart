@@ -11,11 +11,11 @@ import {
     Image,
     MessageSquare,
     Plus,
-    TrendingUp,
     Eye,
     Star,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import React from 'react';
 
 interface DashboardStats {
     portfolio_items: {
@@ -55,26 +55,20 @@ interface DashboardStats {
     };
 }
 
+interface RecentActivityItem {
+    id: number;
+    title?: string;
+    subject?: string;
+    name?: string;
+    created_at: string;
+    is_published?: boolean;
+    status?: string;
+}
+
 interface RecentActivity {
-    portfolio: Array<{
-        id: number;
-        title: string;
-        created_at: string;
-        is_published: boolean;
-    }>;
-    insights: Array<{
-        id: number;
-        title: string;
-        created_at: string;
-        is_published: boolean;
-    }>;
-    inquiries: Array<{
-        id: number;
-        name: string;
-        subject: string;
-        status: string;
-        created_at: string;
-    }>;
+    portfolio: RecentActivityItem[];
+    insights: RecentActivityItem[];
+    inquiries: RecentActivityItem[];
 }
 
 interface DashboardProps {
@@ -92,7 +86,7 @@ const StatCard = ({
     className,
 }: {
     title: string;
-    icon: any;
+    icon: React.ComponentType<{ className?: string }>;
     total: number;
     published?: number;
     featured?: number;
@@ -138,7 +132,7 @@ const QuickActionCard = ({
 }: {
     title: string;
     description: string;
-    icon: any;
+    icon: React.ComponentType<{ className?: string }>;
     href: string;
     variant?: 'default' | 'primary';
 }) => (
@@ -179,7 +173,7 @@ const RecentActivityCard = ({
     href,
 }: {
     title: string;
-    items: any[];
+    items: RecentActivityItem[];
     emptyMessage: string;
     href: string;
 }) => (
@@ -242,7 +236,6 @@ export default function Dashboard({ stats, recent_activity }: DashboardProps) {
     return (
         <AdminLayout title="Dashboard" breadcrumbs={breadcrumbs}>
             <div className="space-y-6">
-                {/* Welcome Header */}
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
                     <p className="text-muted-foreground">
@@ -250,7 +243,6 @@ export default function Dashboard({ stats, recent_activity }: DashboardProps) {
                     </p>
                 </div>
 
-                {/* Statistics Grid */}
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                     <StatCard
                         title="Portfolio Items"
@@ -286,7 +278,6 @@ export default function Dashboard({ stats, recent_activity }: DashboardProps) {
                     />
                 </div>
 
-                {/* Secondary Stats */}
                 <div className="grid gap-4 md:grid-cols-3">
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -343,7 +334,6 @@ export default function Dashboard({ stats, recent_activity }: DashboardProps) {
                     </Card>
                 </div>
 
-                {/* Quick Actions */}
                 <div>
                     <h2 className="text-xl font-semibold mb-4">Quick Actions</h2>
                     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -375,7 +365,6 @@ export default function Dashboard({ stats, recent_activity }: DashboardProps) {
                     </div>
                 </div>
 
-                {/* Recent Activity */}
                 <div>
                     <h2 className="text-xl font-semibold mb-4">Recent Activity</h2>
                     <div className="grid gap-4 md:grid-cols-3">

@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 import { Head } from '@inertiajs/react';
 import React from 'react';
 import { BreadcrumbItem } from '@/types';
+import { Home } from 'lucide-react';
 
 interface AdminLayoutProps {
     children: React.ReactNode;
@@ -38,6 +39,15 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
                         {breadcrumbs.length > 0 && (
                             <Breadcrumbs breadcrumbs={breadcrumbs} />
                         )}
+                        <div className="ml-auto flex items-center gap-2">
+                             <a 
+                                href="/" 
+                                target="_blank" 
+                                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-agency-accent/10 text-agency-accent text-xs font-bold hover:bg-agency-accent hover:text-white transition-all border border-agency-accent/20"
+                            >
+                                <Home className="size-3" /> Visit Site
+                            </a>
+                        </div>
                     </header>
 
                     {/* Main content */}

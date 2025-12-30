@@ -1,63 +1,29 @@
 import AnimatedSection from '@/components/AnimatedSection';
 import MainLayout from '@/layouts/MainLayout';
-import { Link } from '@inertiajs/react';
+import { Insight, PaginatedData, Category } from '@/types';
+import { Link, Head } from '@inertiajs/react';
 import { cn } from '@/lib/utils';
-import { Clock, User, ArrowRight, ArrowUpRight } from 'lucide-react';
+import { Clock, User as UserIcon, ArrowRight, ArrowUpRight } from 'lucide-react';
 import React, { useState } from 'react';
 
-export default function Blog() {
-    const categories = ['All', 'Design', 'Tech', 'Culture', 'Strategy'];
-    const [activeCategory, setActiveCategory] = useState('All');
+interface Props {
+    insights: PaginatedData<Insight>;
+    categories: Category[];
+}
 
-    const posts = [
-        {
-            id: 1,
-            title: 'Design as a Strategic Advantage',
-            excerpt: 'How leading brands use design thinking to outpace competitors and create lasting value.',
-            author: 'Sarah Johnson',
-            date: 'May 12, 2024',
-            readTime: '5 min',
-            category: 'Strategy',
-            image: 'https://images.unsplash.com/photo-1558655146-d09347e92766?q=80&w=2564&auto=format&fit=crop'
-        },
-        {
-            id: 2,
-            title: 'The AI Revolution in Creative Workflows',
-            excerpt: 'Exploring how generative AI is transforming the way we design, code, and innovate.',
-            author: 'Michael Chen',
-            date: 'May 10, 2024',
-            readTime: '8 min',
-            category: 'Tech',
-            image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=2664&auto=format&fit=crop'
-        },
-        {
-            id: 3,
-            title: 'Sustainable Digital Experiences',
-            excerpt: 'Why eco-friendly web design is the next frontier of corporate responsibility.',
-            author: 'Emily Rodriguez',
-            date: 'May 08, 2024',
-            readTime: '6 min',
-            category: 'Culture',
-            image: 'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?q=80&w=2670&auto=format&fit=crop'
-        },
-        {
-            id: 4,
-            title: 'Minimalism: Less is Still More',
-            excerpt: 'Revisiting the principles of minimalist design in the age of information overload.',
-            author: 'David Kim',
-            date: 'May 05, 2024',
-            readTime: '4 min',
-            category: 'Design',
-            image: 'https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?q=80&w=2667&auto=format&fit=crop'
-        }
-    ];
+export default function Blog({ insights, categories }: Props) {
+    const [activeCategoryId, setActiveCategoryId] = useState<number | 'all'>('all');
 
-    const filteredPosts = activeCategory === 'All' 
+    const posts = insights.data;
+
+    const filteredPosts = activeCategoryId === 'all' 
         ? posts 
-        : posts.filter(post => post.category === activeCategory);
+        : posts.filter(post => post.category_id === activeCategoryId);
 
     return (
         <MainLayout title="Blog - Avant-Garde">
+            <Head title="Insights & Thoughts" />
+            
             {/* Immersive Hero Section */}
             <section className="bg-white dark:bg-agency-dark pt-40 pb-20 relative overflow-hidden">
                 <div className="absolute top-20 left-0 w-full overflow-hidden opacity-[0.03] select-none pointer-events-none">
@@ -80,18 +46,29 @@ export default function Blog() {
             {/* Filter Bar */}
             <div className="sticky top-24 z-30 py-6 bg-white/80 dark:bg-agency-dark/80 backdrop-blur-xl border-y border-agency-primary/5 dark:border-white/5">
                 <div className="mx-auto max-w-7xl px-4 flex justify-center gap-4 overflow-x-auto no-scrollbar">
+                    <button
+                        onClick={() => setActiveCategoryId('all')}
+                        className={cn(
+                            'px-8 py-3 rounded-full text-[10px] font-black uppercase tracking-widest transition-all duration-500 whitespace-nowrap',
+                            activeCategoryId === 'all' 
+                                ? 'bg-agency-accent text-agency-primary shadow-lg shadow-agency-accent/20 scale-105' 
+                                : 'bg-agency-primary/5 dark:bg-white/5 text-agency-primary/40 dark:text-white/40 hover:bg-agency-accent/10 hover:text-agency-accent'
+                        )}
+                    >
+                        All Articles
+                    </button>
                     {categories.map((cat) => (
                         <button
-                            key={cat}
-                            onClick={() => setActiveCategory(cat)}
+                            key={cat.id}
+                            onClick={() => setActiveCategoryId(cat.id)}
                             className={cn(
                                 'px-8 py-3 rounded-full text-[10px] font-black uppercase tracking-widest transition-all duration-500 whitespace-nowrap',
-                                activeCategory === cat 
+                                activeCategoryId === cat.id 
                                     ? 'bg-agency-accent text-agency-primary shadow-lg shadow-agency-accent/20 scale-105' 
                                     : 'bg-agency-primary/5 dark:bg-white/5 text-agency-primary/40 dark:text-white/40 hover:bg-agency-accent/10 hover:text-agency-accent'
                             )}
                         >
-                            {cat}
+                            {cat.name}
                         </button>
                     ))}
                 </div>
@@ -112,16 +89,20 @@ export default function Blog() {
                                     i % 2 !== 0 ? 'lg:translate-y-24' : ''
                                 )}
                             >
-                                <Link href={`/blog/${post.id}`} className="block">
+                                <Link href={`/blog/${post.slug}`} className="block">
                                     <div className="relative aspect-[16/10] rounded-[60px] overflow-hidden mb-12 shadow-2xl bg-agency-primary/5 dark:bg-white/5">
-                                        <img 
-                                            src={post.image} 
-                                            alt={post.title} 
-                                            className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-1000 ease-out"
-                                        />
+                                        {post.featured_image ? (
+                                            <img 
+                                                src={post.featured_image} 
+                                                alt={post.title} 
+                                                className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-1000 ease-out"
+                                            />
+                                        ) : (
+                                            <div className="w-full h-full bg-agency-accent/10"></div>
+                                        )}
                                         <div className="absolute top-8 left-8">
                                             <span className="px-4 py-2 rounded-full bg-agency-accent text-agency-primary text-[10px] font-black uppercase tracking-widest shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                                                {post.category}
+                                                {post.category?.name || 'Insight'}
                                             </span>
                                         </div>
                                         <div className="absolute bottom-10 right-10 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-x-10 group-hover:translate-x-0">
@@ -133,8 +114,8 @@ export default function Blog() {
 
                                     <div className="px-4">
                                         <div className="flex items-center gap-6 mb-6 opacity-40 text-[10px] font-bold uppercase tracking-widest">
-                                            <div className="flex items-center gap-2"><User className="size-3" /> {post.author}</div>
-                                            <div className="flex items-center gap-2"><Clock className="size-3" /> {post.readTime}</div>
+                                            <div className="flex items-center gap-2"><UserIcon className="size-3" /> {post.author?.name || 'Avant-Garde'}</div>
+                                            <div className="flex items-center gap-2"><Clock className="size-3" /> {post.reading_time || 5} min read</div>
                                         </div>
                                         <h2 className={cn(
                                             'font-black uppercase tracking-tighter text-agency-primary dark:text-white group-hover:text-agency-accent transition-colors duration-500',
@@ -150,6 +131,24 @@ export default function Blog() {
                             </AnimatedSection>
                         ))}
                     </div>
+
+                    {/* Pagination */}
+                    {insights.links.length > 3 && (
+                        <div className="mt-40 flex justify-center gap-4">
+                            {insights.links.map((link, i) => (
+                                <Link
+                                    key={i}
+                                    href={link.url || '#'}
+                                    className={`px-8 py-4 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${
+                                        link.active 
+                                            ? 'bg-agency-accent text-agency-primary' 
+                                            : 'bg-white dark:bg-white/5 text-agency-primary/40 dark:text-white/40 hover:bg-agency-accent hover:text-agency-primary'
+                                    } ${!link.url ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                    dangerouslySetInnerHTML={{ __html: link.label }}
+                                />
+                            ))}
+                        </div>
+                    )}
                 </div>
             </section>
 
@@ -191,5 +190,3 @@ export default function Blog() {
         </MainLayout>
     );
 }
-
-

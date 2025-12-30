@@ -1,54 +1,18 @@
 import AnimatedSection from '@/components/AnimatedSection';
 import MainLayout from '@/layouts/MainLayout';
-import { Link } from '@inertiajs/react';
+import { PortfolioItem, PaginatedData } from '@/types';
+import { Link, Head } from '@inertiajs/react';
 import React, { useState } from 'react';
 
-export default function Portfolio() {
-    const projects = [
-        {
-            title: 'E-commerce Platform',
-            category: 'Web Development',
-            description: 'A modern e-commerce platform with advanced features and seamless user experience.',
-            image: '/placeholder-project-1.jpg',
-            tags: ['React', 'Node.js', 'MongoDB', 'Stripe'],
-        },
-        {
-            title: 'Mobile Banking App',
-            category: 'Mobile Development',
-            description: 'Secure and intuitive mobile banking application with biometric authentication.',
-            image: '/placeholder-project-2.jpg',
-            tags: ['React Native', 'Firebase', 'Biometrics', 'Security'],
-        },
-        {
-            title: 'Brand Identity System',
-            category: 'Branding',
-            description: 'Complete brand identity redesign for a tech startup including logo and guidelines.',
-            image: '/placeholder-project-3.jpg',
-            tags: ['Logo Design', 'Brand Guidelines', 'Visual Identity'],
-        },
-        {
-            title: 'SaaS Dashboard',
-            category: 'UI/UX Design',
-            description: 'Analytics dashboard for a SaaS platform with complex data visualization.',
-            image: '/placeholder-project-4.jpg',
-            tags: ['Dashboard', 'Data Viz', 'UX Research', 'Prototyping'],
-        },
-        {
-            title: 'Restaurant Website',
-            category: 'Web Development',
-            description: 'Responsive website with online ordering system and reservation management.',
-            image: '/placeholder-project-5.jpg',
-            tags: ['WordPress', 'Online Ordering', 'Responsive Design'],
-        },
-        {
-            title: 'Fitness App',
-            category: 'Mobile Development',
-            description: 'Comprehensive fitness tracking app with workout plans and progress monitoring.',
-            image: '/placeholder-project-6.jpg',
-            tags: ['Flutter', 'Health Kit', 'Wearables', 'Analytics'],
-        },
-    ];
+interface Props {
+    portfolioItems: PaginatedData<PortfolioItem>;
+}
 
+export default function Portfolio({ portfolioItems }: Props) {
+    const projects = portfolioItems.data;
+    
+    // Extract unique technologies for dummy filtering or use categories if available
+    // For now, let's keep the category filtering logic but base it on technologies if categories aren't in the model
     const categories = [
         'All',
         'Web Development',
@@ -59,12 +23,17 @@ export default function Portfolio() {
 
     const [activeCategory, setActiveCategory] = useState('All');
 
+    // In a real scenario, categories would be a separate model or a field in PortfolioItem
+    // Since our model doesn't have a category_id yet in types, we'll just show all filtered by technology if needed
+    // but for now, we'll just show all projects from the backend
     const filteredProjects = activeCategory === 'All' 
         ? projects 
-        : projects.filter(p => p.category === activeCategory);
+        : projects.filter(p => p.technologies?.includes(activeCategory));
 
     return (
         <MainLayout title="Portfolio - Avant-Garde">
+            <Head title="Portfolio" />
+            
             {/* Immersive Hero Section */}
             <section className="bg-white dark:bg-agency-dark pt-40 pb-32 relative overflow-hidden">
                 {/* Background Branding Marquee */}
@@ -116,42 +85,69 @@ export default function Portfolio() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                         {filteredProjects.map((project, i) => (
                             <AnimatedSection 
-                                key={project.title} 
+                                key={project.id} 
                                 animation="slide-up" 
                                 delay={i * 50}
                                 className="group cursor-pointer"
                             >
-                                <div className="relative aspect-video rounded-[40px] overflow-hidden bg-agency-primary/5 dark:bg-white/5 mb-8">
-                                    {/* Project Placeholder with Reveal Effect */}
-                                    <div className="absolute inset-0 bg-gradient-to-br from-agency-accent/20 to-agency-primary/20 group-hover:scale-110 transition-transform duration-700 ease-out"></div>
-                                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 backdrop-blur-md bg-agency-primary/20">
-                                        <div className="size-24 rounded-full bg-agency-accent flex items-center justify-center text-agency-primary font-black text-xs uppercase tracking-tighter scale-50 group-hover:scale-100 transition-transform duration-500">
-                                            VIEW WORK
+                                <Link href={`/portfolio/${project.slug}`} className="block">
+                                    <div className="relative aspect-video rounded-[40px] overflow-hidden bg-agency-primary/5 dark:bg-white/5 mb-8">
+                                        {project.featured_image ? (
+                                            <img 
+                                                src={project.featured_image} 
+                                                alt={project.title} 
+                                                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                                            />
+                                        ) : (
+                                            <div className="absolute inset-0 bg-gradient-to-br from-agency-accent/20 to-agency-primary/20 group-hover:scale-110 transition-transform duration-700 ease-out"></div>
+                                        )}
+                                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 backdrop-blur-md bg-agency-primary/20">
+                                            <div className="size-24 rounded-full bg-agency-accent flex items-center justify-center text-agency-primary font-black text-xs uppercase tracking-tighter scale-50 group-hover:scale-100 transition-transform duration-500">
+                                                VIEW WORK
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                
-                                <div className="px-4">
-                                    <span className="text-agency-accent font-bold uppercase tracking-[0.3em] text-[10px] mb-4 block">
-                                        {project.category}
-                                    </span>
-                                    <h3 className="text-4xl font-black uppercase tracking-tighter text-agency-primary dark:text-white mb-4 transition-colors group-hover:text-agency-accent">
-                                        {project.title}
-                                    </h3>
-                                    <p className="text-agency-primary/60 dark:text-white/60 mb-6 font-light leading-relaxed max-w-lg">
-                                        {project.description}
-                                    </p>
-                                    <div className="flex flex-wrap gap-2">
-                                        {project.tags.map(tag => (
-                                            <span key={tag} className="text-[10px] font-bold uppercase tracking-widest text-agency-primary/30 dark:text-white/30 border border-agency-primary/10 dark:border-white/10 px-3 py-1 rounded-full group-hover:border-agency-accent/30 transition-colors">
-                                                {tag}
-                                            </span>
-                                        ))}
+                                    
+                                    <div className="px-4">
+                                        <span className="text-agency-accent font-bold uppercase tracking-[0.3em] text-[10px] mb-4 block">
+                                            {project.client || 'Featured Project'}
+                                        </span>
+                                        <h3 className="text-4xl font-black uppercase tracking-tighter text-agency-primary dark:text-white mb-4 transition-colors group-hover:text-agency-accent">
+                                            {project.title}
+                                        </h3>
+                                        <p className="text-agency-primary/60 dark:text-white/60 mb-6 font-light leading-relaxed max-w-lg">
+                                            {project.description}
+                                        </p>
+                                        <div className="flex flex-wrap gap-2">
+                                            {project.technologies?.map(tag => (
+                                                <span key={tag} className="text-[10px] font-bold uppercase tracking-widest text-agency-primary/30 dark:text-white/30 border border-agency-primary/10 dark:border-white/10 px-3 py-1 rounded-full group-hover:border-agency-accent/30 transition-colors">
+                                                    {tag}
+                                                </span>
+                                            ))}
+                                        </div>
                                     </div>
-                                </div>
+                                </Link>
                             </AnimatedSection>
                         ))}
                     </div>
+                    
+                    {/* Pagination */}
+                    {portfolioItems.links.length > 3 && (
+                        <div className="mt-24 flex justify-center gap-4">
+                            {portfolioItems.links.map((link, i) => (
+                                <Link
+                                    key={i}
+                                    href={link.url || '#'}
+                                    className={`px-6 py-3 rounded-full text-xs font-bold uppercase tracking-widest transition-all ${
+                                        link.active 
+                                            ? 'bg-agency-accent text-agency-primary' 
+                                            : 'bg-white dark:bg-white/5 text-agency-primary/40 dark:text-white/40 hover:bg-agency-accent hover:text-agency-primary'
+                                    } ${!link.url ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                    dangerouslySetInnerHTML={{ __html: link.label }}
+                                />
+                            ))}
+                        </div>
+                    )}
                 </div>
             </section>
 
