@@ -277,4 +277,9 @@
     .transform-gpu {
         transform: translateZ(0);
     }
+
+    .agency-grid-overlay {
+        background-image: linear-gradient(rgba(200, 200, 200, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(200, 200, 200, 0.1) 1px, transparent 1px);
+        background-size: 4rem 4rem;
+    }
 }

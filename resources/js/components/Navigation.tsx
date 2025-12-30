@@ -81,14 +81,8 @@ export const Navigation: React.FC<NavigationProps> = ({ className }) => {
 
     // Close menu on route change
     useEffect(() => {
-        const closeMenu = () => {
-            if (isMenuOpen) {
-                setIsMenuOpen(false);
-            }
-        };
-
-        closeMenu();
-    }, [url]); // Remove isMenuOpen from dependencies to avoid the warning
+        setIsMenuOpen(false);
+    }, [url]);
 
     // Handle menu toggle with enhanced GSAP animations
     const toggleMenu = () => {

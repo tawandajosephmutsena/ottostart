@@ -83,8 +83,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 >
                     <div className="w-40 md:w-56 aspect-[3/4] bg-gray-200 rounded-brand overflow-hidden shadow-2xl transition-transform duration-500 ease-out hover:scale-105 pointer-events-auto [transform:rotate(-6deg)]">
                         <div 
-                            className="w-full h-full bg-cover bg-center transition-transform duration-700 hover:scale-110" 
-                            style={{ backgroundImage: `url(${backgroundImages[0] || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop'})` }}
+                            style={{ '--bg-image': `url(${backgroundImages[0] || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop'})` } as React.CSSProperties} 
+                            className="w-full h-full bg-cover bg-center transition-transform duration-700 hover:scale-110 [background-image:var(--bg-image)]"
                         />
                     </div>
                 </div>
@@ -96,8 +96,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 >
                     <div className="w-48 md:w-64 aspect-square bg-gray-200 rounded-brand overflow-hidden shadow-2xl transition-transform duration-500 ease-out hover:scale-105 pointer-events-auto [transform:rotate(3deg)]">
                         <div 
-                            className="w-full h-full bg-cover bg-center transition-transform duration-700 hover:scale-110" 
-                            style={{ backgroundImage: `url(${backgroundImages[1] || 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?q=80&w=2670&auto=format&fit=crop'})` }}
+                            style={{ '--bg-image': `url(${backgroundImages[1] || 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?q=80&w=2670&auto=format&fit=crop'})` } as React.CSSProperties} 
+                            className="w-full h-full bg-cover bg-center transition-transform duration-700 hover:scale-110 [background-image:var(--bg-image)]"
                         />
                     </div>
                 </div>
@@ -109,8 +109,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 >
                     <div className="w-36 md:w-48 aspect-[4/3] bg-gray-200 rounded-brand overflow-hidden shadow-2xl transition-transform duration-500 ease-out hover:scale-105 pointer-events-auto [transform:rotate(5deg)]">
                         <div 
-                            className="w-full h-full bg-cover bg-center transition-transform duration-700 hover:scale-110" 
-                            style={{ backgroundImage: `url(${backgroundImages[2] || 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2670&auto=format&fit=crop'})` }}
+                            style={{ '--bg-image': `url(${backgroundImages[2] || 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2670&auto=format&fit=crop'})` } as React.CSSProperties} 
+                            className="w-full h-full bg-cover bg-center transition-transform duration-700 hover:scale-110 [background-image:var(--bg-image)]"
                         />
                     </div>
                 </div>
@@ -172,7 +172,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             </div>
 
             {/* Decorative Grid Overlay */}
-            <div className="fixed inset-0 pointer-events-none z-0 opacity-[0.03] dark:opacity-[0.05]" style={{ backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px)', backgroundSize: '4rem 4rem' }}></div>
+            <div className="fixed inset-0 pointer-events-none z-0 opacity-[0.03] dark:opacity-[0.05] agency-grid-overlay"></div>
         </section>
     );
 };

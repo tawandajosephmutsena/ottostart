@@ -102,8 +102,8 @@ export const FeaturedProjects: React.FC<FeaturedProjectsProps> = ({
                             <div className="aspect-[4/5] rounded-[40px] overflow-hidden mb-8 relative shadow-2xl">
                                 {project.featured_image ? (
                                     <div 
-                                        className="w-full h-full bg-cover bg-center transition-transform duration-1000 group-hover:scale-110"
-                                        style={{ backgroundImage: `url(${project.featured_image})` }}
+                                        style={{ '--bg-image': `url(${project.featured_image})` } as React.CSSProperties}
+                                        className="w-full h-full bg-cover bg-center transition-transform duration-1000 group-hover:scale-110 [background-image:var(--bg-image)]"
                                     />
                                 ) : (
                                     <div className="w-full h-full bg-gradient-to-br from-agency-accent/20 to-agency-accent/5 flex items-center justify-center text-8xl">

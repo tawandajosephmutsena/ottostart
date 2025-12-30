@@ -14,7 +14,6 @@ export default function Contact() {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        // Handle form submission here
         console.log('Form submitted:', formData);
     };
 
@@ -51,278 +50,167 @@ export default function Contact() {
     ];
 
     return (
-        <MainLayout title="Contact Us - Avant-Garde CMS">
-            {/* Hero Section */}
-            <section className="bg-gradient-to-br from-agency-neutral via-white to-agency-neutral/50 py-20 dark:from-agency-dark dark:via-agency-dark dark:to-agency-primary/5">
-                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <AnimatedSection
-                        animation="fade-in"
-                        className="text-center"
-                    >
-                        <h1 className="mb-6 font-display text-4xl font-bold text-agency-primary md:text-6xl dark:text-agency-neutral">
-                            Get In{' '}
-                            <span className="text-agency-accent">Touch</span>
+        <MainLayout title="Contact - Avant-Garde">
+            {/* Immersive Hero Section */}
+            <section className="bg-white dark:bg-agency-dark pt-40 pb-32 relative overflow-hidden">
+                {/* Background Branding Marquee */}
+                <div className="absolute top-20 left-0 w-full overflow-hidden opacity-[0.03] select-none pointer-events-none">
+                    <span className="text-[20vw] font-black uppercase whitespace-nowrap leading-none block marquee">
+                        CONTACT CONTACT CONTACT CONTACT
+                    </span>
+                </div>
+
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10 text-center md:text-left">
+                    <div className="max-w-4xl">
+                        <span className="text-agency-accent font-bold uppercase tracking-[0.4em] text-xs mb-8 block">Connect With Us</span>
+                        <h1 className="text-6xl md:text-9xl font-black uppercase tracking-tighter leading-[0.85] text-agency-primary dark:text-white mb-12">
+                            Start the <br/>
+                            <span className="opacity-30 italic">Dialogue.</span>
                         </h1>
-                        <p className="mx-auto max-w-3xl text-xl leading-relaxed text-agency-primary/70 md:text-2xl dark:text-agency-neutral/70">
-                            Ready to start your next project? We'd love to hear
-                            from you. Let's discuss how we can bring your vision
-                            to life.
+                        <p className="text-xl md:text-3xl text-agency-primary/60 dark:text-white/60 leading-relaxed font-light">
+                            Whether you have a specific project in mind or just want to explore possibilities, 
+                            we're ready to listen and build something extraordinary together.
                         </p>
-                    </AnimatedSection>
+                    </div>
                 </div>
             </section>
 
-            {/* Contact Form & Info */}
-            <section className="bg-white py-20 dark:bg-agency-dark">
+            {/* Contact Form & Info - Premium Side-by-Side */}
+            <section className="bg-agency-secondary dark:bg-[#0a0a0a] py-40 border-y border-agency-primary/5 dark:border-white/5">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div className="grid gap-12 lg:grid-cols-2">
-                        {/* Contact Form */}
-                        <AnimatedSection animation="slide-right">
-                            <div className="rounded-lg bg-agency-neutral/30 p-8 dark:bg-agency-primary/5">
-                                <h2 className="mb-6 font-display text-2xl font-bold text-agency-primary dark:text-agency-neutral">
-                                    Send us a message
-                                </h2>
-
-                                <form
-                                    onSubmit={handleSubmit}
-                                    className="space-y-6"
-                                >
-                                    <div className="grid gap-6 md:grid-cols-2">
-                                        <div>
-                                            <label
-                                                htmlFor="name"
-                                                className="mb-2 block text-sm font-medium text-agency-primary dark:text-agency-neutral"
-                                            >
-                                                Name *
-                                            </label>
-                                            <input
-                                                type="text"
-                                                id="name"
-                                                name="name"
-                                                required
-                                                value={formData.name}
-                                                onChange={handleChange}
-                                                className="w-full rounded-lg border border-agency-primary/20 px-4 py-3 focus:border-agency-accent focus:outline-none dark:border-agency-neutral/30 dark:bg-agency-dark dark:text-agency-neutral"
-                                                placeholder="Your name"
-                                            />
-                                        </div>
-
-                                        <div>
-                                            <label
-                                                htmlFor="email"
-                                                className="mb-2 block text-sm font-medium text-agency-primary dark:text-agency-neutral"
-                                            >
-                                                Email *
-                                            </label>
-                                            <input
-                                                type="email"
-                                                id="email"
-                                                name="email"
-                                                required
-                                                value={formData.email}
-                                                onChange={handleChange}
-                                                className="w-full rounded-lg border border-agency-primary/20 px-4 py-3 focus:border-agency-accent focus:outline-none dark:border-agency-neutral/30 dark:bg-agency-dark dark:text-agency-neutral"
-                                                placeholder="your@email.com"
-                                            />
-                                        </div>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-24">
+                        {/* Info Column */}
+                        <div>
+                            <span className="text-agency-accent font-bold uppercase tracking-[0.4em] text-xs mb-8 block">Inquiries</span>
+                            <h2 className="text-5xl md:text-7xl font-black uppercase tracking-tighter text-agency-primary dark:text-white mb-12">
+                                We're <span className="opacity-30">Listening.</span>
+                            </h2>
+                            
+                            <div className="space-y-12">
+                                {contactInfo.map((item, i) => (
+                                    <div key={i} className="group">
+                                        <span className="text-[10px] font-bold uppercase tracking-widest text-agency-accent mb-4 block">
+                                            {item.label}
+                                        </span>
+                                        {item.href ? (
+                                            <a href={item.href} className="text-3xl md:text-5xl font-black text-agency-primary dark:text-white hover:text-agency-accent transition-colors">
+                                                {item.value}
+                                            </a>
+                                        ) : (
+                                            <span className="text-3xl md:text-5xl font-black text-agency-primary dark:text-white">
+                                                {item.value}
+                                            </span>
+                                        )}
                                     </div>
+                                ))}
+                            </div>
 
-                                    <div>
-                                        <label
-                                            htmlFor="type"
-                                            className="mb-2 block text-sm font-medium text-agency-primary dark:text-agency-neutral"
-                                        >
-                                            Inquiry Type
-                                        </label>
-                                        <select
-                                            id="type"
-                                            name="type"
-                                            value={formData.type}
-                                            onChange={handleChange}
-                                            className="w-full rounded-lg border border-agency-primary/20 px-4 py-3 focus:border-agency-accent focus:outline-none dark:border-agency-neutral/30 dark:bg-agency-dark dark:text-agency-neutral"
-                                        >
-                                            <option value="general">
-                                                General Inquiry
-                                            </option>
-                                            <option value="project">
-                                                New Project
-                                            </option>
-                                            <option value="career">
-                                                Career Opportunity
-                                            </option>
-                                            <option value="support">
-                                                Support
-                                            </option>
-                                        </select>
-                                    </div>
+                            <div className="mt-20 pt-20 border-t border-agency-primary/5 dark:border-white/5">
+                                <h3 className="text-xs font-bold uppercase tracking-widest mb-6 opacity-40">Office Hours</h3>
+                                <div className="space-y-4 text-agency-primary/60 dark:text-white/60 font-bold uppercase tracking-tighter">
+                                    <p>Mon — Fri: 09:00 — 18:00</p>
+                                    <p>Sat: 10:00 — 14:00</p>
+                                    <p>Sun: Closed</p>
+                                </div>
+                            </div>
+                        </div>
 
-                                    <div>
-                                        <label
-                                            htmlFor="subject"
-                                            className="mb-2 block text-sm font-medium text-agency-primary dark:text-agency-neutral"
-                                        >
-                                            Subject
-                                        </label>
+                        {/* Form Column */}
+                        <AnimatedSection animation="slide-up">
+                            <div className="p-12 md:p-16 rounded-[40px] bg-white dark:bg-black/20 border border-agency-primary/5 dark:border-white/5">
+                                <form onSubmit={handleSubmit} className="space-y-8">
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-bold uppercase tracking-widest opacity-40 px-4" htmlFor="name-input">Full Name</label>
                                         <input
+                                            id="name-input"
                                             type="text"
-                                            id="subject"
-                                            name="subject"
-                                            value={formData.subject}
+                                            name="name"
+                                            value={formData.name}
                                             onChange={handleChange}
-                                            className="w-full rounded-lg border border-agency-primary/20 px-4 py-3 focus:border-agency-accent focus:outline-none dark:border-agency-neutral/30 dark:bg-agency-dark dark:text-agency-neutral"
-                                            placeholder="What's this about?"
+                                            placeholder="WHAT IS YOUR NAME?"
+                                            className="w-full h-16 rounded-full bg-agency-primary/5 dark:bg-white/5 border-none px-8 text-xs font-bold uppercase tracking-widest focus:ring-2 focus:ring-agency-accent transition-all"
                                         />
                                     </div>
-
-                                    <div>
-                                        <label
-                                            htmlFor="message"
-                                            className="mb-2 block text-sm font-medium text-agency-primary dark:text-agency-neutral"
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-bold uppercase tracking-widest opacity-40 px-4" htmlFor="email-input">Email Address</label>
+                                        <input
+                                            id="email-input"
+                                            type="email"
+                                            name="email"
+                                            value={formData.email}
+                                            onChange={handleChange}
+                                            placeholder="HOW CAN WE REACH YOU?"
+                                            className="w-full h-16 rounded-full bg-agency-primary/5 dark:bg-white/5 border-none px-8 text-xs font-bold uppercase tracking-widest focus:ring-2 focus:ring-agency-accent transition-all"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-bold uppercase tracking-widest opacity-40 px-4" htmlFor="type-select">Inquiry Type</label>
+                                        <select
+                                            id="type-select"
+                                            name="type"
+                                            title="Inquiry Type"
+                                            value={formData.type}
+                                            onChange={handleChange}
+                                            className="w-full h-16 rounded-full bg-agency-primary/5 dark:bg-white/5 border-none px-8 text-xs font-bold uppercase tracking-widest focus:ring-2 focus:ring-agency-accent transition-all appearance-none"
                                         >
-                                            Message *
-                                        </label>
+                                            <option value="general">GENERAL INQUIRY</option>
+                                            <option value="project">NEW PROJECT</option>
+                                            <option value="career">CAREER OPPORTUNITY</option>
+                                        </select>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-bold uppercase tracking-widest opacity-40 px-4" htmlFor="message-input">Your Message</label>
                                         <textarea
-                                            id="message"
+                                            id="message-input"
                                             name="message"
-                                            required
                                             rows={6}
                                             value={formData.message}
                                             onChange={handleChange}
-                                            className="w-full resize-none rounded-lg border border-agency-primary/20 px-4 py-3 focus:border-agency-accent focus:outline-none dark:border-agency-neutral/30 dark:bg-agency-dark dark:text-agency-neutral"
-                                            placeholder="Tell us about your project or inquiry..."
+                                            placeholder="TELL US ABOUT YOUR VISION..."
+                                            className="w-full rounded-[30px] bg-agency-primary/5 dark:bg-white/5 border-none p-8 text-xs font-bold uppercase tracking-widest focus:ring-2 focus:ring-agency-accent transition-all resize-none"
                                         />
                                     </div>
-
                                     <button
                                         type="submit"
-                                        className="flex w-full items-center justify-center space-x-2 rounded-lg bg-agency-accent px-6 py-4 font-semibold text-white transition-colors duration-300 hover:bg-agency-accent/90"
+                                        className="w-full h-20 rounded-full bg-agency-accent text-agency-primary text-xs font-black uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-agency-accent/20 flex items-center justify-center gap-4"
                                     >
-                                        <Send className="h-5 w-5" />
-                                        <span>Send Message</span>
+                                        SEND MESSAGE <Send className="size-4" />
                                     </button>
                                 </form>
                             </div>
                         </AnimatedSection>
-
-                        {/* Contact Information */}
-                        <AnimatedSection animation="slide-left">
-                            <div className="space-y-8">
-                                <div>
-                                    <h2 className="mb-6 font-display text-2xl font-bold text-agency-primary dark:text-agency-neutral">
-                                        Contact Information
-                                    </h2>
-                                    <p className="mb-8 leading-relaxed text-agency-primary/70 dark:text-agency-neutral/70">
-                                        We're here to help and answer any
-                                        questions you might have. We look
-                                        forward to hearing from you.
-                                    </p>
-                                </div>
-
-                                <div className="space-y-6">
-                                    {contactInfo.map((contact) => (
-                                        <div
-                                            key={contact.label}
-                                            className="flex items-start space-x-4"
-                                        >
-                                            <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-agency-accent/10">
-                                                <contact.icon className="h-6 w-6 text-agency-accent" />
-                                            </div>
-                                            <div>
-                                                <div className="mb-1 font-semibold text-agency-primary dark:text-agency-neutral">
-                                                    {contact.label}
-                                                </div>
-                                                {contact.href ? (
-                                                    <a
-                                                        href={contact.href}
-                                                        className="text-agency-primary/70 transition-colors duration-300 hover:text-agency-accent dark:text-agency-neutral/70"
-                                                    >
-                                                        {contact.value}
-                                                    </a>
-                                                ) : (
-                                                    <span className="text-agency-primary/70 dark:text-agency-neutral/70">
-                                                        {contact.value}
-                                                    </span>
-                                                )}
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-
-                                <div className="rounded-lg bg-agency-neutral/30 p-6 dark:bg-agency-primary/5">
-                                    <h3 className="mb-4 font-semibold text-agency-primary dark:text-agency-neutral">
-                                        Office Hours
-                                    </h3>
-                                    <div className="space-y-2 text-sm text-agency-primary/70 dark:text-agency-neutral/70">
-                                        <div className="flex justify-between">
-                                            <span>Monday - Friday</span>
-                                            <span>9:00 AM - 6:00 PM</span>
-                                        </div>
-                                        <div className="flex justify-between">
-                                            <span>Saturday</span>
-                                            <span>10:00 AM - 4:00 PM</span>
-                                        </div>
-                                        <div className="flex justify-between">
-                                            <span>Sunday</span>
-                                            <span>Closed</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </AnimatedSection>
                     </div>
                 </div>
             </section>
 
-            {/* FAQ Section */}
-            <AnimatedSection
-                animation="fade-in"
-                className="bg-agency-neutral/30 py-20 dark:bg-agency-primary/5"
-            >
-                <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-                    <div className="mb-16 text-center">
-                        <h2 className="mb-4 font-display text-3xl font-bold text-agency-primary md:text-4xl dark:text-agency-neutral">
-                            Frequently Asked Questions
+            {/* Premium FAQ Bento */}
+            <section className="bg-white dark:bg-agency-dark py-40">
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <header className="mb-24 text-center">
+                        <span className="text-agency-accent font-bold uppercase tracking-[0.4em] text-xs mb-4 block">Quick Answers</span>
+                        <h2 className="text-5xl md:text-7xl font-black uppercase tracking-tighter text-agency-primary dark:text-white">
+                            Common <span className="opacity-30 italic">Queries.</span>
                         </h2>
-                        <p className="text-xl text-agency-primary/70 dark:text-agency-neutral/70">
-                            Quick answers to common questions
-                        </p>
-                    </div>
+                    </header>
 
-                    <div className="space-y-6">
-                        <div className="rounded-lg bg-white p-6 dark:bg-agency-dark">
-                            <h3 className="mb-2 font-semibold text-agency-primary dark:text-agency-neutral">
-                                How long does a typical project take?
-                            </h3>
-                            <p className="text-agency-primary/70 dark:text-agency-neutral/70">
-                                Project timelines vary depending on scope and
-                                complexity. Most projects take 4-12 weeks from
-                                start to finish.
-                            </p>
-                        </div>
-
-                        <div className="rounded-lg bg-white p-6 dark:bg-agency-dark">
-                            <h3 className="mb-2 font-semibold text-agency-primary dark:text-agency-neutral">
-                                Do you work with small businesses?
-                            </h3>
-                            <p className="text-agency-primary/70 dark:text-agency-neutral/70">
-                                Absolutely! We work with businesses of all
-                                sizes, from startups to enterprise companies.
-                            </p>
-                        </div>
-
-                        <div className="rounded-lg bg-white p-6 dark:bg-agency-dark">
-                            <h3 className="mb-2 font-semibold text-agency-primary dark:text-agency-neutral">
-                                What's included in your web development service?
-                            </h3>
-                            <p className="text-agency-primary/70 dark:text-agency-neutral/70">
-                                Our web development includes design,
-                                development, testing, deployment, and ongoing
-                                support.
-                            </p>
-                        </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        {[
+                            { q: 'How long does a typical project take?', a: 'Project timelines vary depending on scope and complexity. Most boutique projects take 4-12 weeks from start to finish.' },
+                            { q: 'Do you work with global clients?', a: 'Absolutely. We are a digital-first agency and have successfully delivered excellence for clients across 4 continents.' },
+                            { q: 'What is your primary tech stack?', a: 'We specialize in React, Next.js, and performance-first architectures tailored to each brand\'s unique needs.' }
+                        ].map((faq, i) => (
+                            <AnimatedSection key={i} animation="slide-up" delay={i * 100} className="p-10 rounded-[40px] bg-agency-secondary dark:bg-white/5 border border-agency-primary/5 dark:border-white/5">
+                                <h3 className="text-xl font-black uppercase tracking-tighter text-agency-primary dark:text-white mb-6 leading-tight">
+                                    {faq.q}
+                                </h3>
+                                <p className="text-agency-primary/60 dark:text-white/60 leading-relaxed font-light">
+                                    {faq.a}
+                                </p>
+                            </AnimatedSection>
+                        ))}
                     </div>
                 </div>
-            </AnimatedSection>
+            </section>
         </MainLayout>
     );
 }

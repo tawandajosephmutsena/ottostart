@@ -114,7 +114,10 @@ export const RecentInsights: React.FC<RecentInsightsProps> = ({
 
                                 <div className="hidden lg:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-80 aspect-video rounded-2xl overflow-hidden opacity-0 scale-50 group-hover:opacity-100 group-hover:scale-100 transition-all duration-500 pointer-events-none z-20 shadow-2xl">
                                     {insight.featured_image ? (
-                                        <div className="w-full h-full bg-cover bg-center" style={{ backgroundImage: `url(${insight.featured_image})` }} />
+                                        <div 
+                                            style={{ '--bg-image': `url(${insight.featured_image})` } as React.CSSProperties}
+                                            className="w-full h-full bg-cover bg-center [background-image:var(--bg-image)]" 
+                                        />
                                     ) : (
                                         <div className="w-full h-full bg-agency-accent flex items-center justify-center text-5xl">📝</div>
                                     )}
