@@ -1,156 +1,115 @@
 import AnimatedSection from '@/components/AnimatedSection';
 import MainLayout from '@/layouts/MainLayout';
-import { Github, Linkedin, Twitter } from 'lucide-react';
+import { Github, Linkedin, Twitter, ArrowUpRight } from 'lucide-react';
+import React from 'react';
 
 export default function Team() {
     const teamMembers = [
         {
             name: 'Sarah Johnson',
             position: 'Creative Director',
-            bio: 'Sarah leads our creative vision with over 8 years of experience in digital design and brand strategy.',
-            avatar: '/placeholder-avatar-1.jpg',
-            social: {
-                twitter: 'https://twitter.com',
-                linkedin: 'https://linkedin.com',
-                github: 'https://github.com',
-            },
+            bio: 'Sarah leads our creative vision with over 8 years of experience in digital design.',
+            image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=2574&auto=format&fit=crop',
+            social: { twitter: '#', linkedin: '#', github: '#' },
         },
         {
             name: 'Michael Chen',
             position: 'Lead Developer',
-            bio: 'Michael architets our technical solutions and leads development with expertise in modern web technologies.',
-            avatar: '/placeholder-avatar-2.jpg',
-            social: {
-                twitter: 'https://twitter.com',
-                linkedin: 'https://linkedin.com',
-                github: 'https://github.com',
-            },
+            bio: 'Michael architects our technical solutions with expertise in modern web systems.',
+            image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=2574&auto=format&fit=crop',
+            social: { twitter: '#', linkedin: '#', github: '#' },
         },
         {
             name: 'Emily Rodriguez',
-            position: 'UX Designer',
-            bio: 'Emily crafts user experiences that are both beautiful and functional, with a focus on user research and testing.',
-            avatar: '/placeholder-avatar-3.jpg',
-            social: {
-                twitter: 'https://twitter.com',
-                linkedin: 'https://linkedin.com',
-            },
+            position: 'UX Lead',
+            bio: 'Emily crafts user experiences that are both beautiful and functionally superior.',
+            image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=2576&auto=format&fit=crop',
+            social: { twitter: '#', linkedin: '#' },
         },
         {
             name: 'David Kim',
-            position: 'Full Stack Developer',
-            bio: 'David builds robust applications from front to back, specializing in React, Node.js, and cloud architecture.',
-            avatar: '/placeholder-avatar-4.jpg',
-            social: {
-                linkedin: 'https://linkedin.com',
-                github: 'https://github.com',
-            },
+            position: 'Full Stack',
+            bio: 'David builds robust applications from front to back, specializing in React and Node.',
+            image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=2574&auto=format&fit=crop',
+            social: { linkedin: '#', github: '#' },
         },
         {
             name: 'Lisa Thompson',
-            position: 'Project Manager',
-            bio: 'Lisa ensures projects run smoothly and on time, coordinating between teams and clients with exceptional skill.',
-            avatar: '/placeholder-avatar-5.jpg',
-            social: {
-                twitter: 'https://twitter.com',
-                linkedin: 'https://linkedin.com',
-            },
+            position: 'Project Lead',
+            bio: 'Lisa ensures projects run smoothly and on time, coordinating with exceptional skill.',
+            image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=2564&auto=format&fit=crop',
+            social: { twitter: '#', linkedin: '#' },
         },
         {
             name: 'Alex Martinez',
-            position: 'Mobile Developer',
-            bio: 'Alex creates amazing mobile experiences for iOS and Android, with expertise in React Native and Flutter.',
-            avatar: '/placeholder-avatar-6.jpg',
-            social: {
-                twitter: 'https://twitter.com',
-                github: 'https://github.com',
-            },
+            position: 'Mobile Dev',
+            bio: 'Alex creates amazing mobile experiences for iOS and Android using React Native.',
+            image: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=2574&auto=format&fit=crop',
+            social: { twitter: '#', github: '#' },
         },
     ];
 
     return (
-        <MainLayout title="Our Team - Avant-Garde CMS">
-            {/* Hero Section */}
-            <section className="bg-gradient-to-br from-agency-neutral via-white to-agency-neutral/50 py-20 dark:from-agency-dark dark:via-agency-dark dark:to-agency-primary/5">
-                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <AnimatedSection
-                        animation="fade-in"
-                        className="text-center"
-                    >
-                        <h1 className="mb-6 font-display text-4xl font-bold text-agency-primary md:text-6xl dark:text-agency-neutral">
-                            Meet Our{' '}
-                            <span className="text-agency-accent">Team</span>
+        <MainLayout title="Team - Avant-Garde">
+            {/* Minimal High-Impact Hero */}
+            <section className="bg-white dark:bg-agency-dark pt-40 pb-20 relative overflow-hidden">
+                <div className="absolute top-20 right-0 w-full overflow-hidden opacity-[0.03] select-none pointer-events-none text-right">
+                    <span className="text-[25vw] font-black uppercase whitespace-nowrap leading-none block marquee-reverse">
+                        COLLECTIVE GENIUS COLLECTIVE GENIUS
+                    </span>
+                </div>
+
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
+                    <div className="max-w-4xl">
+                        <span className="text-agency-accent font-bold uppercase tracking-[0.4em] text-xs mb-8 block">Who We Are</span>
+                        <h1 className="text-6xl md:text-9xl font-black uppercase tracking-tighter leading-[0.85] text-agency-primary dark:text-white mb-12">
+                            The <br/>
+                            <span className="opacity-30 italic">Dream Team.</span>
                         </h1>
-                        <p className="mx-auto max-w-3xl text-xl leading-relaxed text-agency-primary/70 md:text-2xl dark:text-agency-neutral/70">
-                            The talented individuals behind every successful
-                            project. We're passionate creators, innovators, and
-                            problem solvers.
+                        <p className="text-xl md:text-3xl text-agency-primary/60 dark:text-white/60 leading-relaxed font-light">
+                            A diverse collective of thinkers, designers, and builders 
+                            dedicated to pushing the boundaries of what's possible in the digital realm.
                         </p>
-                    </AnimatedSection>
+                    </div>
                 </div>
             </section>
 
-            {/* Team Grid */}
-            <section className="bg-white py-20 dark:bg-agency-dark">
+            {/* Creative Team Grid - Out-of-the-box card layout */}
+            <section className="bg-agency-secondary dark:bg-black/40 py-40">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-                        {teamMembers.map((member, index) => (
-                            <AnimatedSection
-                                key={member.name}
-                                animation="slide-up"
-                                className="group text-center"
-                            >
-                                <div className="rounded-lg bg-agency-neutral/30 p-8 transition-shadow duration-300 hover:shadow-lg dark:bg-agency-primary/5">
-                                    {/* Avatar Placeholder */}
-                                    <div className="mx-auto mb-6 flex h-32 w-32 items-center justify-center rounded-full bg-gradient-to-br from-agency-accent/20 to-agency-accent/10 transition-transform duration-300 group-hover:scale-105">
-                                        <div className="text-4xl">👤</div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+                        {teamMembers.map((member, i) => (
+                            <AnimatedSection key={i} animation="slide-up" delay={i * 100} className="group flex flex-col items-center">
+                                {/* Large Typography Portrait Card */}
+                                <div className="relative w-full aspect-[3/4] rounded-[60px] overflow-hidden mb-12 shadow-2xl bg-agency-primary/5 dark:bg-white/5 group-hover:-translate-y-4 transition-all duration-700">
+                                    <img 
+                                        src={member.image} 
+                                        alt={member.name} 
+                                        className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-1000 ease-out"
+                                    />
+                                    
+                                    {/* Overlay content on hover */}
+                                    <div className="absolute inset-0 bg-gradient-to-t from-agency-primary to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                                    
+                                    <div className="absolute inset-0 flex flex-col justify-end p-12 translate-y-20 group-hover:translate-y-0 transition-transform duration-700">
+                                        <div className="flex space-x-4 mb-6">
+                                            {member.social.twitter && <a href={member.social.twitter} aria-label={`${member.name} Twitter`} title={`${member.name} Twitter`} className="text-white hover:text-agency-accent transition-colors"><Twitter className="size-6" /></a>}
+                                            {member.social.linkedin && <a href={member.social.linkedin} aria-label={`${member.name} LinkedIn`} title={`${member.name} LinkedIn`} className="text-white hover:text-agency-accent transition-colors"><Linkedin className="size-6" /></a>}
+                                            {member.social.github && <a href={member.social.github} aria-label={`${member.name} GitHub`} title={`${member.name} GitHub`} className="text-white hover:text-agency-accent transition-colors"><Github className="size-6" /></a>}
+                                        </div>
+                                        <p className="text-white/70 text-sm leading-relaxed mb-4">
+                                            {member.bio}
+                                        </p>
                                     </div>
+                                </div>
 
-                                    <h3 className="mb-2 font-display text-xl font-bold text-agency-primary dark:text-agency-neutral">
-                                        {member.name}
+                                {/* Base Content */}
+                                <div className="text-center w-full px-4">
+                                    <span className="text-[10px] font-bold uppercase tracking-[0.5em] text-agency-accent mb-2 block">{member.position}</span>
+                                    <h3 className="text-3xl md:text-5xl font-black uppercase tracking-tighter text-agency-primary dark:text-white group-hover:italic group-hover:translate-x-2 transition-all duration-500">
+                                        {member.name.split(' ')[0]} <br/>
+                                        <span className="opacity-30">{member.name.split(' ')[1]}</span>
                                     </h3>
-
-                                    <div className="mb-4 font-medium text-agency-accent">
-                                        {member.position}
-                                    </div>
-
-                                    <p className="mb-6 leading-relaxed text-agency-primary/70 dark:text-agency-neutral/70">
-                                        {member.bio}
-                                    </p>
-
-                                    {/* Social Links */}
-                                    <div className="flex justify-center space-x-4">
-                                        {member.social.twitter && (
-                                            <a
-                                                href={member.social.twitter}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="text-agency-primary/60 transition-colors duration-300 hover:text-agency-accent dark:text-agency-neutral/60"
-                                            >
-                                                <Twitter className="h-5 w-5" />
-                                            </a>
-                                        )}
-                                        {member.social.linkedin && (
-                                            <a
-                                                href={member.social.linkedin}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="text-agency-primary/60 transition-colors duration-300 hover:text-agency-accent dark:text-agency-neutral/60"
-                                            >
-                                                <Linkedin className="h-5 w-5" />
-                                            </a>
-                                        )}
-                                        {member.social.github && (
-                                            <a
-                                                href={member.social.github}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="text-agency-primary/60 transition-colors duration-300 hover:text-agency-accent dark:text-agency-neutral/60"
-                                            >
-                                                <Github className="h-5 w-5" />
-                                            </a>
-                                        )}
-                                    </div>
                                 </div>
                             </AnimatedSection>
                         ))}
@@ -158,85 +117,46 @@ export default function Team() {
                 </div>
             </section>
 
-            {/* Culture Section */}
-            <AnimatedSection
-                animation="fade-in"
-                className="bg-agency-neutral/30 py-20 dark:bg-agency-primary/5"
-            >
+            {/* shared Culture Bento */}
+            <section className="bg-white dark:bg-agency-dark py-40 border-t border-agency-primary/5 dark:border-white/5">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div className="mb-16 text-center">
-                        <h2 className="mb-4 font-display text-3xl font-bold text-agency-primary md:text-5xl dark:text-agency-neutral">
-                            Our Culture
-                        </h2>
-                        <p className="mx-auto max-w-2xl text-xl text-agency-primary/70 dark:text-agency-neutral/70">
-                            What makes working at Avant-Garde special
-                        </p>
-                    </div>
-
-                    <div className="grid gap-8 md:grid-cols-3">
-                        <div className="rounded-lg bg-white p-8 text-center shadow-lg dark:bg-agency-dark">
-                            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-lg bg-agency-accent/10">
-                                <span className="text-2xl">🚀</span>
+                    <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
+                        <div className="md:col-span-8 p-16 rounded-[60px] bg-agency-accent text-agency-primary flex flex-col justify-between min-h-[400px]">
+                            <h2 className="text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none">
+                                We Value <br/>
+                                Quality Above <br/>
+                                <span className="italic">Everything.</span>
+                            </h2>
+                            <div className="flex justify-between items-end">
+                                <p className="max-w-md font-bold uppercase tracking-tight opacity-70">
+                                    Our culture is built on mutual respect, continuous learning, and a relentless pursuit of excellence.
+                                </p>
+                                <div className="size-20 rounded-full border border-agency-primary/20 flex items-center justify-center">
+                                    <ArrowUpRight className="size-10" />
+                                </div>
                             </div>
-                            <h3 className="mb-4 text-xl font-semibold text-agency-primary dark:text-agency-neutral">
-                                Innovation Driven
-                            </h3>
-                            <p className="text-agency-primary/70 dark:text-agency-neutral/70">
-                                We encourage experimentation and creative
-                                thinking in everything we do.
-                            </p>
                         </div>
-
-                        <div className="rounded-lg bg-white p-8 text-center shadow-lg dark:bg-agency-dark">
-                            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-lg bg-agency-accent/10">
-                                <span className="text-2xl">🤝</span>
-                            </div>
-                            <h3 className="mb-4 text-xl font-semibold text-agency-primary dark:text-agency-neutral">
-                                Collaborative
-                            </h3>
-                            <p className="text-agency-primary/70 dark:text-agency-neutral/70">
-                                We believe the best ideas come from working
-                                together and sharing knowledge.
-                            </p>
-                        </div>
-
-                        <div className="rounded-lg bg-white p-8 text-center shadow-lg dark:bg-agency-dark">
-                            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-lg bg-agency-accent/10">
-                                <span className="text-2xl">🌱</span>
-                            </div>
-                            <h3 className="mb-4 text-xl font-semibold text-agency-primary dark:text-agency-neutral">
-                                Growth Focused
-                            </h3>
-                            <p className="text-agency-primary/70 dark:text-agency-neutral/70">
-                                We invest in our team's professional development
-                                and career growth.
-                            </p>
+                        <div className="md:col-span-4 p-12 rounded-[60px] bg-agency-primary text-white flex flex-col justify-center text-center">
+                            <span className="text-6xl font-black mb-4">100%</span>
+                            <span className="text-xs font-bold uppercase tracking-widest opacity-60">Human Centered</span>
                         </div>
                     </div>
                 </div>
-            </AnimatedSection>
+            </section>
 
-            {/* Join Us Section */}
-            <AnimatedSection
-                animation="slide-up"
-                className="bg-agency-primary py-20 dark:bg-agency-dark"
-            >
-                <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
-                    <h2 className="mb-6 font-display text-3xl font-bold text-agency-neutral md:text-5xl">
-                        Join Our Team
+            {/* Join the Tribe */}
+            <section className="bg-agency-primary dark:bg-black py-40 relative">
+                <div className="mx-auto max-w-5xl px-4 text-center">
+                    <span className="text-agency-accent font-bold uppercase tracking-[0.4em] text-xs mb-8 block">Careers</span>
+                    <h2 className="text-5xl md:text-8xl font-black text-white uppercase tracking-tighter mb-12">
+                        Be Part of <br/>
+                        <span className="text-agency-accent italic">The Movement.</span>
                     </h2>
-                    <p className="mb-8 text-xl text-agency-neutral/80">
-                        We're always looking for talented individuals to join
-                        our growing team
-                    </p>
-                    <a
-                        href="/contact"
-                        className="inline-block rounded-lg bg-agency-accent px-8 py-4 font-semibold text-white transition-colors duration-300 hover:bg-agency-accent/90"
-                    >
-                        View Open Positions
+                    <a href="/contact" className="inline-flex h-20 px-12 items-center justify-center rounded-full bg-white text-agency-primary font-black text-lg uppercase tracking-widest hover:bg-agency-accent transition-all shadow-2xl">
+                        JOIN OUR TEAM
                     </a>
                 </div>
-            </AnimatedSection>
+            </section>
         </MainLayout>
     );
 }

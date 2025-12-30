@@ -1,159 +1,159 @@
 import AnimatedSection from '@/components/AnimatedSection';
 import MainLayout from '@/layouts/MainLayout';
 import { Link } from '@inertiajs/react';
+import { ArrowRight, Code, Cpu, Layout, Palette } from 'lucide-react';
+import React from 'react';
 
 export default function Services() {
     const services = [
         {
-            title: 'UI/UX Design',
-            description: 'Creating intuitive and beautiful user experiences that engage and convert.',
-            features: ['User Research', 'Wireframing', 'Prototyping', 'Visual Design', 'Usability Testing'],
-            icon: '🎨'
+            title: 'Digital Branding',
+            description: 'We craft unique digital identities that resonate with your audience and stand out in a crowded market.',
+            icon: Palette,
+            features: ['Visual Identity', 'Brand Voice', 'Design Systems', 'Logo Design'],
+            color: 'bg-blue-500',
+            image: 'https://images.unsplash.com/photo-1626785774573-4b799315345d?q=80&w=2671&auto=format&fit=crop'
         },
         {
-            title: 'Web Development',
-            description: 'Building fast, scalable, and modern web applications with cutting-edge technology.',
-            features: ['Frontend Development', 'Backend Development', 'API Integration', 'Performance Optimization', 'SEO'],
-            icon: '💻'
+            title: 'Experience Design',
+            description: 'Creating intuitive, engaging, and memorable user experiences across all digital touchpoints.',
+            icon: Layout,
+            features: ['UX Research', 'UI Design', 'Prototyping', 'User Testing'],
+            color: 'bg-agency-accent',
+            image: 'https://images.unsplash.com/photo-1586717791821-3f44a563eb4c?q=80&w=2670&auto=format&fit=crop'
         },
         {
-            title: 'Mobile Apps',
-            description: 'Native and cross-platform mobile solutions for iOS and Android.',
-            features: ['iOS Development', 'Android Development', 'React Native', 'Flutter', 'App Store Optimization'],
-            icon: '📱'
+            title: 'Tech Architectures',
+            description: 'Building robust, scalable, and high-performance technical foundations for your digital products.',
+            icon: Code,
+            features: ['Frontend Dev', 'Backend Systems', 'Mobile Apps', 'Cloud Infra'],
+            color: 'bg-purple-500',
+            image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=2670&auto=format&fit=crop'
         },
         {
-            title: 'E-commerce',
-            description: 'Complete e-commerce solutions that drive sales and enhance customer experience.',
-            features: ['Online Stores', 'Payment Integration', 'Inventory Management', 'Analytics', 'Marketing Tools'],
-            icon: '🛒'
-        },
-        {
-            title: 'Branding',
-            description: 'Comprehensive brand identity design that makes your business stand out.',
-            features: ['Logo Design', 'Brand Guidelines', 'Marketing Materials', 'Brand Strategy', 'Visual Identity'],
-            icon: '🎯'
-        },
-        {
-            title: 'Digital Marketing',
-            description: 'Strategic digital marketing campaigns that grow your online presence.',
-            features: ['SEO/SEM', 'Social Media', 'Content Marketing', 'Email Marketing', 'Analytics'],
-            icon: '📈'
+            title: 'AI Integration',
+            description: 'Leveraging cutting-edge artificial intelligence to automate processes and enhance user experiences.',
+            icon: Cpu,
+            features: ['Machine Learning', 'NLP', 'Data Science', 'Automations'],
+            color: 'bg-orange-500',
+            image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=2664&auto=format&fit=crop'
         }
     ];
 
     return (
-        <MainLayout title="Our Services - Avant-Garde">
-            {/* Immersive Hero Section */}
-            <section className="bg-white dark:bg-agency-dark pt-40 pb-32 relative overflow-hidden">
-                {/* Background Branding Marquee */}
-                <div className="absolute top-20 left-0 w-full overflow-hidden opacity-[0.03] select-none pointer-events-none">
-                    <span className="text-[20vw] font-black uppercase whitespace-nowrap leading-none block marquee">
-                        SERVICES SERVICES SERVICES SERVICES
+        <MainLayout title="Services - Avant-Garde">
+            {/* Artistic Hero Section */}
+            <section className="relative min-h-[80vh] flex flex-col items-center justify-center overflow-hidden bg-agency-secondary dark:bg-agency-dark pt-32">
+                <div className="absolute inset-0 z-0 opacity-[0.03] select-none pointer-events-none">
+                    <span className="text-[25vw] font-black uppercase whitespace-nowrap leading-none block marquee">
+                        CREATIVITY TECHNOLOGY INNOVATION
                     </span>
                 </div>
 
-                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
-                    <div className="max-w-4xl">
+                <div className="relative z-10 max-w-5xl px-4 text-center">
+                    <AnimatedSection animation="slide-up">
                         <span className="text-agency-accent font-bold uppercase tracking-[0.4em] text-xs mb-8 block">Our Expertise</span>
-                        <h1 className="text-6xl md:text-9xl font-black uppercase tracking-tighter leading-[0.85] text-agency-primary dark:text-white mb-12">
-                            Digital <br/>
-                            <span className="opacity-30 italic">Artistry.</span>
+                        <h1 className="text-7xl md:text-9xl font-black uppercase tracking-tighter leading-[0.85] text-agency-primary dark:text-white mb-12">
+                            Elevating <br/>
+                            <span className="opacity-30 italic">Interfaces.</span>
                         </h1>
-                        <p className="text-xl md:text-3xl text-agency-primary/60 dark:text-white/60 leading-relaxed font-light">
-                            We provide a comprehensive suite of digital services designed to 
-                            propel your brand into the future. From concept to code, we deliver excellence.
-                        </p>
-                    </div>
+                    </AnimatedSection>
                 </div>
             </section>
 
-            {/* Services Artistic Grid */}
-            <section className="bg-agency-secondary dark:bg-[#0a0a0a] py-40 border-t border-agency-primary/5">
+            {/* Out-of-the-box Services Grid */}
+            <section className="bg-white dark:bg-black/20 py-40">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-agency-primary/5 dark:bg-white/5 border border-agency-primary/5 dark:border-white/5 overflow-hidden rounded-[40px]">
                         {services.map((service, i) => (
-                            <AnimatedSection 
-                                key={service.title} 
-                                animation="slide-up" 
-                                delay={i * 100}
-                                className="group relative p-12 rounded-[40px] bg-white dark:bg-black/20 border border-agency-primary/5 dark:border-white/5 hover:border-agency-accent transition-all duration-500 hover:-translate-y-2 overflow-hidden"
-                            >
-                                {/* Decorative Number */}
-                                <span className="absolute top-8 right-8 text-4xl font-black opacity-5 group-hover:opacity-20 transition-opacity">0{i + 1}</span>
-                                
-                                <div className="size-16 rounded-2xl bg-agency-accent/10 flex items-center justify-center text-4xl mb-8 group-hover:scale-110 transition-transform duration-500">
-                                    {service.icon}
+                            <div key={i} className="group relative bg-white dark:bg-agency-dark p-12 md:p-20 overflow-hidden min-h-[500px] flex flex-col justify-between transition-all duration-700 hover:bg-agency-primary dark:hover:bg-agency-accent">
+                                {/* Image Reveal on Hover */}
+                                <div className="absolute inset-x-0 bottom-0 top-0 opacity-0 group-hover:opacity-20 transition-all duration-700 scale-110 group-hover:scale-100 pointer-events-none">
+                                    <img src={service.image} alt={service.title} className="w-full h-full object-cover filter grayscale" />
                                 </div>
-                                <h3 className="text-3xl font-black uppercase tracking-tighter text-agency-primary dark:text-white mb-6">
-                                    {service.title}
-                                </h3>
-                                <p className="text-agency-primary/60 dark:text-white/60 mb-8 font-light leading-relaxed">
-                                    {service.description}
-                                </p>
-                                <ul className="space-y-3 pt-8 border-t border-agency-primary/5 dark:border-white/5">
-                                    {service.features.map(f => (
-                                        <li key={f} className="flex items-center gap-3 text-sm font-bold uppercase tracking-widest text-agency-primary/40 dark:text-white/40 group-hover:text-agency-accent transition-colors">
-                                            <span className="size-1.5 rounded-full bg-agency-accent"></span>
-                                            {f}
-                                        </li>
-                                    ))}
-                                </ul>
-                            </AnimatedSection>
+
+                                <div className="relative z-10">
+                                    <div className="flex items-center justify-between mb-8">
+                                        <div className="size-16 rounded-2xl bg-agency-primary/5 dark:bg-white/5 flex items-center justify-center group-hover:bg-white/20 transition-colors">
+                                            <service.icon className="size-8 text-agency-accent group-hover:text-white dark:group-hover:text-agency-primary" />
+                                        </div>
+                                        <span className="text-5xl font-black opacity-10 font-display group-hover:text-white dark:group-hover:text-agency-primary group-hover:opacity-30">0{i + 1}</span>
+                                    </div>
+                                    
+                                    <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tighter text-agency-primary dark:text-white group-hover:text-white dark:group-hover:text-agency-primary mb-6 transition-all group-hover:translate-x-4">
+                                        {service.title}
+                                    </h2>
+                                    
+                                    <p className="text-lg text-agency-primary/60 dark:text-white/60 group-hover:text-white/80 dark:group-hover:text-agency-primary/80 leading-relaxed mb-12 max-w-sm transition-all group-hover:translate-x-4">
+                                        {service.description}
+                                    </p>
+                                </div>
+
+                                <div className="relative z-10">
+                                    <div className="flex flex-wrap gap-2 mb-10 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 delay-100">
+                                        {service.features.map((feature, j) => (
+                                            <span key={j} className="text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border border-current/20">
+                                                {feature}
+                                            </span>
+                                        ))}
+                                    </div>
+                                    
+                                    <Link href="/contact" className="inline-flex items-center gap-4 text-xs font-black uppercase tracking-widest text-agency-accent group-hover:text-white dark:group-hover:text-agency-primary">
+                                        Explore Scope <ArrowRight className="size-4 group-hover:translate-x-2 transition-transform" />
+                                    </Link>
+                                </div>
+                            </div>
                         ))}
                     </div>
                 </div>
             </section>
 
-            {/* Premium Process Section */}
-            <section className="bg-white dark:bg-agency-dark py-40">
+            {/* Process Section - Horizontal Flow */}
+            <section className="bg-agency-secondary dark:bg-agency-dark py-40 overflow-hidden">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div className="flex flex-col lg:flex-row justify-between items-end gap-12 mb-32">
-                        <div className="max-w-2xl">
-                            <span className="text-agency-accent font-bold uppercase tracking-[0.4em] text-xs mb-4 block">Workflow</span>
-                            <h2 className="text-6xl md:text-8xl font-black uppercase tracking-tighter text-agency-primary dark:text-white">
-                                The <span className="opacity-30 italic">Process.</span>
-                            </h2>
-                        </div>
-                        <p className="text-xl text-agency-primary/60 dark:text-white/60 max-w-md text-right">
-                            Our methodology is as refined as our output, ensuring a seamless journey from idea to impact.
-                        </p>
-                    </div>
+                    <header className="mb-24">
+                        <span className="text-agency-accent font-bold uppercase tracking-[0.4em] text-xs mb-4 block">Our Process</span>
+                        <h2 className="text-5xl md:text-7xl font-black uppercase tracking-tighter text-agency-primary dark:text-white">
+                            From Vision <br/>
+                            <span className="opacity-30 italic">to Reality.</span>
+                        </h2>
+                    </header>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
                         {[
-                            { step: '01', title: 'Discovery', desc: 'Decoding your vision and user needs.' },
-                            { step: '02', title: 'Strategy', desc: 'Crafting the blueprint for success.' },
-                            { step: '03', title: 'Artistry', desc: 'Building perfection through design & code.' },
-                            { step: '04', title: 'Infinity', desc: 'Launching and evolving your digital asset.' }
-                        ].map((p, i) => (
-                            <AnimatedSection key={i} animation="slide-up" delay={i * 100} className="relative pt-12">
-                                <span className="text-9xl font-black absolute top-0 left-0 leading-none opacity-[0.03] select-none">{p.step}</span>
-                                <h3 className="text-2xl font-black uppercase tracking-tighter mb-4 relative z-10">{p.title}</h3>
-                                <p className="text-agency-primary/60 dark:text-white/60 relative z-10 leading-relaxed">{p.desc}</p>
+                            { step: '01', title: 'Discovery', desc: 'In-depth research and strategy to define the project foundations.' },
+                            { step: '02', title: 'Ideation', desc: 'Creative brainstorming and conceptual design to explore possibilities.' },
+                            { step: '03', title: 'Realization', desc: 'Technical execution and design refinement with iterative feedback.' },
+                            { step: '04', title: 'Infinity', desc: 'Launch and continuous optimization for long-term project success.' }
+                        ].map((item, i) => (
+                            <AnimatedSection key={i} animation="slide-up" delay={i * 200} className="relative group">
+                                <div className="text-[8rem] font-black text-agency-primary/5 dark:text-white/5 absolute -top-12 -left-4 pointer-events-none select-none group-hover:text-agency-accent/10 transition-colors">
+                                    {item.step}
+                                </div>
+                                <div className="relative z-10 pt-16">
+                                    <h3 className="text-2xl font-black uppercase tracking-tighter text-agency-primary dark:text-white mb-4">
+                                        {item.title}
+                                    </h3>
+                                    <p className="text-agency-primary/60 dark:text-white/60 leading-relaxed">
+                                        {item.desc}
+                                    </p>
+                                </div>
                             </AnimatedSection>
                         ))}
                     </div>
                 </div>
             </section>
 
-            {/* CTA Shared Component/Style */}
-            <section className="bg-agency-primary dark:bg-white text-white dark:text-agency-primary py-40 text-center relative overflow-hidden">
-                <div className="mx-auto max-w-4xl px-4 relative z-10">
-                    <h2 className="text-6xl md:text-9xl font-black uppercase tracking-tighter mb-12">
-                        Get <br/>
-                        <span className="italic opacity-30">Started.</span>
+            {/* shared CTA */}
+            <section className="bg-agency-primary dark:bg-black py-40 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-1/2 h-full bg-agency-accent/5 blur-[120px] rounded-full pointer-events-none"></div>
+                <div className="mx-auto max-w-5xl px-4 text-center relative z-10">
+                    <h2 className="text-5xl md:text-8xl font-black text-white uppercase tracking-tighter leading-tight mb-12">
+                        Ready to <span className="text-agency-accent italic">Evolve?</span>
                     </h2>
-                    <Link
-                        href="/contact"
-                        className="inline-flex h-20 px-12 items-center justify-center rounded-full bg-agency-accent text-agency-primary text-xl font-black uppercase tracking-tighter hover:scale-105 transition-all shadow-2xl"
-                    >
-                        TRANSFORM YOUR BRAND
+                    <Link href="/contact" className="inline-flex h-20 px-12 items-center justify-center rounded-full bg-agency-accent text-agency-primary font-black text-lg uppercase tracking-widest hover:scale-105 transition-all shadow-2xl shadow-agency-accent/20">
+                        Start your journey <ArrowRight className="ml-4 size-6" />
                     </Link>
-                </div>
-                {/* Background Large Text */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full opacity-[0.05] pointer-events-none select-none">
-                    <span className="text-[30vw] font-black uppercase whitespace-nowrap leading-none">BUILD WITH US</span>
                 </div>
             </section>
         </MainLayout>

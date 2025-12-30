@@ -1,10 +1,10 @@
-import { Button } from '@/components/ui/button';
 import { useMagneticEffect } from '@/hooks/useAnimations';
 import { cn } from '@/lib/utils';
+import { SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { X } from 'lucide-react';
+import { X, LogIn, UserPlus, LayoutDashboard } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react';
 
 interface NavigationProps {
@@ -24,7 +24,8 @@ const navigationItems = [
 export const Navigation: React.FC<NavigationProps> = ({ className }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
-    const { url } = usePage();
+    const { url, props } = usePage<SharedData>();
+    const { auth } = props;
     const navRef = useRef<HTMLElement>(null);
     const logoRef = useRef<HTMLDivElement>(null);
 
@@ -46,14 +47,14 @@ export const Navigation: React.FC<NavigationProps> = ({ className }) => {
         // Create scroll trigger for navigation hide/show
         const showAnim = gsap.fromTo(
             navRef.current,
-            { yPercent: -100 },
-            { yPercent: 0, duration: 0.3, ease: 'power2.out', paused: true },
+            { yPercent: -120 },
+            { yPercent: 0, duration: 0.4, ease: 'power3.out', paused: true },
         );
 
         const hideAnim = gsap.fromTo(
             navRef.current,
             { yPercent: 0 },
-            { yPercent: -100, duration: 0.3, ease: 'power2.out', paused: true },
+            { yPercent: -120, duration: 0.4, ease: 'power3.in', paused: true },
         );
 
         ScrollTrigger.create({
@@ -63,7 +64,7 @@ export const Navigation: React.FC<NavigationProps> = ({ className }) => {
                 if (self.direction === -1) {
                     showAnim.play();
                     hideAnim.pause();
-                } else if (self.direction === 1 && self.progress > 0.1) {
+                } else if (self.direction === 1 && self.progress > 0.05) {
                     hideAnim.play();
                     showAnim.pause();
                 }
@@ -71,7 +72,7 @@ export const Navigation: React.FC<NavigationProps> = ({ className }) => {
         });
 
         window.addEventListener('scroll', handleScroll);
-        handleScroll(); // Check initial scroll position
+        handleScroll();
 
         return () => {
             window.removeEventListener('scroll', handleScroll);
@@ -81,13 +82,12 @@ export const Navigation: React.FC<NavigationProps> = ({ className }) => {
 
     // Close menu on route change
     useEffect(() => {
-        setIsMenuOpen(false);
-    }, [url]);
+        if (isMenuOpen) {
+            setIsMenuOpen(false);
+        }
+    }, [url, isMenuOpen]);
 
-    // Handle menu toggle with enhanced GSAP animations
-    const toggleMenu = () => {
-        setIsMenuOpen(!isMenuOpen);
-    };
+    const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
     // Enhanced menu overlay animations
     useEffect(() => {
@@ -98,110 +98,23 @@ export const Navigation: React.FC<NavigationProps> = ({ className }) => {
         const contactInfo = document.querySelector('.menu-contact');
 
         if (isMenuOpen && overlay) {
-            // Show overlay
             gsap.set(overlay, { display: 'flex' });
-
-            // Animate background
-            gsap.fromTo(
-                menuBg,
-                { scaleY: 0, transformOrigin: 'top' },
-                { scaleY: 1, duration: 0.6, ease: 'power2.out' },
-            );
-
-            // Animate overlay opacity
-            gsap.fromTo(
-                overlay,
-                { opacity: 0 },
-                { opacity: 1, duration: 0.3, ease: 'power2.out' },
-            );
-
-            // Animate close button
-            gsap.fromTo(
-                closeButton,
-                { opacity: 0, rotation: -90, scale: 0.8 },
-                {
-                    opacity: 1,
-                    rotation: 0,
-                    scale: 1,
-                    duration: 0.4,
-                    delay: 0.3,
-                    ease: 'back.out(1.7)',
-                },
-            );
-
-            // Animate menu items with stagger
-            gsap.fromTo(
-                menuItems,
-                { y: 100, opacity: 0, rotationX: -90 },
-                {
-                    y: 0,
-                    opacity: 1,
-                    rotationX: 0,
-                    duration: 0.8,
-                    stagger: 0.1,
-                    delay: 0.4,
-                    ease: 'power2.out',
-                },
-            );
-
-            // Animate contact info
-            gsap.fromTo(
-                contactInfo,
-                { y: 50, opacity: 0 },
-                {
-                    y: 0,
-                    opacity: 1,
-                    duration: 0.6,
-                    delay: 0.8,
-                    ease: 'power2.out',
-                },
-            );
+            gsap.fromTo(menuBg, { scaleY: 0, transformOrigin: 'top' }, { scaleY: 1, duration: 0.8, ease: 'expo.out' });
+            gsap.fromTo(overlay, { opacity: 0 }, { opacity: 1, duration: 0.4 });
+            gsap.fromTo(closeButton, { opacity: 0, rotation: -90, scale: 0.5 }, { opacity: 1, rotation: 0, scale: 1, duration: 0.5, delay: 0.4, ease: 'back.out(2)' });
+            gsap.fromTo(menuItems, { y: 120, opacity: 0, skewY: 10 }, { y: 0, opacity: 1, skewY: 0, duration: 1, stagger: 0.1, delay: 0.3, ease: 'expo.out' });
+            gsap.fromTo(contactInfo, { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, delay: 0.8, ease: 'power3.out' });
         } else if (!isMenuOpen && overlay) {
-            // Hide overlay with reverse animation
-            const tl = gsap.timeline({
-                onComplete: () => {
-                    gsap.set(overlay, { display: 'none' });
-                },
+            const tl = gsap.timeline({ 
+                onComplete: () => { 
+                    gsap.set(overlay, { display: 'none' }); 
+                } 
             });
-
-            tl.to(contactInfo, {
-                y: 50,
-                opacity: 0,
-                duration: 0.3,
-                ease: 'power2.out',
-            })
-                .to(
-                    menuItems,
-                    {
-                        y: -50,
-                        opacity: 0,
-                        duration: 0.4,
-                        stagger: 0.05,
-                        ease: 'power2.out',
-                    },
-                    '-=0.2',
-                )
-                .to(
-                    closeButton,
-                    {
-                        opacity: 0,
-                        rotation: 90,
-                        scale: 0.8,
-                        duration: 0.3,
-                        ease: 'power2.out',
-                    },
-                    '-=0.3',
-                )
-                .to(
-                    overlay,
-                    { opacity: 0, duration: 0.3, ease: 'power2.out' },
-                    '-=0.2',
-                )
-                .to(
-                    menuBg,
-                    { scaleY: 0, duration: 0.4, ease: 'power2.out' },
-                    '-=0.3',
-                );
+            tl.to(contactInfo, { y: 40, opacity: 0, duration: 0.3 })
+              .to(menuItems, { y: -100, opacity: 0, skewY: -5, duration: 0.5, stagger: 0.05, ease: 'expo.in' }, '-=0.2')
+              .to(closeButton, { opacity: 0, scale: 0.5, duration: 0.3 }, '-=0.4')
+              .to(overlay, { opacity: 0, duration: 0.4 }, '-=0.3')
+              .to(menuBg, { scaleY: 0, duration: 0.6, ease: 'expo.inOut' }, '-=0.3');
         }
     }, [isMenuOpen]);
 
@@ -211,17 +124,18 @@ export const Navigation: React.FC<NavigationProps> = ({ className }) => {
             <nav
                 ref={navRef}
                 className={cn(
-                    'fixed top-6 left-1/2 -translate-x-1/2 z-[100] transition-all duration-700 w-[95%] max-w-7xl px-6 rounded-full border border-current/10 bg-white/10 dark:bg-black/10 backdrop-blur-2xl shadow-2xl',
-                    isScrolled ? 'top-4 py-3' : 'top-8 py-4',
+                    'fixed z-[100] transition-all duration-700 left-0 right-0 px-4 md:px-8',
+                    isScrolled ? 'top-4' : 'top-8',
                     className,
                 )}
             >
-                <div className="flex h-12 items-center justify-between">
-                    {/* Logo with magnetic effect */}
-                    <Link
-                        href="/"
-                        className="flex items-center space-x-3 font-display relative z-10 group"
-                    >
+                <div className={cn(
+                    'mx-auto max-w-7xl flex h-16 items-center justify-between px-6 rounded-full border transition-all duration-500',
+                    'bg-white/80 dark:bg-black/80 backdrop-blur-2xl shadow-2xl border-white/20 dark:border-white/5',
+                    isScrolled ? 'py-2' : 'py-4'
+                )}>
+                    {/* Logo */}
+                    <Link href="/" className="flex items-center space-x-3 font-display relative z-10 group">
                         <div
                             ref={logoRef}
                             className="size-10 rounded-xl bg-agency-accent flex items-center justify-center transition-transform duration-500 group-hover:rotate-[15deg] group-hover:scale-110 shadow-lg shadow-agency-accent/20"
@@ -235,16 +149,16 @@ export const Navigation: React.FC<NavigationProps> = ({ className }) => {
                     </Link>
 
                     {/* Desktop Navigation */}
-                    <div className="hidden md:flex items-center gap-2">
+                    <div className="hidden lg:flex items-center gap-1">
                         {navigationItems.map((item) => (
                             <Link
                                 key={item.name}
                                 href={item.href}
                                 className={cn(
-                                    'px-4 py-2 text-[13px] font-bold uppercase tracking-widest transition-all duration-500 rounded-full hover:bg-agency-accent/10',
+                                    'px-4 py-2 text-[11px] font-bold uppercase tracking-widest transition-all duration-500 rounded-full',
                                     url === item.href
                                         ? 'bg-agency-accent text-agency-primary shadow-lg shadow-agency-accent/20'
-                                        : 'text-agency-primary dark:text-white hover:text-agency-accent',
+                                        : 'text-agency-primary/60 dark:text-white/60 hover:text-agency-accent hover:bg-agency-accent/5',
                                 )}
                             >
                                 {item.name}
@@ -252,22 +166,42 @@ export const Navigation: React.FC<NavigationProps> = ({ className }) => {
                         ))}
                     </div>
 
-                    {/* Action & Menu */}
-                    <div className="flex items-center gap-4">
-                        <Link 
-                            href="/contact" 
-                            className="hidden sm:inline-flex h-10 px-6 items-center justify-center rounded-full bg-agency-primary text-agency-secondary dark:bg-white dark:text-agency-primary font-bold text-xs uppercase tracking-widest hover:scale-105 transition-all shadow-xl"
-                        >
-                            Hire Us
-                        </Link>
+                    {/* Auth & Menu */}
+                    <div className="flex items-center gap-3">
+                        <div className="hidden md:flex items-center gap-2 mr-2">
+                            {auth?.user ? (
+                                <Link
+                                    href="/dashboard"
+                                    className="h-10 px-5 inline-flex items-center gap-2 rounded-full bg-agency-accent/10 border border-agency-accent/20 text-agency-accent font-bold text-[10px] uppercase tracking-widest hover:bg-agency-accent hover:text-agency-primary transition-all"
+                                >
+                                    <LayoutDashboard className="size-3" /> Dashboard
+                                </Link>
+                            ) : (
+                                <>
+                                    <Link
+                                        href="/login"
+                                        className="h-10 px-5 inline-flex items-center gap-2 rounded-full text-agency-primary/60 dark:text-white/60 font-bold text-[10px] uppercase tracking-widest hover:text-agency-accent transition-all"
+                                    >
+                                        <LogIn className="size-3" /> Sign In
+                                    </Link>
+                                    <Link
+                                        href="/register"
+                                        className="h-10 px-5 inline-flex items-center gap-2 rounded-full bg-agency-primary dark:bg-white text-white dark:text-agency-primary font-bold text-[10px] uppercase tracking-widest hover:scale-105 transition-all shadow-lg"
+                                    >
+                                        <UserPlus className="size-3" /> Sign Up
+                                    </Link>
+                                </>
+                            )}
+                        </div>
 
                         <button
                             className={cn(
                                 'size-11 rounded-full border border-current/10 flex flex-col items-center justify-center gap-1.5 transition-all duration-500 hover:bg-agency-accent group',
-                                isMenuOpen && 'bg-agency-accent'
+                                isMenuOpen && 'bg-agency-accent border-transparent'
                             )}
                             onClick={toggleMenu}
-                            aria-label="Toggle menu"
+                            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+                            title={isMenuOpen ? "Close menu" : "Open menu"}
                         >
                             <div className={cn('w-5 h-0.5 bg-current transition-all duration-500', isMenuOpen && 'rotate-45 translate-y-2')}></div>
                             <div className={cn('w-5 h-0.5 bg-current transition-all duration-500', isMenuOpen && 'opacity-0')}></div>
@@ -278,60 +212,61 @@ export const Navigation: React.FC<NavigationProps> = ({ className }) => {
             </nav>
 
             {/* Full-Screen Menu Overlay */}
-            <div
-                id="menu-overlay"
-                className={cn(
-                    'fixed inset-0 z-50 flex flex-col items-center justify-center',
-                    'hidden', // Initially hidden, controlled by GSAP
-                )}
-            >
-                {/* Animated Background */}
-                <div className="menu-bg absolute inset-0 bg-agency-primary dark:bg-agency-dark"></div>
+            <div id="menu-overlay" className="fixed inset-0 z-[150] hidden flex-col items-center justify-center overflow-hidden">
+                <div className="menu-bg absolute inset-0 bg-agency-secondary dark:bg-agency-dark"></div>
+                
+                <div className="absolute top-0 left-0 w-full h-full opacity-[0.02] pointer-events-none select-none agency-grid-overlay"></div>
 
-                {/* Close Button */}
-                <Button
-                    variant="ghost"
-                    size="icon"
-                    className="menu-close absolute top-4 right-4 z-10 text-agency-neutral transition-all duration-300 hover:scale-110 hover:text-agency-accent"
+                <button
+                    className="menu-close absolute top-8 right-8 size-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-agency-primary dark:text-white hover:bg-agency-accent hover:text-agency-primary transition-all duration-500 z-50 group"
                     onClick={toggleMenu}
                     aria-label="Close menu"
+                    title="Close menu"
                 >
-                    <X className="h-8 w-8" />
-                </Button>
+                    <X className="size-8 group-hover:rotate-90 transition-transform duration-500" />
+                </button>
 
-                {/* Menu Items */}
-                <div className="z-10 flex flex-col items-center space-y-8">
-                    {navigationItems.map((item) => (
-                        <Link
-                            key={item.name}
-                            href={item.href}
-                            className={cn(
-                                'menu-item font-display text-4xl font-bold md:text-6xl',
-                                'text-agency-neutral hover:text-agency-accent',
-                                'transform-gpu transition-all duration-500 hover:scale-110',
-                                'hover:drop-shadow-lg',
-                                url === item.href &&
-                                    'scale-110 text-agency-accent',
-                            )}
-                            onClick={() => setIsMenuOpen(false)}
-                        >
-                            {item.name}
-                        </Link>
-                    ))}
+                <div className="z-10 flex flex-col md:flex-row items-center justify-between w-full max-w-7xl px-8">
+                    <div className="flex flex-col space-y-4 md:space-y-6 items-center md:items-start">
+                        {navigationItems.map((item) => (
+                            <Link
+                                key={item.name}
+                                href={item.href}
+                                className={cn(
+                                    'menu-item font-display text-5xl md:text-8xl font-black uppercase tracking-tighter transition-all hover:text-agency-accent hover:italic hover:pl-8',
+                                    url === item.href ? 'text-agency-accent italic' : 'text-agency-primary dark:text-white'
+                                )}
+                            >
+                                {item.name}
+                            </Link>
+                        ))}
+                    </div>
+
+                    <div className="menu-contact mt-20 md:mt-0 flex flex-col items-center md:items-end text-center md:text-right space-y-8">
+                        {auth?.user ? (
+                             <Link href="/dashboard" className="menu-item text-2xl font-black uppercase tracking-tighter text-agency-accent flex items-center gap-4">
+                                DASHBOARD <LayoutDashboard className="size-6" />
+                             </Link>
+                        ) : (
+                            <div className="flex flex-col items-center md:items-end space-y-4">
+                                <Link href="/login" className="menu-item text-4xl font-black uppercase tracking-tighter text-agency-primary dark:text-white hover:text-agency-accent">LOGIN</Link>
+                                <Link href="/register" className="menu-item text-4xl font-black uppercase tracking-tighter text-agency-primary dark:text-white hover:text-agency-accent">REGISTER</Link>
+                            </div>
+                        )}
+                        
+                        <div className="pt-12 border-t border-agency-primary/5 dark:border-white/5">
+                            <p className="text-xs font-bold uppercase tracking-[0.4em] opacity-40 mb-4">New Business</p>
+                            <a href="mailto:hello@avant-garde.com" className="text-2xl font-black text-agency-primary dark:text-white hover:text-agency-accent transition-colors">
+                                hello@avant-garde.com
+                            </a>
+                        </div>
+                    </div>
                 </div>
 
-                {/* Contact Info */}
-                <div className="menu-contact absolute right-8 bottom-8 left-8 z-10 text-center">
-                    <p className="mb-2 text-sm text-agency-neutral/70">
-                        Ready to create something amazing?
-                    </p>
-                    <Link
-                        href="/contact"
-                        className="inline-block text-lg font-medium text-agency-accent transition-all duration-300 hover:scale-105 hover:text-agency-neutral"
-                        onClick={() => setIsMenuOpen(false)}
-                    >
-                        Get in touch
-                    </Link>
+                <div className="absolute bottom-0 left-0 w-full opacity-[0.03] pointer-events-none select-none overflow-hidden">
+                    <span className="text-[30vw] font-black uppercase whitespace-nowrap leading-none block marquee">
+                        NAVIGATE BEYOND NAVIGATE BEYOND
+                    </span>
                 </div>
             </div>
         </>
