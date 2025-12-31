@@ -19,7 +19,8 @@ class BlogController extends Controller
         $category = $request->get('category', 'all');
         $search = $request->get('search', '');
         
-        $cacheKey = "blog.index.{$page}.{$category}.{$search}";
+        $version = \Illuminate\Support\Facades\Cache::get('blog.cache_version', 1);
+        $cacheKey = "blog.index.{$version}.{$page}.{$category}.{$search}";
 
         $insights = \Illuminate\Support\Facades\Cache::remember($cacheKey, 60 * 60, function () use ($request) {
             $query = Insight::published()

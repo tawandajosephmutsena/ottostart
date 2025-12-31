@@ -25,7 +25,6 @@ class PageFactory extends Factory
             'meta_description' => fake()->paragraph(),
             'template' => 'default',
             'is_published' => fake()->boolean(),
-            'published_at' => fake()->dateTime(),
             'content' => [
                 'blocks' => [
                     [

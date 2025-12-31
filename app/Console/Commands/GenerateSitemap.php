@@ -32,57 +32,67 @@ class GenerateSitemap extends Command
     {
         $this->info('Generating sitemap...');
 
-        $baseUrl = config('app.url');
-        $xml = '<?xml version="1.0" encoding="UTF-8"?>';
-        $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
-
-        // Static Pages
-        $this->addUrl($xml, $baseUrl, '', 'daily', '1.0');
-        $this->addUrl($xml, $baseUrl, '/about', 'monthly', '0.8');
-        $this->addUrl($xml, $baseUrl, '/contact', 'monthly', '0.8');
-        $this->addUrl($xml, $baseUrl, '/portfolio', 'weekly', '0.9');
-        $this->addUrl($xml, $baseUrl, '/services', 'monthly', '0.9');
-        $this->addUrl($xml, $baseUrl, '/blog', 'weekly', '0.9');
-        $this->addUrl($xml, $baseUrl, '/team', 'monthly', '0.7');
+        $sitemap = \Spatie\Sitemap\Sitemap::create()
+            ->add(\Spatie\Sitemap\Tags\Url::create('/')
+                ->setPriority(1.0)
+                ->setChangeFrequency(\Spatie\Sitemap\Tags\Url::CHANGE_FREQUENCY_DAILY))
+            ->add(\Spatie\Sitemap\Tags\Url::create('/about')
+                ->setPriority(0.8)
+                ->setChangeFrequency(\Spatie\Sitemap\Tags\Url::CHANGE_FREQUENCY_MONTHLY))
+            ->add(\Spatie\Sitemap\Tags\Url::create('/contact')
+                ->setPriority(0.8)
+                ->setChangeFrequency(\Spatie\Sitemap\Tags\Url::CHANGE_FREQUENCY_MONTHLY))
+            ->add(\Spatie\Sitemap\Tags\Url::create('/portfolio')
+                ->setPriority(0.9)
+                ->setChangeFrequency(\Spatie\Sitemap\Tags\Url::CHANGE_FREQUENCY_WEEKLY))
+            ->add(\Spatie\Sitemap\Tags\Url::create('/services')
+                ->setPriority(0.9)
+                ->setChangeFrequency(\Spatie\Sitemap\Tags\Url::CHANGE_FREQUENCY_MONTHLY))
+            ->add(\Spatie\Sitemap\Tags\Url::create('/blog')
+                ->setPriority(0.9)
+                ->setChangeFrequency(\Spatie\Sitemap\Tags\Url::CHANGE_FREQUENCY_WEEKLY))
+            ->add(\Spatie\Sitemap\Tags\Url::create('/team')
+                ->setPriority(0.7)
+                ->setChangeFrequency(\Spatie\Sitemap\Tags\Url::CHANGE_FREQUENCY_MONTHLY));
 
         // Dynamic Pages
-        Page::where('is_published', true)->each(function ($page) use (&$xml, $baseUrl) {
-            $slug = $page->slug === 'home' ? '' : '/' . $page->slug;
-            $this->addUrl($xml, $baseUrl, $slug, 'weekly', '0.8', $page->updated_at);
+        Page::where('is_published', true)->each(function ($page) use ($sitemap) {
+            if ($page->slug === 'home') return;
+            // Avoid duplicates with static pages if they exist as dynamic pages
+            if (in_array($page->slug, ['about', 'contact', 'portfolio', 'services', 'blog', 'team'])) return;
+
+            $sitemap->add(\Spatie\Sitemap\Tags\Url::create("/{$page->slug}")
+                ->setPriority(0.8)
+                ->setChangeFrequency(\Spatie\Sitemap\Tags\Url::CHANGE_FREQUENCY_WEEKLY)
+                ->setLastModificationDate($page->updated_at));
         });
 
         // Portfolio
-        PortfolioItem::published()->each(function ($item) use (&$xml, $baseUrl) {
-            $this->addUrl($xml, $baseUrl, '/portfolio/' . $item->slug, 'monthly', '0.8', $item->updated_at);
+        PortfolioItem::published()->each(function ($item) use ($sitemap) {
+            $sitemap->add(\Spatie\Sitemap\Tags\Url::create("/portfolio/{$item->slug}")
+                ->setPriority(0.8)
+                ->setChangeFrequency(\Spatie\Sitemap\Tags\Url::CHANGE_FREQUENCY_MONTHLY)
+                ->setLastModificationDate($item->updated_at));
         });
 
         // Services
-        Service::published()->each(function ($item) use (&$xml, $baseUrl) {
-            $this->addUrl($xml, $baseUrl, '/services/' . $item->slug, 'monthly', '0.8', $item->updated_at);
+        Service::published()->each(function ($item) use ($sitemap) {
+            $sitemap->add(\Spatie\Sitemap\Tags\Url::create("/services/{$item->slug}")
+                ->setPriority(0.8)
+                ->setChangeFrequency(\Spatie\Sitemap\Tags\Url::CHANGE_FREQUENCY_MONTHLY)
+                ->setLastModificationDate($item->updated_at));
         });
 
         // Insights
-        Insight::published()->each(function ($item) use (&$xml, $baseUrl) {
-            $this->addUrl($xml, $baseUrl, '/blog/' . $item->slug, 'weekly', '0.7', $item->updated_at);
+        Insight::published()->each(function ($item) use ($sitemap) {
+            $sitemap->add(\Spatie\Sitemap\Tags\Url::create("/blog/{$item->slug}")
+                ->setPriority(0.7)
+                ->setChangeFrequency(\Spatie\Sitemap\Tags\Url::CHANGE_FREQUENCY_WEEKLY)
+                ->setLastModificationDate($item->updated_at));
         });
 
-        $xml .= '</urlset>';
-
-        File::put(public_path('sitemap.xml'), $xml);
+        $sitemap->writeToFile(public_path('sitemap.xml'));
 
         $this->info('Sitemap generated successfully at public/sitemap.xml');
-    }
-
-    private function addUrl(string &$xml, string $baseUrl, string $path, string $freq, string $priority, $date = null)
-    {
-        $url = rtrim($baseUrl, '/') . $path;
-        $lastmod = $date ? $date->toAtomString() : now()->toAtomString();
-
-        $xml .= '<url>';
-        $xml .= "<loc>{$url}</loc>";
-        $xml .= "<lastmod>{$lastmod}</lastmod>";
-        $xml .= "<changefreq>{$freq}</changefreq>";
-        $xml .= "<priority>{$priority}</priority>";
-        $xml .= '</url>';
     }
 }

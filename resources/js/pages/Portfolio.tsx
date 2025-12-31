@@ -83,52 +83,61 @@ export default function Portfolio({ portfolioItems }: Props) {
             <section className="bg-agency-secondary dark:bg-[#0a0a0a] py-40">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-                        {filteredProjects.map((project, i) => (
-                            <AnimatedSection 
-                                key={project.id} 
-                                animation="slide-up" 
-                                delay={i * 50}
-                                className="group cursor-pointer"
-                            >
-                                <Link href={`/portfolio/${project.slug}`} className="block">
-                                    <div className="relative aspect-video rounded-[40px] overflow-hidden bg-agency-primary/5 dark:bg-white/5 mb-8">
-                                        {project.featured_image ? (
-                                            <img 
-                                                src={project.featured_image} 
-                                                alt={project.title} 
-                                                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-                                            />
-                                        ) : (
-                                            <div className="absolute inset-0 bg-gradient-to-br from-agency-accent/20 to-agency-primary/20 group-hover:scale-110 transition-transform duration-700 ease-out"></div>
-                                        )}
-                                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 backdrop-blur-md bg-agency-primary/20">
-                                            <div className="size-24 rounded-full bg-agency-accent flex items-center justify-center text-agency-primary font-black text-xs uppercase tracking-tighter scale-50 group-hover:scale-100 transition-transform duration-500">
-                                                VIEW WORK
+                        {filteredProjects.length > 0 ? (
+                            filteredProjects.map((project, i) => (
+                                <AnimatedSection 
+                                    key={project.id} 
+                                    animation="slide-up" 
+                                    delay={i * 50}
+                                    className="group cursor-pointer"
+                                >
+                                    <Link href={`/portfolio/${project.slug}`} className="block">
+                                        <div className="relative aspect-video rounded-[40px] overflow-hidden bg-agency-primary/5 dark:bg-white/5 mb-8">
+                                            {project.featured_image ? (
+                                                <img 
+                                                    src={project.featured_image} 
+                                                    alt={project.title} 
+                                                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                                                />
+                                            ) : (
+                                                <div className="absolute inset-0 bg-gradient-to-br from-agency-accent/20 to-agency-primary/20 group-hover:scale-110 transition-transform duration-700 ease-out"></div>
+                                            )}
+                                            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 backdrop-blur-md bg-agency-primary/20">
+                                                <div className="size-24 rounded-full bg-agency-accent flex items-center justify-center text-agency-primary font-black text-xs uppercase tracking-tighter scale-50 group-hover:scale-100 transition-transform duration-500">
+                                                    VIEW WORK
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    
-                                    <div className="px-4">
-                                        <span className="text-agency-accent font-bold uppercase tracking-[0.3em] text-[10px] mb-4 block">
-                                            {project.client || 'Featured Project'}
-                                        </span>
-                                        <h3 className="text-4xl font-black uppercase tracking-tighter text-agency-primary dark:text-white mb-4 transition-colors group-hover:text-agency-accent">
-                                            {project.title}
-                                        </h3>
-                                        <p className="text-agency-primary/60 dark:text-white/60 mb-6 font-light leading-relaxed max-w-lg">
-                                            {project.description}
-                                        </p>
-                                        <div className="flex flex-wrap gap-2">
-                                            {project.technologies?.map(tag => (
-                                                <span key={tag} className="text-[10px] font-bold uppercase tracking-widest text-agency-primary/30 dark:text-white/30 border border-agency-primary/10 dark:border-white/10 px-3 py-1 rounded-full group-hover:border-agency-accent/30 transition-colors">
-                                                    {tag}
-                                                </span>
-                                            ))}
+                                        
+                                        <div className="px-4">
+                                            <span className="text-agency-accent font-bold uppercase tracking-[0.3em] text-[10px] mb-4 block">
+                                                {project.client || 'Featured Project'}
+                                            </span>
+                                            <h3 className="text-4xl font-black uppercase tracking-tighter text-agency-primary dark:text-white mb-4 transition-colors group-hover:text-agency-accent">
+                                                {project.title}
+                                            </h3>
+                                            <p className="text-agency-primary/60 dark:text-white/60 mb-6 font-light leading-relaxed max-w-lg">
+                                                {project.description}
+                                            </p>
+                                            <div className="flex flex-wrap gap-2">
+                                                {project.technologies?.map(tag => (
+                                                    <span key={tag} className="text-[10px] font-bold uppercase tracking-widest text-agency-primary/30 dark:text-white/30 border border-agency-primary/10 dark:border-white/10 px-3 py-1 rounded-full group-hover:border-agency-accent/30 transition-colors">
+                                                        {tag}
+                                                    </span>
+                                                ))}
+                                            </div>
                                         </div>
-                                    </div>
-                                </Link>
-                            </AnimatedSection>
-                        ))}
+                                    </Link>
+                                </AnimatedSection>
+                            ))
+                        ) : (
+                            <div className="col-span-full py-20 text-center">
+                                <h3 className="text-3xl font-black uppercase tracking-tighter mb-4 opacity-50">No projects found</h3>
+                                <p className="text-lg opacity-40 max-w-md mx-auto">
+                                    We couldn't find any projects matching your selection.
+                                </p>
+                            </div>
+                        )}
                     </div>
                     
                     {/* Pagination */}

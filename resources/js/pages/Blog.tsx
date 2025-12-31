@@ -78,58 +78,70 @@ export default function Blog({ insights, categories }: Props) {
             <section className="bg-agency-secondary dark:bg-[#0a0a0a] py-40">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-24">
-                        {filteredPosts.map((post, i) => (
-                            <AnimatedSection 
-                                key={post.id} 
-                                animation="slide-up" 
-                                delay={i * 100}
-                                className={cn(
-                                    'group flex flex-col',
-                                    i % 3 === 0 ? 'lg:col-span-8' : 'lg:col-span-4',
-                                    i % 2 !== 0 ? 'lg:translate-y-24' : ''
-                                )}
-                            >
-                                <Link href={`/blog/${post.slug}`} className="block">
-                                    <div className="relative aspect-[16/10] rounded-[60px] overflow-hidden mb-12 shadow-2xl bg-agency-primary/5 dark:bg-white/5">
-                                        {post.featured_image ? (
-                                            <img 
-                                                src={post.featured_image} 
-                                                alt={post.title} 
-                                                className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-1000 ease-out"
-                                            />
-                                        ) : (
-                                            <div className="w-full h-full bg-agency-accent/10"></div>
-                                        )}
-                                        <div className="absolute top-8 left-8">
-                                            <span className="px-4 py-2 rounded-full bg-agency-accent text-agency-primary text-[10px] font-black uppercase tracking-widest shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                                                {post.category?.name || 'Insight'}
-                                            </span>
-                                        </div>
-                                        <div className="absolute bottom-10 right-10 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-x-10 group-hover:translate-x-0">
-                                            <div className="size-20 rounded-full bg-white dark:bg-agency-accent flex items-center justify-center text-agency-primary dark:text-agency-primary">
-                                                <ArrowUpRight className="size-10" />
+                        {filteredPosts.length > 0 ? (
+                            filteredPosts.map((post, i) => (
+                                <AnimatedSection 
+                                    key={post.id} 
+                                    animation="slide-up" 
+                                    delay={i * 100}
+                                    className={cn(
+                                        'group flex flex-col',
+                                        i % 3 === 0 ? 'lg:col-span-8' : 'lg:col-span-4',
+                                        i % 2 !== 0 ? 'lg:translate-y-24' : ''
+                                    )}
+                                >
+                                    <Link href={`/blog/${post.slug}`} className="block">
+                                        <div className="relative aspect-[16/10] rounded-[60px] overflow-hidden mb-12 shadow-2xl bg-agency-primary/5 dark:bg-white/5">
+                                            {post.featured_image ? (
+                                                <img 
+                                                    src={post.featured_image} 
+                                                    alt={post.title} 
+                                                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-1000 ease-out"
+                                                />
+                                            ) : (
+                                                <div className="w-full h-full bg-agency-accent/10"></div>
+                                            )}
+                                            <div className="absolute top-8 left-8">
+                                                <span className="px-4 py-2 rounded-full bg-agency-accent text-agency-primary text-[10px] font-black uppercase tracking-widest shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                                                    {post.category?.name || 'Insight'}
+                                                </span>
+                                            </div>
+                                            <div className="absolute bottom-10 right-10 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-x-10 group-hover:translate-x-0">
+                                                <div className="size-20 rounded-full bg-white dark:bg-agency-accent flex items-center justify-center text-agency-primary dark:text-agency-primary">
+                                                    <ArrowUpRight className="size-10" />
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
 
-                                    <div className="px-4">
-                                        <div className="flex items-center gap-6 mb-6 opacity-40 text-[10px] font-bold uppercase tracking-widest">
-                                            <div className="flex items-center gap-2"><UserIcon className="size-3" /> {post.author?.name || 'Avant-Garde'}</div>
-                                            <div className="flex items-center gap-2"><Clock className="size-3" /> {post.reading_time || 5} min read</div>
+                                        <div className="px-4">
+                                            <div className="flex items-center gap-6 mb-6 opacity-40 text-[10px] font-bold uppercase tracking-widest">
+                                                <div className="flex items-center gap-2"><UserIcon className="size-3" /> {post.author?.name || 'Avant-Garde'}</div>
+                                                <div className="flex items-center gap-2"><Clock className="size-3" /> {post.reading_time || 5} min read</div>
+                                            </div>
+                                            <h2 className={cn(
+                                                'font-black uppercase tracking-tighter text-agency-primary dark:text-white group-hover:text-agency-accent transition-colors duration-500',
+                                                i % 3 === 0 ? 'text-4xl md:text-7xl' : 'text-3xl md:text-5xl'
+                                            )}>
+                                                {post.title}
+                                            </h2>
+                                            <p className="mt-8 text-lg text-agency-primary/60 dark:text-white/60 leading-relaxed max-w-2xl font-light line-clamp-2 italic border-l-2 border-agency-accent pl-6">
+                                                {post.excerpt}
+                                            </p>
                                         </div>
-                                        <h2 className={cn(
-                                            'font-black uppercase tracking-tighter text-agency-primary dark:text-white group-hover:text-agency-accent transition-colors duration-500',
-                                            i % 3 === 0 ? 'text-4xl md:text-7xl' : 'text-3xl md:text-5xl'
-                                        )}>
-                                            {post.title}
-                                        </h2>
-                                        <p className="mt-8 text-lg text-agency-primary/60 dark:text-white/60 leading-relaxed max-w-2xl font-light line-clamp-2 italic border-l-2 border-agency-accent pl-6">
-                                            {post.excerpt}
-                                        </p>
-                                    </div>
-                                </Link>
-                            </AnimatedSection>
-                        ))}
+                                    </Link>
+                                </AnimatedSection>
+                            ))
+                        ) : (
+                            <div className="col-span-full py-20 text-center">
+                                <div className="inline-block p-8 rounded-full bg-agency-primary/5 dark:bg-white/5 mb-8">
+                                    <UserIcon className="size-16 opacity-20" />
+                                </div>
+                                <h3 className="text-3xl font-black uppercase tracking-tighter mb-4 opacity-50">No insights found</h3>
+                                <p className="text-lg opacity-40 max-w-md mx-auto">
+                                    We couldn't find any articles matching your selection. Try selecting a different category.
+                                </p>
+                            </div>
+                        )}
                     </div>
 
                     {/* Pagination */}

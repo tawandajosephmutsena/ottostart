@@ -1,1 +1,38 @@
-<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>http://localhost:8000</loc><lastmod>2025-12-31T14:13:03+00:00</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url><url><loc>http://localhost:8000/about</loc><lastmod>2025-12-31T14:13:03+00:00</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url><url><loc>http://localhost:8000/contact</loc><lastmod>2025-12-31T14:13:03+00:00</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url><url><loc>http://localhost:8000/portfolio</loc><lastmod>2025-12-31T14:13:03+00:00</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url><url><loc>http://localhost:8000/services</loc><lastmod>2025-12-31T14:13:03+00:00</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url><url><loc>http://localhost:8000/blog</loc><lastmod>2025-12-31T14:13:03+00:00</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url><url><loc>http://localhost:8000/team</loc><lastmod>2025-12-31T14:13:03+00:00</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url><url><loc>http://localhost:8000/portfolio/ecommerce-platform-redesign</loc><lastmod>2025-12-29T23:33:26+00:00</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url><url><loc>http://localhost:8000/portfolio/mobile-banking-app</loc><lastmod>2025-12-29T23:33:26+00:00</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url><url><loc>http://localhost:8000/portfolio/corporate-website-redesign</loc><lastmod>2025-12-29T23:33:26+00:00</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url><url><loc>http://localhost:8000/services/web-development</loc><lastmod>2025-12-29T23:33:26+00:00</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url><url><loc>http://localhost:8000/services/mobile-app-development</loc><lastmod>2025-12-29T23:33:26+00:00</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url><url><loc>http://localhost:8000/services/ui-ux-design</loc><lastmod>2025-12-29T23:33:26+00:00</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url><url><loc>http://localhost:8000/blog/future-of-web-development-2024</loc><lastmod>2025-12-29T23:33:26+00:00</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url><url><loc>http://localhost:8000/blog/building-scalable-react-applications</loc><lastmod>2025-12-29T23:33:26+00:00</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url><url><loc>http://localhost:8000/blog/modern-css-techniques-better-ux</loc><lastmod>2025-12-29T23:33:26+00:00</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url></urlset>
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
+    <url>
+    <loc>http://chris.test</loc>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+            </url>
+    <url>
+    <loc>http://chris.test/about</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>http://chris.test/contact</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>http://chris.test/portfolio</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+            </url>
+    <url>
+    <loc>http://chris.test/services</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+            </url>
+    <url>
+    <loc>http://chris.test/blog</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+            </url>
+    <url>
+    <loc>http://chris.test/team</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+            </url>
+</urlset>

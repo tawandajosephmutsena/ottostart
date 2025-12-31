@@ -236,14 +236,7 @@ class InsightController extends Controller
      */
     private function clearCache(): void
     {
-        // Simple invalidation for the main listing
         \Illuminate\Support\Facades\Cache::forget('blog.categories');
-        
-        // Note: For blog.index.*, we rely on the short TTL (1 hour) or we could implement versioning like PortfolioController.
-        // Given complexity of filters, let's just clear categories for now as that's global.
-        // Ideally we'd use tags if switching to Redis, but for file/database cache, we let TTL handle search queries.
-        // Let's assume we want immediate updates for public feed, so we'll use versioning there too in a future refactor.
-        // For now, since BlogController uses specific keys, we can't easily clear *all* permutations without a version key.
-        // Let's just stick to what we can clear safely.
+        \Illuminate\Support\Facades\Cache::increment('blog.cache_version');
     }
 }

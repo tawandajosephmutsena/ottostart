@@ -14,7 +14,10 @@ class ServiceController extends Controller
      */
     public function index(): Response
     {
-        $services = \Illuminate\Support\Facades\Cache::remember('services.index', 60 * 60 * 24, function () {
+        $version = \Illuminate\Support\Facades\Cache::get('services.cache_version', 1);
+        $cacheKey = 'services.index.' . $version;
+
+        $services = \Illuminate\Support\Facades\Cache::remember($cacheKey, 60 * 60 * 24, function () {
             return Service::published()
                 ->ordered()
                 ->get();

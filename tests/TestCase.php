@@ -12,5 +12,6 @@ abstract class TestCase extends BaseTestCase
         
         // Disable CSRF protection for tests
         $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class);
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
     }
 }

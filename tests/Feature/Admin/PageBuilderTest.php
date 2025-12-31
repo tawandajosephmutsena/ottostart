@@ -54,7 +54,7 @@ class PageBuilderTest extends TestCase
                 ]
             ]);
 
-        $response->assertRedirect(route('admin.pages.show', Page::first()));
+        $response->assertRedirect(route('admin.pages.index'));
         
         $this->assertDatabaseHas('pages', [
             'title' => 'New Page',
@@ -94,7 +94,7 @@ class PageBuilderTest extends TestCase
                 ]
             ]);
 
-        $response->assertRedirect(route('admin.pages.show', $page));
+        $response->assertRedirect(route('admin.pages.index'));
 
         $page->refresh();
         $this->assertEquals('Updated Page', $page->title);

@@ -197,6 +197,6 @@ class ServiceController extends Controller
      */
     private function clearCache(): void
     {
-        \Illuminate\Support\Facades\Cache::forget('services.index');
+        \Illuminate\Support\Facades\Cache::increment('services.cache_version');
     }
 }
