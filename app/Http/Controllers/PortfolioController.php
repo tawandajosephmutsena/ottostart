@@ -14,10 +14,15 @@ class PortfolioController extends Controller
      */
     public function index(Request $request): Response
     {
-        $portfolioItems = PortfolioItem::published()
-            ->ordered()
-            ->paginate(12)
-            ->withQueryString();
+        $page = $request->get('page', 1);
+        $version = \Illuminate\Support\Facades\Cache::get('portfolio.cache_version', 1);
+        $cacheKey = 'portfolio.index.' . $version . '.' . $page;
+
+        $portfolioItems = \Illuminate\Support\Facades\Cache::remember($cacheKey, 60 * 60, function () {
+            return PortfolioItem::published()
+                ->ordered()
+                ->paginate(12);
+        });
 
         return Inertia::render('Portfolio', [
             'portfolioItems' => $portfolioItems,

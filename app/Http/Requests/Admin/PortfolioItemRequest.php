@@ -12,7 +12,7 @@ class PortfolioItemRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('manage-portfolio');
+        return $this->user()->role === 'admin' || $this->user()->role === 'editor';
     }
 
     /**

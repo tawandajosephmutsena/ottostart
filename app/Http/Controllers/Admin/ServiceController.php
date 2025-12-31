@@ -69,6 +69,7 @@ class ServiceController extends Controller
         $validated = $request->validated();
 
         $service = Service::create($validated);
+        $this->clearCache();
 
         return redirect()->route('admin.services.show', $service)
             ->with('success', 'Service created successfully.');
@@ -102,6 +103,7 @@ class ServiceController extends Controller
         $validated = $request->validated();
 
         $service->update($validated);
+        $this->clearCache();
 
         return redirect()->route('admin.services.show', $service)
             ->with('success', 'Service updated successfully.');
@@ -113,6 +115,7 @@ class ServiceController extends Controller
     public function destroy(Service $service): RedirectResponse
     {
         $service->delete();
+        $this->clearCache();
 
         return redirect()->route('admin.services.index')
             ->with('success', 'Service deleted successfully.');
@@ -129,6 +132,7 @@ class ServiceController extends Controller
 
         $status = $service->is_featured ? 'featured' : 'unfeatured';
         
+        $this->clearCache();
         return back()->with('success', "Service {$status} successfully.");
     }
 
@@ -143,6 +147,7 @@ class ServiceController extends Controller
 
         $status = $service->is_published ? 'published' : 'unpublished';
         
+        $this->clearCache();
         return back()->with('success', "Service {$status} successfully.");
     }
 
@@ -182,6 +187,16 @@ class ServiceController extends Controller
                 break;
         }
 
+        $this->clearCache();
+
         return back()->with('success', $message);
+    }
+
+    /**
+     * Clear the services cache.
+     */
+    private function clearCache(): void
+    {
+        \Illuminate\Support\Facades\Cache::forget('services.index');
     }
 }

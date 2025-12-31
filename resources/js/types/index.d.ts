@@ -156,3 +156,16 @@ export interface MediaAsset {
     created_at: string;
     updated_at: string;
 }
+
+export interface Page {
+    id: number;
+    title: string;
+    slug: string;
+    meta_title: string | null;
+    meta_description: string | null;
+    content: Record<string, unknown> | null;
+    template: 'default' | 'home' | 'contact';
+    is_published: boolean;
+    created_at: string;
+    updated_at: string;
+}

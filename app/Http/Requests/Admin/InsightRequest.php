@@ -12,7 +12,7 @@ class InsightRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('manage-insights');
+        return $this->user()->role === 'admin' || $this->user()->role === 'editor';
     }
 
     /**

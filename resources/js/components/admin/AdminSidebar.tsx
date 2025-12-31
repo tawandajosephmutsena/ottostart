@@ -56,6 +56,11 @@ const contentNavItems = [
         icon: Users,
     },
     {
+        title: 'Pages',
+        href: '/admin/pages',
+        icon: LayoutDashboard,
+    },
+    {
         title: 'Inquiries',
         href: '/admin/contact-inquiries',
         icon: MessageSquare,

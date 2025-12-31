@@ -11,7 +11,7 @@ class TeamMemberRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('manage-team');
+        return $this->user()->role === 'admin' || $this->user()->role === 'editor';
     }
 
     /**

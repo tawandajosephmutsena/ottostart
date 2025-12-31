@@ -70,6 +70,7 @@ class PortfolioController extends Controller
         $validated = $request->validated();
 
         $portfolioItem = PortfolioItem::create($validated);
+        $this->clearCache();
 
         return redirect()->route('admin.portfolio.show', $portfolioItem)
             ->with('success', 'Portfolio item created successfully.');
@@ -103,6 +104,7 @@ class PortfolioController extends Controller
         $validated = $request->validated();
 
         $portfolioItem->update($validated);
+        $this->clearCache();
 
         return redirect()->route('admin.portfolio.show', $portfolioItem)
             ->with('success', 'Portfolio item updated successfully.');
@@ -114,6 +116,7 @@ class PortfolioController extends Controller
     public function destroy(PortfolioItem $portfolioItem): RedirectResponse
     {
         $portfolioItem->delete();
+        $this->clearCache();
 
         return redirect()->route('admin.portfolio.index')
             ->with('success', 'Portfolio item deleted successfully.');
@@ -130,6 +133,7 @@ class PortfolioController extends Controller
 
         $status = $portfolioItem->is_featured ? 'featured' : 'unfeatured';
         
+        $this->clearCache();
         return back()->with('success', "Portfolio item {$status} successfully.");
     }
 
@@ -144,6 +148,7 @@ class PortfolioController extends Controller
 
         $status = $portfolioItem->is_published ? 'published' : 'unpublished';
         
+        $this->clearCache();
         return back()->with('success', "Portfolio item {$status} successfully.");
     }
 
@@ -183,6 +188,16 @@ class PortfolioController extends Controller
                 break;
         }
 
+        $this->clearCache();
+
         return back()->with('success', $message);
+    }
+
+    /**
+     * Clear the portfolio cache by incrementing the version.
+     */
+    private function clearCache(): void
+    {
+        \Illuminate\Support\Facades\Cache::increment('portfolio.cache_version');
     }
 }

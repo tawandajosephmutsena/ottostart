@@ -14,9 +14,11 @@ class ServiceController extends Controller
      */
     public function index(): Response
     {
-        $services = Service::published()
-            ->ordered()
-            ->get();
+        $services = \Illuminate\Support\Facades\Cache::remember('services.index', 60 * 60 * 24, function () {
+            return Service::published()
+                ->ordered()
+                ->get();
+        });
 
         return Inertia::render('Services', [
             'services' => $services,

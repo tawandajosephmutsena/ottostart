@@ -15,28 +15,36 @@ class BlogController extends Controller
      */
     public function index(Request $request): Response
     {
-        $query = Insight::published()
-            ->with(['author:id,name', 'category:id,name,slug']);
+        $page = $request->get('page', 1);
+        $category = $request->get('category', 'all');
+        $search = $request->get('search', '');
+        
+        $cacheKey = "blog.index.{$page}.{$category}.{$search}";
 
-        if ($request->filled('category')) {
-            $query->whereHas('category', function ($q) use ($request) {
-                $q->where('slug', $request->category);
-            });
-        }
+        $insights = \Illuminate\Support\Facades\Cache::remember($cacheKey, 60 * 60, function () use ($request) {
+            $query = Insight::published()
+                ->with(['author:id,name', 'category:id,name,slug']);
 
-        if ($request->filled('search')) {
-            $query->where(function ($q) use ($request) {
-                $q->where('title', 'like', '%' . $request->search . '%')
-                  ->orWhere('excerpt', 'like', '%' . $request->search . '%');
-            });
-        }
+            if ($request->filled('category')) {
+                $query->whereHas('category', function ($q) use ($request) {
+                    $q->where('slug', $request->category);
+                });
+            }
 
-        $insights = $query->orderBy('published_at', 'desc')
-            ->paginate(9)
-            ->withQueryString();
+            if ($request->filled('search')) {
+                $query->where(function ($q) use ($request) {
+                    $q->where('title', 'like', '%' . $request->search . '%')
+                      ->orWhere('excerpt', 'like', '%' . $request->search . '%');
+                });
+            }
 
-        $categories = Category::where('type', 'insight')
-            ->get(['id', 'name', 'slug']);
+            return $query->orderBy('published_at', 'desc')
+                ->paginate(9);
+        });
+
+        $categories = \Illuminate\Support\Facades\Cache::remember('blog.categories', 60 * 60 * 24, function () {
+            return Category::where('type', 'insight')->get(['id', 'name', 'slug']);
+        });
 
         return Inertia::render('Blog', [
             'insights' => $insights,

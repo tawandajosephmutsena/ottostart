@@ -50,13 +50,19 @@ interface HomePageProps extends SharedData {
     }>;
 }
 
+import { SeoHead } from '@/components/SeoHead';
+
 export default function Home() {
     // Get page props with typed data
     const { featuredProjects, featuredServices, recentInsights, stats } =
         usePage<HomePageProps>().props;
 
     return (
-        <MainLayout title="Avant-Garde CMS - Digital Innovation Agency">
+        <MainLayout>
+            <SeoHead 
+                title="Digital Innovation Agency"
+                description="Avant-Garde CMS creates avant-garde digital experiences that push boundaries and inspire innovation through cutting-edge design and technology."
+            />
             {/* Hero Section with Parallax */}
             <HeroSection
                 title="Digital Innovation Redefined"

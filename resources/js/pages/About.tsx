@@ -2,9 +2,15 @@ import AnimatedSection from '@/components/AnimatedSection';
 import MainLayout from '@/layouts/MainLayout';
 import { Link } from '@inertiajs/react';
 
+import { SeoHead } from '@/components/SeoHead';
+
 export default function About() {
     return (
-        <MainLayout title="About Us - Avant-Garde">
+        <MainLayout>
+            <SeoHead 
+                title="About Us - Avant-Garde"
+                description="Our mission is defining future standards. We are a collective of visionaries dedicated to crafting digital experiences that transcend the ordinary."
+            />
             {/* Immersive Hero Section */}
             <section className="bg-agency-secondary dark:bg-agency-dark pt-40 pb-32 relative overflow-hidden">
                 {/* Background Branding Marquee */}

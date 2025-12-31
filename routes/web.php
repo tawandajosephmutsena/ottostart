@@ -44,9 +44,9 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
         return Inertia::render('admin/users');
     })->name('users');
     
-    Route::get('/settings', function () {
-        return Inertia::render('admin/settings');
-    })->name('settings');
+    // Settings
+    Route::get('/settings', [App\Http\Controllers\Admin\SettingsController::class, 'index'])->name('settings');
+    Route::post('/settings', [App\Http\Controllers\Admin\SettingsController::class, 'update'])->name('settings.update');
 
     // Portfolio management
     Route::resource('portfolio', App\Http\Controllers\Admin\PortfolioController::class);
@@ -81,6 +81,9 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
 
     // Contact Inquiries management
     Route::resource('contact-inquiries', App\Http\Controllers\Admin\ContactInquiryController::class);
+
+    // Page management
+    Route::resource('pages', App\Http\Controllers\Admin\PageController::class);
 });
 
 require __DIR__.'/settings.php';

@@ -11,7 +11,7 @@ class MediaAssetRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('manage-media');
+        return $this->user()->role === 'admin' || $this->user()->role === 'editor';
     }
 
     /**

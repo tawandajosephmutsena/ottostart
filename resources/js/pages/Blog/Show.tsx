@@ -13,7 +13,31 @@ interface Props {
 export default function BlogShow({ insight, relatedInsights = [] }: Props) {
     return (
         <MainLayout title={`${insight.title} - Avant-Garde Insights`}>
-            <Head title={insight.title} />
+            <Head title={insight.title}>
+                <script type="application/ld+json">
+                    {JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "BlogPosting",
+                        "headline": insight.title,
+                        "description": insight.excerpt,
+                        "image": insight.featured_image,
+                        "datePublished": insight.published_at,
+                        "dateModified": insight.updated_at,
+                        "author": {
+                            "@type": "Person",
+                            "name": insight.author?.name || "Avant-Garde"
+                        },
+                        "publisher": {
+                            "@type": "Organization",
+                            "name": "Avant-Garde Creative",
+                            "logo": {
+                                "@type": "ImageObject",
+                                "url": "https://avantgarde.test/logo.png" 
+                            }
+                        }
+                    })}
+                </script>
+            </Head>
 
             {/* Reading Progress Bar (Fixed at top) */}
             <div className="fixed top-[80px] left-0 w-full h-1 z-50 bg-agency-accent/20">

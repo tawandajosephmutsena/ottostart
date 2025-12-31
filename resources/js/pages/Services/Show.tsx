@@ -12,7 +12,27 @@ interface Props {
 export default function ServiceShow({ service }: Props) {
     return (
         <MainLayout title={`${service.title} - Avant-Garde Services`}>
-            <Head title={service.title} />
+            <Head title={service.title}>
+                <script type="application/ld+json">
+                    {JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "Service",
+                        "name": service.title,
+                        "description": service.description,
+                        "image": service.featured_image,
+                        "provider": {
+                            "@type": "Organization",
+                            "name": "Avant-Garde Creative",
+                            "url": "https://avantgarde.test"
+                        },
+                        "offers": {
+                            "@type": "Offer",
+                            "priceCurrency": "USD",
+                            "price": service.price_range || "Custom Quote"
+                        }
+                    })}
+                </script>
+            </Head>
 
             {/* Service Hero */}
             <section className="relative pt-48 pb-32 overflow-hidden bg-agency-primary text-white">

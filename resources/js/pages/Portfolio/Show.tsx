@@ -12,7 +12,27 @@ interface Props {
 export default function PortfolioShow({ portfolioItem }: Props) {
     return (
         <MainLayout title={`${portfolioItem.title} - Avant-Garde Portfolio`}>
-            <Head title={portfolioItem.title} />
+            <Head title={portfolioItem.title}>
+                <script type="application/ld+json">
+                    {JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "CreativeWork",
+                        "name": portfolioItem.title,
+                        "description": portfolioItem.description,
+                        "image": portfolioItem.featured_image,
+                        "dateCreated": portfolioItem.project_date,
+                        "author": {
+                            "@type": "Organization",
+                            "name": "Avant-Garde Creative"
+                        },
+                        "copyrightHolder": {
+                            "@type": "Organization",
+                            "name": portfolioItem.client || "Avant-Garde Creative" 
+                        },
+                        "keywords": portfolioItem.technologies?.join(', ')
+                    })}
+                </script>
+            </Head>
 
             {/* Back Button */}
             <div className="fixed top-32 left-8 z-50 hidden xl:block">

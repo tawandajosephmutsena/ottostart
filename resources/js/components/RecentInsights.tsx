@@ -117,6 +117,7 @@ export const RecentInsights: React.FC<RecentInsightsProps> = ({
                                         <img 
                                             src={insight.featured_image} 
                                             alt={insight.title}
+                                            loading="lazy"
                                             className="w-full h-full object-cover" 
                                         />
                                     ) : (

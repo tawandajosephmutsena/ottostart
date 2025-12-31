@@ -8,6 +8,7 @@ use App\Models\Insight;
 use App\Models\Category;
 use App\Models\User;
 use App\Models\Setting;
+use App\Models\MediaAsset;
 use Illuminate\Database\Seeder;
 
 class SampleContentSeeder extends Seeder
@@ -271,5 +272,37 @@ class SampleContentSeeder extends Seeder
             'type' => 'json',
             'group_name' => 'homepage'
         ]);
+
+        // Seed Media Assets for all the images used above
+        $images = [
+            '/images/portfolio/ecommerce-redesign.jpg',
+            '/images/portfolio/ecommerce-1.jpg',
+            '/images/portfolio/ecommerce-2.jpg',
+            '/images/portfolio/banking-app.jpg',
+            '/images/portfolio/banking-1.jpg',
+            '/images/portfolio/banking-2.jpg',
+            '/images/portfolio/corporate-website.jpg',
+            '/images/portfolio/corporate-1.jpg',
+            '/images/services/web-development.jpg',
+            '/images/services/mobile-development.jpg',
+            '/images/services/ui-ux-design.jpg',
+            '/images/insights/web-development-future.jpg',
+            '/images/insights/react-scalability.jpg',
+            '/images/insights/modern-css.jpg',
+            '/images/hero-bg.jpg',
+        ];
+
+        foreach ($images as $path) {
+            $filename = basename($path);
+            MediaAsset::firstOrCreate(['path' => $path], [
+                'filename' => $filename,
+                'original_name' => $filename,
+                'mime_type' => 'image/jpeg',
+                'size' => 1024 * rand(100, 2000), // Random size between 100KB and 2MB
+                'alt_text' => ucwords(str_replace(['-', '.jpg'], [' ', ''], $filename)),
+                'caption' => '',
+                'folder' => 'uploads',
+            ]);
+        }
     }
 }
