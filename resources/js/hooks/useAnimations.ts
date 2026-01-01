@@ -3,6 +3,7 @@ import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
 import { useCallback, useEffect, useRef } from 'react';
+import { animationManager } from '@/lib/animationManager';
 
 // Register GSAP plugins
 if (typeof window !== 'undefined') {
@@ -129,9 +130,9 @@ export const useHeroParallax = (
             );
         }
 
-        // Scroll parallax
+        // Scroll parallax with optimized ScrollTrigger
         if (scrollParallax) {
-            const scrollTrigger = ScrollTrigger.create({
+            const scrollTrigger = animationManager.createScrollTrigger({
                 trigger: container,
                 start: 'top bottom',
                 end: 'bottom top',
@@ -142,6 +143,7 @@ export const useHeroParallax = (
                         const speed = (index + 1) * 0.3 * intensity;
                         gsap.set(image, {
                             y: progress * speed * 100,
+                            force3D: true, // Force hardware acceleration
                         });
                     });
                 },
@@ -523,7 +525,7 @@ export const useScrollAnimation = (
 };
 
 /**
- * Hook for intersection-based animations
+ * Hook for intersection-based animations with optimized performance
  * Triggers animations when elements enter the viewport
  */
 export const useIntersectionAnimation = (
@@ -545,32 +547,18 @@ export const useIntersectionAnimation = (
         if (typeof window === 'undefined' || !elementRef.current) return;
 
         const element = elementRef.current;
-        let hasAnimated = false;
-
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting && (!once || !hasAnimated)) {
-                        gsap.to(element, animation);
-                        hasAnimated = true;
-
-                        if (once) {
-                            observer.unobserve(element);
-                        }
-                    }
-                });
-            },
+        
+        const { cleanup } = animationManager.createOptimizedAnimation(
+            element,
+            animation,
             {
                 threshold,
                 rootMargin,
-            },
+                once,
+            }
         );
 
-        observer.observe(element);
-
-        return () => {
-            observer.disconnect();
-        };
+        return cleanup;
     }, [elementRef, animation, threshold, rootMargin, once]);
 };
 

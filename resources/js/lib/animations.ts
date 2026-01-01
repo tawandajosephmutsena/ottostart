@@ -1,5 +1,6 @@
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { animationManager } from './animationManager';
 
 // Register plugins
 if (typeof window !== 'undefined') {
@@ -12,20 +13,26 @@ if (typeof window !== 'undefined') {
 
 export const animationUtils = {
     /**
-     * Fade in animation
+     * Fade in animation with optimized performance
      */
     fadeIn: (element: HTMLElement | string, options: gsap.TweenVars = {}) => {
-        return gsap.fromTo(
+        const settings = animationManager.getOptimizedSettings();
+        const timeline = gsap.timeline();
+        
+        timeline.fromTo(
             element,
             { opacity: 0, y: 30 },
             {
                 opacity: 1,
                 y: 0,
-                duration: 0.8,
-                ease: 'power2.out',
+                duration: options.duration || settings.duration,
+                ease: options.ease || settings.ease,
                 ...options,
             },
         );
+        
+        animationManager.registerTimeline(timeline);
+        return timeline;
     },
 
     /**
@@ -107,10 +114,10 @@ export const animationUtils = {
     },
 
     /**
-     * Parallax effect
+     * Parallax effect with intersection observer optimization
      */
     parallax: (element: HTMLElement | string, speed: number = 0.5) => {
-        return ScrollTrigger.create({
+        return animationManager.createScrollTrigger({
             trigger: element,
             start: 'top bottom',
             end: 'bottom top',
@@ -119,19 +126,20 @@ export const animationUtils = {
                 const progress = self.progress;
                 gsap.set(element, {
                     y: progress * speed * 100,
+                    force3D: true, // Force hardware acceleration
                 });
             },
         });
     },
 
     /**
-     * Pin element during scroll
+     * Pin element during scroll with optimized performance
      */
     pinElement: (
         element: HTMLElement | string,
         options: ScrollTrigger.Vars = {},
     ) => {
-        return ScrollTrigger.create({
+        return animationManager.createScrollTrigger({
             trigger: element,
             start: 'top top',
             end: 'bottom bottom',
@@ -193,10 +201,10 @@ export const animationUtils = {
     },
 
     /**
-     * Cleanup all ScrollTriggers
+     * Cleanup all ScrollTriggers and animations
      */
     cleanup: () => {
-        ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+        animationManager.cleanup();
     },
 
     /**
@@ -204,6 +212,13 @@ export const animationUtils = {
      */
     refresh: () => {
         ScrollTrigger.refresh();
+    },
+
+    /**
+     * Get animation performance statistics
+     */
+    getStats: () => {
+        return animationManager.getStats();
     },
 };
 

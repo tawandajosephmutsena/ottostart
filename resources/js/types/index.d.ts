@@ -27,6 +27,18 @@ export interface SharedData {
     quote: { message: string; author: string };
     auth: Auth;
     sidebarOpen: boolean;
+    site?: {
+        name?: string;
+        description?: string;
+        url?: string;
+        logo?: string;
+    };
+    breadcrumbs?: Array<{
+        title: string;
+        url?: string | null;
+        active?: boolean;
+    }>;
+    breadcrumbStructuredData?: Record<string, any>;
     [key: string]: unknown;
 }
 

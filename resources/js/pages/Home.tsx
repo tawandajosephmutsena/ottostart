@@ -3,6 +3,7 @@ import HeroSection from '@/components/HeroSection';
 import RecentInsights from '@/components/RecentInsights';
 import ServicesSection from '@/components/ServicesSection';
 import StatsSection from '@/components/StatsSection';
+import { StructuredData } from '@/components/StructuredData';
 import MainLayout from '@/layouts/MainLayout';
 import { type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
@@ -48,13 +49,14 @@ interface HomePageProps extends SharedData {
         label: string;
         suffix?: string;
     }>;
+    structuredData?: Record<string, any>[];
 }
 
 import { SeoHead } from '@/components/SeoHead';
 
 export default function Home() {
     // Get page props with typed data
-    const { featuredProjects, featuredServices, recentInsights, stats } =
+    const { featuredProjects, featuredServices, recentInsights, stats, structuredData } =
         usePage<HomePageProps>().props;
 
     return (
@@ -62,7 +64,13 @@ export default function Home() {
             <SeoHead 
                 title="Digital Innovation Agency"
                 description="Avant-Garde CMS creates avant-garde digital experiences that push boundaries and inspire innovation through cutting-edge design and technology."
+                type="website"
+                structuredData={structuredData}
             />
+            
+            {/* Structured Data */}
+            {structuredData && <StructuredData data={structuredData} />}
+            
             {/* Hero Section with Parallax */}
             <HeroSection
                 title="Digital Innovation Redefined"

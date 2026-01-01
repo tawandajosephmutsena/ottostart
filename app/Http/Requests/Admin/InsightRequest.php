@@ -2,10 +2,12 @@
 
 namespace App\Http\Requests\Admin;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\SecureFormRequest;
+use App\Rules\NoScriptTags;
+use App\Rules\SafeHtml;
 use Illuminate\Support\Str;
 
-class InsightRequest extends FormRequest
+class InsightRequest extends SecureFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,21 +25,21 @@ class InsightRequest extends FormRequest
         $insightId = $this->route('insight') ? $this->route('insight')->id : null;
 
         return [
-            'title' => 'required|string|max:255',
-            'slug' => 'nullable|string|max:255|unique:insights,slug,' . $insightId,
-            'excerpt' => 'required|string|max:500',
+            'title' => [...$this->getSafeTextRules(255), new NoScriptTags()],
+            'slug' => $this->getSlugRules('insights', $insightId, false),
+            'excerpt' => [...$this->getSafeTextRules(500), new NoScriptTags()],
             'content' => 'nullable|array',
-            'content.introduction' => 'nullable|string',
-            'content.body' => 'nullable|string',
-            'content.conclusion' => 'nullable|string',
+            'content.introduction' => [...$this->getRichTextRules(65535, false), new SafeHtml()],
+            'content.body' => [...$this->getRichTextRules(65535, false), new SafeHtml()],
+            'content.conclusion' => [...$this->getRichTextRules(65535, false), new SafeHtml()],
             'content.sections' => 'nullable|array',
-            'content.sections.*.title' => 'required_with:content.sections|string|max:255',
-            'content.sections.*.content' => 'required_with:content.sections|string',
-            'featured_image' => 'nullable|string|max:255',
+            'content.sections.*.title' => ['required_with:content.sections', ...$this->getSafeTextRules(255), new NoScriptTags()],
+            'content.sections.*.content' => ['required_with:content.sections', ...$this->getRichTextRules(65535), new SafeHtml()],
+            'featured_image' => [...$this->getSafeTextRules(255, false), 'regex:/^[a-zA-Z0-9\-_\.\/]+$/'],
             'author_id' => 'required|exists:users,id',
             'category_id' => 'nullable|exists:categories,id',
-            'tags' => 'nullable|array',
-            'tags.*' => 'string|max:50',
+            'tags' => 'nullable|array|max:20',
+            'tags.*' => [...$this->getSafeTextRules(50), new NoScriptTags()],
             'reading_time' => 'nullable|integer|min:1|max:999',
             'is_featured' => 'boolean',
             'is_published' => 'boolean',

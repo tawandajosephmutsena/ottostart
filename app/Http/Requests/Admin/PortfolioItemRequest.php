@@ -2,10 +2,11 @@
 
 namespace App\Http\Requests\Admin;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\SecureFormRequest;
+use App\Rules\NoScriptTags;
 use Illuminate\Support\Str;
 
-class PortfolioItemRequest extends FormRequest
+class PortfolioItemRequest extends SecureFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

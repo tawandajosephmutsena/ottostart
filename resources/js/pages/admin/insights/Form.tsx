@@ -13,7 +13,7 @@ import { Badge } from '@/components/ui/badge';
 import { Insight, Category, User } from '@/types';
 import { useForm } from '@inertiajs/react';
 import React from 'react';
-import { Save, ArrowLeft, ImagePlus, X, Plus } from 'lucide-react';
+import { Save, ArrowLeft, ImagePlus, X, Plus, History, Eye } from 'lucide-react';
 import { Link } from '@inertiajs/react';
 import {
     Select,
@@ -23,6 +23,11 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import MediaLibrary from '@/components/admin/MediaLibrary';
+import RichTextEditor from '@/components/admin/RichTextEditor';
+import VersionHistory from '@/components/admin/VersionHistory';
+import VersionComparison from '@/components/admin/VersionComparison';
+import RealTimePreview from '@/components/admin/RealTimePreview';
+import PreviewShare from '@/components/admin/PreviewShare';
 
 interface Props {
     insight?: Insight;
@@ -58,6 +63,10 @@ export default function InsightForm({ insight, categories, authors }: Props) {
     });
 
     const [newTag, setNewTag] = React.useState('');
+    const [showVersionHistory, setShowVersionHistory] = React.useState(false);
+    const [showVersionComparison, setShowVersionComparison] = React.useState(false);
+    const [comparisonVersions, setComparisonVersions] = React.useState<[number, number] | null>(null);
+    const [showPreview, setShowPreview] = React.useState(false);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -79,6 +88,17 @@ export default function InsightForm({ insight, categories, authors }: Props) {
         setData('tags', data.tags.filter((t) => t !== tag));
     };
 
+    const handleVersionRestore = () => {
+        // Refresh the page to load the restored content
+        window.location.reload();
+    };
+
+    const handleVersionCompare = (version1: number, version2: number) => {
+        setComparisonVersions([version1, version2]);
+        setShowVersionComparison(true);
+        setShowVersionHistory(false);
+    };
+
     return (
         <form onSubmit={handleSubmit} className="space-y-6">
             <div className="flex items-center justify-between">
@@ -95,6 +115,26 @@ export default function InsightForm({ insight, categories, authors }: Props) {
                 <Button type="submit" disabled={processing} className="bg-agency-accent text-agency-primary hover:bg-agency-accent/90">
                     <Save className="h-4 w-4 mr-2" />
                     {insight ? 'Update Article' : 'Publish Article'}
+                </Button>
+                {insight && (
+                    <Button 
+                        type="button" 
+                        variant="outline" 
+                        onClick={() => setShowVersionHistory(!showVersionHistory)}
+                        className="gap-2"
+                    >
+                        <History className="h-4 w-4" />
+                        Version History
+                    </Button>
+                )}
+                <Button 
+                    type="button" 
+                    variant="outline" 
+                    onClick={() => setShowPreview(!showPreview)}
+                    className="gap-2"
+                >
+                    <Eye className="h-4 w-4" />
+                    {showPreview ? 'Hide Preview' : 'Show Preview'}
                 </Button>
             </div>
 
@@ -129,14 +169,22 @@ export default function InsightForm({ insight, categories, authors }: Props) {
 
                             <div className="grid gap-2">
                                 <Label>Content</Label>
-                                <Textarea
-                                    value={data.content.body}
-                                    onChange={(e) => setData('content', { ...data.content, body: e.target.value })}
+                                <RichTextEditor
+                                    content={data.content.body}
+                                    onChange={(content) => setData('content', { ...data.content, body: content })}
                                     placeholder="Write your article here..."
-                                    rows={20}
-                                    className="font-serif text-lg leading-relaxed"
+                                    limit={50000}
+                                    autoSave={true}
+                                    onSave={(content) => {
+                                        // Auto-save functionality - could save to localStorage or send to server
+                                        localStorage.setItem(`insight-draft-${insight?.id || 'new'}`, content);
+                                    }}
+                                    showWordCount={true}
+                                    showTableOfContents={true}
                                 />
-                                <p className="text-xs text-muted-foreground">Tip: Markdown is supported for formatting.</p>
+                                <p className="text-xs text-muted-foreground">
+                                    Rich text editor with auto-save, media integration, and advanced formatting options.
+                                </p>
                             </div>
                         </CardContent>
                     </Card>
@@ -269,8 +317,63 @@ export default function InsightForm({ insight, categories, authors }: Props) {
                             />
                         </CardContent>
                     </Card>
+
+                    {insight && (
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>Preview Sharing</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <PreviewShare
+                                    contentType="insight"
+                                    contentId={insight.id}
+                                    contentTitle={data.title}
+                                />
+                            </CardContent>
+                        </Card>
+                    )}
                 </div>
             </div>
+
+            {/* Version History and Comparison */}
+            {insight && showVersionHistory && !showVersionComparison && (
+                <div className="mt-6">
+                    <VersionHistory
+                        contentType="insight"
+                        contentId={insight.id}
+                        onRestore={handleVersionRestore}
+                        onCompare={handleVersionCompare}
+                    />
+                </div>
+            )}
+
+            {insight && showVersionComparison && comparisonVersions && (
+                <div className="mt-6">
+                    <VersionComparison
+                        contentType="insight"
+                        contentId={insight.id}
+                        version1={comparisonVersions[0]}
+                        version2={comparisonVersions[1]}
+                        onClose={() => {
+                            setShowVersionComparison(false);
+                            setShowVersionHistory(true);
+                            setComparisonVersions(null);
+                        }}
+                    />
+                </div>
+            )}
+
+            {/* Real-time Preview */}
+            <RealTimePreview
+                data={{
+                    ...data,
+                    author_id: typeof data.author_id === 'string' ? parseInt(data.author_id) : data.author_id,
+                    category_id: typeof data.category_id === 'string' ? parseInt(data.category_id) : data.category_id,
+                }}
+                contentType="insight"
+                isVisible={showPreview}
+                onToggle={() => setShowPreview(!showPreview)}
+            />
         </form>
     );
 }

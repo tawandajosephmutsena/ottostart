@@ -19,6 +19,14 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->encryptCookies(except: ['appearance', 'sidebar_state']);
 
         $middleware->web(append: [
+            \App\Http\Middleware\VerifyCsrfToken::class,
+            \App\Http\Middleware\XssProtection::class,
+            \App\Http\Middleware\SecurityHeaders::class,
+            \App\Http\Middleware\CompressionMiddleware::class,
+            \App\Http\Middleware\HandleRedirects::class,
+            \App\Http\Middleware\CanonicalRedirect::class,
+            \App\Http\Middleware\InjectSeoData::class,
+            \App\Http\Middleware\InjectBreadcrumbs::class,
             HandleAppearance::class,
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,
@@ -27,6 +35,10 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'role' => RoleMiddleware::class,
             'admin' => AdminMiddleware::class,
+            'lockout' => \App\Http\Middleware\CheckAccountLockout::class,
+            'rate_limit' => \App\Http\Middleware\RateLimitMiddleware::class,
+            'cache.headers' => \App\Http\Middleware\CacheHeadersMiddleware::class,
+            'compression' => \App\Http\Middleware\CompressionMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

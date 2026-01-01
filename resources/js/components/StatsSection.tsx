@@ -27,11 +27,19 @@ const defaultStats: StatItem[] = [
  * Displays key statistics with scroll-triggered animations
  */
 export const StatsSection: React.FC<StatsSectionProps> = ({
-    stats = defaultStats,
+    stats = [],
     title = 'By The Numbers',
     subtitle = 'Our Impact',
     className,
 }) => {
+    // Ensure stats is an array (handle null)
+    const safeStats = Array.isArray(stats) ? stats : [];
+
+    // Ensure we have 4 stats by merging with defaults
+    const displayStats = [
+        ...safeStats,
+        ...defaultStats.slice(safeStats.length)
+    ].slice(0, 4);
     return (
         <section className={cn('bg-agency-secondary py-32 dark:bg-agency-dark', className)}>
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -55,9 +63,9 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
                             <div className="size-16 rounded-full bg-agency-accent/10 flex items-center justify-center text-agency-accent mb-8">
                                 <span className="material-symbols-outlined text-4xl">groups</span>
                             </div>
-                            <h3 className="text-xl uppercase tracking-widest opacity-40 font-bold mb-4">{stats[0].label}</h3>
+                            <h3 className="text-xl uppercase tracking-widest opacity-40 font-bold mb-4">{displayStats[0].label}</h3>
                             <div className="text-9xl font-black text-agency-primary dark:text-white group-hover:scale-110 transition-transform origin-left duration-700">
-                                {stats[0].value}<span className="text-agency-accent">{stats[0].suffix || '+'}</span>
+                                {displayStats[0].value}<span className="text-agency-accent">{displayStats[0].suffix || '+'}</span>
                             </div>
                         </div>
                         <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-agency-accent/5 to-transparent pointer-none"></div>
@@ -72,9 +80,9 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
                         >
                             <div>
                                 <span className="material-symbols-outlined text-4xl mb-4">bolt</span>
-                                <h3 className="text-xl uppercase tracking-widest opacity-60 font-bold">{stats[1].label}</h3>
+                                <h3 className="text-xl uppercase tracking-widest opacity-60 font-bold">{displayStats[1].label}</h3>
                             </div>
-                            <div className="text-8xl font-black">{stats[1].value}{stats[1].suffix || '%'}</div>
+                            <div className="text-8xl font-black">{displayStats[1].value}{displayStats[1].suffix || '%'}</div>
                         </AnimatedSection>
 
                         <div className="grid grid-cols-2 gap-6">
@@ -83,9 +91,9 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
                                 delay={400}
                                 className="bg-white dark:bg-[#161616] border border-current/5 p-8 rounded-3xl group hover:shadow-2xl transition-all cursor-default"
                             >
-                                <h3 className="text-sm uppercase tracking-widest opacity-40 font-bold mb-4 leading-tight">{stats[2].label}</h3>
+                                <h3 className="text-sm uppercase tracking-widest opacity-40 font-bold mb-4 leading-tight">{displayStats[2].label}</h3>
                                 <div className="text-5xl font-black text-agency-primary dark:text-white group-hover:text-agency-accent transition-colors">
-                                    {stats[2].value}<span className="text-agency-accent">{stats[2].suffix || '+'}</span>
+                                    {displayStats[2].value}<span className="text-agency-accent">{displayStats[2].suffix || '+'}</span>
                                 </div>
                             </AnimatedSection>
 
@@ -94,8 +102,8 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
                                 delay={600}
                                 className="bg-agency-primary text-agency-secondary dark:bg-white dark:text-agency-primary p-8 rounded-3xl group hover:scale-105 transition-all cursor-default"
                             >
-                                <h3 className="text-sm uppercase tracking-widest opacity-60 font-bold mb-4 leading-tight">{stats[3].label}</h3>
-                                <div className="text-5xl font-black">{stats[3].value}</div>
+                                <h3 className="text-sm uppercase tracking-widest opacity-60 font-bold mb-4 leading-tight">{displayStats[3].label}</h3>
+                                <div className="text-5xl font-black">{displayStats[3].value}</div>
                             </AnimatedSection>
                         </div>
                     </div>

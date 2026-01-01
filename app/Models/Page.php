@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Traits\HasSeoOptimization;
+use App\Traits\HasSemanticAnalysis;
 
 class Page extends Model
 {
-    use HasFactory;
+    use HasFactory, HasSeoOptimization, HasSemanticAnalysis;
 
     protected $fillable = [
         'title',

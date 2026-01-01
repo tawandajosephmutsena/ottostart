@@ -9,7 +9,7 @@ import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Page } from '@/types';
 import { useForm, Link } from '@inertiajs/react';
-import { ChevronLeft, Save, Plus, Trash, ArrowUp, ArrowDown, Image as ImageIcon, Type, Layout } from 'lucide-react';
+import { ChevronLeft, Save, Plus, Trash, ArrowUp, ArrowDown, Image as ImageIcon, Type, Layout, Eye } from 'lucide-react';
 import React, { useState } from 'react';
 import { toast } from 'sonner';
 
@@ -28,10 +28,9 @@ interface Block {
 
 export default function Edit({ page }: Props) {
     // Parse initial content or default to empty array
-    // @ts-ignore
     const initialBlocks = (Array.isArray(page.content?.blocks) ? page.content.blocks : []) as Block[];
 
-    const { data, setData, put, processing, errors } = useForm({
+    const { data, setData: _setData, put, processing, errors } = useForm({
         title: page.title,
         slug: page.slug,
         meta_title: page.meta_title || '',
@@ -39,13 +38,15 @@ export default function Edit({ page }: Props) {
         template: page.template,
         is_published: page.is_published,
         content: page.content || { blocks: [] },
-    });
+    } as any);
+
+    const setData = _setData as any;
 
     const [blocks, setBlocks] = useState<Block[]>(initialBlocks);
 
     // Update form data when blocks change
     React.useEffect(() => {
-        setData('content', { ...data.content, blocks });
+        setData('content', { blocks });
     }, [blocks]);
 
     const addBlock = (type: BlockType) => {

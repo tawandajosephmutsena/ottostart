@@ -37,8 +37,10 @@ interface ServiceFormData {
     is_published: boolean;
     is_featured: boolean;
     sort_order: number;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    content: any;
+    content: {
+        body?: string;
+        [key: string]: unknown;
+    };
 }
 
 const ICONS = [
@@ -53,7 +55,7 @@ const ICONS = [
 ];
 
 export default function ServiceForm({ service }: Props) {
-    const { data, setData, post, put, processing, errors } = useForm<ServiceFormData>({
+    const { data, setData: _setData, post, put, processing, errors } = useForm({
         title: service?.title || '',
         slug: service?.slug || '',
         description: service?.description || '',
@@ -63,8 +65,12 @@ export default function ServiceForm({ service }: Props) {
         is_published: service?.is_published ?? false,
         is_featured: service?.is_featured ?? false,
         sort_order: service?.sort_order ?? 0,
-        content: service?.content || {},
-    });
+        content: {
+            body: (service?.content as any)?.body || '',
+        },
+    } as any);
+
+    const setData = _setData as any;
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();

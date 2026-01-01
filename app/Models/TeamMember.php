@@ -4,16 +4,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Traits\HasImageSeo;
 
 class TeamMember extends Model
 {
-    use HasFactory;
+    use HasFactory, HasImageSeo;
 
     protected $fillable = [
         'name',
         'position',
         'bio',
         'avatar',
+        'avatar_alt',
+        'avatar_title',
         'email',
         'social_links',
         'is_featured',

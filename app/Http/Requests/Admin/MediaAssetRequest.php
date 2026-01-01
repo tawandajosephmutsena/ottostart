@@ -2,9 +2,10 @@
 
 namespace App\Http\Requests\Admin;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\SecureFormRequest;
+use App\Rules\NoScriptTags;
 
-class MediaAssetRequest extends FormRequest
+class MediaAssetRequest extends SecureFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -20,22 +21,21 @@ class MediaAssetRequest extends FormRequest
     public function rules(): array
     {
         $rules = [
-            'alt_text' => 'nullable|string|max:255',
-            'caption' => 'nullable|string|max:1000',
-            'folder' => 'nullable|string|max:255|regex:/^[a-zA-Z0-9\-_\/]+$/',
+            'alt_text' => [...$this->getSafeTextRules(255, false), new NoScriptTags()],
+            'caption' => [...$this->getSafeTextRules(1000, false), new NoScriptTags()],
+            'folder' => ['nullable', 'string', 'max:255', 'regex:/^[a-zA-Z0-9\-_\/]+$/'],
             'tags' => 'nullable|array|max:20',
-            'tags.*' => 'string|max:50',
+            'tags.*' => [...$this->getSafeTextRules(50), new NoScriptTags()],
         ];
 
         // Add file upload rules for store requests
         if ($this->isMethod('POST') && $this->routeIs('admin.media.store')) {
             $rules['files'] = 'required|array|min:1|max:10';
-            $rules['files.*'] = [
-                'required',
-                'file',
-                'max:10240', // 10MB
-                'mimes:jpeg,jpg,png,gif,webp,svg,pdf,doc,docx,xls,xlsx,ppt,pptx,mp4,mov,avi,wmv,flv,webm,mp3,wav,ogg',
-            ];
+            $rules['files.*'] = $this->getFileRules(
+                ['jpeg', 'jpg', 'png', 'gif', 'webp', 'svg', 'pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'mp4', 'mov', 'avi', 'wmv', 'flv', 'webm', 'mp3', 'wav', 'ogg'],
+                10240, // 10MB
+                true
+            );
         }
 
         return $rules;

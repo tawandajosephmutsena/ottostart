@@ -90,32 +90,56 @@ class MediaController extends Controller
     {
         $validated = $request->validated();
         $uploadedFiles = [];
+        $uploadService = app(\App\Services\SecureFileUploadService::class);
 
         foreach ($request->file('files') as $file) {
-            // Generate unique filename
-            $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
-            
-            // Determine storage path
-            $folder = $validated['folder'] ?? 'uploads';
-            $path = $folder . '/' . $filename;
+            try {
+                // Determine file category
+                $mimeType = $file->getMimeType();
+                $category = 'document'; // Default
+                
+                if (str_starts_with($mimeType, 'image/')) {
+                    $category = 'image';
+                } elseif (str_starts_with($mimeType, 'video/')) {
+                    $category = 'video';
+                } elseif (str_starts_with($mimeType, 'audio/')) {
+                    $category = 'audio';
+                }
 
-            // Store file
-            $storedPath = $file->storeAs('public/' . $folder, $filename);
+                // Upload file securely
+                $uploadResult = $uploadService->upload(
+                    $file, 
+                    $category, 
+                    $validated['folder'] ?? 'uploads'
+                );
 
-            // Create media asset record
-            $mediaAsset = MediaAsset::create([
-                'filename' => $filename,
-                'original_name' => $file->getClientOriginalName(),
-                'mime_type' => $file->getMimeType(),
-                'size' => $file->getSize(),
-                'path' => str_replace('public/', '', $storedPath),
-                'alt_text' => $validated['alt_text'] ?? null,
-                'caption' => $validated['caption'] ?? null,
-                'folder' => $folder,
-                'tags' => $validated['tags'] ?? [],
-            ]);
+                // Create media asset record
+                $mediaAsset = MediaAsset::create([
+                    'filename' => $uploadResult['filename'],
+                    'original_name' => $uploadResult['original_name'],
+                    'mime_type' => $uploadResult['mime_type'],
+                    'size' => $uploadResult['size'],
+                    'path' => $uploadResult['path'],
+                    'alt_text' => $validated['alt_text'] ?? null,
+                    'caption' => $validated['caption'] ?? null,
+                    'folder' => $validated['folder'] ?? 'uploads',
+                    'tags' => $validated['tags'] ?? [],
+                ]);
 
-            $uploadedFiles[] = $mediaAsset;
+                $uploadedFiles[] = $mediaAsset;
+                
+            } catch (\Exception $e) {
+                \Log::error('File upload failed', [
+                    'file' => $file->getClientOriginalName(),
+                    'error' => $e->getMessage(),
+                    'user_id' => auth()->id(),
+                ]);
+                
+                return response()->json([
+                    'message' => 'Upload failed: ' . $e->getMessage(),
+                    'error' => true,
+                ], 422);
+            }
         }
 
         return response()->json([
@@ -245,28 +269,115 @@ class MediaController extends Controller
     }
 
     /**
-     * Search media assets for selection.
+     * Search media assets for selection with advanced filtering.
      */
     public function search(Request $request): JsonResponse
     {
         $query = MediaAsset::query();
 
+        // Text search
         if ($request->filled('q')) {
             $query->where(function ($q) use ($request) {
                 $q->where('original_name', 'like', '%' . $request->q . '%')
-                  ->orWhere('alt_text', 'like', '%' . $request->q . '%');
+                  ->orWhere('alt_text', 'like', '%' . $request->q . '%')
+                  ->orWhere('caption', 'like', '%' . $request->q . '%')
+                  ->orWhereJsonContains('tags', $request->q);
             });
         }
 
-        if ($request->filled('type')) {
+        // Type filtering
+        if ($request->filled('type') && $request->type !== 'all') {
             $query->byMimeType($request->type);
         }
 
-        $mediaAssets = $query->latest()
-            ->take(20)
-            ->get();
+        // Filter type (more specific than mime type)
+        if ($request->filled('filter_type') && $request->filter_type !== 'all') {
+            switch ($request->filter_type) {
+                case 'image':
+                    $query->images();
+                    break;
+                case 'video':
+                    $query->videos();
+                    break;
+                case 'document':
+                    $query->where(function ($q) {
+                        $q->where('mime_type', 'like', 'application/%')
+                          ->orWhere('mime_type', 'like', 'text/%');
+                    });
+                    break;
+            }
+        }
 
-        return response()->json($mediaAssets);
+        // Tag filtering
+        if ($request->filled('tags')) {
+            $tags = explode(',', $request->tags);
+            foreach ($tags as $tag) {
+                $query->whereJsonContains('tags', trim($tag));
+            }
+        }
+
+        // Sorting
+        $sortBy = $request->get('sort_by', 'date');
+        $sortOrder = $request->get('sort_order', 'desc');
+
+        switch ($sortBy) {
+            case 'name':
+                $query->orderBy('original_name', $sortOrder);
+                break;
+            case 'size':
+                $query->orderBy('size', $sortOrder);
+                break;
+            case 'date':
+            default:
+                $query->orderBy('created_at', $sortOrder);
+                break;
+        }
+
+        $mediaAssets = $query->take(50)->get();
+
+        // Get available tags for filtering
+        $availableTags = MediaAsset::whereNotNull('tags')
+            ->get()
+            ->pluck('tags')
+            ->flatten()
+            ->unique()
+            ->filter()
+            ->sort()
+            ->values();
+
+        return response()->json([
+            'assets' => $mediaAssets,
+            'tags' => $availableTags,
+        ]);
+    }
+
+    /**
+     * Bulk delete media assets.
+     */
+    public function bulkDelete(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'exists:media_assets,id',
+        ]);
+
+        $items = MediaAsset::whereIn('id', $validated['ids'])->get();
+
+        foreach ($items as $item) {
+            // Delete the physical file
+            $filePath = 'public/' . $item->path;
+            if (Storage::exists($filePath)) {
+                Storage::delete($filePath);
+            }
+
+            // Delete the database record
+            $item->delete();
+        }
+
+        return response()->json([
+            'message' => 'Media assets deleted successfully',
+            'deleted_count' => count($items),
+        ]);
     }
 
     /**

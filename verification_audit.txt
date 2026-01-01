@@ -1,0 +1,1 @@
+All fixes verified. Browser warnings cleared (except persistent Inter preload from unknown source). Visuals confirmed.

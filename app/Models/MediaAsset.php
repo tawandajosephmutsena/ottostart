@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Traits\HasImageSeo;
 
 class MediaAsset extends Model
 {
-    use HasFactory;
+    use HasFactory, HasImageSeo;
 
     protected $fillable = [
         'filename',
@@ -16,14 +17,17 @@ class MediaAsset extends Model
         'size',
         'path',
         'alt_text',
+        'title',
         'caption',
         'folder',
         'tags',
+        'seo_metadata',
     ];
 
     protected $casts = [
         'tags' => 'array',
         'size' => 'integer',
+        'seo_metadata' => 'array',
     ];
 
     public function scopeByFolder($query, $folder)
@@ -59,5 +63,47 @@ class MediaAsset extends Model
     public function getIsVideoAttribute()
     {
         return str_starts_with($this->mime_type, 'video/');
+    }
+
+    /**
+     * Override getModelImages for MediaAsset specific structure
+     */
+    protected function getModelImages(): array
+    {
+        if (!$this->is_image) {
+            return [];
+        }
+
+        return [
+            [
+                'field' => 'path',
+                'path' => $this->path,
+                'alt_text' => $this->alt_text,
+                'title' => $this->title,
+                'context' => $this->getImageContext('path'),
+            ]
+        ];
+    }
+
+    /**
+     * Get context for MediaAsset images
+     */
+    protected function getImageContext(string $field): ?string
+    {
+        $context = '';
+
+        if ($this->original_name) {
+            $context .= pathinfo($this->original_name, PATHINFO_FILENAME) . ' ';
+        }
+
+        if ($this->caption) {
+            $context .= $this->caption . ' ';
+        }
+
+        if ($this->folder) {
+            $context .= $this->folder . ' ';
+        }
+
+        return trim($context) ?: null;
     }
 }

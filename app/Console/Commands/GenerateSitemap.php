@@ -2,97 +2,84 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Insight;
-use App\Models\Page;
-use App\Models\PortfolioItem;
-use App\Models\Service;
+use App\Services\SitemapService;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\File;
 
 class GenerateSitemap extends Command
 {
     /**
      * The name and signature of the console command.
-     *
-     * @var string
      */
-    protected $signature = 'sitemap:generate';
+    protected $signature = 'sitemap:generate 
+                            {--submit : Submit sitemap to search engines after generation}
+                            {--clear-cache : Clear sitemap cache before generation}';
 
     /**
      * The console command description.
-     *
-     * @var string
      */
-    protected $description = 'Generate the sitemap.xml file';
+    protected $description = 'Generate XML sitemap for the website';
+
+    private SitemapService $sitemapService;
+
+    public function __construct(SitemapService $sitemapService)
+    {
+        parent::__construct();
+        $this->sitemapService = $sitemapService;
+    }
 
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): int
     {
-        $this->info('Generating sitemap...');
+        $this->info('Generating XML sitemap...');
 
-        $sitemap = \Spatie\Sitemap\Sitemap::create()
-            ->add(\Spatie\Sitemap\Tags\Url::create('/')
-                ->setPriority(1.0)
-                ->setChangeFrequency(\Spatie\Sitemap\Tags\Url::CHANGE_FREQUENCY_DAILY))
-            ->add(\Spatie\Sitemap\Tags\Url::create('/about')
-                ->setPriority(0.8)
-                ->setChangeFrequency(\Spatie\Sitemap\Tags\Url::CHANGE_FREQUENCY_MONTHLY))
-            ->add(\Spatie\Sitemap\Tags\Url::create('/contact')
-                ->setPriority(0.8)
-                ->setChangeFrequency(\Spatie\Sitemap\Tags\Url::CHANGE_FREQUENCY_MONTHLY))
-            ->add(\Spatie\Sitemap\Tags\Url::create('/portfolio')
-                ->setPriority(0.9)
-                ->setChangeFrequency(\Spatie\Sitemap\Tags\Url::CHANGE_FREQUENCY_WEEKLY))
-            ->add(\Spatie\Sitemap\Tags\Url::create('/services')
-                ->setPriority(0.9)
-                ->setChangeFrequency(\Spatie\Sitemap\Tags\Url::CHANGE_FREQUENCY_MONTHLY))
-            ->add(\Spatie\Sitemap\Tags\Url::create('/blog')
-                ->setPriority(0.9)
-                ->setChangeFrequency(\Spatie\Sitemap\Tags\Url::CHANGE_FREQUENCY_WEEKLY))
-            ->add(\Spatie\Sitemap\Tags\Url::create('/team')
-                ->setPriority(0.7)
-                ->setChangeFrequency(\Spatie\Sitemap\Tags\Url::CHANGE_FREQUENCY_MONTHLY));
+        // Clear cache if requested
+        if ($this->option('clear-cache')) {
+            $this->info('Clearing sitemap cache...');
+            $this->sitemapService->clearCache();
+        }
 
-        // Dynamic Pages
-        Page::where('is_published', true)->each(function ($page) use ($sitemap) {
-            if ($page->slug === 'home') return;
-            // Avoid duplicates with static pages if they exist as dynamic pages
-            if (in_array($page->slug, ['about', 'contact', 'portfolio', 'services', 'blog', 'team'])) return;
+        // Generate sitemap
+        $success = $this->sitemapService->generateAndSaveSitemap();
 
-            $sitemap->add(\Spatie\Sitemap\Tags\Url::create("/{$page->slug}")
-                ->setPriority(0.8)
-                ->setChangeFrequency(\Spatie\Sitemap\Tags\Url::CHANGE_FREQUENCY_WEEKLY)
-                ->setLastModificationDate($page->updated_at));
-        });
+        if (!$success) {
+            $this->error('Failed to generate sitemap!');
+            return Command::FAILURE;
+        }
 
-        // Portfolio
-        PortfolioItem::published()->each(function ($item) use ($sitemap) {
-            $sitemap->add(\Spatie\Sitemap\Tags\Url::create("/portfolio/{$item->slug}")
-                ->setPriority(0.8)
-                ->setChangeFrequency(\Spatie\Sitemap\Tags\Url::CHANGE_FREQUENCY_MONTHLY)
-                ->setLastModificationDate($item->updated_at));
-        });
+        // Get statistics
+        $stats = $this->sitemapService->getSitemapStats();
+        
+        $this->info('Sitemap generated successfully!');
+        $this->table(
+            ['Metric', 'Count'],
+            [
+                ['Total URLs', $stats['total_urls']],
+                ['Static Pages', $stats['static_pages']],
+                ['Portfolio Items', $stats['portfolio_items']],
+                ['Services', $stats['services']],
+                ['Blog Posts', $stats['insights']],
+                ['CMS Pages', $stats['cms_pages']],
+            ]
+        );
 
-        // Services
-        Service::published()->each(function ($item) use ($sitemap) {
-            $sitemap->add(\Spatie\Sitemap\Tags\Url::create("/services/{$item->slug}")
-                ->setPriority(0.8)
-                ->setChangeFrequency(\Spatie\Sitemap\Tags\Url::CHANGE_FREQUENCY_MONTHLY)
-                ->setLastModificationDate($item->updated_at));
-        });
+        $this->info('Sitemap saved to: ' . public_path('sitemap.xml'));
 
-        // Insights
-        Insight::published()->each(function ($item) use ($sitemap) {
-            $sitemap->add(\Spatie\Sitemap\Tags\Url::create("/blog/{$item->slug}")
-                ->setPriority(0.7)
-                ->setChangeFrequency(\Spatie\Sitemap\Tags\Url::CHANGE_FREQUENCY_WEEKLY)
-                ->setLastModificationDate($item->updated_at));
-        });
+        // Submit to search engines if requested
+        if ($this->option('submit')) {
+            $this->info('Submitting sitemap to search engines...');
+            $results = $this->sitemapService->submitToSearchEngines();
 
-        $sitemap->writeToFile(public_path('sitemap.xml'));
+            foreach ($results as $engine => $result) {
+                if ($result['success']) {
+                    $this->info("✓ Successfully submitted to {$engine}");
+                } else {
+                    $this->error("✗ Failed to submit to {$engine}: " . $result['error']);
+                }
+            }
+        }
 
-        $this->info('Sitemap generated successfully at public/sitemap.xml');
+        return Command::SUCCESS;
     }
 }

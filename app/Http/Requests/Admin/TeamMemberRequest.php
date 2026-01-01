@@ -2,9 +2,10 @@
 
 namespace App\Http\Requests\Admin;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\SecureFormRequest;
+use App\Rules\NoScriptTags;
 
-class TeamMemberRequest extends FormRequest
+class TeamMemberRequest extends SecureFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

@@ -75,7 +75,8 @@ export default function SettingsIndex({ settings }: Props) {
         return acc;
     }, {} as Record<string, any>);
 
-    const { data, setData } = useForm(initialData);
+    const { data, setData: _setData } = useForm(initialData);
+    const setData = _setData as any;
     const [processing, setProcessing] = useState(false);
 
     const handleSubmit = (e: React.FormEvent) => {
