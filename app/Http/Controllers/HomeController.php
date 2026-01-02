@@ -17,20 +17,23 @@ class HomeController extends Controller
     {
         $homePage = \App\Models\Page::where('slug', 'home')->first();
 
-        // Simple direct queries for now
+        // Fetch featured projects (no relationships, client/technologies are columns)
         $featuredProjects = PortfolioItem::where('is_featured', true)
             ->where('is_published', true)
             ->latest()
             ->take(3)
             ->get();
 
+        // Fetch featured services (no category relationship)
         $featuredServices = Service::where('is_featured', true)
             ->where('is_published', true)
             ->latest()
             ->take(3)
             ->get();
 
+        // Fetch recent insights with eager loading for author and category
         $recentInsights = Insight::where('is_published', true)
+            ->with(['author', 'category']) // These relationships exist
             ->latest('published_at')
             ->take(3)
             ->get();

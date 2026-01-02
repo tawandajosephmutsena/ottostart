@@ -94,8 +94,8 @@ class SecurityHeaders
         $policies = [
             "default-src 'self'",
             "script-src 'self' 'nonce-{$nonce}' 'strict-dynamic'",
-            "style-src 'self' 'unsafe-inline' https://fonts.bunny.net http://localhost:5173 http://127.0.0.1:5173",
-            "font-src 'self' https://fonts.bunny.net http://localhost:5173 http://127.0.0.1:5173",
+            "style-src 'self' 'unsafe-inline' https://fonts.bunny.net https://fonts.googleapis.com http://localhost:5173 http://127.0.0.1:5173",
+            "font-src 'self' https://fonts.bunny.net https://fonts.gstatic.com http://localhost:5173 http://127.0.0.1:5173",
             "img-src 'self' data: https: http://localhost:5173 http://127.0.0.1:5173",
             "media-src 'self' http://localhost:5173 http://127.0.0.1:5173",
             "object-src 'none'",

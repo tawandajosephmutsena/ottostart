@@ -5,6 +5,7 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
+    DialogDescription,
     DialogTrigger,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -314,6 +315,9 @@ export default function MediaLibrary(props: MediaLibraryProps): React.JSX.Elemen
             <DialogContent className="max-w-4xl h-[85vh] flex flex-col p-0 overflow-hidden">
                 <DialogHeader className="p-6 pb-0">
                     <DialogTitle>Media Library</DialogTitle>
+                    <DialogDescription className="text-xs">
+                        Select an image from the library or upload a new one.
+                    </DialogDescription>
                 </DialogHeader>
 
                 <Tabs defaultValue="browse" className="flex-1 flex flex-col min-h-0">

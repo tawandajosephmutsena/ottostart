@@ -127,13 +127,13 @@
         <link rel="icon" href="/favicon.svg" type="image/svg+xml">
         <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
-        {{-- Web Core Vitals: Font loading optimization with font-display: swap --}}
-        <link rel="preload" href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600&display=swap" as="style" id="font-preload">
-        <noscript><link rel="stylesheet" href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600&display=swap"></noscript>
+        {{-- Web Core Vitals: Font loading optimization --}}
+        <link rel="stylesheet" href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600&display=swap" media="print" id="font-bunny-style">
         <script nonce="{{ Vite::cspNonce() }}">
-            document.getElementById('font-preload').onload = null;
-            document.getElementById('font-preload').rel = 'stylesheet';
+            document.getElementById('font-bunny-style').media = 'all';
         </script>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+        <noscript><link rel="stylesheet" href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600&display=swap"></noscript>
 
         @viteReactRefresh
         @vite(['resources/js/app.tsx', "resources/js/pages/{$page['component']}.tsx"])

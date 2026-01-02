@@ -121,7 +121,7 @@ export const Navigation: React.FC<NavigationProps> = ({ className }) => {
         }
     }, [isMenuOpen]);
 
-    const { site } = props;
+    const site = props.site || { name: 'Avant-Garde', logo: '', tagline: 'Premium Agency' };
 
     return (
         <>
@@ -140,24 +140,18 @@ export const Navigation: React.FC<NavigationProps> = ({ className }) => {
                     isScrolled ? 'py-2' : 'py-4'
                 )}>
                     {/* Logo */}
-                    <Link href="/" className="flex items-center space-x-3 font-display relative z-10 group">
+                    <Link href="/" className="flex items-center font-display relative z-10 group">
                         <div
                             ref={logoRef}
-                            className="size-10 rounded-xl bg-agency-accent flex items-center justify-center transition-transform duration-500 group-hover:rotate-[15deg] group-hover:scale-110 shadow-lg shadow-agency-accent/20 overflow-hidden"
+                            className="h-10 transition-transform duration-500 group-hover:rotate-[5deg] group-hover:scale-105 overflow-hidden"
                         >
                             {site.logo && site.logo !== '/logo.svg' ? (
-                                <img src={site.logo} alt={site.name} className="w-full h-full object-contain p-1.5" />
+                                <img src={site.logo} alt={site.name} className="h-full w-auto object-contain" />
                             ) : (
-                                <span className="text-xl font-black text-agency-primary">{site.name?.charAt(0) || 'A'}</span>
+                                <div className="size-10 rounded-xl bg-agency-accent flex items-center justify-center shadow-lg shadow-agency-accent/20">
+                                    <span className="text-xl font-black text-agency-primary">{site.name?.charAt(0) || 'A'}</span>
+                                </div>
                             )}
-                        </div>
-                        <div className="flex flex-col leading-none">
-                            <span className="text-lg font-black uppercase tracking-tighter text-agency-primary dark:text-white">
-                                {site.name?.split(' ')[0] || 'Avant'}
-                            </span>
-                            <span className="text-[10px] font-bold uppercase tracking-[0.3em] opacity-40 text-agency-primary dark:text-white">
-                                {site.name?.split(' ').slice(1).join(' ') || site.tagline || 'Garde'}
-                            </span>
                         </div>
                     </Link>
 
@@ -199,7 +193,7 @@ export const Navigation: React.FC<NavigationProps> = ({ className }) => {
                                     </Link>
                                     <Link
                                         href="/register"
-                                        className="h-10 px-5 inline-flex items-center gap-2 rounded-full bg-agency-primary dark:bg-white text-white dark:text-agency-primary font-bold text-[10px] uppercase tracking-widest hover:scale-105 transition-all shadow-lg"
+                                        className="h-10 px-5 inline-flex items-center gap-2 rounded-full bg-agency-primary dark:bg-white text-white dark:text-agency-neutral font-bold text-[10px] uppercase tracking-widest hover:scale-105 transition-all shadow-lg"
                                     >
                                         <UserPlus className="size-3" /> Sign Up
                                     </Link>

@@ -8,9 +8,9 @@ interface ProjectItem {
     title: string;
     slug: string;
     description: string;
-    featured_image?: string;
-    client?: string;
-    technologies?: string[];
+    featured_image?: string | null;
+    client?: string | null;
+    technologies?: string[] | null;
 }
 
 interface FeaturedProjectsProps {

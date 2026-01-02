@@ -104,9 +104,8 @@ export function AdminSidebar() {
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>
-                            <Link href="/admin" className="flex items-center gap-2">
+                            <Link href="/admin" className="flex items-center justify-center">
                                 <AppLogo />
-                                <span className="text-sm font-medium">Admin</span>
                             </Link>
                         </SidebarMenuButton>
                     </SidebarMenuItem>

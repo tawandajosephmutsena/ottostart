@@ -12,7 +12,7 @@ import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { Insight, Category, User } from '@/types';
 import { useForm, usePage, Link } from '@inertiajs/react';
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Save, ArrowLeft, ImagePlus, X, Plus, History, Eye } from 'lucide-react';
 import {
     Select,
@@ -27,6 +27,7 @@ import VersionHistory from '@/components/admin/VersionHistory';
 import VersionComparison from '@/components/admin/VersionComparison';
 import RealTimePreview from '@/components/admin/RealTimePreview';
 import PreviewShare from '@/components/admin/PreviewShare';
+import { accessibilityManager } from '@/lib/accessibilityManager';
 
 interface Props {
     insight?: Insight;
@@ -78,6 +79,13 @@ export default function InsightForm({ insight, categories, authors }: Props) {
     const [showVersionComparison, setShowVersionComparison] = React.useState(false);
     const [comparisonVersions, setComparisonVersions] = React.useState<[number, number] | null>(null);
     const [showPreview, setShowPreview] = React.useState(false);
+    const formRef = useRef<HTMLFormElement>(null);
+
+    useEffect(() => {
+        if (formRef.current) {
+            accessibilityManager.enhanceFormAccessibility(formRef.current);
+        }
+    }, []);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -111,7 +119,7 @@ export default function InsightForm({ insight, categories, authors }: Props) {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                     <Link href="/admin/insights">

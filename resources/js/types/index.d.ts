@@ -32,13 +32,26 @@ export interface SharedData {
         description?: string;
         url?: string;
         logo?: string;
+        tagline?: string;
+        social?: {
+            github?: string;
+            twitter?: string;
+            linkedin?: string;
+            instagram?: string;
+        };
+        contact?: {
+            address?: string;
+            phone?: string;
+            email?: string;
+        };
     };
     breadcrumbs?: Array<{
         title: string;
         url?: string | null;
         active?: boolean;
     }>;
-    breadcrumbStructuredData?: Record<string, any>;
+    breadcrumbStructuredData?: Record<string, unknown>;
+    nonce?: string;
     [key: string]: unknown;
 }
 

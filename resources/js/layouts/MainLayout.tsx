@@ -7,6 +7,10 @@ import { cn } from '@/lib/utils';
 import { Head, usePage } from '@inertiajs/react';
 import { SharedData } from '@/types';
 import React, { useEffect } from 'react';
+import ThemeStyles from '@/components/ThemeStyles';
+
+declare const gtag: (...args: any[]) => void;
+
 
 interface MainLayoutProps {
     children: React.ReactNode;
@@ -44,7 +48,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
     customBreadcrumbs,
 }) => {
     // Get breadcrumb data from shared props
-    const { breadcrumbs } = usePage<SharedData>().props;
+    const { breadcrumbs, nonce } = usePage<SharedData>().props;
     
     // Initialize smooth scrolling with enhanced controls
     const { scrollTo, stop, start } = useSmoothScroll();
@@ -122,6 +126,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
     return (
         <>
             <Head title={title} />
+            <ThemeStyles />
             <div
                 className={cn(
                     'min-h-screen bg-background font-sans text-foreground',
@@ -184,6 +189,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
 
             {/* Web Core Vitals: Performance monitoring script */}
             <script
+                nonce={nonce}
                 dangerouslySetInnerHTML={{
                     __html: `
                         // Web Core Vitals: Enhanced performance monitoring

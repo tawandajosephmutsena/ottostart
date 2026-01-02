@@ -5,59 +5,25 @@ import ServicesSection from '@/components/ServicesSection';
 import StatsSection from '@/components/StatsSection';
 import { StructuredData } from '@/components/StructuredData';
 import MainLayout from '@/layouts/MainLayout';
-import { type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-
-interface HomePageProps extends SharedData {
-    featuredProjects: Array<{
-        id: number;
-        title: string;
-        slug: string;
-        description: string;
-        featured_image?: string;
-        client?: string;
-        technologies?: string[];
-    }>;
-    featuredServices: Array<{
-        id: number;
-        title: string;
-        slug: string;
-        description: string;
-        icon?: string;
-        featured_image?: string;
-        price_range?: string;
-    }>;
-    recentInsights: Array<{
-        id: number;
-        title: string;
-        slug: string;
-        excerpt: string;
-        featured_image?: string;
-        author?: {
-            name: string;
-            avatar?: string;
-        };
-        category?: {
-            name: string;
-            slug: string;
-        };
-        published_at: string;
-        reading_time?: number;
-    }>;
-    stats: Array<{
-        value: string;
-        label: string;
-        suffix?: string;
-    }>;
-    structuredData?: Record<string, any>[];
-}
-
+import FormSection from '@/components/FormSection';
+import CinematicHero from '@/components/Blocks/CinematicHero';
 import { SeoHead } from '@/components/SeoHead';
+import { SharedData } from '@/types';
+import { HomePageProps } from '@/types/page-props';
+import { PageBlock } from '@/types/page-blocks';
+import DOMPurify from 'dompurify';
 
 export default function Home() {
     // Get page props with typed data
-    const { page, featuredProjects, featuredServices, recentInsights, stats: defaultStats, structuredData, site } =
-        usePage<any>().props;
+    const { 
+        page, 
+        featuredProjects = [], 
+        featuredServices = [], 
+        recentInsights = [], 
+        stats: defaultStats, 
+        structuredData 
+    } = usePage<SharedData & HomePageProps>().props;
 
     const blocks = page?.content?.blocks || [];
 
@@ -79,7 +45,7 @@ export default function Home() {
                     ctaHref="/portfolio"
                 />
                 <StatsSection stats={defaultStats} />
-                <ServicesSection services={featuredServices} useStackedCards={true} />
+                <ServicesSection services={featuredServices} />
                 <FeaturedProjects projects={featuredProjects} />
                 <RecentInsights insights={recentInsights} />
                 <section className="bg-white dark:bg-[#0a0a0a] py-40 relative overflow-hidden">
@@ -108,15 +74,15 @@ export default function Home() {
     return (
         <MainLayout>
             <SeoHead 
-                title={page.meta_title || site.name}
-                description={page.meta_description}
+                title={page.meta_title ?? undefined}
+                description={page.meta_description ?? undefined}
                 type="website"
                 structuredData={structuredData}
             />
             
             {structuredData && <StructuredData data={structuredData} />}
 
-            {blocks.map((block: any) => {
+            {blocks.map((block: PageBlock) => {
                 if (block.is_enabled === false) return null;
 
                 switch (block.type) {
@@ -129,17 +95,18 @@ export default function Home() {
                                 description={block.content.description}
                                 ctaText={block.content.ctaText}
                                 ctaHref={block.content.ctaHref}
-                                image={block.content.image}
+                                marqueeText={block.content.marqueeText}
+                                backgroundImages={block.content.backgroundImages}
                             />
                         );
                     case 'stats':
                         return <StatsSection key={block.id} stats={block.content.items} />;
                     case 'services':
-                        return <ServicesSection key={block.id} title={block.content.title} services={featuredServices.slice(0, block.content.limit || 3)} useStackedCards={block.content.useStackedCards} />;
+                        return <ServicesSection key={block.id} title={block.content.title} services={featuredServices?.slice(0, block.content.limit || 3)} useStackedCards={block.content.useStackedCards} />;
                     case 'portfolio':
-                        return <FeaturedProjects key={block.id} title={block.content.title} projects={featuredProjects.slice(0, block.content.limit || 3)} />;
+                        return <FeaturedProjects key={block.id} title={block.content.title} projects={featuredProjects?.slice(0, block.content.limit || 3)} />;
                     case 'insights':
-                        return <RecentInsights key={block.id} title={block.content.title} insights={recentInsights.slice(0, block.content.limit || 3)} />;
+                        return <RecentInsights key={block.id} title={block.content.title} insights={recentInsights?.slice(0, block.content.limit || 3)} />;
                     case 'cta':
                         return (
                             <section key={block.id} className="bg-white dark:bg-[#0a0a0a] py-40 relative overflow-hidden border-t">
@@ -160,15 +127,22 @@ export default function Home() {
                                 </div>
                             </section>
                         );
-                    case 'text':
+                    case 'text': {
+                        // Sanitize HTML content to prevent XSS attacks
+                        const sanitizedHTML = DOMPurify.sanitize(block.content.body, {
+                            ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li', 'a', 'blockquote', 'code', 'pre'],
+                            ALLOWED_ATTR: ['href', 'target', 'rel', 'class']
+                        });
+                        
                         return (
                             <section key={block.id} className="py-20 px-4">
                                 <div className="max-w-4xl mx-auto prose dark:prose-invert">
                                     {block.content.title && <h2>{block.content.title}</h2>}
-                                    <div dangerouslySetInnerHTML={{ __html: block.content.body }} />
+                                    <div dangerouslySetInnerHTML={{ __html: sanitizedHTML }} />
                                 </div>
                             </section>
                         );
+                    }
                     case 'image':
                         return (
                             <section key={block.id} className="py-20 px-4">
@@ -177,6 +151,23 @@ export default function Home() {
                                     {block.content.caption && <p className="text-center mt-4 text-muted-foreground">{block.content.caption}</p>}
                                 </div>
                             </section>
+                        );
+                    case 'cinematic_hero':
+                        return <CinematicHero key={block.id} slides={block.content.slides || []} />;
+                    case 'form':
+                        return (
+                            <FormSection 
+                                key={block.id}
+                                title={block.content.title}
+                                description={block.content.description}
+                                steps={(block.content.steps || []).map((step: any) => ({
+                                    ...step,
+                                    id: step.id || Math.random().toString(36).substr(2, 9),
+                                    title: step.title || '',
+                                    fields: step.fields || [],
+                                }))}
+                                submitText={block.content.submitText}
+                            />
                         );
                     default:
                         return null;

@@ -157,7 +157,33 @@ export default function SettingsIndex({ settings }: Props) {
                                     <CardHeader>
                                         <CardTitle className="capitalize">{group} Settings</CardTitle>
                                         <CardDescription>
-                                            Configure your {group} preferences.
+                                            {group === 'theme' ? (
+                                                <div className="space-y-4">
+                                                    <p>Customize your brand's visual identity. These colors are applied globally across the site:</p>
+                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs bg-muted/50 p-4 rounded-lg border border-border">
+                                                        <div>
+                                                            <span className="font-bold text-agency-accent block mb-1">Primary Color</span>
+                                                            <p className="text-muted-foreground">Used for main backgrounds, navigation bars, and footer content. It defines the core mood of your site.</p>
+                                                        </div>
+                                                        <div>
+                                                            <span className="font-bold text-agency-accent block mb-1">Secondary Color</span>
+                                                            <p className="text-muted-foreground">Used for section separators, subtle backgrounds, and secondary UI elements like card borders.</p>
+                                                        </div>
+                                                        <div>
+                                                            <span className="font-bold text-agency-accent block mb-1">Accent Color</span>
+                                                            <p className="text-muted-foreground">Used for buttons, links, icons, and highlight elements that need to stand out. This is your brand's "pop" color.</p>
+                                                        </div>
+                                                        <div>
+                                                            <span className="font-bold text-agency-accent block mb-1">Neutral Color</span>
+                                                            <p className="text-muted-foreground">Used for light backgrounds, input fields, and subtle text contrast on dark backgrounds.</p>
+                                                        </div>
+                                                        <div className="md:col-span-2">
+                                                            <span className="font-bold text-agency-accent block mb-1">Dark Color</span>
+                                                            <p className="text-muted-foreground">The foundation for themes with Dark Mode enabled. Affects body backgrounds and high-contrast text elements.</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ) : `Configure your ${group} preferences.`}
                                         </CardDescription>
                                     </CardHeader>
                                     <CardContent className="space-y-4">

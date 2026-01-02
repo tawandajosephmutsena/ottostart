@@ -8,6 +8,7 @@ import { initializeTheme } from './hooks/use-appearance';
 import { setupCsrfProtection } from './lib/csrf';
 import { initPerformanceMonitoring } from './lib/performanceMonitor';
 import { registerServiceWorker, showUpdateAvailableNotification } from './lib/serviceWorker';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 
 // Initialize GSAP and animation system
 import { gsap } from 'gsap';
@@ -78,9 +79,11 @@ createInertiaApp({
         performanceMonitor.mark('app-render-start');
 
         root.render(
-            <StrictMode>
-                <App {...props} />
-            </StrictMode>,
+            <ErrorBoundary>
+                <StrictMode>
+                    <App {...props} />
+                </StrictMode>
+            </ErrorBoundary>,
         );
 
         // Mark performance milestone after render

@@ -8,17 +8,17 @@ interface InsightItem {
     title: string;
     slug: string;
     excerpt: string;
-    featured_image?: string;
+    featured_image?: string | null;
     author?: {
         name: string;
-        avatar?: string;
+        avatar?: string | null;
     };
     category?: {
         name: string;
         slug: string;
     };
-    published_at: string;
-    reading_time?: number;
+    published_at: string | null;
+    reading_time?: number | null;
 }
 
 interface RecentInsightsProps {

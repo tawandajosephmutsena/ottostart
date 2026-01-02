@@ -7,9 +7,9 @@ interface ServiceItem {
     title: string;
     slug: string;
     description: string;
-    icon?: string;
-    featured_image?: string;
-    price_range?: string;
+    icon?: string | null;
+    featured_image?: string | null;
+    price_range?: string | null;
 }
 
 interface ServicesSectionProps {
@@ -59,7 +59,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({
     className,
 }) => {
     return (
-        <section className={cn('bg-agency-primary text-agency-secondary dark:bg-white dark:text-agency-primary py-32 overflow-hidden', className)}>
+        <section className={cn('bg-agency-primary text-agency-secondary py-32 overflow-hidden', className)}>
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <header className="mb-24 flex flex-col md:flex-row justify-between items-end gap-8">
                     <div className="max-w-2xl">

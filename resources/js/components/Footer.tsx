@@ -33,18 +33,11 @@ const footerLinks = {
     ],
 };
 
-const socialLinks = [
-    { name: 'Github', href: 'https://github.com', icon: Github },
-    { name: 'Twitter', href: 'https://twitter.com', icon: Twitter },
-    { name: 'LinkedIn', href: 'https://linkedin.com', icon: Linkedin },
-    { name: 'Instagram', href: 'https://instagram.com', icon: Instagram },
-];
-
 
 
 export const Footer: React.FC<FooterProps> = ({ className }) => {
     const { props } = usePage<SharedData>();
-    const { site } = props;
+    const site = props.site || { name: 'Avant-Garde', logo: '', tagline: 'Premium Agency' };
 
     // Map social links from settings
     const socialLinks = [
@@ -61,15 +54,16 @@ export const Footer: React.FC<FooterProps> = ({ className }) => {
                     {/* Massive Brand Side */}
                     <div className="lg:col-span-6 flex flex-col justify-between">
                         <div>
-                            <Link href="/" className="inline-flex items-center gap-4 mb-12 group">
-                                <div className="size-12 rounded-2xl bg-agency-accent flex items-center justify-center transition-transform duration-500 group-hover:rotate-[15deg] group-hover:scale-110 shadow-xl shadow-agency-accent/20 overflow-hidden">
+                            <Link href="/" className="inline-flex items-center mb-12 group">
+                                <div className="h-12 transition-transform duration-500 group-hover:rotate-[5deg] group-hover:scale-105 overflow-hidden">
                                      {site.logo && site.logo !== '/logo.svg' ? (
-                                        <img src={site.logo} alt={site.name} className="w-full h-full object-contain p-2" />
+                                        <img src={site.logo} alt={site.name} className="h-full w-auto object-contain" />
                                     ) : (
-                                        <span className="text-2xl font-black text-agency-primary">{site.name?.charAt(0) || 'A'}</span>
+                                        <div className="size-12 rounded-2xl bg-agency-accent flex items-center justify-center shadow-xl shadow-agency-accent/20">
+                                            <span className="text-2xl font-black text-agency-primary">{site.name?.charAt(0) || 'A'}</span>
+                                        </div>
                                     )}
                                 </div>
-                                <span className="text-3xl font-black uppercase tracking-tighter">{site.name || 'Avant-Garde'}</span>
                             </Link>
                             <h2 className="text-5xl md:text-7xl font-black uppercase tracking-tighter leading-[0.9] mb-8">
                                 Let's create <br/>

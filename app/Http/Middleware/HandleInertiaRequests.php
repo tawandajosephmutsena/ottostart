@@ -86,6 +86,7 @@ class HandleInertiaRequests extends Middleware
                     'body' => $settings['font_body'] ?? 'Inter',
                 ],
             ],
+            'nonce' => \Illuminate\Support\Facades\Vite::cspNonce(),
         ];
     }
 }

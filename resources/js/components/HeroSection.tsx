@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { useHeroParallax, useTextReveal } from '@/hooks/useAnimations';
 import { cn } from '@/lib/utils';
+import { accessibilityManager } from '@/lib/accessibilityManager';
 import { ArrowRight } from 'lucide-react';
 import React, { useRef } from 'react';
 
@@ -11,6 +12,7 @@ interface HeroSectionProps {
     ctaText?: string;
     ctaHref?: string;
     backgroundImages?: string[];
+    marqueeText?: string;
     className?: string;
 }
 
@@ -25,12 +27,16 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     ctaText = 'Start Your Project',
     ctaHref = '/contact',
     backgroundImages = [],
+    marqueeText = 'Innovate Create Elevate Innovate Create Elevate',
     className,
 }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const image1Ref = useRef<HTMLDivElement>(null);
     const image2Ref = useRef<HTMLDivElement>(null);
     const image3Ref = useRef<HTMLDivElement>(null);
+
+    // Check for reduced motion preference
+    const reducedMotion = accessibilityManager.prefersReducedMotion();
 
     // Apply parallax effects to background images
     useHeroParallax(
@@ -41,16 +47,16 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             image3Ref as React.RefObject<HTMLElement>,
         ],
         {
-            mouseParallax: true,
-            scrollParallax: true,
-            intensity: 1.2,
+            mouseParallax: !reducedMotion,
+            scrollParallax: !reducedMotion,
+            intensity: reducedMotion ? 0 : 1.2,
         },
     );
 
     // Apply text reveal animations
     useTextReveal(containerRef, {
         splitType: 'words',
-        stagger: 0.08,
+        stagger: reducedMotion ? 0 : 0.08,
     });
 
     return (
@@ -63,13 +69,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             )}
         >
             {/* Infinite Background Marquee */}
-            <div className="absolute inset-0 z-0 flex items-center justify-center opacity-[0.03] dark:opacity-[0.08] pointer-events-none select-none overflow-hidden">
-                <div className="whitespace-nowrap flex animate-[marquee_30s_linear_infinite]">
+            <div className="absolute inset-0 z-0 flex items-center justify-start opacity-[0.03] dark:opacity-[0.08] pointer-events-none select-none overflow-hidden">
+                <div className="whitespace-nowrap flex animate-marquee flex-none">
                     <span className="text-[20vw] font-black uppercase leading-none px-4 font-display">
-                        Innovate Create Elevate Innovate Create Elevate
+                        {marqueeText}
                     </span>
                     <span className="text-[18vw] font-black uppercase leading-none px-4 font-display">
-                        Innovate Create Elevate Innovate Create Elevate
+                        {marqueeText}
                     </span>
                 </div>
             </div>
@@ -113,6 +119,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                         <img 
                             src={backgroundImages[2] || 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2670&auto=format&fit=crop'} 
                             alt=""
+                            loading="lazy"
+                            fetchPriority="auto"
+                            width="224"
+                            height="168"
+                            role="presentation"
+                            aria-hidden="true"
                             className="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
                         />
                     </div>

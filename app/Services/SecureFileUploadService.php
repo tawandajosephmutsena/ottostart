@@ -205,26 +205,61 @@ class SecureFileUploadService
         return false;
     }
 
-    /**
-     * Check for embedded executables in files
-     */
     private function containsEmbeddedExecutable(UploadedFile $file): bool
     {
-        $content = file_get_contents($file->getPathname());
-        
-        // Check for common executable signatures
-        $executableSignatures = [
-            "MZ",           // DOS/Windows executable
-            "\x7fELF",      // Linux executable
+        $path = $file->getPathname();
+        $handle = fopen($path, 'rb');
+        if (!$handle) {
+            return false;
+        }
+
+        // Read the first 1KB for header checks
+        $header = fread($handle, 1024);
+        fclose($handle);
+
+        // 1. Check for executable signatures at the VERY START of the file
+        $startSignatures = [
+            'MZ',               // DOS/Windows executable
+            "\x7fELF",          // Linux executable
             "\xCA\xFE\xBA\xBE", // Java class file
-            "#!/bin/",      // Shell script
-            "<?php",        // PHP script
-            "<script",      // JavaScript
+            '#!',               // Shebang (scripts)
         ];
 
-        foreach ($executableSignatures as $signature) {
-            if (strpos($content, $signature) !== false) {
+        foreach ($startSignatures as $sig) {
+            if (str_starts_with($header, $sig)) {
                 return true;
+            }
+        }
+
+        // 2. Check for script tags
+        // For SVGs, we must be strict as they can execute JS
+        // For binary images, we only care if they are specifically trying to be polyglots
+        $isSvg = $file->getMimeType() === 'image/svg+xml';
+        
+        $scriptSignatures = [
+            '<?php',
+            '<script',
+            'base64_decode',
+            'eval(',
+        ];
+
+        // Read more content if it's an SVG or if we want to be thorough, 
+        // but avoid loading huge binaries into memory with file_get_contents
+        if ($isSvg || $file->getSize() < 1024 * 1024) { // Only scan full content for SVGs or small files
+            $content = file_get_contents($path);
+            foreach ($scriptSignatures as $sig) {
+                if (str_contains($content, $sig)) {
+                    // Special case: SVGs often contain <?xml, which is fine, but we check for <?php
+                    if ($sig === '<?php' && str_contains($content, '<?php')) {
+                        return true;
+                    }
+                    if ($sig === '<script' && str_contains($content, '<script')) {
+                        return true;
+                    }
+                    if ($sig !== '<?php' && $sig !== '<script') {
+                        return true;
+                    }
+                }
             }
         }
 

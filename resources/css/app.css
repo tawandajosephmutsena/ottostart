@@ -80,6 +80,11 @@
     --agency-dark: #1f2111; /* Dark mode background */
 
     --radius-brand: 50px;
+
+    /* Animations */
+    --animate-marquee: marquee 30s linear infinite;
+    --animate-bloom: bloom 1s ease-out both;
+    --animate-float: float 6s ease-in-out infinite;
 }
 
 /* Web Core Vitals: Optimized keyframes for better performance */
@@ -102,6 +107,23 @@
         opacity: 1;
         filter: blur(0);
         transform: translate3d(0, 0, 0);
+    }
+}
+
+@keyframes smoke-reveal {
+    0% {
+        opacity: 0;
+        filter: blur(40px);
+        transform: translate3d(50px, 20px, 0) scale(1.1) skewX(-10deg);
+    }
+    30% {
+        opacity: 0.5;
+        filter: blur(20px);
+    }
+    100% {
+        opacity: 1;
+        filter: blur(0);
+        transform: translate3d(0, 0, 0) scale(1) skewX(0);
     }
 }
 

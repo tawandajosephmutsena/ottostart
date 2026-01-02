@@ -9,9 +9,14 @@ interface StatItem {
 }
 
 interface StatsSectionProps {
-    stats?: StatItem[];
+    stats?: StatItem[] | {
+        projects_completed?: number;
+        services_offered?: number;
+        insights_published?: number;
+        years_experience?: number;
+    };
     title?: string;
-    subtitle?: string;
+    subtitle?:string;
     className?: string;
 }
 
@@ -32,16 +37,23 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
     subtitle = 'Our Impact',
     className,
 }) => {
-    // Ensure stats is an array (handle null)
-    const safeStats = Array.isArray(stats) ? stats : [];
+    // Convert stats object to array if needed
+    const statsArray: StatItem[] = Array.isArray(stats) 
+        ? stats 
+        : [
+            { value: String(stats?.projects_completed || 0), label: 'Projects Completed', suffix: '+' },
+            { value: String(stats?.services_offered || 0), label: 'Services Offered', suffix: '+' },
+            { value: String(stats?.insights_published || 0), label: 'Insights Published', suffix: '+' },
+            { value: String(stats?.years_experience || 5), label: 'Years Experience', suffix: '+' },
+          ];
 
     // Ensure we have 4 stats by merging with defaults
     const displayStats = [
-        ...safeStats,
-        ...defaultStats.slice(safeStats.length)
+        ...statsArray,
+        ...defaultStats.slice(statsArray.length)
     ].slice(0, 4);
     return (
-        <section className={cn('bg-agency-secondary py-32 dark:bg-agency-dark', className)}>
+        <section className={cn('bg-agency-secondary py-32 dark:bg-card/50', className)}>
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <header className="mb-16">
                     <span className="text-agency-accent font-bold uppercase tracking-widest text-sm mb-2 block animate-[bloom_1s_ease-out_0.2s_both]">
@@ -100,7 +112,7 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
                             <AnimatedSection 
                                 animation="scale"
                                 delay={600}
-                                className="bg-agency-primary text-agency-secondary dark:bg-white dark:text-agency-primary p-8 rounded-3xl group hover:scale-105 transition-all cursor-default"
+                                className="bg-agency-primary text-agency-secondary p-8 rounded-3xl group hover:scale-105 transition-all cursor-default"
                             >
                                 <h3 className="text-sm uppercase tracking-widest opacity-60 font-bold mb-4 leading-tight">{displayStats[3].label}</h3>
                                 <div className="text-5xl font-black">{displayStats[3].value}</div>

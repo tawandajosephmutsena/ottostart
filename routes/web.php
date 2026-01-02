@@ -30,7 +30,9 @@ Route::middleware(['cache.headers:public'])->group(function () {
 });
 
 // Contact form (no caching for POST)
-Route::post('/contact', [App\Http\Controllers\ContactController::class, 'store'])->name('contact.store');
+Route::post('/contact', [App\Http\Controllers\ContactController::class, 'store'])
+    ->middleware('throttle:5,1') // 5 requests per minute
+    ->name('contact.store');
 
 // SEO and Sitemap routes
 Route::get('/sitemap.xml', [App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
