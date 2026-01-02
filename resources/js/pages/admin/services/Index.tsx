@@ -63,7 +63,7 @@ export default function Index({ services }: Props) {
         <div 
             key={item.id}
             className="group relative bg-card rounded-xl border border-agency-primary/10 overflow-hidden hover:border-agency-accent/50 transition-all cursor-pointer h-full flex flex-col"
-            onClick={() => router.get(`/admin/services/${item.id}/edit`)}
+            onClick={() => router.get(`/admin/services/${item.slug}/edit`)}
         >
             <div className="aspect-[16/9] bg-muted relative overflow-hidden">
                 {item.featured_image ? (

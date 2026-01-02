@@ -57,7 +57,7 @@ export const Navigation: React.FC<NavigationProps> = ({ className }) => {
             { yPercent: -120, duration: 0.4, ease: 'power3.in', paused: true },
         );
 
-        ScrollTrigger.create({
+        const mainTrigger = ScrollTrigger.create({
             trigger: document.body,
             start: 'top top',
             end: 99999,
@@ -77,7 +77,9 @@ export const Navigation: React.FC<NavigationProps> = ({ className }) => {
 
         return () => {
             window.removeEventListener('scroll', handleScroll);
-            ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+            mainTrigger.kill();
+            showAnim.kill();
+            hideAnim.kill();
         };
     }, []);
 
@@ -119,6 +121,8 @@ export const Navigation: React.FC<NavigationProps> = ({ className }) => {
         }
     }, [isMenuOpen]);
 
+    const { site } = props;
+
     return (
         <>
             {/* Main Navigation */}
@@ -139,13 +143,21 @@ export const Navigation: React.FC<NavigationProps> = ({ className }) => {
                     <Link href="/" className="flex items-center space-x-3 font-display relative z-10 group">
                         <div
                             ref={logoRef}
-                            className="size-10 rounded-xl bg-agency-accent flex items-center justify-center transition-transform duration-500 group-hover:rotate-[15deg] group-hover:scale-110 shadow-lg shadow-agency-accent/20"
+                            className="size-10 rounded-xl bg-agency-accent flex items-center justify-center transition-transform duration-500 group-hover:rotate-[15deg] group-hover:scale-110 shadow-lg shadow-agency-accent/20 overflow-hidden"
                         >
-                            <span className="text-xl font-black text-agency-primary">A</span>
+                            {site.logo && site.logo !== '/logo.svg' ? (
+                                <img src={site.logo} alt={site.name} className="w-full h-full object-contain p-1.5" />
+                            ) : (
+                                <span className="text-xl font-black text-agency-primary">{site.name?.charAt(0) || 'A'}</span>
+                            )}
                         </div>
                         <div className="flex flex-col leading-none">
-                            <span className="text-lg font-black uppercase tracking-tighter text-agency-primary dark:text-white">Avant</span>
-                            <span className="text-[10px] font-bold uppercase tracking-[0.3em] opacity-40 text-agency-primary dark:text-white">Garde</span>
+                            <span className="text-lg font-black uppercase tracking-tighter text-agency-primary dark:text-white">
+                                {site.name?.split(' ')[0] || 'Avant'}
+                            </span>
+                            <span className="text-[10px] font-bold uppercase tracking-[0.3em] opacity-40 text-agency-primary dark:text-white">
+                                {site.name?.split(' ').slice(1).join(' ') || site.tagline || 'Garde'}
+                            </span>
                         </div>
                     </Link>
 
@@ -172,7 +184,7 @@ export const Navigation: React.FC<NavigationProps> = ({ className }) => {
                         <div className="hidden md:flex items-center gap-2 mr-2">
                             {auth?.user ? (
                                 <Link
-                                    href="/dashboard"
+                                    href="/admin"
                                     className="h-10 px-5 inline-flex items-center gap-2 rounded-full bg-agency-accent/10 border border-agency-accent/20 text-agency-accent font-bold text-[10px] uppercase tracking-widest hover:bg-agency-accent hover:text-agency-primary transition-all"
                                 >
                                     <LayoutDashboard className="size-3" /> Dashboard

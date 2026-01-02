@@ -71,7 +71,7 @@ export default function Index({ pages }: Props) {
                     <Button size="sm" variant="secondary" onClick={() => window.open(`/${page.slug === 'home' ? '' : page.slug}`, '_blank')}>
                         <Eye className="h-4 w-4 mr-2" /> View
                     </Button>
-                    <Button size="sm" variant="secondary" onClick={() => router.get(`/admin/pages/${page.id}/edit`)}>
+                    <Button size="sm" variant="secondary" onClick={() => router.get(`/admin/pages/${page.slug}/edit`)}>
                         <Edit className="h-4 w-4 mr-2" /> Edit
                     </Button>
                 </div>
@@ -91,7 +91,7 @@ export default function Index({ pages }: Props) {
                 </div>
                 <div className="flex gap-1">
                     <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => {
-                        if(confirm('Delete Page?')) router.delete(`/admin/pages/${page.id}`)
+                        if(confirm('Delete Page?')) router.delete(`/admin/pages/${page.slug}`)
                     }}>
                         <Trash className="h-3.5 w-3.5" />
                     </Button>

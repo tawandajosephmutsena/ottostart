@@ -99,6 +99,8 @@ class InsightRequest extends SecureFormRequest
      */
     protected function prepareForValidation(): void
     {
+        parent::prepareForValidation();
+
         // Generate slug if not provided
         if (empty($this->slug) && !empty($this->title)) {
             $this->merge([

@@ -38,6 +38,14 @@ class HandleInertiaRequests extends Middleware
     {
         [$message, $author] = str(Inspiring::quotes()->random())->explode('-');
 
+        // Fetch settings from cache or database
+        $settings = \Illuminate\Support\Facades\Cache::remember('site_settings', 60 * 60, function () {
+            return \App\Models\Setting::all()->pluck('value', 'key')->map(function ($value, $key) {
+                // Settings are cast as arrays in the model
+                return is_array($value) ? $value[0] ?? null : $value;
+            })->toArray();
+        });
+
         return [
             ...parent::share($request),
             'name' => config('app.name'),
@@ -48,34 +56,34 @@ class HandleInertiaRequests extends Middleware
             'csrf_token' => $request->session()->token(),
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
             'site' => [
-                'name' => 'Avant-Garde CMS',
-                'tagline' => 'Digital Innovation Redefined',
-                'description' => 'We create avant-garde digital experiences that push boundaries and inspire innovation through cutting-edge design and technology.',
+                'name' => $settings['site_name'] ?? 'Avant-Garde CMS',
+                'tagline' => $settings['site_tagline'] ?? 'Digital Innovation Redefined',
+                'description' => $settings['site_description'] ?? 'We create avant-garde digital experiences that push boundaries and inspire innovation through cutting-edge design and technology.',
                 'url' => config('app.url'),
-                'logo' => '/logo.svg',
+                'logo' => $settings['site_logo'] ?? '/logo.svg',
                 'social' => [
-                    'twitter' => 'https://twitter.com/avantgarde',
-                    'linkedin' => 'https://linkedin.com/company/avantgarde',
-                    'github' => 'https://github.com/avantgarde',
-                    'instagram' => 'https://instagram.com/avantgarde',
+                    'twitter' => $settings['twitter_url'] ?? 'https://twitter.com/avantgarde',
+                    'linkedin' => $settings['linkedin_url'] ?? 'https://linkedin.com/company/avantgarde',
+                    'github' => $settings['github_url'] ?? 'https://github.com/avantgarde',
+                    'instagram' => $settings['instagram_url'] ?? 'https://instagram.com/avantgarde',
                 ],
                 'contact' => [
-                    'email' => 'hello@avant-garde.com',
-                    'phone' => '+1 (555) 123-4567',
-                    'address' => 'San Francisco, CA',
+                    'email' => $settings['contact_email'] ?? 'hello@avant-garde.com',
+                    'phone' => $settings['contact_phone'] ?? '+1 (555) 123-4567',
+                    'address' => $settings['contact_address'] ?? 'San Francisco, CA',
                 ],
             ],
             'theme' => [
                 'colors' => [
-                    'primary' => '#1a1a1a',
-                    'secondary' => '#666666',
-                    'accent' => '#ff6b35',
-                    'neutral' => '#f5f5f5',
-                    'dark' => '#0a0a0a',
+                    'primary' => $settings['brand_primary'] ?? '#1a1a1a',
+                    'secondary' => $settings['brand_secondary'] ?? '#666666',
+                    'accent' => $settings['brand_accent'] ?? '#ff6b35',
+                    'neutral' => $settings['brand_neutral'] ?? '#f5f5f5',
+                    'dark' => $settings['brand_dark'] ?? '#0a0a0a',
                 ],
                 'fonts' => [
-                    'display' => 'Inter',
-                    'body' => 'Inter',
+                    'display' => $settings['font_display'] ?? 'Inter',
+                    'body' => $settings['font_body'] ?? 'Inter',
                 ],
             ],
         ];

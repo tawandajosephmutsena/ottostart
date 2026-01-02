@@ -102,11 +102,11 @@ export default function Index({ insights }: Props) {
             <CardFooter className="p-4 pt-0 mt-auto flex justify-between items-center border-t border-t-muted pt-3">
                 <span className="text-[10px] font-medium">{item.author?.name}</span>
                 <div className="flex gap-2">
-                     <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => router.get(`/admin/insights/${item.id}/edit`)}>
+                     <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => router.get(`/admin/insights/${item.slug}/edit`)}>
                         <Edit className="h-4 w-4" />
                     </Button>
                     <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive" onClick={() => {
-                        if(confirm('Delete Post?')) router.delete(`/admin/insights/${item.id}`)
+                        if(confirm('Delete Post?')) router.delete(`/admin/insights/${item.slug}`)
                     }}>
                         <Trash className="h-4 w-4" />
                     </Button>

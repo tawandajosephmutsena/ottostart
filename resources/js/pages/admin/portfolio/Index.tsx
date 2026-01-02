@@ -91,10 +91,10 @@ export default function Index({ portfolioItems }: Props) {
                     )}
                 </div>
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                    <Button size="sm" variant="secondary" onClick={() => router.get(`/admin/portfolio/${item.id}`)}>
+                    <Button size="sm" variant="secondary" onClick={() => router.get(`/admin/portfolio/${item.slug}`)}>
                         <Eye className="h-4 w-4 mr-2" /> View
                     </Button>
-                    <Button size="sm" variant="secondary" onClick={() => router.get(`/admin/portfolio/${item.id}/edit`)}>
+                    <Button size="sm" variant="secondary" onClick={() => router.get(`/admin/portfolio/${item.slug}/edit`)}>
                         <Edit className="h-4 w-4 mr-2" /> Edit
                     </Button>
                 </div>
@@ -119,7 +119,7 @@ export default function Index({ portfolioItems }: Props) {
                 </div>
                 <div className="flex gap-1">
                     <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => {
-                        if(confirm('Delete Project?')) router.delete(`/admin/portfolio/${item.id}`)
+                        if(confirm('Delete Project?')) router.delete(`/admin/portfolio/${item.slug}`)
                     }}>
                         <Trash className="h-3.5 w-3.5" />
                     </Button>

@@ -87,7 +87,7 @@ export default function Edit({ page }: Props) {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        put(`/admin/pages/${page.id}`, {
+        put(`/admin/pages/${page.slug}`, {
             onSuccess: () => toast.success('Page updated successfully'),
             onError: () => toast.error('Failed to update page'),
         });
@@ -96,7 +96,7 @@ export default function Edit({ page }: Props) {
     const breadcrumbs = [
         { title: 'Admin', href: '/admin' },
         { title: 'Pages', href: '/admin/pages' },
-        { title: 'Edit', href: `/admin/pages/${page.id}/edit` },
+        { title: 'Edit', href: `/admin/pages/${page.slug}/edit` },
     ];
 
     return (

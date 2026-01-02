@@ -42,6 +42,16 @@ const socialLinks = [
 
 
 export const Footer: React.FC<FooterProps> = ({ className }) => {
+    const { props } = usePage<SharedData>();
+    const { site } = props;
+
+    // Map social links from settings
+    const socialLinks = [
+        { name: 'Github', href: site.social?.github, icon: Github },
+        { name: 'Twitter', href: site.social?.twitter, icon: Twitter },
+        { name: 'LinkedIn', href: site.social?.linkedin, icon: Linkedin },
+        { name: 'Instagram', href: site.social?.instagram, icon: Instagram },
+    ].filter(link => link.href);
 
     return (
         <footer className={cn('bg-agency-primary text-white dark:bg-black pt-32 pb-12 overflow-hidden border-t border-white/5', className)}>
@@ -51,10 +61,14 @@ export const Footer: React.FC<FooterProps> = ({ className }) => {
                     <div className="lg:col-span-6 flex flex-col justify-between">
                         <div>
                             <Link href="/" className="inline-flex items-center gap-4 mb-12 group">
-                                <div className="size-12 rounded-2xl bg-agency-accent flex items-center justify-center transition-transform duration-500 group-hover:rotate-[15deg] group-hover:scale-110 shadow-xl shadow-agency-accent/20">
-                                    <span className="text-2xl font-black text-agency-primary">A</span>
+                                <div className="size-12 rounded-2xl bg-agency-accent flex items-center justify-center transition-transform duration-500 group-hover:rotate-[15deg] group-hover:scale-110 shadow-xl shadow-agency-accent/20 overflow-hidden">
+                                     {site.logo && site.logo !== '/logo.svg' ? (
+                                        <img src={site.logo} alt={site.name} className="w-full h-full object-contain p-2" />
+                                    ) : (
+                                        <span className="text-2xl font-black text-agency-primary">{site.name?.charAt(0) || 'A'}</span>
+                                    )}
                                 </div>
-                                <span className="text-3xl font-black uppercase tracking-tighter">Avant-Garde</span>
+                                <span className="text-3xl font-black uppercase tracking-tighter">{site.name || 'Avant-Garde'}</span>
                             </Link>
                             <h2 className="text-5xl md:text-7xl font-black uppercase tracking-tighter leading-[0.9] mb-8">
                                 Let's create <br/>
@@ -68,6 +82,8 @@ export const Footer: React.FC<FooterProps> = ({ className }) => {
                                     key={social.name} 
                                     href={social.href} 
                                     aria-label={social.name}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
                                     className="size-12 rounded-full border border-white/10 flex items-center justify-center hover:bg-white hover:text-agency-primary transition-all duration-500"
                                 >
                                     <social.icon className="size-5" />
@@ -106,10 +122,9 @@ export const Footer: React.FC<FooterProps> = ({ className }) => {
                             <h3 className="text-xs font-bold uppercase tracking-[0.3em] text-agency-accent mb-8">Office</h3>
                             <address className="not-italic">
                                 <p className="text-xl font-bold opacity-40 leading-tight">
-                                    123 Creative Studio<br/>
-                                    Market Street 456<br/>
-                                    San Francisco, CA
+                                    {site.contact?.address || '123 Creative Studio\nMarket Street 456\nSan Francisco, CA'}
                                 </p>
+                                <p className="mt-4 text-agency-accent font-bold">{site.contact?.phone}</p>
                             </address>
                         </div>
                     </div>
@@ -118,7 +133,7 @@ export const Footer: React.FC<FooterProps> = ({ className }) => {
                 {/* Bottom Bar */}
                 <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8">
                     <div className="flex items-center gap-8 order-2 md:order-1">
-                        <span className="text-sm opacity-30 font-medium">© {new Date().getFullYear()} AVANT-GARDE AGY</span>
+                        <span className="text-sm opacity-30 font-medium">© {new Date().getFullYear()} {site.name?.toUpperCase() || 'AVANT-GARDE'} AGY</span>
                         <div className="hidden md:flex gap-6">
                             {footerLinks.legal.map((link) => (
                                 <Link key={link.name} href={link.href} className="text-xs opacity-30 hover:opacity-100 transition-opacity uppercase tracking-widest font-bold">
@@ -139,7 +154,7 @@ export const Footer: React.FC<FooterProps> = ({ className }) => {
 
             {/* Background Massive Text */}
             <div className="absolute bottom-[-5%] left-1/2 -translate-x-1/2 pointer-events-none select-none opacity-[0.03] whitespace-nowrap">
-                <span className="text-[25vw] font-black uppercase leading-none">AVANT-GARDE</span>
+                <span className="text-[25vw] font-black uppercase leading-none">{site.name || 'AVANT-GARDE'}</span>
             </div>
         </footer>
     );

@@ -55,12 +55,24 @@ export default function InsightForm({ insight, categories, authors }: Props) {
         content: (insight?.content as { body: string }) || { body: '' },
         featured_image: insight?.featured_image || '',
         author_id: insight?.author_id || authors[0]?.id || '',
-        category_id: insight?.category_id || '',
+        category_id: insight?.category_id || categories[0]?.id || '',
         tags: insight?.tags || [],
         reading_time: insight?.reading_time || 5,
         is_published: insight?.is_published ?? false,
         is_featured: insight?.is_featured ?? false,
     });
+
+    // Auto-generate slug from title
+    useEffect(() => {
+        if (!insight && data.title) {
+            const generatedSlug = data.title
+                .toLowerCase()
+                .replace(/[^\w\s-]/g, '')
+                .replace(/[\s_-]+/g, '-')
+                .replace(/^-+|-+$/g, '');
+            setData('slug', generatedSlug);
+        }
+    }, [data.title, insight]);
 
     const [newTag, setNewTag] = React.useState('');
     const [showVersionHistory, setShowVersionHistory] = React.useState(false);
@@ -71,7 +83,7 @@ export default function InsightForm({ insight, categories, authors }: Props) {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (insight) {
-            put(`/admin/insights/${insight.id}`);
+            put(`/admin/insights/${insight.slug}`);
         } else {
             post('/admin/insights');
         }

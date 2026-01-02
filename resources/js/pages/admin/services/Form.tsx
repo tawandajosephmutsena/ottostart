@@ -75,7 +75,7 @@ export default function ServiceForm({ service }: Props) {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (service) {
-            put(`/admin/services/${service.id}`);
+            put(`/admin/services/${service.slug}`);
         } else {
             post('/admin/services');
         }

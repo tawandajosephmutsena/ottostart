@@ -425,9 +425,10 @@ export const useScaleIn = (
 
         const container = containerRef.current;
         const scaleElements = container.querySelectorAll('.gsap-scale-in');
+        const triggers: ScrollTrigger[] = [];
 
         scaleElements.forEach((element) => {
-            ScrollTrigger.create({
+            const trigger = ScrollTrigger.create({
                 trigger: element,
                 start: 'top 80%',
                 end: 'bottom 20%',
@@ -440,10 +441,11 @@ export const useScaleIn = (
                     });
                 },
             });
+            triggers.push(trigger);
         });
 
         return () => {
-            ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+            triggers.forEach(t => t.kill());
         };
     }, [containerRef]);
 };

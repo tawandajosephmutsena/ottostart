@@ -7,8 +7,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useForm, router } from '@inertiajs/react';
 import React, { useEffect, useState } from 'react';
-import { Save } from 'lucide-react';
+import { Save, ImagePlus, X } from 'lucide-react';
 import { toast } from 'sonner';
+import MediaLibrary from '@/components/admin/MediaLibrary';
+import { MediaAsset } from '@/types';
 
 interface SettingItem {
     id?: number;
@@ -26,19 +28,21 @@ interface Props {
 const SETTINGS_STRUCT = {
     general: [
         { key: 'site_name', label: 'Site Name', type: 'text', placeholder: 'Avant-Garde CMS' },
+        { key: 'site_tagline', label: 'Site Tagline', type: 'text', placeholder: 'Digital Innovation Redefined' },
         { key: 'site_description', label: 'Site Description', type: 'textarea', placeholder: 'A Digital Innovation Agency' },
-        { key: 'support_email', label: 'Support Email', type: 'text', placeholder: 'hello@example.com' },
+        { key: 'site_logo', label: 'Site Logo', type: 'image', placeholder: '/logo.svg' },
     ],
     contact: [
+        { key: 'contact_email', label: 'Contact Email', type: 'text', placeholder: 'hello@example.com' },
         { key: 'contact_phone', label: 'Phone Number', type: 'text', placeholder: '+1 (555) 000-0000' },
         { key: 'contact_address', label: 'Physical Address', type: 'textarea', placeholder: '123 Innovation Dr...' },
         { key: 'google_maps_url', label: 'Google Maps Embed URL', type: 'text', placeholder: 'https://maps.google.com...' },
     ],
     social: [
-        { key: 'social_linkedin', label: 'LinkedIn URL', type: 'text', placeholder: 'https://linkedin.com/company/...' },
-        { key: 'social_twitter', label: 'Twitter / X URL', type: 'text', placeholder: 'https://x.com/...' },
-        { key: 'social_github', label: 'GitHub URL', type: 'text', placeholder: 'https://github.com/...' },
-        { key: 'social_instagram', label: 'Instagram URL', type: 'text', placeholder: 'https://instagram.com/...' },
+        { key: 'linkedin_url', label: 'LinkedIn URL', type: 'text', placeholder: 'https://linkedin.com/company/...' },
+        { key: 'twitter_url', label: 'Twitter / X URL', type: 'text', placeholder: 'https://x.com/...' },
+        { key: 'github_url', label: 'GitHub URL', type: 'text', placeholder: 'https://github.com/...' },
+        { key: 'instagram_url', label: 'Instagram URL', type: 'text', placeholder: 'https://instagram.com/...' },
     ],
     seo: [
         { key: 'default_meta_title', label: 'Default Meta Title', type: 'text', placeholder: 'Avant-Garde Experience' },
@@ -46,9 +50,12 @@ const SETTINGS_STRUCT = {
         { key: 'google_analytics_id', label: 'Google Analytics ID', type: 'text', placeholder: 'G-XXXXXXXXXX' },
     ],
     theme: [
-        { key: 'primary_color', label: 'Primary Color', type: 'color', placeholder: '#000000' },
-        { key: 'accent_color', label: 'Accent Color', type: 'color', placeholder: '#D0FD3E' },
-        { key: 'font_heading', label: 'Heading Font', type: 'text', placeholder: 'Inter' },
+        { key: 'brand_primary', label: 'Primary Color', type: 'color', placeholder: '#1a1a1a' },
+        { key: 'brand_secondary', label: 'Secondary Color', type: 'color', placeholder: '#666666' },
+        { key: 'brand_accent', label: 'Accent Color', type: 'color', placeholder: '#ff6b35' },
+        { key: 'brand_neutral', label: 'Neutral Color', type: 'color', placeholder: '#f5f5f5' },
+        { key: 'brand_dark', label: 'Dark Color', type: 'color', placeholder: '#0a0a0a' },
+        { key: 'font_display', label: 'Display Font', type: 'text', placeholder: 'Inter' },
         { key: 'font_body', label: 'Body Font', type: 'text', placeholder: 'Inter' },
     ]
 };
@@ -87,11 +94,13 @@ export default function SettingsIndex({ settings }: Props) {
         const settingsToSave = Object.entries(data).map(([key, value]) => {
             // Find which group and type this key belongs to
             let group = 'general';
+            let type = 'text';
             
             for (const [g, items] of Object.entries(SETTINGS_STRUCT)) {
-                const found = items.find(i => i.key === key);
+                const found = items.find(i => i.key === key) as any;
                 if (found) {
                     group = g;
+                    type = found.type === 'textarea' ? 'text' : found.type === 'image' ? 'text' : found.type;
                     break;
                 }
             }
@@ -99,7 +108,7 @@ export default function SettingsIndex({ settings }: Props) {
             return {
                 key,
                 value, // The backend handles array wrapping for simple text
-                type: 'text',
+                type: type === 'image' ? 'text' : type,
                 group_name: group
             };
         });
@@ -162,6 +171,35 @@ export default function SettingsIndex({ settings }: Props) {
                                                         onChange={(e) => setData(item.key, e.target.value)}
                                                         placeholder={item.placeholder}
                                                     />
+                                                ) : item.type === 'image' ? (
+                                                    <div className="flex items-center gap-4">
+                                                        <MediaLibrary 
+                                                            type="image"
+                                                            onSelect={(asset: MediaAsset) => setData(item.key, asset.url)}
+                                                            trigger={
+                                                                <div className="w-24 h-24 rounded-lg border-2 border-dashed flex items-center justify-center cursor-pointer hover:bg-muted transition-colors relative overflow-hidden bg-muted/20">
+                                                                    {data[item.key] ? (
+                                                                        <img src={data[item.key]} alt="Logo" className="w-full h-full object-contain p-2" />
+                                                                    ) : (
+                                                                        <ImagePlus className="w-8 h-8 text-muted-foreground" />
+                                                                    )}
+                                                                </div>
+                                                            }
+                                                        />
+                                                        <div className="flex-1 space-y-2">
+                                                            <Input 
+                                                                value={data[item.key]} 
+                                                                onChange={(e) => setData(item.key, e.target.value)}
+                                                                placeholder="/logo.svg"
+                                                            />
+                                                            <p className="text-[10px] text-muted-foreground">Select from library or enter URL</p>
+                                                        </div>
+                                                        {data[item.key] && (
+                                                            <Button type="button" variant="ghost" size="icon" onClick={() => setData(item.key, '')}>
+                                                                <X className="w-4 h-4" />
+                                                            </Button>
+                                                        )}
+                                                    </div>
                                                 ) : (
                                                     <div className="flex gap-2">
                                                         <Input
