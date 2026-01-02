@@ -1,4 +1,5 @@
 import React, { useState, useRef, useCallback } from 'react';
+import { usePage } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Card, CardContent } from '@/components/ui/card';
@@ -55,7 +56,7 @@ export default function MediaUpload({
     const [newTag, setNewTag] = useState('');
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const validateFile = (file: File): string | null => {
+    const validateFile = useCallback((file: File): string | null => {
         // Check file size
         if (file.size > maxFileSize * 1024 * 1024) {
             return `File size exceeds ${maxFileSize}MB limit`;
@@ -74,9 +75,9 @@ export default function MediaUpload({
         }
 
         return null;
-    };
+    }, [maxFileSize, acceptedTypes]);
 
-    const processFiles = (fileList: FileList | File[]) => {
+    const processFiles = useCallback((fileList: FileList | File[]) => {
         const newFiles: UploadingFile[] = [];
         const errors: string[] = [];
 
@@ -108,7 +109,7 @@ export default function MediaUpload({
         if (newFiles.length > 0) {
             setFiles(prev => [...prev, ...newFiles]);
         }
-    };
+    }, [files.length, maxFiles, validateFile, globalTags, globalFolder]);
 
     const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
@@ -141,15 +142,15 @@ export default function MediaUpload({
         if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
             processFiles(e.dataTransfer.files);
         }
-    }, [files.length, maxFiles, globalTags, globalFolder]);
+    }, [processFiles]);
 
     const removeFile = (index: number) => {
         setFiles(prev => prev.filter((_, i) => i !== index));
     };
 
-    const updateFileTags = (index: number, tags: string[]) => {
-        setFiles(prev => prev.map((f, i) => i === index ? { ...f, tags } : f));
-    };
+    // const updateFileTags = (index: number, tags: string[]) => {
+    //     setFiles(prev => prev.map((f, i) => i === index ? { ...f, tags } : f));
+    // };
 
     const updateFileFolder = (index: number, folder: string) => {
         setFiles(prev => prev.map((f, i) => i === index ? { ...f, folder } : f));
@@ -172,6 +173,9 @@ export default function MediaUpload({
         setFiles(prev => prev.map(f => f.status === 'pending' ? { ...f, tags: updatedTags } : f));
     };
 
+    const { props } = usePage();
+    const csrfToken = props.csrf_token as string;
+
     const startUpload = async () => {
         if (files.length === 0) return;
         setUploading(true);
@@ -184,30 +188,32 @@ export default function MediaUpload({
         }
 
         for (const batch of batches) {
-            await Promise.all(batch.map((fileData, batchIndex) => {
+            await Promise.all(batch.map((fileData) => {
                 const globalIndex = files.indexOf(fileData);
-                return uploadSingleFile(fileData, globalIndex);
+                return uploadSingleFile(fileData, globalIndex, csrfToken);
             }));
         }
 
         setUploading(false);
     };
 
-    const uploadSingleFile = async (fileData: UploadingFile, index: number): Promise<void> => {
+    const uploadSingleFile = async (fileData: UploadingFile, index: number, token: string): Promise<void> => {
         if (fileData.status !== 'pending') return;
 
         const formData = new FormData();
-        formData.append('file', fileData.file);
+        formData.append('files[]', fileData.file);
         formData.append('folder', fileData.folder || globalFolder);
+        
         if (fileData.tags && fileData.tags.length > 0) {
-            formData.append('tags', JSON.stringify(fileData.tags));
+            fileData.tags.forEach(tag => {
+                formData.append('tags[]', tag);
+            });
         }
 
         return new Promise((resolve) => {
             const xhr = new XMLHttpRequest();
             xhr.open('POST', '/admin/media', true);
             
-            const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
             if (token) xhr.setRequestHeader('X-CSRF-TOKEN', token);
             xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 
@@ -221,22 +227,28 @@ export default function MediaUpload({
             };
 
             xhr.onload = () => {
+                let response;
+                try {
+                    response = JSON.parse(xhr.responseText);
+                } catch {
+                    // console.error('Failed to parse response:', e);
+                }
+
                 if (xhr.status >= 200 && xhr.status < 300) {
                     setFiles(prev => prev.map((f, i) => 
                         i === index ? { ...f, status: 'success', progress: 100 } : f
                     ));
                     
-                    try {
-                        const response = JSON.parse(xhr.responseText);
-                        if (onSuccess && response.file) {
-                            onSuccess([response.file]);
-                        }
-                    } catch (e) {
-                        console.error('Failed to parse response:', e);
+                    if (onSuccess && response && response.file) {
+                        onSuccess([response.file]);
+                    } else if (onSuccess && response && response.files) {
+                        // Handle multiple files response if needed, although we upload one by one here
+                        onSuccess(response.files);
                     }
                 } else {
+                    const errorMessage = response?.message || response?.error || `Upload failed (${xhr.status})`;
                     setFiles(prev => prev.map((f, i) => 
-                        i === index ? { ...f, status: 'error', error: 'Upload failed' } : f
+                        i === index ? { ...f, status: 'error', error: errorMessage } : f
                     ));
                 }
                 resolve();

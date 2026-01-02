@@ -135,6 +135,10 @@ return [
             'replace_placeholders' => true,
         ],
 
+        'sentry' => [
+            'driver' => 'sentry',
+        ],
+
     ],
 
 ];

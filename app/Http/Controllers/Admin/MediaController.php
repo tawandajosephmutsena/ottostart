@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -129,10 +131,10 @@ class MediaController extends Controller
                 $uploadedFiles[] = $mediaAsset;
                 
             } catch (\Exception $e) {
-                \Log::error('File upload failed', [
+                Log::error('File upload failed', [
                     'file' => $file->getClientOriginalName(),
                     'error' => $e->getMessage(),
-                    'user_id' => auth()->id(),
+                    'user_id' => Auth::id(),
                 ]);
                 
                 return response()->json([
@@ -151,17 +153,17 @@ class MediaController extends Controller
     /**
      * Display the specified media asset.
      */
-    public function show(MediaAsset $mediaAsset): Response
+    public function show(MediaAsset $medium): Response
     {
         return Inertia::render('admin/media/Show', [
-            'mediaAsset' => $mediaAsset,
+            'mediaAsset' => $medium,
         ]);
     }
 
     /**
      * Show the form for editing the specified media asset.
      */
-    public function edit(MediaAsset $mediaAsset): Response
+    public function edit(MediaAsset $medium): Response
     {
         $folders = MediaAsset::whereNotNull('folder')
             ->distinct()
@@ -171,7 +173,7 @@ class MediaController extends Controller
             ->values();
 
         return Inertia::render('admin/media/Edit', [
-            'mediaAsset' => $mediaAsset,
+            'mediaAsset' => $medium,
             'folders' => $folders,
         ]);
     }
@@ -179,14 +181,14 @@ class MediaController extends Controller
     /**
      * Update the specified media asset.
      */
-    public function update(MediaAssetRequest $request, MediaAsset $mediaAsset): RedirectResponse
+    public function update(MediaAssetRequest $request, MediaAsset $medium): RedirectResponse
     {
         $validated = $request->validated();
 
         // If folder is changed, move the file
-        if (isset($validated['folder']) && $validated['folder'] !== $mediaAsset->folder) {
-            $oldPath = 'public/' . $mediaAsset->path;
-            $newPath = 'public/' . $validated['folder'] . '/' . $mediaAsset->filename;
+        if (isset($validated['folder']) && $validated['folder'] !== $medium->folder) {
+            $oldPath = 'public/' . $medium->path;
+            $newPath = 'public/' . $validated['folder'] . '/' . $medium->filename;
 
             if (Storage::exists($oldPath)) {
                 Storage::move($oldPath, $newPath);
@@ -194,25 +196,25 @@ class MediaController extends Controller
             }
         }
 
-        $mediaAsset->update($validated);
+        $medium->update($validated);
 
-        return redirect()->route('admin.media.show', $mediaAsset)
+        return redirect()->route('admin.media.show', $medium)
             ->with('success', 'Media asset updated successfully.');
     }
 
     /**
      * Remove the specified media asset.
      */
-    public function destroy(MediaAsset $mediaAsset): RedirectResponse
+    public function destroy(MediaAsset $medium): RedirectResponse
     {
         // Delete the physical file
-        $filePath = 'public/' . $mediaAsset->path;
+        $filePath = 'public/' . $medium->path;
         if (Storage::exists($filePath)) {
             Storage::delete($filePath);
         }
 
         // Delete the database record
-        $mediaAsset->delete();
+        $medium->delete();
 
         return redirect()->route('admin.media.index')
             ->with('success', 'Media asset deleted successfully.');

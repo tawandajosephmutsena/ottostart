@@ -18,8 +18,20 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->encryptCookies(except: ['appearance', 'sidebar_state']);
 
+        // \App\Http\Middleware\VerifyCsrfToken::class, // Built-in verification is now default in Laravel 11. Disable manual addition or configure validation.
+        // Actually, in Laravel 11, VerifyCsrfToken is implicit in web group.
+        // Can exclude URI or disable based on environment.
+        
+        $middleware->validateCsrfTokens(except: [
+            'stripe/*',
+            'webhook/*',
+        ]);
+
+        if (env('APP_ENV') === 'dusk.local') {
+            $middleware->validateCsrfTokens(except: ['*']);
+        }
+
         $middleware->web(append: [
-            \App\Http\Middleware\VerifyCsrfToken::class,
             \App\Http\Middleware\XssProtection::class,
             \App\Http\Middleware\SecurityHeaders::class,
             \App\Http\Middleware\CompressionMiddleware::class,
@@ -42,5 +54,5 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        \Sentry\Laravel\Integration::handles($exceptions);
     })->create();

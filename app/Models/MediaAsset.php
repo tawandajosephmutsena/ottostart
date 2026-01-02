@@ -30,6 +30,12 @@ class MediaAsset extends Model
         'seo_metadata' => 'array',
     ];
 
+    protected $appends = [
+        'url',
+        'is_image',
+        'is_video',
+    ];
+
     public function scopeByFolder($query, $folder)
     {
         return $query->where('folder', $folder);

@@ -40,34 +40,8 @@ export default defineConfig({
         // Web Core Vitals: Optimize chunk sizes for better LCP
         rollupOptions: {
             output: {
-                manualChunks: (id) => {
-                    // Critical path chunks for better LCP
-                    if (id.includes('node_modules')) {
-                        if (id.includes('react') || id.includes('react-dom')) {
-                            return 'react-vendor';
-                        }
-                        if (id.includes('gsap') || id.includes('lenis')) {
-                            return 'animation-vendor';
-                        }
-                        if (id.includes('@headlessui') || id.includes('lucide-react')) {
-                            return 'ui-vendor';
-                        }
-                        // Split other vendor code into smaller chunks
-                        return 'vendor';
-                    }
-                    // Split pages into separate chunks for better code splitting
-                    if (id.includes('pages/')) {
-                        const pageName = id.split('pages/')[1].split('.')[0];
-                        return `page-${pageName}`;
-                    }
-                    // Split components into logical chunks
-                    if (id.includes('components/admin/')) {
-                        return 'admin-components';
-                    }
-                    if (id.includes('components/')) {
-                        return 'components';
-                    }
-                },
+// Let Vite handle chunking automatically to avoid circular dependencies
+                manualChunks: undefined,
                 // Optimize chunk file names for caching
                 chunkFileNames: 'js/[name]-[hash].js',
                 entryFileNames: 'js/[name]-[hash].js',

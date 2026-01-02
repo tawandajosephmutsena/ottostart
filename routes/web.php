@@ -186,4 +186,9 @@ Route::middleware(['auth', 'verified', 'admin', 'cache.headers:no-cache'])->pref
     });
 });
 
+// Dynamic Pages (Catch-all)
+Route::get('/{slug}', [App\Http\Controllers\PageController::class, 'show'])
+    ->where('slug', '^[a-zA-Z0-9-_]+$')
+    ->name('pages.show');
+
 require __DIR__.'/settings.php';

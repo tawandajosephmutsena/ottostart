@@ -3,21 +3,8 @@
  */
 
 // Extend global types
-declare global {
-  function gtag(...args: any[]): void;
-  
-  interface PerformanceEntry {
-    processingStart?: number;
-  }
-  
-  interface PerformanceNavigationTiming {
-    navigationStart?: number;
-  }
-
-  interface HTMLImageElement {
-    fetchPriority?: 'high' | 'low' | 'auto';
-  }
-}
+// Global types extended via type assertions where needed
+// declare global removed to avoid interface merging issues
 
 export interface PerformanceMetrics {
   fcp?: number; // First Contentful Paint
@@ -114,8 +101,8 @@ export class PerformanceMonitor {
     this.observePerformanceEntries('paint', (entries) => {
       const fcpEntry = entries.find(entry => entry.name === 'first-contentful-paint');
       if (fcpEntry) {
-        this.metrics.fcp = fcpEntry.startTime;
-        this.reportMetric('FCP', fcpEntry.startTime);
+        this.metrics.fcp = (fcpEntry as any).startTime || fcpEntry.startTime;
+        this.reportMetric('FCP', this.metrics.fcp!);
       }
     });
 
@@ -193,7 +180,7 @@ export class PerformanceMonitor {
       fetchPriority: (element as HTMLImageElement).fetchPriority || null,
     };
 
-    console.log('LCP Element Details:', elementInfo);
+    // console.log('LCP Element Details:', elementInfo);
     
     // Web Core Vitals: Report LCP optimization opportunities
     this.analyzeLCPOptimizations(elementInfo);
@@ -239,7 +226,7 @@ export class PerformanceMonitor {
       target: fidEntry.target?.tagName || 'unknown',
     };
 
-    console.log('FID Input Details:', inputInfo);
+    // console.log('FID Input Details:', inputInfo);
 
     // Web Core Vitals: Analyze FID issues
     if (inputInfo.duration > this.thresholds.fid.good) {
@@ -256,16 +243,16 @@ export class PerformanceMonitor {
    * Track layout shift sources for CLS analysis
    */
   private trackLayoutShiftSources(entry: any): void {
-    const shiftInfo = {
-      value: entry.value,
-      sources: entry.sources?.map((source: any) => ({
-        node: source.node?.tagName || 'unknown',
-        previousRect: source.previousRect,
-        currentRect: source.currentRect,
-      })) || [],
-    };
+    // const shiftInfo = {
+    //   value: entry.value,
+    //   sources: entry.sources?.map((source: any) => ({
+    //     node: source.node?.tagName || 'unknown',
+    //     previousRect: source.previousRect,
+    //     currentRect: source.currentRect,
+    //   })) || [],
+    // };
 
-    console.log('Layout Shift Details:', shiftInfo);
+    // console.log('Layout Shift Details:', shiftInfo);
 
     // Web Core Vitals: Analyze CLS issues
     if (entry.value > 0.05) { // Significant layout shift
@@ -289,10 +276,10 @@ export class PerformanceMonitor {
         const nav = navigationEntries[0];
         
         this.metrics.ttfb = nav.responseStart - nav.requestStart;
-        this.metrics.domContentLoaded = nav.domContentLoadedEventEnd - (nav.navigationStart || nav.fetchStart);
-        this.metrics.windowLoad = nav.loadEventEnd - (nav.navigationStart || nav.fetchStart);
+        this.metrics.domContentLoaded = nav.domContentLoadedEventEnd - ((nav as any).navigationStart || nav.fetchStart);
+        this.metrics.windowLoad = nav.loadEventEnd - ((nav as any).navigationStart || nav.fetchStart);
         
-        this.reportNavigationTiming(nav);
+        // this.reportNavigationTiming(nav);
         
         // Web Core Vitals: Analyze TTFB
         this.analyzeTTFB(this.metrics.ttfb);
@@ -335,15 +322,15 @@ export class PerformanceMonitor {
     try {
       const longTaskObserver = new PerformanceObserver((list) => {
         list.getEntries().forEach((entry) => {
-          console.warn('Long Task detected:', {
-            duration: entry.duration,
-            startTime: entry.startTime,
-            name: entry.name,
-          });
+          // console.warn('Long Task detected:', {
+          //   duration: entry.duration,
+          //   startTime: entry.startTime,
+          //   name: entry.name,
+          // });
           
           // Web Core Vitals: Long tasks impact FID and INP
           if (entry.duration > 50) {
-            console.warn('Long task may impact FID/INP. Consider code splitting or web workers.');
+            // console.warn('Long task may impact FID/INP. Consider code splitting or web workers.');
           }
         });
       });
@@ -363,7 +350,7 @@ export class PerformanceMonitor {
     const interactionTypes = ['click', 'keydown', 'pointerdown'];
     
     interactionTypes.forEach(type => {
-      document.addEventListener(type, (event) => {
+      document.addEventListener(type, () => {
         const startTime = performance.now();
         
         // Use requestIdleCallback to measure interaction response time
@@ -393,12 +380,13 @@ export class PerformanceMonitor {
    * Report final metrics when page becomes hidden
    */
   private reportFinalMetrics(): void {
-    const finalMetrics = this.getWebCoreVitalsScore();
-    console.log('Final Web Core Vitals:', finalMetrics);
+    const finalMetrics = this.getCoreWebVitalsScore();
+    // console.log('Final Web Core Vitals:', finalMetrics);
     
     // Send to analytics
-    if (typeof gtag !== 'undefined') {
-      gtag('event', 'web_vitals_final', {
+    const w = window as any;
+    if (typeof w.gtag !== 'undefined') {
+      w.gtag('event', 'web_vitals_final', {
         event_category: 'Performance',
         lcp: this.metrics.lcp,
         fid: this.metrics.fid,
@@ -510,11 +498,12 @@ export class PerformanceMonitor {
    */
   private reportMetric(name: string, value: number): void {
     // In a real application, you would send this to your analytics service
-    console.log(`Performance Metric - ${name}:`, Math.round(value));
+    // console.log(`Performance Metric - ${name}:`, Math.round(value));
     
     // Example: Send to Google Analytics
-    if (typeof gtag !== 'undefined') {
-      gtag('event', 'web_vitals', {
+    const w = window as any;
+    if (typeof w.gtag !== 'undefined') {
+      w.gtag('event', 'web_vitals', {
         event_category: 'Performance',
         event_label: name,
         value: Math.round(value),
@@ -526,19 +515,9 @@ export class PerformanceMonitor {
   /**
    * Report navigation timing breakdown
    */
-  private reportNavigationTiming(nav: PerformanceNavigationTiming): void {
-    const timing: NavigationTiming = {
-      dns: nav.domainLookupEnd - nav.domainLookupStart,
-      tcp: nav.connectEnd - nav.connectStart,
-      request: nav.responseStart - nav.requestStart,
-      response: nav.responseEnd - nav.responseStart,
-      processing: nav.domContentLoadedEventStart - nav.responseEnd,
-      onLoad: nav.loadEventEnd - nav.loadEventStart,
-      total: nav.loadEventEnd - (nav.navigationStart || nav.fetchStart),
-    };
-
-    console.log('Navigation Timing:', timing);
-  }
+  // private reportNavigationTiming(nav: PerformanceNavigationTiming): void {
+  //   // Implementation commented out as unused
+  // }
 
   /**
    * Get Core Web Vitals score with enhanced analysis
@@ -673,7 +652,7 @@ export class PerformanceMonitor {
   getPerformanceBudgetStatus(): { passed: boolean; violations: string[]; score: number } {
     const violations: string[] = [];
     const { fcp, lcp, fid, cls, inp } = this.metrics;
-
+    
     // Web Core Vitals budget thresholds (stricter than Google's "needs improvement")
     if (fcp && fcp > 1800) violations.push(`FCP too slow: ${Math.round(fcp)}ms (budget: 1800ms)`);
     if (lcp && lcp > 2500) violations.push(`LCP too slow: ${Math.round(lcp)}ms (budget: 2500ms)`);

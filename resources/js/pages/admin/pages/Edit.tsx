@@ -6,10 +6,9 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Page } from '@/types';
 import { useForm, Link } from '@inertiajs/react';
-import { ChevronLeft, Save, Plus, Trash, ArrowUp, ArrowDown, Image as ImageIcon, Type, Layout, Eye } from 'lucide-react';
+import { ChevronLeft, Save, Plus, Trash, ArrowUp, ArrowDown, Image as ImageIcon, Type, Layout, Eye, List } from 'lucide-react';
 import React, { useState } from 'react';
 import { toast } from 'sonner';
 
@@ -143,6 +142,9 @@ export default function Edit({ page }: Props) {
                                 <Button type="button" variant="secondary" onClick={() => addBlock('image')}>
                                     <ImageIcon className="h-4 w-4 mr-2" /> Add Image
                                 </Button>
+                                <Button type="button" variant="secondary" onClick={() => addBlock('features')}>
+                                    <List className="h-4 w-4 mr-2" /> Add Features
+                                </Button>
                              </div>
                         </Card>
 
@@ -234,6 +236,70 @@ export default function Edit({ page }: Props) {
                                                         value={block.content.caption} 
                                                         onChange={(e) => updateBlockContent(block.id, { caption: e.target.value })}
                                                     />
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {block.type === 'features' && (
+                                            <div className="space-y-4">
+                                                <div>
+                                                    <Label className="text-xs">Section Title</Label>
+                                                    <Input 
+                                                        value={block.content.title} 
+                                                        onChange={(e) => updateBlockContent(block.id, { title: e.target.value })}
+                                                    />
+                                                </div>
+                                                
+                                                <div className="space-y-3">
+                                                    <Label className="text-xs">Feature Items</Label>
+                                                    {(block.content.items || []).map((item: any, i: number) => (
+                                                        <div key={i} className="flex gap-2 items-start border p-2 rounded-md bg-background">
+                                                            <div className="flex-1 space-y-2">
+                                                                <Input 
+                                                                    placeholder="Title"
+                                                                    value={item.title} 
+                                                                    onChange={(e) => {
+                                                                        const newItems = [...(block.content.items || [])];
+                                                                        newItems[i] = { ...item, title: e.target.value };
+                                                                        updateBlockContent(block.id, { items: newItems });
+                                                                    }}
+                                                                />
+                                                                <Textarea 
+                                                                    placeholder="Description"
+                                                                    className="h-16 text-xs"
+                                                                    value={item.desc} 
+                                                                    onChange={(e) => {
+                                                                        const newItems = [...(block.content.items || [])];
+                                                                        newItems[i] = { ...item, desc: e.target.value };
+                                                                        updateBlockContent(block.id, { items: newItems });
+                                                                    }}
+                                                                />
+                                                            </div>
+                                                            <Button
+                                                                type="button"
+                                                                variant="ghost" 
+                                                                size="icon"
+                                                                className="text-destructive h-8 w-8"
+                                                                onClick={() => {
+                                                                    const newItems = block.content.items.filter((_: any, idx: number) => idx !== i);
+                                                                    updateBlockContent(block.id, { items: newItems });
+                                                                }}
+                                                            >
+                                                                <Trash className="h-4 w-4" />
+                                                            </Button>
+                                                        </div>
+                                                    ))}
+                                                    <Button 
+                                                        type="button" 
+                                                        variant="outline" 
+                                                        size="sm" 
+                                                        onClick={() => {
+                                                            const newItems = [...(block.content.items || []), { title: 'New Feature', desc: 'Description' }];
+                                                            updateBlockContent(block.id, { items: newItems });
+                                                        }}
+                                                    >
+                                                        <Plus className="h-3 w-3 mr-2" /> Add Feature Item
+                                                    </Button>
                                                 </div>
                                             </div>
                                         )}

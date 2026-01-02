@@ -48,8 +48,11 @@ export default function PortfolioForm({ portfolioItem }: Props) {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (portfolioItem) {
-            put(`/admin/portfolio/${portfolioItem.id}`);
+        
+        if (portfolioItem && portfolioItem.id) {
+            // Use slug if available as it's the route key, otherwise fallback to ID
+            const routeKey = portfolioItem.slug || portfolioItem.id;
+            put(`/admin/portfolio/${routeKey}`);
         } else {
             post('/admin/portfolio');
         }

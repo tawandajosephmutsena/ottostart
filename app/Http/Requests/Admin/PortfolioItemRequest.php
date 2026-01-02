@@ -21,7 +21,8 @@ class PortfolioItemRequest extends SecureFormRequest
      */
     public function rules(): array
     {
-        $portfolioItemId = $this->route('portfolio') ? $this->route('portfolio')->id : null;
+        $portfolio = $this->route('portfolio');
+        $portfolioItemId = $portfolio instanceof \App\Models\PortfolioItem ? $portfolio->id : $portfolio;
 
         return [
             'title' => 'required|string|max:255',

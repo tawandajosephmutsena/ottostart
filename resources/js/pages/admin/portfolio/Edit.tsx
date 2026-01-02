@@ -8,6 +8,8 @@ interface Props {
 }
 
 export default function Edit({ portfolioItem }: Props) {
+    console.log('Edit Page portfolioItem:', portfolioItem);
+    
     const breadcrumbs = [
         { title: 'Admin', href: '/admin' },
         { title: 'Portfolio', href: '/admin/portfolio' },
