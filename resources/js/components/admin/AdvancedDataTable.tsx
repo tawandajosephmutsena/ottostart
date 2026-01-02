@@ -52,6 +52,7 @@ interface AdvancedDataTableProps<T> {
     createUrl?: string;
     createLabel?: string;
     searchPlaceholder?: string;
+    routeKey?: keyof T;
 }
 
 export function AdvancedDataTable<T extends { id: number | string }>({
@@ -63,6 +64,7 @@ export function AdvancedDataTable<T extends { id: number | string }>({
     createUrl,
     createLabel = 'Create New',
     searchPlaceholder = 'Search...',
+    routeKey = 'id' as keyof T,
 }: AdvancedDataTableProps<T>) {
     const [viewMode, setViewMode] = useState<'table' | 'grid'>(renderGridItem ? 'grid' : 'table');
     const [search, setSearch] = useState('');
@@ -155,12 +157,12 @@ export function AdvancedDataTable<T extends { id: number | string }>({
                                                 <DropdownMenuContent align="end">
                                                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
                                                     <DropdownMenuItem
-                                                        onClick={() => router.get(`${url}/${item.id}`)}
+                                                        onClick={() => router.get(`${url}/${String(item[routeKey])}`)}
                                                     >
                                                         View Details
                                                     </DropdownMenuItem>
                                                     <DropdownMenuItem
-                                                        onClick={() => router.get(`${url}/${item.id}/edit`)}
+                                                        onClick={() => router.get(`${url}/${String(item[routeKey])}/edit`)}
                                                     >
                                                         Edit
                                                     </DropdownMenuItem>
@@ -169,7 +171,7 @@ export function AdvancedDataTable<T extends { id: number | string }>({
                                                         className="text-destructive focus:text-destructive"
                                                         onClick={() => {
                                                             if (confirm('Are you sure you want to delete this item?')) {
-                                                                router.delete(`${url}/${item.id}`);
+                                                                router.delete(`${url}/${String(item[routeKey])}`);
                                                             }
                                                         }}
                                                     >

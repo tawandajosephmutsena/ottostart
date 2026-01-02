@@ -109,6 +109,7 @@ export default function Index({ services }: Props) {
                     createUrl="/admin/services/create"
                     createLabel="Add Service"
                     searchPlaceholder="Search services..."
+                    routeKey="slug"
                     onSearch={(query) => router.get('/admin/services', { search: query }, { preserveState: true })}
                 />
             </div>

@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils';
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import {
     Github,
     Instagram,
@@ -7,6 +7,7 @@ import {
     Twitter,
 } from 'lucide-react';
 import React from 'react';
+import { SharedData } from '@/types';
 
 interface FooterProps {
     className?: string;

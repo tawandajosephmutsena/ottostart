@@ -11,10 +11,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { Insight, Category, User } from '@/types';
-import { useForm } from '@inertiajs/react';
-import React from 'react';
+import { useForm, usePage, Link } from '@inertiajs/react';
+import React, { useEffect } from 'react';
 import { Save, ArrowLeft, ImagePlus, X, Plus, History, Eye } from 'lucide-react';
-import { Link } from '@inertiajs/react';
 import {
     Select,
     SelectContent,

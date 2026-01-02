@@ -118,6 +118,7 @@ export default function Index({ pages }: Props) {
                     createUrl="/admin/pages/create"
                     createLabel="Create Page"
                     searchPlaceholder="Search pages..."
+                    routeKey="slug"
                     onSearch={(query) => router.get('/admin/pages', { search: query }, { preserveState: true })}
                 />
             </div>

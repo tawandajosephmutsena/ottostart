@@ -133,6 +133,7 @@ export default function Index({ insights }: Props) {
                     createUrl="/admin/insights/create"
                     createLabel="Write Article"
                     searchPlaceholder="Search articles..."
+                    routeKey="slug"
                     onSearch={(query) => router.get('/admin/insights', { search: query }, { preserveState: true })}
                 />
             </div>

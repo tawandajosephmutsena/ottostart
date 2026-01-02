@@ -15,6 +15,8 @@ class HomeController extends Controller
      */
     public function index(): Response
     {
+        $homePage = \App\Models\Page::where('slug', 'home')->first();
+
         // Simple direct queries for now
         $featuredProjects = PortfolioItem::where('is_featured', true)
             ->where('is_published', true)
@@ -23,7 +25,7 @@ class HomeController extends Controller
             ->get();
 
         $featuredServices = Service::where('is_featured', true)
-            ->where('is_active', true)
+            ->where('is_published', true)
             ->latest()
             ->take(3)
             ->get();
@@ -35,12 +37,13 @@ class HomeController extends Controller
 
         $stats = [
             'projects_completed' => PortfolioItem::where('is_published', true)->count(),
-            'services_offered' => Service::where('is_active', true)->count(),
+            'services_offered' => Service::where('is_published', true)->count(),
             'insights_published' => Insight::where('is_published', true)->count(),
             'years_experience' => 5,
         ];
 
         return Inertia::render('Home', [
+            'page' => $homePage,
             'featuredProjects' => $featuredProjects,
             'featuredServices' => $featuredServices,
             'recentInsights' => $recentInsights,

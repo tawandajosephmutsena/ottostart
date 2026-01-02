@@ -8,21 +8,23 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { Page } from '@/types';
 import { useForm, Link } from '@inertiajs/react';
-import { ChevronLeft, Save, Plus, Trash, ArrowUp, ArrowDown, Image as ImageIcon, Type, Layout, Eye, List } from 'lucide-react';
+import { ChevronLeft, Save, Plus, Trash, ArrowUp, ArrowDown, Image as ImageIcon, Type, Layout, Eye, List, EyeOff } from 'lucide-react';
 import React, { useState } from 'react';
 import { toast } from 'sonner';
+import { cn } from '@/lib/utils';
 
 interface Props {
     page: Page;
 }
 
 // Define the structure of our blocks
-type BlockType = 'hero' | 'text' | 'image' | 'features';
+type BlockType = 'hero' | 'text' | 'image' | 'features' | 'stats' | 'services' | 'portfolio' | 'insights' | 'cta';
 
 interface Block {
     id: string;
     type: BlockType;
     content: any;
+    is_enabled: boolean;
 }
 
 export default function Edit({ page }: Props) {
@@ -53,12 +55,17 @@ export default function Edit({ page }: Props) {
             id: Math.random().toString(36).substr(2, 9),
             type,
             content: getDefaultContentForType(type),
+            is_enabled: true,
         };
         setBlocks([...blocks, newBlock]);
     };
 
     const removeBlock = (id: string) => {
         setBlocks(blocks.filter(b => b.id !== id));
+    };
+
+    const toggleBlock = (id: string) => {
+        setBlocks(blocks.map(b => b.id === id ? { ...b, is_enabled: !b.is_enabled } : b));
     };
 
     const moveBlock = (index: number, direction: 'up' | 'down') => {
@@ -77,10 +84,15 @@ export default function Edit({ page }: Props) {
 
     const getDefaultContentForType = (type: BlockType) => {
         switch (type) {
-            case 'hero': return { title: 'Welcome', subtitle: 'Subtitle text', image: '' };
-            case 'text': return { body: 'Enter your text here...' };
+            case 'hero': return { title: 'Digital Innovation Redefined', subtitle: 'Avant-Garde Agency', description: 'We create avant-garde digital experiences.', ctaText: 'View Our Work', ctaHref: '/portfolio', image: '/images/hero-bg.jpg' };
+            case 'text': return { title: '', body: 'Enter your text here...' };
             case 'image': return { url: '', alt: '', caption: '' };
             case 'features': return { title: 'Our Features', items: [{ title: 'Feature 1', desc: 'Description' }] };
+            case 'stats': return { items: [{ value: '10', label: 'Projects', suffix: '+' }] };
+            case 'services': return { title: 'Our Services', limit: 3, useStackedCards: true };
+            case 'portfolio': return { title: 'Selected Works', limit: 3 };
+            case 'insights': return { title: 'Recent Insights', limit: 3 };
+            case 'cta': return { title: 'Let\'s build the future.', subtitle: 'Project Inquiry', ctaText: 'START NOW', ctaHref: '/contact', email: 'hello@avant-garde.com' };
             default: return {};
         }
     };
@@ -117,7 +129,7 @@ export default function Edit({ page }: Props) {
                     </div>
                     <div className="flex gap-4">
                         <Button variant="outline" asChild>
-                            <a href={`/${page.slug === 'home' ? '' : page.slug}`} target="_blank" rel="noreferrer">
+                            <a href={page.slug === 'home' ? '/' : `/${page.slug}`} target="_blank" rel="noreferrer">
                                 <Eye className="h-4 w-4 mr-2" /> View Live
                             </a>
                         </Button>
@@ -133,25 +145,40 @@ export default function Edit({ page }: Props) {
                     <div className="lg:col-span-2 space-y-6">
                         <Card className="bg-muted/30 border-dashed border-2">
                              <div className="p-4 flex flex-wrap gap-2 justify-center">
-                                <Button type="button" variant="secondary" onClick={() => addBlock('hero')}>
-                                    <Layout className="h-4 w-4 mr-2" /> Add Hero
+                                <Button type="button" variant="secondary" size="sm" onClick={() => addBlock('hero')}>
+                                    <Layout className="h-4 w-4 mr-2" /> Hero
                                 </Button>
-                                <Button type="button" variant="secondary" onClick={() => addBlock('text')}>
-                                    <Type className="h-4 w-4 mr-2" /> Add Text
+                                <Button type="button" variant="secondary" size="sm" onClick={() => addBlock('stats')}>
+                                    <Plus className="h-4 w-4 mr-2" /> Stats
                                 </Button>
-                                <Button type="button" variant="secondary" onClick={() => addBlock('image')}>
-                                    <ImageIcon className="h-4 w-4 mr-2" /> Add Image
+                                <Button type="button" variant="secondary" size="sm" onClick={() => addBlock('services')}>
+                                    <Layout className="h-4 w-4 mr-2" /> Services
                                 </Button>
-                                <Button type="button" variant="secondary" onClick={() => addBlock('features')}>
-                                    <List className="h-4 w-4 mr-2" /> Add Features
+                                <Button type="button" variant="secondary" size="sm" onClick={() => addBlock('portfolio')}>
+                                    <Layout className="h-4 w-4 mr-2" /> Portfolio
+                                </Button>
+                                <Button type="button" variant="secondary" size="sm" onClick={() => addBlock('insights')}>
+                                    <Layout className="h-4 w-4 mr-2" /> Insights
+                                </Button>
+                                <Button type="button" variant="secondary" size="sm" onClick={() => addBlock('cta')}>
+                                    <Plus className="h-4 w-4 mr-2" /> CTA
+                                </Button>
+                                <Button type="button" variant="secondary" size="sm" onClick={() => addBlock('text')}>
+                                    <Type className="h-4 w-4 mr-2" /> Text
+                                </Button>
+                                <Button type="button" variant="secondary" size="sm" onClick={() => addBlock('image')}>
+                                    <ImageIcon className="h-4 w-4 mr-2" /> Image
                                 </Button>
                              </div>
                         </Card>
 
                         <div className="space-y-4">
                             {blocks.map((block, index) => (
-                                <Card key={block.id} className="relative group hover:border-agency-accent/50 transition-colors">
+                                <Card key={block.id} className={cn("relative group hover:border-agency-accent/50 transition-colors", !block.is_enabled && "opacity-60")}>
                                     <div className="absolute right-4 top-4 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <Button type="button" size="icon" variant="ghost" className="h-6 w-6" onClick={() => toggleBlock(block.id)}>
+                                            {block.is_enabled ? <Eye className="h-3 w-3" /> : <EyeOff className="h-3 w-3" />}
+                                        </Button>
                                         <Button type="button" size="icon" variant="ghost" className="h-6 w-6" onClick={() => moveBlock(index, 'up')} disabled={index === 0}>
                                             <ArrowUp className="h-3 w-3" />
                                         </Button>
@@ -165,15 +192,62 @@ export default function Edit({ page }: Props) {
 
                                     <CardHeader className="py-3 px-6 bg-muted/20 border-b">
                                         <CardTitle className="text-xs uppercase tracking-widest font-bold text-muted-foreground flex items-center gap-2">
-                                            {block.type === 'hero' && <Layout className="h-3 w-3" />}
-                                            {block.type === 'text' && <Type className="h-3 w-3" />}
-                                            {block.type === 'image' && <ImageIcon className="h-3 w-3" />}
+                                            {!block.is_enabled && <span className="text-[10px] bg-destructive/10 text-destructive px-1.5 rounded-full mr-2">HIDDEN</span>}
                                             {block.type} Block
                                         </CardTitle>
                                     </CardHeader>
 
                                     <CardContent className="p-6">
                                         {block.type === 'hero' && (
+                                            <div className="space-y-4">
+                                                <div className="grid grid-cols-2 gap-4">
+                                                    <div className="col-span-2">
+                                                        <Label className="text-xs">Headline</Label>
+                                                        <Input 
+                                                            value={block.content.title} 
+                                                            onChange={(e) => updateBlockContent(block.id, { title: e.target.value })}
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <Label className="text-xs">Subtitle</Label>
+                                                        <Input 
+                                                            value={block.content.subtitle} 
+                                                            onChange={(e) => updateBlockContent(block.id, { subtitle: e.target.value })}
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <Label className="text-xs">Image URL</Label>
+                                                        <Input 
+                                                            value={block.content.image} 
+                                                            onChange={(e) => updateBlockContent(block.id, { image: e.target.value })}
+                                                        />
+                                                    </div>
+                                                    <div className="col-span-2">
+                                                        <Label className="text-xs">Description</Label>
+                                                        <Textarea 
+                                                            value={block.content.description} 
+                                                            onChange={(e) => updateBlockContent(block.id, { description: e.target.value })}
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <Label className="text-xs">CTA Text</Label>
+                                                        <Input 
+                                                            value={block.content.ctaText} 
+                                                            onChange={(e) => updateBlockContent(block.id, { ctaText: e.target.value })}
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <Label className="text-xs">CTA Link</Label>
+                                                        <Input 
+                                                            value={block.content.ctaHref} 
+                                                            onChange={(e) => updateBlockContent(block.id, { ctaHref: e.target.value })}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {block.type === 'cta' && (
                                             <div className="space-y-4">
                                                 <div>
                                                     <Label className="text-xs">Headline</Label>
@@ -182,19 +256,128 @@ export default function Edit({ page }: Props) {
                                                         onChange={(e) => updateBlockContent(block.id, { title: e.target.value })}
                                                     />
                                                 </div>
+                                                <div className="grid grid-cols-2 gap-4">
+                                                     <div>
+                                                        <Label className="text-xs">Subtitle</Label>
+                                                        <Input 
+                                                            value={block.content.subtitle} 
+                                                            onChange={(e) => updateBlockContent(block.id, { subtitle: e.target.value })}
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <Label className="text-xs">Contact Email</Label>
+                                                        <Input 
+                                                            value={block.content.email} 
+                                                            onChange={(e) => updateBlockContent(block.id, { email: e.target.value })}
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <Label className="text-xs">CTA Text</Label>
+                                                        <Input 
+                                                            value={block.content.ctaText} 
+                                                            onChange={(e) => updateBlockContent(block.id, { ctaText: e.target.value })}
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <Label className="text-xs">CTA Link</Label>
+                                                        <Input 
+                                                            value={block.content.ctaHref} 
+                                                            onChange={(e) => updateBlockContent(block.id, { ctaHref: e.target.value })}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {block.type === 'stats' && (
+                                            <div className="space-y-4">
+                                                <Label className="text-xs">Stats List</Label>
+                                                {(block.content.items || []).map((item: any, i: number) => (
+                                                    <div key={i} className="flex gap-2 items-end border p-3 rounded bg-muted/10">
+                                                        <div className="flex-1">
+                                                            <Label className="text-[10px]">Value</Label>
+                                                            <Input 
+                                                                value={item.value} 
+                                                                onChange={(e) => {
+                                                                    const newItems = [...block.content.items];
+                                                                    newItems[i] = { ...item, value: e.target.value };
+                                                                    updateBlockContent(block.id, { items: newItems });
+                                                                }}
+                                                            />
+                                                        </div>
+                                                        <div className="flex-1">
+                                                            <Label className="text-[10px]">Label</Label>
+                                                            <Input 
+                                                                value={item.label} 
+                                                                onChange={(e) => {
+                                                                    const newItems = [...block.content.items];
+                                                                    newItems[i] = { ...item, label: e.target.value };
+                                                                    updateBlockContent(block.id, { items: newItems });
+                                                                }}
+                                                            />
+                                                        </div>
+                                                        <div className="w-16">
+                                                            <Label className="text-[10px]">Suffix</Label>
+                                                            <Input 
+                                                                value={item.suffix} 
+                                                                onChange={(e) => {
+                                                                    const newItems = [...block.content.items];
+                                                                    newItems[i] = { ...item, suffix: e.target.value };
+                                                                    updateBlockContent(block.id, { items: newItems });
+                                                                }}
+                                                            />
+                                                        </div>
+                                                        <Button variant="ghost" size="icon" className="text-destructive" onClick={() => {
+                                                            const newItems = block.content.items.filter((_:any, idx:number) => idx !== i);
+                                                            updateBlockContent(block.id, { items: newItems });
+                                                        }}>
+                                                            <Trash className="h-4 w-4" />
+                                                        </Button>
+                                                    </div>
+                                                ))}
+                                                <Button variant="outline" size="sm" onClick={() => {
+                                                    const newItems = [...(block.content.items || []), { value: '0', label: 'New Stat', suffix: '' }];
+                                                    updateBlockContent(block.id, { items: newItems });
+                                                }}>
+                                                    <Plus className="h-3 w-3 mr-2" /> Add Stat
+                                                </Button>
+                                            </div>
+                                        )}
+
+                                        {block.type === 'services' && (
+                                            <div className="grid grid-cols-2 gap-4">
                                                 <div>
-                                                    <Label className="text-xs">Subtitle</Label>
+                                                    <Label className="text-xs">Title</Label>
                                                     <Input 
-                                                        value={block.content.subtitle} 
-                                                        onChange={(e) => updateBlockContent(block.id, { subtitle: e.target.value })}
+                                                        value={block.content.title} 
+                                                        onChange={(e) => updateBlockContent(block.id, { title: e.target.value })}
+                                                    />
+                                                </div>
+                                                <div className="flex items-center space-x-2 pt-6">
+                                                    <Switch 
+                                                        checked={block.content.useStackedCards} 
+                                                        onCheckedChange={(val) => updateBlockContent(block.id, { useStackedCards: val })}
+                                                    />
+                                                    <Label>Use Stacked Cards</Label>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {(block.type === 'portfolio' || block.type === 'insights') && (
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <div>
+                                                    <Label className="text-xs">Section Title</Label>
+                                                    <Input 
+                                                        value={block.content.title} 
+                                                        onChange={(e) => updateBlockContent(block.id, { title: e.target.value })}
                                                     />
                                                 </div>
                                                 <div>
-                                                    <Label className="text-xs">Background Image URL</Label>
+                                                    <Label className="text-xs">Show Limit</Label>
                                                     <Input 
-                                                        value={block.content.image} 
-                                                        onChange={(e) => updateBlockContent(block.id, { image: e.target.value })}
-                                                        placeholder="/images/hero.jpg"
+                                                        type="number"
+                                                        value={block.content.limit} 
+                                                        onChange={(e) => updateBlockContent(block.id, { limit: parseInt(e.target.value) })}
                                                     />
                                                 </div>
                                             </div>
