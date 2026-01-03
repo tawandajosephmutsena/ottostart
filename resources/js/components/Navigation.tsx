@@ -141,11 +141,10 @@ export const Navigation: React.FC<NavigationProps> = ({ className }) => {
                     isScrolled ? 'py-2' : 'py-4'
                 )}>
                     {/* Logo */}
-                    <Link href="/" className="flex items-center font-display relative z-10 group">
+                    <Link href="/" className="flex items-center font-display relative z-10 group overflow-visible">
                         <AppLogo 
                             ref={logoRef as any}
                             className="transition-transform duration-500 group-hover:rotate-[5deg] group-hover:scale-110" 
-                            logoClassName="h-6 w-auto"
                         />
                     </Link>
 

@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import React from 'react';
 import { SharedData } from '@/types';
+import AppLogo from './app-logo';
 
 interface FooterProps {
     className?: string;
@@ -54,16 +55,10 @@ export const Footer: React.FC<FooterProps> = ({ className }) => {
                     {/* Massive Brand Side */}
                     <div className="lg:col-span-6 flex flex-col justify-between">
                         <div>
-                            <Link href="/" className="inline-flex items-center mb-12 group">
-                                <div className="h-8 transition-transform duration-500 group-hover:rotate-[5deg] group-hover:scale-105 overflow-hidden">
-                                     {site.logo ? (
-                                        <img src={site.logo} alt={site.name} className="h-full w-auto object-contain" />
-                                    ) : (
-                                        <div className="size-8 rounded-lg bg-agency-accent flex items-center justify-center">
-                                            <span className="text-lg font-black text-agency-primary">{site.name?.charAt(0) || 'A'}</span>
-                                        </div>
-                                    )}
-                                </div>
+                            <Link href="/" className="inline-flex items-center mb-12 group overflow-visible">
+                                <AppLogo 
+                                    className="transition-transform duration-500 group-hover:rotate-[5deg] group-hover:scale-105" 
+                                />
                             </Link>
                             <h2 className="text-5xl md:text-7xl font-black uppercase tracking-tighter leading-[0.9] mb-8">
                                 Let's create <br/>
