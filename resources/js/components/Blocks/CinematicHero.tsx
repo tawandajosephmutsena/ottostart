@@ -136,7 +136,7 @@ export const CinematicHero: React.FC<CinematicHeroProps> = ({
             {/* Content Layer */}
             <div 
                 className={cn(
-                    "relative z-40 h-full w-full max-w-[1920px] mx-auto p-8 md:p-24 flex flex-col justify-between pointer-events-none",
+                    "relative z-40 h-full w-full max-w-[1920px] mx-auto p-8 md:p-24 pt-32 md:pt-40 flex flex-col justify-between pointer-events-none",
                     "transition-all duration-700 ease-out",
                     textVisible ? "opacity-100" : "opacity-0"
                 )}

@@ -68,7 +68,7 @@ export function AdvancedDataTable<T extends { id: number | string }>({
 }: AdvancedDataTableProps<T>) {
     const [viewMode, setViewMode] = useState<'table' | 'grid'>(renderGridItem ? 'grid' : 'table');
     const [search, setSearch] = useState('');
-    const { url } = usePage();
+    const basePath = typeof window !== 'undefined' ? window.location.pathname.replace(/\/$/, '') : '';
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
@@ -157,12 +157,12 @@ export function AdvancedDataTable<T extends { id: number | string }>({
                                                 <DropdownMenuContent align="end">
                                                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
                                                     <DropdownMenuItem
-                                                        onClick={() => router.get(`${url}/${String(item[routeKey])}`)}
+                                                        onClick={() => router.get(`${basePath}/${String(item[routeKey])}`)}
                                                     >
                                                         View Details
                                                     </DropdownMenuItem>
                                                     <DropdownMenuItem
-                                                        onClick={() => router.get(`${url}/${String(item[routeKey])}/edit`)}
+                                                        onClick={() => router.get(`${basePath}/${String(item[routeKey])}/edit`)}
                                                     >
                                                         Edit
                                                     </DropdownMenuItem>
@@ -171,7 +171,7 @@ export function AdvancedDataTable<T extends { id: number | string }>({
                                                         className="text-destructive focus:text-destructive"
                                                         onClick={() => {
                                                             if (confirm('Are you sure you want to delete this item?')) {
-                                                                router.delete(`${url}/${String(item[routeKey])}`);
+                                                                router.delete(`${basePath}/${String(item[routeKey])}`);
                                                             }
                                                         }}
                                                     >

@@ -98,8 +98,8 @@ export class AnimationPerformanceMonitor {
             this.lastFrameTime = currentTime;
 
             // Log performance warnings
-            if (fps < 30) {
-                console.warn(`Low frame rate detected: ${fps} FPS`);
+            if (fps < 20) { // Reduced threshold from 30 to 20 for fewer warnings
+                console.warn(`Critical low frame rate: ${fps} FPS`);
             }
         }
 
@@ -477,8 +477,8 @@ interface PerformanceReport {
 // Export singleton instance
 export const animationPerformanceMonitor = AnimationPerformanceMonitor.getInstance();
 
-// Auto-start monitoring in development
-if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+// Only start monitoring if explicitly enabled via console or debug flag to reduce noise
+if (typeof window !== 'undefined' && (window as any).ENABLE_PERFORMANCE_MONITOR) {
     animationPerformanceMonitor.startMonitoring();
 }
 

@@ -108,12 +108,20 @@ const OnboardingForm = ({ steps, submitText = "Submit", onSuccess }: OnboardingF
     if (e) e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate API call
-    setTimeout(() => {
-      toast.success("Form submitted successfully!");
-      setIsSubmitting(false);
-      if (onSuccess) onSuccess(formData);
-    }, 1500);
+    import('@inertiajs/react').then(({ router }) => {
+      router.post('/contact', formData, {
+        onSuccess: () => {
+          toast.success("Form submitted successfully!");
+          setIsSubmitting(false);
+          if (onSuccess) onSuccess(formData);
+        },
+        onError: (errors) => {
+          setIsSubmitting(false);
+          const firstError = Object.values(errors)[0];
+          toast.error(typeof firstError === 'string' ? firstError : "Submission failed. Please check the form.");
+        }
+      });
+    });
   };
 
   const isStepValid = () => {

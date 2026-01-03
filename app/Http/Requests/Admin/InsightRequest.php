@@ -35,7 +35,7 @@ class InsightRequest extends SecureFormRequest
             'content.sections' => 'nullable|array',
             'content.sections.*.title' => ['required_with:content.sections', ...$this->getSafeTextRules(255), new NoScriptTags()],
             'content.sections.*.content' => ['required_with:content.sections', ...$this->getRichTextRules(65535), new SafeHtml()],
-            'featured_image' => [...$this->getSafeTextRules(255, false), 'regex:/^[a-zA-Z0-9\-_\.\/]+$/'],
+            'featured_image' => [...$this->getSafeTextRules(255, false)],
             'author_id' => 'required|exists:users,id',
             'category_id' => 'nullable|exists:categories,id',
             'tags' => 'nullable|array|max:20',
@@ -133,7 +133,7 @@ class InsightRequest extends SecureFormRequest
         // Calculate reading time if not provided
         if (empty($this->reading_time) && $this->has('content')) {
             $wordCount = 0;
-            
+
             if (is_array($this->content)) {
                 foreach ($this->content as $section) {
                     if (is_string($section)) {
@@ -147,7 +147,7 @@ class InsightRequest extends SecureFormRequest
                     }
                 }
             }
-            
+
             if ($wordCount > 0) {
                 $this->merge([
                     'reading_time' => max(1, ceil($wordCount / 200)), // 200 words per minute
@@ -167,9 +167,11 @@ class InsightRequest extends SecureFormRequest
             $counter = 1;
             $insightId = $this->route('insight') ? $this->route('insight')->id : null;
 
-            while (\App\Models\Insight::where('slug', $this->slug)
-                ->when($insightId, fn($q) => $q->where('id', '!=', $insightId))
-                ->exists()) {
+            while (
+                \App\Models\Insight::where('slug', $this->slug)
+                    ->when($insightId, fn($q) => $q->where('id', '!=', $insightId))
+                    ->exists()
+            ) {
                 $this->merge(['slug' => $originalSlug . '-' . $counter]);
                 $counter++;
             }

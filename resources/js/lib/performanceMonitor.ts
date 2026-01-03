@@ -700,11 +700,13 @@ export class PerformanceMonitor {
 export const initPerformanceMonitoring = (): PerformanceMonitor => {
   const monitor = PerformanceMonitor.getInstance();
   
-  // Start monitoring when DOM is ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => monitor.startMonitoring());
-  } else {
-    monitor.startMonitoring();
+  // Only auto-start if explicitly enabled to reduce console noise
+  if (typeof window !== 'undefined' && (window as any).ENABLE_PERFORMANCE_MONITOR) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => monitor.startMonitoring());
+    } else {
+      monitor.startMonitoring();
+    }
   }
   
   return monitor;

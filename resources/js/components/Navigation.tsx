@@ -6,6 +6,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { X, LogIn, UserPlus, LayoutDashboard } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react';
+import AppLogo from './app-logo';
 
 interface NavigationProps {
     className?: string;
@@ -141,18 +142,11 @@ export const Navigation: React.FC<NavigationProps> = ({ className }) => {
                 )}>
                     {/* Logo */}
                     <Link href="/" className="flex items-center font-display relative z-10 group">
-                        <div
-                            ref={logoRef}
-                            className="h-10 transition-transform duration-500 group-hover:rotate-[5deg] group-hover:scale-105 overflow-hidden"
-                        >
-                            {site.logo && site.logo !== '/logo.svg' ? (
-                                <img src={site.logo} alt={site.name} className="h-full w-auto object-contain" />
-                            ) : (
-                                <div className="size-10 rounded-xl bg-agency-accent flex items-center justify-center shadow-lg shadow-agency-accent/20">
-                                    <span className="text-xl font-black text-agency-primary">{site.name?.charAt(0) || 'A'}</span>
-                                </div>
-                            )}
-                        </div>
+                        <AppLogo 
+                            ref={logoRef as any}
+                            className="transition-transform duration-500 group-hover:rotate-[5deg] group-hover:scale-110" 
+                            logoClassName="h-10 w-auto shadow-lg shadow-agency-accent/20"
+                        />
                     </Link>
 
                     {/* Desktop Navigation */}

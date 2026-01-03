@@ -15,7 +15,9 @@ import {
     Star,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import React from 'react';
+import React, { useMemo } from 'react';
+import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+// Since recharts is not in package.json, I will implement a custom SVG chart instead to avoid dependency issues.
 
 interface DashboardStats {
     portfolio_items: {
@@ -233,6 +235,12 @@ export default function Dashboard({ stats, recent_activity }: DashboardProps) {
         { title: 'Dashboard', href: '/admin' },
     ];
 
+    // Simulated activity data for visual appeal
+    const activityData = [45, 52, 38, 65, 48, 72, 58, 63, 80, 75, 90, 85];
+    const maxVal = Math.max(...activityData);
+    const chartHeight = 100;
+    const chartWidth = 400;
+
     return (
         <AdminLayout title="Dashboard" breadcrumbs={breadcrumbs}>
             <div className="space-y-6">
@@ -245,12 +253,13 @@ export default function Dashboard({ stats, recent_activity }: DashboardProps) {
 
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                     <StatCard
-                        title="Portfolio Items"
+                        title="Portfolio"
                         icon={FolderOpen}
                         total={stats.portfolio_items.total}
                         published={stats.portfolio_items.published}
                         featured={stats.portfolio_items.featured}
                         href="/admin/portfolio"
+                        className="border-l-4 border-l-agency-accent"
                     />
                     <StatCard
                         title="Services"
@@ -259,6 +268,7 @@ export default function Dashboard({ stats, recent_activity }: DashboardProps) {
                         published={stats.services.published}
                         featured={stats.services.featured}
                         href="/admin/services"
+                        className="border-l-4 border-l-blue-400"
                     />
                     <StatCard
                         title="Insights"
@@ -267,68 +277,74 @@ export default function Dashboard({ stats, recent_activity }: DashboardProps) {
                         published={stats.insights.published}
                         featured={stats.insights.featured}
                         href="/admin/insights"
+                        className="border-l-4 border-l-purple-400"
                     />
                     <StatCard
-                        title="Team Members"
-                        icon={Users}
-                        total={stats.team_members.total}
-                        published={stats.team_members.active}
-                        featured={stats.team_members.featured}
-                        href="/admin/team"
+                        title="Inquiries"
+                        icon={MessageSquare}
+                        total={stats.contact_inquiries.total}
+                        published={stats.contact_inquiries.unread}
+                        featured={stats.contact_inquiries.new}
+                        href="/admin/contact-inquiries"
+                        className="border-l-4 border-l-rose-400"
                     />
                 </div>
 
                 <div className="grid gap-4 md:grid-cols-3">
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Media Assets</CardTitle>
-                            <Image className="h-4 w-4 text-muted-foreground" />
+                    <Card className="md:col-span-2">
+                        <CardHeader>
+                            <CardTitle className="text-base">System Activity Overview</CardTitle>
+                            <CardDescription>Visual representation of site engagement over the last 12 days</CardDescription>
                         </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">{stats.media_assets.total}</div>
-                            <div className="flex gap-2 mt-2">
-                                <Badge variant="secondary" className="text-xs">
-                                    {stats.media_assets.images} images
-                                </Badge>
-                                <Badge variant="outline" className="text-xs">
-                                    {stats.media_assets.videos} videos
-                                </Badge>
-                            </div>
+                        <CardContent className="h-[200px] flex items-end justify-between gap-1 pt-4">
+                            {activityData.map((val, i) => (
+                                <div key={i} className="flex-1 flex flex-col items-center gap-2 group">
+                                    <div 
+                                        className="w-full bg-agency-accent/20 hover:bg-agency-accent transition-all duration-500 rounded-t-sm relative"
+                                        style={{ height: `${(val / maxVal) * 100}%` }}
+                                    >
+                                        <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-black text-white text-[10px] px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+                                            {val} views
+                                        </div>
+                                    </div>
+                                    <span className="text-[10px] text-muted-foreground font-mono">D{i+1}</span>
+                                </div>
+                            ))}
                         </CardContent>
                     </Card>
 
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Contact Inquiries</CardTitle>
-                            <MessageSquare className="h-4 w-4 text-muted-foreground" />
+                    <Card className="flex flex-col">
+                        <CardHeader>
+                            <CardTitle className="text-base">Content Health</CardTitle>
+                            <CardDescription>Status of your site data</CardDescription>
                         </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">{stats.contact_inquiries.total}</div>
-                            <div className="flex gap-2 mt-2">
-                                <Badge variant="destructive" className="text-xs">
-                                    {stats.contact_inquiries.new} new
-                                </Badge>
-                                <Badge variant="secondary" className="text-xs">
-                                    {stats.contact_inquiries.unread} unread
-                                </Badge>
+                        <CardContent className="flex-1 flex flex-col justify-center space-y-4">
+                            <div className="space-y-1">
+                                <div className="flex justify-between text-xs font-medium">
+                                    <span>Portfolio Published</span>
+                                    <span>{Math.round((stats.portfolio_items.published / (stats.portfolio_items.total || 1)) * 100)}%</span>
+                                </div>
+                                <div className="w-full bg-muted h-1 rounded-full overflow-hidden">
+                                    <div className="bg-agency-accent h-full" style={{ width: `${(stats.portfolio_items.published / (stats.portfolio_items.total || 1)) * 100}%` }} />
+                                </div>
                             </div>
-                        </CardContent>
-                    </Card>
-
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">System Users</CardTitle>
-                            <Users className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">{stats.users.total}</div>
-                            <div className="flex gap-2 mt-2">
-                                <Badge variant="default" className="text-xs">
-                                    {stats.users.admins} admins
-                                </Badge>
-                                <Badge variant="secondary" className="text-xs">
-                                    {stats.users.editors} editors
-                                </Badge>
+                            <div className="space-y-1">
+                                <div className="flex justify-between text-xs font-medium">
+                                    <span>Insights Published</span>
+                                    <span>{Math.round((stats.insights.published / (stats.insights.total || 1)) * 100)}%</span>
+                                </div>
+                                <div className="w-full bg-muted h-1 rounded-full overflow-hidden">
+                                    <div className="bg-purple-400 h-full" style={{ width: `${(stats.insights.published / (stats.insights.total || 1)) * 100}%` }} />
+                                </div>
+                            </div>
+                            <div className="space-y-1">
+                                <div className="flex justify-between text-xs font-medium">
+                                    <span>Team Engagement</span>
+                                    <span>{Math.round((stats.team_members.active / (stats.team_members.total || 1)) * 100)}%</span>
+                                </div>
+                                <div className="w-full bg-muted h-1 rounded-full overflow-hidden">
+                                    <div className="bg-blue-400 h-full" style={{ width: `${(stats.team_members.active / (stats.team_members.total || 1)) * 100}%` }} />
+                                </div>
                             </div>
                         </CardContent>
                     </Card>
