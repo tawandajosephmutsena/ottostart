@@ -1,12 +1,5 @@
-import React, { useRef, useState, useMemo } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useGSAPInit } from '@/hooks/useAnimations';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { cn } from '@/lib/utils';
-
-if (typeof window !== 'undefined') {
-    gsap.registerPlugin(ScrollTrigger);
-}
 
 interface Slide {
     title: string;
@@ -17,204 +10,321 @@ interface Slide {
 
 interface CinematicHeroProps {
     slides: Slide[];
+    autoPlayInterval?: number;
 }
 
-export const CinematicHero: React.FC<CinematicHeroProps> = ({ slides = [] }) => {
-    const containerRef = useRef<HTMLDivElement>(null);
-    const stickyRef = useRef<HTMLDivElement>(null);
-    const topTextRef = useRef<HTMLDivElement>(null);
-    const bottomTextRef = useRef<HTMLDivElement>(null);
+/**
+ * Premium Cinematic Hero Slider
+ * - Smooth crossfade transitions with Ken Burns effect
+ * - Elegant text animations with blur and slide effects
+ * - Auto-plays with pause on hover
+ * - Click/tap navigation
+ */
+export const CinematicHero: React.FC<CinematicHeroProps> = ({ 
+    slides = [], 
+    autoPlayInterval = 6000 
+}) => {
     const [activeIndex, setActiveIndex] = useState(0);
-
-    // Initial GSAP setup
-    useGSAPInit();
-
+    const [previousIndex, setPreviousIndex] = useState<number | null>(null);
+    const [isAnimating, setIsAnimating] = useState(false);
+    const [textVisible, setTextVisible] = useState(true);
+    const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+    
+    const slideCount = slides.length || 1;
     const currentSlide = slides[activeIndex] || slides[0];
     const titleWords = useMemo(() => currentSlide?.title?.split(' ') || [], [currentSlide?.title]);
 
-    React.useEffect(() => {
-        if (!containerRef.current || !stickyRef.current || !slides?.length) return;
-
-        const images = gsap.utils.toArray<HTMLElement>(containerRef.current.querySelectorAll('.slide-image'));
+    // Go to specific slide with smooth text transition
+    const goToSlide = useCallback((index: number) => {
+        if (isAnimating || index === activeIndex) return;
         
-        if (!images || images.length === 0) return;
+        setIsAnimating(true);
+        setTextVisible(false); // Fade out text first
         
-        const slideCount = slides.length;
+        // Wait for text to fade out, then switch slide
+        setTimeout(() => {
+            setPreviousIndex(activeIndex);
+            setActiveIndex(index);
+            
+            // Fade text back in after image starts transitioning
+            setTimeout(() => {
+                setTextVisible(true);
+                setTimeout(() => setIsAnimating(false), 1200);
+            }, 400);
+        }, 500);
+    }, [isAnimating, activeIndex]);
+
+    // Go to next slide
+    const nextSlide = useCallback(() => {
+        goToSlide((activeIndex + 1) % slideCount);
+    }, [activeIndex, slideCount, goToSlide]);
+
+    // Auto-play functionality
+    useEffect(() => {
+        if (slides.length <= 1) return;
         
-        // Create context for GSAP to handle scoping and cleanup
-        const ctx = gsap.context(() => {
-            const tl = gsap.timeline({
-                scrollTrigger: {
-                    trigger: containerRef.current,
-                    start: 'top top',
-                    end: 'bottom bottom',
-                    scrub: 1.5, // Smoother scrub for cinematic feel
-                    pin: stickyRef.current,
-                    pinSpacing: false,
-                    onUpdate: (self) => {
-                        const p = self.progress;
-                        const nextIndex = Math.min(Math.floor(p * slideCount * 0.999), slideCount - 1);
-                        setActiveIndex(prev => nextIndex !== prev ? nextIndex : prev);
-                    }
-                },
-            });
+        intervalRef.current = setInterval(nextSlide, autoPlayInterval);
+        
+        return () => {
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+            }
+        };
+    }, [nextSlide, autoPlayInterval, slides.length]);
 
-            // Parallax drift for text layers - more dramatic
-            tl.to(topTextRef.current, { y: -120, opacity: 0.8, ease: 'none' }, 0);
-            tl.to(bottomTextRef.current, { y: 60, opacity: 0.8, ease: 'none' }, 0);
+    // Pause auto-play on hover
+    const handleMouseEnter = () => {
+        if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+            intervalRef.current = null;
+        }
+    };
 
-            // Animate images through the timeline
-            // Each image should occupy 1/slideCount of the progress
-            images.forEach((img, i) => {
-                const duration = 1 / slideCount;
-                const start = i * duration;
+    const handleMouseLeave = () => {
+        if (slides.length > 1 && !intervalRef.current) {
+            intervalRef.current = setInterval(nextSlide, autoPlayInterval);
+        }
+    };
 
-                // Initial state for all except first
-                if (i > 0) {
-                    gsap.set(img, { opacity: 0, scale: 1.1 });
-                }
-
-                // In-animation
-                if (i > 0) {
-                    tl.to(img, {
-                        opacity: 1,
-                        scale: 1,
-                        duration: duration * 0.4,
-                        ease: 'power2.inOut'
-                    }, start - (duration * 0.2));
-                }
-
-                // Out-animation
-                if (i < slideCount - 1) {
-                    tl.to(img, {
-                        opacity: 0,
-                        scale: 1.1,
-                        duration: duration * 0.4,
-                        ease: 'power2.inOut'
-                    }, start + duration - (duration * 0.2));
-                }
-            });
-
-            // Continuous slow breathing for depth on ALL images
-            images.forEach((img, i) => {
-                gsap.to(img, {
-                    scale: '+=0.05',
-                    duration: 15 + i,
-                    ease: 'sine.inOut',
-                    repeat: -1,
-                    yoyo: true
-                });
-            });
-        }, containerRef);
-
-        return () => ctx.revert();
-    }, [slides.length]); // REMOVED activeIndex from dependencies to prevent infinite loop/re-init
-
-
-    // Safety check for empty slides - AFTER all hooks
     if (!slides || slides.length === 0) {
         return null;
     }
 
-
     return (
-        <div 
-            ref={containerRef} 
-            className="relative w-full bg-black" 
-            style={{ height: `${Math.max(slides.length * 100, 300)}vh` }}
+        <section 
+            className="relative w-full h-screen overflow-hidden bg-black"
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
         >
-            <div ref={stickyRef} className="sticky top-0 w-full h-screen overflow-hidden flex flex-col">
-                {/* Background Layer */}
-                <div className="absolute inset-0 z-0 bg-black">
-                    {slides.map((slide, idx) => (
+            {/* Background Images with Premium Crossfade + Ken Burns */}
+            <div className="absolute inset-0">
+                {slides.map((slide, idx) => {
+                    const isActive = idx === activeIndex;
+                    const isPrevious = idx === previousIndex;
+                    
+                    return (
                         <div
                             key={idx}
-                            className="slide-image absolute inset-0 w-full h-full"
+                            className={cn(
+                                "absolute inset-0 w-full h-full",
+                                "transition-all duration-[1800ms] ease-[cubic-bezier(0.4,0,0.2,1)]",
+                                isActive && "opacity-100 z-20",
+                                isPrevious && "opacity-0 z-10",
+                                !isActive && !isPrevious && "opacity-0 z-0"
+                            )}
                             style={{ 
                                 backgroundImage: `url('${slide.image}')`, 
                                 backgroundSize: 'cover',
                                 backgroundPosition: 'center 40%',
-                                opacity: idx === 0 ? 1 : 0,
-                                transform: 'scale(1.1)' // Initial scale for GSAP to animate from/to
+                                transform: isActive ? 'scale(1.02)' : 'scale(1.08)',
                             }}
                         >
-                            <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-transparent to-black/90" />
-                            <div className="absolute inset-0 bg-radial-gradient from-transparent to-black/50" />
+                            {/* Multi-layer cinematic overlays */}
+                            <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/20 to-black/90" />
+                            <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-black/40" />
+                            <div className="absolute inset-0 bg-black/10" style={{ backdropFilter: 'saturate(1.2)' }} />
                         </div>
+                    );
+                })}
+            </div>
+
+            {/* Animated Vignette Effect */}
+            <div className="absolute inset-0 z-30 pointer-events-none">
+                <div className="absolute inset-0 shadow-[inset_0_0_200px_rgba(0,0,0,0.8)]" />
+            </div>
+
+            {/* Content Layer */}
+            <div 
+                className={cn(
+                    "relative z-40 h-full w-full max-w-[1920px] mx-auto p-8 md:p-24 flex flex-col justify-between pointer-events-none",
+                    "transition-all duration-700 ease-out",
+                    textVisible ? "opacity-100" : "opacity-0"
+                )}
+            >
+                {/* Header: Title + Tagline */}
+                <div className="flex flex-col md:flex-row justify-between items-start w-full gap-8">
+                    <div className="overflow-visible">
+                        <h1 
+                            key={`title-${activeIndex}`}
+                            className="font-display font-black text-4xl md:text-6xl lg:text-7xl text-primary leading-[0.9] tracking-tighter uppercase max-w-4xl drop-shadow-2xl flex flex-wrap gap-x-4"
+                        >
+                            {titleWords.map((word, i) => (
+                                <span 
+                                    key={`${activeIndex}-${i}`} 
+                                    className={cn(
+                                        "inline-block",
+                                        textVisible && "animate-text-reveal"
+                                    )}
+                                    style={{ 
+                                        animationDelay: `${i * 0.12}s`,
+                                        textShadow: '0 4px 30px rgba(0,0,0,0.5), 0 0 60px rgba(var(--primary-rgb), 0.3)'
+                                    }}
+                                >
+                                    {word}
+                                </span>
+                            ))}
+                        </h1>
+                    </div>
+
+                    <div 
+                        key={`tagline-${activeIndex}`}
+                        className={cn(
+                            "mt-4 md:mt-12 border-l-4 border-primary pl-6 py-2 shrink-0",
+                            textVisible && "animate-slide-fade-in"
+                        )}
+                        style={{ animationDelay: '0.4s' }}
+                    >
+                        <div 
+                            className="font-sans font-bold text-lg md:text-xl text-white tracking-[0.2em] uppercase"
+                            style={{ textShadow: '0 2px 20px rgba(0,0,0,0.5)' }}
+                        >
+                            {currentSlide.tagline}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Footer: Progress + Subtitle */}
+                <div className="flex flex-col md:flex-row justify-between items-end w-full gap-12">
+                    {/* Navigation Dots */}
+                    <div className="hidden md:flex flex-col gap-4 mb-12 pointer-events-auto">
+                        {slides.map((_, idx) => (
+                            <button 
+                                key={idx} 
+                                className="flex items-center gap-4 group cursor-pointer transition-transform duration-300 hover:translate-x-1"
+                                onClick={() => goToSlide(idx)}
+                                aria-label={`Go to slide ${idx + 1}`}
+                            >
+                                <span className={cn(
+                                    "font-mono text-xs transition-all duration-500", 
+                                    idx === activeIndex 
+                                        ? "text-primary scale-110 font-bold" 
+                                        : "text-white/30 group-hover:text-white/70"
+                                )}>
+                                    0{idx + 1}
+                                </span>
+                                <div className="h-10 w-[3px] bg-white/10 relative overflow-hidden rounded-full">
+                                    <div 
+                                        className={cn(
+                                            "absolute top-0 left-0 w-full bg-primary rounded-full",
+                                            "transition-all duration-700 ease-out"
+                                        )}
+                                        style={{ 
+                                            height: idx === activeIndex ? '100%' : '0%',
+                                            boxShadow: idx === activeIndex ? '0 0 12px rgba(var(--primary-rgb), 0.6)' : 'none'
+                                        }}
+                                    />
+                                </div>
+                            </button>
+                        ))}
+                    </div>
+
+                    {/* Subtitle */}
+                    <div 
+                        key={`subtitle-${activeIndex}`}
+                        className={cn(
+                            "max-w-xl text-right",
+                            textVisible && "animate-slide-fade-in"
+                        )}
+                        style={{ animationDelay: '0.6s' }}
+                    >
+                        <p 
+                            className="font-sans text-lg md:text-2xl text-white/90 font-light leading-relaxed tracking-tight"
+                            style={{ textShadow: '0 2px 15px rgba(0,0,0,0.4)' }}
+                        >
+                            {currentSlide.subtitle}
+                        </p>
+                        <div 
+                            className={cn(
+                                "h-[2px] mt-6 w-full rounded-full",
+                                "bg-gradient-to-r from-transparent via-primary/60 to-primary",
+                                textVisible && "animate-line-expand"
+                            )}
+                            style={{ 
+                                animationDelay: '0.9s',
+                                boxShadow: '0 0 20px rgba(var(--primary-rgb), 0.4)'
+                            }}
+                        />
+                    </div>
+                </div>
+
+                {/* Mobile Navigation Dots */}
+                <div className="flex md:hidden justify-center gap-3 absolute bottom-8 left-1/2 -translate-x-1/2 pointer-events-auto">
+                    {slides.map((_, idx) => (
+                        <button
+                            key={idx}
+                            onClick={() => goToSlide(idx)}
+                            className={cn(
+                                "h-2 rounded-full transition-all duration-500",
+                                idx === activeIndex 
+                                    ? "bg-primary w-10 shadow-[0_0_15px_rgba(var(--primary-rgb),0.5)]" 
+                                    : "bg-white/25 w-2 hover:bg-white/50"
+                            )}
+                            aria-label={`Go to slide ${idx + 1}`}
+                        />
                     ))}
                 </div>
-
-
-                {/* Content Layer */}
-                <div className="relative z-10 h-full w-full max-w-[1920px] mx-auto p-8 md:p-24 flex flex-col justify-between pointer-events-none">
-                    
-                    {/* Header: Title + Tagline */}
-                    <div ref={topTextRef} className="flex flex-col md:flex-row justify-between items-start w-full gap-8">
-                        <div className="overflow-visible">
-                            <h1 className="font-display font-black text-5xl md:text-7xl lg:text-8xl text-primary leading-[0.85] tracking-tighter uppercase max-w-5xl drop-shadow-2xl flex flex-wrap gap-x-6">
-                                {titleWords.map((word, i) => (
-                                    <span 
-                                        key={`${activeIndex}-${i}`} 
-                                        className="inline-block transition-all duration-1000"
-                                        style={{ 
-                                            animation: `smoke-reveal 1.2s cubic-bezier(0.2, 0, 0.2, 1) ${i * 0.1}s both`,
-                                            filter: 'drop-shadow(0 0 20px rgba(var(--primary), 0.3))'
-                                        }}
-                                    >
-                                        {word}
-                                    </span>
-                                ))}
-                            </h1>
-                        </div>
-
-                        <div className="mt-4 md:mt-12 border-l-4 border-primary pl-6 py-2 shrink-0">
-                             <div className="font-sans font-bold text-xl md:text-2xl text-white tracking-[0.2em] uppercase opacity-90 transition-all duration-1000" style={{ animation: 'smoke-reveal 1.2s cubic-bezier(0.2, 0, 0.2, 1) 0.5s both' }}>
-                                {currentSlide.tagline}
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Footer: Progress + Narrative */}
-                    <div ref={bottomTextRef} className="flex flex-col md:flex-row justify-between items-end w-full gap-12">
-                        {/* Custom Progress Indicator */}
-                        <div className="hidden md:flex flex-col gap-6 mb-12">
-                            {slides.map((_, idx) => (
-                                <div key={idx} className="flex items-center gap-6">
-                                    <span className={cn(
-                                        "font-mono text-xs transition-all duration-700", 
-                                        idx === activeIndex ? "text-primary scale-110 font-bold" : "text-white/20"
-                                    )}>
-                                        0{idx + 1}
-                                    </span>
-                                    <div className="h-10 w-[1px] bg-white/10 relative overflow-hidden">
-                                        <div 
-                                            className="absolute top-0 left-0 w-full bg-primary transition-all duration-700 ease-out" 
-                                            style={{ height: idx === activeIndex ? '100%' : '0%' }}
-                                        />
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-
-                        {/* Slide Subtitle */}
-                        <div className="max-w-2xl text-right">
-                            <p className="font-sans text-xl md:text-3xl text-white/90 font-light leading-tight tracking-tight transition-all duration-1000" style={{ animation: 'smoke-reveal 1.2s cubic-bezier(0.2, 0, 0.2, 1) 0.7s both' }}>
-                                {currentSlide.subtitle}
-                            </p>
-                            <div className="h-[1px] bg-primary/30 mt-8 w-full ml-auto transition-all duration-1000" style={{ animation: 'smoke-reveal 1.2s cubic-bezier(0.2, 0, 0.2, 1) 1s both' }} />
-                        </div>
-                    </div>
-
-                    {/* Scroll Hint */}
-                    <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 opacity-30 hover:opacity-100 transition-opacity duration-500">
-                        <div className="w-[1px] h-12 bg-primary relative overflow-hidden">
-                            <div className="absolute top-0 left-0 w-full h-full bg-white/20 animate-pulse" />
-                        </div>
-                        <span className="font-mono text-[10px] text-white uppercase tracking-[0.6em]">Scroll to Witness</span>
-                    </div>
-                </div>
             </div>
-        </div>
+
+            {/* Premium CSS Animations */}
+            <style>{`
+                @keyframes text-reveal {
+                    0% {
+                        opacity: 0;
+                        transform: translateY(40px) rotateX(15deg);
+                        filter: blur(12px);
+                    }
+                    50% {
+                        filter: blur(4px);
+                    }
+                    100% {
+                        opacity: 1;
+                        transform: translateY(0) rotateX(0deg);
+                        filter: blur(0);
+                    }
+                }
+                
+                @keyframes slide-fade-in {
+                    0% {
+                        opacity: 0;
+                        transform: translateX(30px);
+                        filter: blur(8px);
+                    }
+                    100% {
+                        opacity: 1;
+                        transform: translateX(0);
+                        filter: blur(0);
+                    }
+                }
+                
+                @keyframes line-expand {
+                    0% {
+                        opacity: 0;
+                        transform: scaleX(0);
+                        transform-origin: right;
+                    }
+                    100% {
+                        opacity: 1;
+                        transform: scaleX(1);
+                        transform-origin: right;
+                    }
+                }
+                
+                .animate-text-reveal {
+                    opacity: 0;
+                    animation: text-reveal 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+                }
+                
+                .animate-slide-fade-in {
+                    opacity: 0;
+                    animation: slide-fade-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+                }
+                
+                .animate-line-expand {
+                    opacity: 0;
+                    animation: line-expand 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+                }
+            `}</style>
+        </section>
     );
 };
 

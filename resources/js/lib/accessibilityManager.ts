@@ -46,7 +46,7 @@ export class AccessibilityManager {
         if (!this.reducedMotionQuery) return;
 
         const styleId = 'accessibility-reduced-motion';
-        let existingStyle = document.getElementById(styleId);
+        const existingStyle = document.getElementById(styleId);
 
         if (this.reducedMotionQuery.matches) {
             if (!existingStyle) {

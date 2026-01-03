@@ -6,8 +6,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useForm, router } from '@inertiajs/react';
-import React, { useEffect, useState } from 'react';
-import { Save, ImagePlus, X } from 'lucide-react';
+import React, { useState } from 'react';
+import { Save, ImagePlus, X, RotateCcw } from 'lucide-react';
 import { toast } from 'sonner';
 import MediaLibrary from '@/components/admin/MediaLibrary';
 import { MediaAsset } from '@/types';
@@ -15,7 +15,7 @@ import { MediaAsset } from '@/types';
 interface SettingItem {
     id?: number;
     key: string;
-    value: any;
+    value: string | string[] | null;
     type: 'text' | 'json' | 'boolean' | 'number' | 'color';
     group_name: string;
 }
@@ -25,7 +25,15 @@ interface Props {
 }
 
 // Define the known settings structure to auto-generate default values if missing
-const SETTINGS_STRUCT = {
+interface StructItem {
+    key: string;
+    label: string;
+    type: 'text' | 'textarea' | 'image' | 'color' | 'email';
+    placeholder: string;
+    description?: string;
+}
+
+const SETTINGS_STRUCT: Record<string, StructItem[]> = {
     general: [
         { key: 'site_name', label: 'Site Name', type: 'text', placeholder: 'Avant-Garde CMS' },
         { key: 'site_tagline', label: 'Site Tagline', type: 'text', placeholder: 'Digital Innovation Redefined' },
@@ -50,13 +58,43 @@ const SETTINGS_STRUCT = {
         { key: 'google_analytics_id', label: 'Google Analytics ID', type: 'text', placeholder: 'G-XXXXXXXXXX' },
     ],
     theme: [
-        { key: 'brand_primary', label: 'Primary Color', type: 'color', placeholder: '#1a1a1a' },
-        { key: 'brand_secondary', label: 'Secondary Color', type: 'color', placeholder: '#666666' },
-        { key: 'brand_accent', label: 'Accent Color', type: 'color', placeholder: '#ff6b35' },
-        { key: 'brand_neutral', label: 'Neutral Color', type: 'color', placeholder: '#f5f5f5' },
-        { key: 'brand_dark', label: 'Dark Color', type: 'color', placeholder: '#0a0a0a' },
-        { key: 'font_display', label: 'Display Font', type: 'text', placeholder: 'Inter' },
-        { key: 'font_body', label: 'Body Font', type: 'text', placeholder: 'Inter' },
+        { 
+            key: 'brand_primary', 
+            label: 'Primary Color', 
+            type: 'color', 
+            placeholder: '#1a1a1a',
+            description: 'Used for main backgrounds, navigation bars, and footer content. It defines the core mood of your site.'
+        },
+        { 
+            key: 'brand_secondary', 
+            label: 'Secondary Color', 
+            type: 'color', 
+            placeholder: '#666666',
+            description: 'Used for section separators, subtle backgrounds, and secondary UI elements like card borders.'
+        },
+        { 
+            key: 'brand_accent', 
+            label: 'Accent Color', 
+            type: 'color', 
+            placeholder: '#ff6b35',
+            description: 'Used for buttons, links, icons, and highlight elements that need to stand out. This is your brand\'s "pop" color.'
+        },
+        { 
+            key: 'brand_neutral', 
+            label: 'Neutral Color', 
+            type: 'color', 
+            placeholder: '#f5f5f5',
+            description: 'Used for light backgrounds, input fields, and subtle text contrast on dark backgrounds.'
+        },
+        { 
+            key: 'brand_dark', 
+            label: 'Dark Color', 
+            type: 'color', 
+            placeholder: '#0a0a0a',
+            description: 'The foundation for themes with Dark Mode enabled. Affects body backgrounds and high-contrast text elements.'
+        },
+        { key: 'font_display', label: 'Display Font', type: 'text', placeholder: 'Inter', description: 'Used for headings and titles.' },
+        { key: 'font_body', label: 'Body Font', type: 'text', placeholder: 'Inter', description: 'Used for body text and paragraphs.' },
     ]
 };
 
@@ -75,16 +113,28 @@ export default function SettingsIndex({ settings }: Props) {
     };
 
     // Initialize form data based on SETTINGS_STRUCT
-    const initialData = Object.entries(SETTINGS_STRUCT).reduce((acc, [group, items]) => {
+    const initialData = Object.entries(SETTINGS_STRUCT).reduce((acc, [, items]) => {
         items.forEach(item => {
             acc[item.key] = getSettingValue(item.key);
         });
         return acc;
-    }, {} as Record<string, any>);
+    }, {} as Record<string, string>);
 
     const { data, setData: _setData } = useForm(initialData);
-    const setData = _setData as any;
+    const setData = _setData as (key: string, value: string | string[] | null) => void;
     const [processing, setProcessing] = useState(false);
+    
+    const handleReset = (group: keyof typeof SETTINGS_STRUCT) => {
+        if (confirm(`Are you sure you want to reset ${group} settings to default values?`)) {
+            const groupItems = SETTINGS_STRUCT[group];
+            if (groupItems) {
+                groupItems.forEach((item) => {
+                    setData(item.key, item.placeholder);
+                });
+                toast.info(`${group.charAt(0).toUpperCase() + group.slice(1)} settings reset to defaults. Don't forget to save!`);
+            }
+        }
+    };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -97,7 +147,7 @@ export default function SettingsIndex({ settings }: Props) {
             let type = 'text';
             
             for (const [g, items] of Object.entries(SETTINGS_STRUCT)) {
-                const found = items.find(i => i.key === key) as any;
+                const found = items.find(i => i.key === key);
                 if (found) {
                     group = g;
                     type = found.type === 'textarea' ? 'text' : found.type === 'image' ? 'text' : found.type;
@@ -155,55 +205,48 @@ export default function SettingsIndex({ settings }: Props) {
                             <TabsContent key={group} value={group}>
                                 <Card>
                                     <CardHeader>
-                                        <CardTitle className="capitalize">{group} Settings</CardTitle>
-                                        <CardDescription>
-                                            {group === 'theme' ? (
-                                                <div className="space-y-4">
-                                                    <p>Customize your brand's visual identity. These colors are applied globally across the site:</p>
-                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs bg-muted/50 p-4 rounded-lg border border-border">
-                                                        <div>
-                                                            <span className="font-bold text-agency-accent block mb-1">Primary Color</span>
-                                                            <p className="text-muted-foreground">Used for main backgrounds, navigation bars, and footer content. It defines the core mood of your site.</p>
-                                                        </div>
-                                                        <div>
-                                                            <span className="font-bold text-agency-accent block mb-1">Secondary Color</span>
-                                                            <p className="text-muted-foreground">Used for section separators, subtle backgrounds, and secondary UI elements like card borders.</p>
-                                                        </div>
-                                                        <div>
-                                                            <span className="font-bold text-agency-accent block mb-1">Accent Color</span>
-                                                            <p className="text-muted-foreground">Used for buttons, links, icons, and highlight elements that need to stand out. This is your brand's "pop" color.</p>
-                                                        </div>
-                                                        <div>
-                                                            <span className="font-bold text-agency-accent block mb-1">Neutral Color</span>
-                                                            <p className="text-muted-foreground">Used for light backgrounds, input fields, and subtle text contrast on dark backgrounds.</p>
-                                                        </div>
-                                                        <div className="md:col-span-2">
-                                                            <span className="font-bold text-agency-accent block mb-1">Dark Color</span>
-                                                            <p className="text-muted-foreground">The foundation for themes with Dark Mode enabled. Affects body backgrounds and high-contrast text elements.</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            ) : `Configure your ${group} preferences.`}
-                                        </CardDescription>
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <CardTitle className="capitalize">{group} Settings</CardTitle>
+                                                <CardDescription>
+                                                    {group === 'theme' 
+                                                        ? "Customize your brand's visual identity. These settings are applied globally." 
+                                                        : `Configure your ${group} preferences.`}
+                                                </CardDescription>
+                                            </div>
+                                            {(group === 'theme') && (
+                                                <Button 
+                                                    type="button" 
+                                                    variant="outline" 
+                                                    size="sm" 
+                                                    onClick={() => handleReset(group)}
+                                                    className="text-xs"
+                                                >
+                                                    <RotateCcw className="w-3.5 h-3.5 mr-2" />
+                                                    Reset to Defaults
+                                                </Button>
+                                            )}
+                                        </div>
                                     </CardHeader>
-                                    <CardContent className="space-y-4">
+                                    <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         {items.map((item) => (
-                                            <div key={item.key} className="grid gap-2">
-                                                <Label htmlFor={item.key}>{item.label}</Label>
+                                            <div key={item.key} className={`grid gap-2 ${(item.type === 'textarea' || item.type === 'image') ? 'md:col-span-2' : ''}`}>
+                                                <Label htmlFor={item.key} className="text-agency-accent font-medium">{item.label}</Label>
                                                 {item.type === 'textarea' ? (
                                                     <Textarea
                                                         id={item.key}
                                                         value={data[item.key]}
                                                         onChange={(e) => setData(item.key, e.target.value)}
                                                         placeholder={item.placeholder}
+                                                        className="min-h-[100px]"
                                                     />
                                                 ) : item.type === 'image' ? (
-                                                    <div className="flex items-center gap-4">
+                                                    <div className="flex items-center gap-4 p-4 rounded-lg border bg-muted/20">
                                                         <MediaLibrary 
                                                             type="image"
                                                             onSelect={(asset: MediaAsset) => setData(item.key, asset.url)}
                                                             trigger={
-                                                                <div className="w-24 h-24 rounded-lg border-2 border-dashed flex items-center justify-center cursor-pointer hover:bg-muted transition-colors relative overflow-hidden bg-muted/20">
+                                                                <div className="w-24 h-24 rounded-lg border-2 border-dashed flex items-center justify-center cursor-pointer hover:bg-muted transition-colors relative overflow-hidden bg-background">
                                                                     {data[item.key] ? (
                                                                         <img src={data[item.key]} alt="Logo" className="w-full h-full object-contain p-2" />
                                                                     ) : (
@@ -231,7 +274,7 @@ export default function SettingsIndex({ settings }: Props) {
                                                         <Input
                                                             id={item.key}
                                                             type={item.type === 'email' ? 'email' : item.type === 'color' ? 'color' : 'text'}
-                                                            className={item.type === 'color' ? 'w-12 h-10 p-1 px-1' : ''}
+                                                            className={item.type === 'color' ? 'w-14 h-11 p-1 px-1 shrink-0' : ''}
                                                             value={data[item.key]}
                                                             onChange={(e) => setData(item.key, e.target.value)}
                                                             placeholder={item.placeholder}
@@ -246,6 +289,11 @@ export default function SettingsIndex({ settings }: Props) {
                                                             />
                                                         )}
                                                     </div>
+                                                )}
+                                                {item.description && (
+                                                    <p className="text-xs text-muted-foreground leading-relaxed mt-1">
+                                                        {item.description}
+                                                    </p>
                                                 )}
                                             </div>
                                         ))}
