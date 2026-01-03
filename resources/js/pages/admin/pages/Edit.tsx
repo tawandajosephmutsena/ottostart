@@ -20,7 +20,7 @@ interface Props {
 }
 
 // Define the structure of our blocks
-type BlockType = 'hero' | 'text' | 'image' | 'features' | 'stats' | 'services' | 'portfolio' | 'insights' | 'cta' | 'cinematic_hero' | 'form';
+type BlockType = 'hero' | 'text' | 'image' | 'features' | 'stats' | 'services' | 'portfolio' | 'insights' | 'cta' | 'cinematic_hero' | 'form' | 'video';
 
 interface Block {
     id: string;
@@ -120,6 +120,7 @@ const getDefaultContentForType = (type: BlockType) => {
                 }
             ]
         };
+        case 'video': return { url: 'https://videos.pexels.com/video-files/30333849/13003128_2560_1440_25fps.mp4' };
         default: return {};
     }
 };
@@ -257,6 +258,9 @@ export default function Edit({ page }: Props) {
                                 </Button>
                                 <Button type="button" variant="secondary" size="sm" onClick={() => addBlock('form')}>
                                     <List className="h-4 w-4 mr-2" /> Form
+                                </Button>
+                                <Button type="button" variant="secondary" size="sm" onClick={() => addBlock('video')}>
+                                    <Eye className="h-4 w-4 mr-2" /> Video
                                 </Button>
                              </div>
                         </Card>
@@ -537,6 +541,35 @@ export default function Edit({ page }: Props) {
                                                         onChange={(e) => updateBlockContent(block.id, { body: e.target.value })}
                                                     />
                                                 </div>
+                                            </div>
+                                        )}
+
+                                        {block.type === 'video' && (
+                                            <div className="space-y-4">
+                                                <div>
+                                                    <Label className="text-xs">Video Source (URL or Upload)</Label>
+                                                    <div className="flex gap-2">
+                                                        <MediaLibrary 
+                                                            onSelect={(asset: MediaAsset) => updateBlockContent(block.id, { url: asset.url })}
+                                                            trigger={
+                                                                <Button type="button" variant="outline" size="sm" className="h-10">
+                                                                    <ImageIcon className="h-4 w-4 mr-2" /> Select/Upload
+                                                                </Button>
+                                                            }
+                                                        />
+                                                        <Input 
+                                                            className="flex-1"
+                                                            value={block.content.url} 
+                                                            onChange={(e) => updateBlockContent(block.id, { url: e.target.value })}
+                                                            placeholder="https://..."
+                                                        />
+                                                    </div>
+                                                </div>
+                                                {block.content.url && (
+                                                    <div className="aspect-video rounded-lg overflow-hidden border bg-black/5 flex items-center justify-center">
+                                                        <video src={block.content.url} className="max-h-full" />
+                                                    </div>
+                                                )}
                                             </div>
                                         )}
 

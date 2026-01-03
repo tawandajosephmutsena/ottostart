@@ -77,42 +77,42 @@ class TeamMemberController extends Controller
     /**
      * Display the specified team member.
      */
-    public function show(TeamMember $teamMember): Response
+    public function show(TeamMember $team): Response
     {
         return Inertia::render('admin/team/Show', [
-            'teamMember' => $teamMember,
+            'teamMember' => $team,
         ]);
     }
 
     /**
      * Show the form for editing the specified team member.
      */
-    public function edit(TeamMember $teamMember): Response
+    public function edit(TeamMember $team): Response
     {
         return Inertia::render('admin/team/Edit', [
-            'teamMember' => $teamMember,
+            'teamMember' => $team,
         ]);
     }
 
     /**
      * Update the specified team member.
      */
-    public function update(TeamMemberRequest $request, TeamMember $teamMember): RedirectResponse
+    public function update(TeamMemberRequest $request, TeamMember $team): RedirectResponse
     {
         $validated = $request->validated();
 
-        $teamMember->update($validated);
+        $team->update($validated);
 
-        return redirect()->route('admin.team.show', $teamMember)
+        return redirect()->route('admin.team.show', $team)
             ->with('success', 'Team member updated successfully.');
     }
 
     /**
      * Remove the specified team member.
      */
-    public function destroy(TeamMember $teamMember): RedirectResponse
+    public function destroy(TeamMember $team): RedirectResponse
     {
-        $teamMember->delete();
+        $team->delete();
 
         return redirect()->route('admin.team.index')
             ->with('success', 'Team member deleted successfully.');
@@ -121,13 +121,13 @@ class TeamMemberController extends Controller
     /**
      * Toggle the featured status of a team member.
      */
-    public function toggleFeatured(TeamMember $teamMember): RedirectResponse
+    public function toggleFeatured(TeamMember $team): RedirectResponse
     {
-        $teamMember->update([
-            'is_featured' => !$teamMember->is_featured,
+        $team->update([
+            'is_featured' => !$team->is_featured,
         ]);
 
-        $status = $teamMember->is_featured ? 'featured' : 'unfeatured';
+        $status = $team->is_featured ? 'featured' : 'unfeatured';
         
         return back()->with('success', "Team member {$status} successfully.");
     }
@@ -135,13 +135,13 @@ class TeamMemberController extends Controller
     /**
      * Toggle the active status of a team member.
      */
-    public function toggleActive(TeamMember $teamMember): RedirectResponse
+    public function toggleActive(TeamMember $team): RedirectResponse
     {
-        $teamMember->update([
-            'is_active' => !$teamMember->is_active,
+        $team->update([
+            'is_active' => !$team->is_active,
         ]);
 
-        $status = $teamMember->is_active ? 'activated' : 'deactivated';
+        $status = $team->is_active ? 'activated' : 'deactivated';
         
         return back()->with('success', "Team member {$status} successfully.");
     }

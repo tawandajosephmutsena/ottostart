@@ -79,43 +79,43 @@ class PortfolioController extends Controller
     /**
      * Display the specified portfolio item.
      */
-    public function show(PortfolioItem $portfolioItem): Response
+    public function show(PortfolioItem $portfolio): Response
     {
         return Inertia::render('admin/portfolio/Show', [
-            'portfolioItem' => $portfolioItem,
+            'portfolioItem' => $portfolio,
         ]);
     }
 
     /**
      * Show the form for editing the specified portfolio item.
      */
-    public function edit(PortfolioItem $portfolioItem): Response
+    public function edit(PortfolioItem $portfolio): Response
     {
         return Inertia::render('admin/portfolio/Edit', [
-            'portfolioItem' => $portfolioItem,
+            'portfolioItem' => $portfolio,
         ]);
     }
 
     /**
      * Update the specified portfolio item.
      */
-    public function update(PortfolioItemRequest $request, PortfolioItem $portfolioItem): RedirectResponse
+    public function update(PortfolioItemRequest $request, PortfolioItem $portfolio): RedirectResponse
     {
         $validated = $request->validated();
 
-        $portfolioItem->update($validated);
+        $portfolio->update($validated);
         $this->clearCache();
 
-        return redirect()->route('admin.portfolio.show', $portfolioItem)
+        return redirect()->route('admin.portfolio.show', $portfolio)
             ->with('success', 'Portfolio item updated successfully.');
     }
 
     /**
      * Remove the specified portfolio item.
      */
-    public function destroy(PortfolioItem $portfolioItem): RedirectResponse
+    public function destroy(PortfolioItem $portfolio): RedirectResponse
     {
-        $portfolioItem->delete();
+        $portfolio->delete();
         $this->clearCache();
 
         return redirect()->route('admin.portfolio.index')
@@ -125,13 +125,13 @@ class PortfolioController extends Controller
     /**
      * Toggle the featured status of a portfolio item.
      */
-    public function toggleFeatured(PortfolioItem $portfolioItem): RedirectResponse
+    public function toggleFeatured(PortfolioItem $portfolio): RedirectResponse
     {
-        $portfolioItem->update([
-            'is_featured' => !$portfolioItem->is_featured,
+        $portfolio->update([
+            'is_featured' => !$portfolio->is_featured,
         ]);
 
-        $status = $portfolioItem->is_featured ? 'featured' : 'unfeatured';
+        $status = $portfolio->is_featured ? 'featured' : 'unfeatured';
         
         $this->clearCache();
         return back()->with('success', "Portfolio item {$status} successfully.");
@@ -140,13 +140,13 @@ class PortfolioController extends Controller
     /**
      * Toggle the published status of a portfolio item.
      */
-    public function togglePublished(PortfolioItem $portfolioItem): RedirectResponse
+    public function togglePublished(PortfolioItem $portfolio): RedirectResponse
     {
-        $portfolioItem->update([
-            'is_published' => !$portfolioItem->is_published,
+        $portfolio->update([
+            'is_published' => !$portfolio->is_published,
         ]);
 
-        $status = $portfolioItem->is_published ? 'published' : 'unpublished';
+        $status = $portfolio->is_published ? 'published' : 'unpublished';
         
         $this->clearCache();
         return back()->with('success', "Portfolio item {$status} successfully.");

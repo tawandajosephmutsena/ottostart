@@ -194,7 +194,8 @@ export const Navigation: React.FC<NavigationProps> = ({ className }) => {
                             )}
                         </div>
 
-                        <button
+                        {/* Burger menu hidden as per request */}
+                        {/* <button
                             className={cn(
                                 'size-11 rounded-full border border-current/10 flex flex-col items-center justify-center gap-1.5 transition-all duration-500 hover:bg-agency-accent group',
                                 isMenuOpen && 'bg-agency-accent border-transparent'
@@ -206,69 +207,15 @@ export const Navigation: React.FC<NavigationProps> = ({ className }) => {
                             <div className={cn('w-5 h-0.5 bg-current transition-all duration-500', isMenuOpen && 'rotate-45 translate-y-2')}></div>
                             <div className={cn('w-5 h-0.5 bg-current transition-all duration-500', isMenuOpen && 'opacity-0')}></div>
                             <div className={cn('w-5 h-0.5 bg-current transition-all duration-500', isMenuOpen && '-rotate-45 -translate-y-2')}></div>
-                        </button>
+                        </button> */}
                     </div>
                 </div>
             </nav>
 
-            {/* Full-Screen Menu Overlay */}
-            <div id="menu-overlay" className="fixed inset-0 z-[150] hidden flex-col items-center justify-center overflow-hidden">
-                <div className="menu-bg absolute inset-0 bg-agency-secondary dark:bg-agency-dark"></div>
-                
-                <div className="absolute top-0 left-0 w-full h-full opacity-[0.02] pointer-events-none select-none agency-grid-overlay"></div>
-
-                <button
-                    className="menu-close absolute top-8 right-8 size-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-agency-primary dark:text-white hover:bg-agency-accent hover:text-agency-primary transition-all duration-500 z-50 group"
-                    onClick={toggleMenu}
-                    aria-label="Close menu"
-                    title="Close menu"
-                >
-                    <X className="size-8 group-hover:rotate-90 transition-transform duration-500" />
-                </button>
-
-                <div className="z-10 flex flex-col md:flex-row items-center justify-between w-full max-w-7xl px-8">
-                    <div className="flex flex-col space-y-4 md:space-y-6 items-center md:items-start">
-                        {navigationItems.map((item) => (
-                            <Link
-                                key={item.name}
-                                href={item.href}
-                                className={cn(
-                                    'menu-item font-display text-5xl md:text-8xl font-black uppercase tracking-tighter transition-all hover:text-agency-accent hover:italic hover:pl-8',
-                                    url === item.href ? 'text-agency-accent italic' : 'text-agency-primary dark:text-white'
-                                )}
-                            >
-                                {item.name}
-                            </Link>
-                        ))}
-                    </div>
-
-                    <div className="menu-contact mt-20 md:mt-0 flex flex-col items-center md:items-end text-center md:text-right space-y-8">
-                        {auth?.user ? (
-                             <Link href="/dashboard" className="menu-item text-2xl font-black uppercase tracking-tighter text-agency-accent flex items-center gap-4">
-                                DASHBOARD <LayoutDashboard className="size-6" />
-                             </Link>
-                        ) : (
-                            <div className="flex flex-col items-center md:items-end space-y-4">
-                                <Link href="/login" className="menu-item text-4xl font-black uppercase tracking-tighter text-agency-primary dark:text-white hover:text-agency-accent">LOGIN</Link>
-                                <Link href="/register" className="menu-item text-4xl font-black uppercase tracking-tighter text-agency-primary dark:text-white hover:text-agency-accent">REGISTER</Link>
-                            </div>
-                        )}
-                        
-                        <div className="pt-12 border-t border-agency-primary/5 dark:border-white/5">
-                            <p className="text-xs font-bold uppercase tracking-[0.4em] opacity-40 mb-4">New Business</p>
-                            <a href="mailto:hello@avant-garde.com" className="text-2xl font-black text-agency-primary dark:text-white hover:text-agency-accent transition-colors">
-                                hello@avant-garde.com
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="absolute bottom-0 left-0 w-full opacity-[0.03] pointer-events-none select-none overflow-hidden">
-                    <span className="text-[30vw] font-black uppercase whitespace-nowrap leading-none block marquee">
-                        NAVIGATE BEYOND NAVIGATE BEYOND
-                    </span>
-                </div>
-            </div>
+            {/* Full-Screen Menu Overlay hidden as per request */}
+            {/* <div id="menu-overlay" className="fixed inset-0 z-[150] hidden flex-col items-center justify-center overflow-hidden">
+                ...
+            </div> */}
         </>
     );
 };

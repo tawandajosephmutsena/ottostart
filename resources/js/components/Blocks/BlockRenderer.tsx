@@ -2,14 +2,29 @@ import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import AnimatedSection from '@/components/AnimatedSection';
 import CinematicHero from './CinematicHero';
+import VideoPlayer from '@/components/ui/video-player';
 
-export type BlockType = 'hero' | 'text' | 'image' | 'features' | 'cinematic_hero';
+export type BlockType = 'hero' | 'text' | 'image' | 'features' | 'cinematic_hero' | 'video';
 
 export interface Block {
     id: string;
     type: BlockType;
     content: Record<string, unknown>;
 }
+
+const VideoBlock = ({ content }: { content: Record<string, unknown> }) => {
+    const { url } = content as { url?: string };
+    if (!url) return null;
+    return (
+        <section className="py-20 bg-background overflow-hidden px-4 md:px-8">
+            <div className="mx-auto max-w-7xl">
+                <AnimatedSection animation="fade-up">
+                    <VideoPlayer src={url} />
+                </AnimatedSection>
+            </div>
+        </section>
+    );
+};
 
 const HeroBlock = ({ content }: { content: Record<string, unknown> }) => {
     const { image, subtitle, title } = content as { image?: string; subtitle?: string; title?: string };
@@ -122,6 +137,8 @@ export default function BlockRenderer({ blocks }: { blocks: Block[] }) {
                         return <FeaturesBlock key={block.id} content={block.content} />;
                     case 'cinematic_hero':
                         return <CinematicHero key={block.id} slides={(block.content.slides as any) || []} />;
+                    case 'video':
+                        return <VideoBlock key={block.id} content={block.content} />;
                     default:
                         return null;
                 }
