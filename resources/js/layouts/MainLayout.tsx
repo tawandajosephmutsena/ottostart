@@ -136,12 +136,8 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
                     className,
                 )}
             >
-                {/* Web Core Vitals: Navigation with fixed height to prevent CLS */}
-                {showNavigation && (
-                    <div className="h-16 w-full">
-                        <Navigation />
-                    </div>
-                )}
+                {/* Navigation is fixed position, no wrapper needed */}
+                {showNavigation && <Navigation />}
 
                 {/* Web Core Vitals: Breadcrumbs with proper spacing to prevent CLS */}
                 {shouldShowBreadcrumbs && (

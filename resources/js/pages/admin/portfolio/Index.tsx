@@ -147,6 +147,7 @@ export default function Index({ portfolioItems }: Props) {
                     createLabel="Add Project"
                     searchPlaceholder="Search projects..."
                     routeKey="slug"
+                    baseUrl="/admin/portfolio"
                     onSearch={(query) => router.get('/admin/portfolio', { search: query }, { preserveState: true })}
                 />
             </div>

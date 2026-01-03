@@ -26,7 +26,7 @@ import {
     ChevronLeft,
     ChevronRight,
 } from 'lucide-react';
-import { Link, router, usePage } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 
 interface Column<T> {
     header: string;
@@ -53,6 +53,7 @@ interface AdvancedDataTableProps<T> {
     createLabel?: string;
     searchPlaceholder?: string;
     routeKey?: keyof T;
+    baseUrl?: string; // Explicit base URL for actions (view, edit, delete)
 }
 
 export function AdvancedDataTable<T extends { id: number | string }>({
@@ -65,10 +66,14 @@ export function AdvancedDataTable<T extends { id: number | string }>({
     createLabel = 'Create New',
     searchPlaceholder = 'Search...',
     routeKey = 'id' as keyof T,
+    baseUrl,
 }: AdvancedDataTableProps<T>) {
     const [viewMode, setViewMode] = useState<'table' | 'grid'>(renderGridItem ? 'grid' : 'table');
     const [search, setSearch] = useState('');
-    const basePath = typeof window !== 'undefined' ? window.location.pathname.replace(/\/$/, '') : '';
+    // Use explicit baseUrl if provided, otherwise extract clean path (remove trailing segments like /1/edit)
+    const basePath = baseUrl || (typeof window !== 'undefined' 
+        ? window.location.pathname.replace(/\/\d+.*$/, '').replace(/\/$/, '') 
+        : '');
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();

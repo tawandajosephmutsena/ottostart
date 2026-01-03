@@ -14,7 +14,7 @@ const AppLogo = React.forwardRef<HTMLDivElement, AppLogoProps>(({ className, log
     
     return (
         <div ref={ref} className={cn("flex items-center", className)}>
-            {site.logo && site.logo !== '/logo.svg' ? (
+            {site.logo ? (
                 <img 
                     src={site.logo} 
                     alt={site.name} 

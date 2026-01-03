@@ -55,12 +55,12 @@ export const Footer: React.FC<FooterProps> = ({ className }) => {
                     <div className="lg:col-span-6 flex flex-col justify-between">
                         <div>
                             <Link href="/" className="inline-flex items-center mb-12 group">
-                                <div className="h-12 transition-transform duration-500 group-hover:rotate-[5deg] group-hover:scale-105 overflow-hidden">
-                                     {site.logo && site.logo !== '/logo.svg' ? (
+                                <div className="h-8 transition-transform duration-500 group-hover:rotate-[5deg] group-hover:scale-105 overflow-hidden">
+                                     {site.logo ? (
                                         <img src={site.logo} alt={site.name} className="h-full w-auto object-contain" />
                                     ) : (
-                                        <div className="size-12 rounded-2xl bg-agency-accent flex items-center justify-center shadow-xl shadow-agency-accent/20">
-                                            <span className="text-2xl font-black text-agency-primary">{site.name?.charAt(0) || 'A'}</span>
+                                        <div className="size-8 rounded-lg bg-agency-accent flex items-center justify-center">
+                                            <span className="text-lg font-black text-agency-primary">{site.name?.charAt(0) || 'A'}</span>
                                         </div>
                                     )}
                                 </div>

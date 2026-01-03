@@ -13,11 +13,12 @@ import {
     Plus,
     Eye,
     Star,
+    Settings,
+    Globe,
+    PanelsTopLeft,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import React, { useMemo } from 'react';
-import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
-// Since recharts is not in package.json, I will implement a custom SVG chart instead to avoid dependency issues.
+import React from 'react';
 
 interface DashboardStats {
     portfolio_items: {
@@ -238,8 +239,6 @@ export default function Dashboard({ stats, recent_activity }: DashboardProps) {
     // Simulated activity data for visual appeal
     const activityData = [45, 52, 38, 65, 48, 72, 58, 63, 80, 75, 90, 85];
     const maxVal = Math.max(...activityData);
-    const chartHeight = 100;
-    const chartWidth = 400;
 
     return (
         <AdminLayout title="Dashboard" breadcrumbs={breadcrumbs}>
@@ -352,7 +351,7 @@ export default function Dashboard({ stats, recent_activity }: DashboardProps) {
 
                 <div>
                     <h2 className="text-xl font-semibold mb-4">Quick Actions</h2>
-                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
                         <QuickActionCard
                             title="New Portfolio Item"
                             description="Add a new project to showcase"
@@ -367,6 +366,18 @@ export default function Dashboard({ stats, recent_activity }: DashboardProps) {
                             href="/admin/insights/create"
                         />
                         <QuickActionCard
+                            title="Add Service"
+                            description="Create a new service offering"
+                            icon={Briefcase}
+                            href="/admin/services/create"
+                        />
+                        <QuickActionCard
+                            title="Manage Pages"
+                            description="Edit site pages and content"
+                            icon={PanelsTopLeft}
+                            href="/admin/pages"
+                        />
+                        <QuickActionCard
                             title="Upload Media"
                             description="Add images and files"
                             icon={Image}
@@ -377,6 +388,18 @@ export default function Dashboard({ stats, recent_activity }: DashboardProps) {
                             description="Add a new team member"
                             icon={Users}
                             href="/admin/team/create"
+                        />
+                        <QuickActionCard
+                            title="SEO Dashboard"
+                            description="Optimize for search engines"
+                            icon={Globe}
+                            href="/admin/seo"
+                        />
+                        <QuickActionCard
+                            title="Site Settings"
+                            description="Configure your website"
+                            icon={Settings}
+                            href="/admin/settings"
                         />
                     </div>
                 </div>

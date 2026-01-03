@@ -105,9 +105,47 @@ export default function ContactInquiryShow({ inquiry }: Props) {
                                 <CardDescription>Message content</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <div className="p-6 rounded-2xl bg-muted/30 whitespace-pre-wrap leading-relaxed">
-                                    {inquiry.message}
-                                </div>
+                                {(() => {
+                                    try {
+                                        const isJson = inquiry.message?.trim().startsWith('{') || inquiry.message?.trim().startsWith('[');
+                                        const data = isJson ? JSON.parse(inquiry.message) : null;
+                                        
+                                        if (data && typeof data === 'object') {
+                                            return (
+                                                <div className="grid gap-4">
+                                                    {Object.entries(data).map(([key, value]) => (
+                                                        <div key={key} className="p-4 rounded-xl bg-muted/30 border border-muted/50">
+                                                            <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1">
+                                                                {key.replace(/field_\d+/, '').replace(/_/g, ' ').trim() || key}
+                                                            </p>
+                                                            <div className="text-sm font-medium leading-relaxed">
+                                                                {Array.isArray(value) ? (
+                                                                    <div className="flex flex-wrap gap-2 mt-1">
+                                                                        {value.map((v, i) => (
+                                                                            <Badge key={i} variant="outline" className="bg-agency-accent/5 font-bold uppercase text-[10px]">
+                                                                                {String(v)}
+                                                                            </Badge>
+                                                                        ))}
+                                                                    </div>
+                                                                ) : (
+                                                                    String(value)
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            );
+                                        }
+                                    } catch (e) {
+                                        // Not JSON, fall back to default rendering
+                                    }
+
+                                    return (
+                                        <div className="p-6 rounded-2xl bg-muted/30 whitespace-pre-wrap leading-relaxed">
+                                            {inquiry.message}
+                                        </div>
+                                    );
+                                })()}
                             </CardContent>
                         </Card>
 

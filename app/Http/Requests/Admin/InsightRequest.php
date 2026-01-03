@@ -35,7 +35,7 @@ class InsightRequest extends SecureFormRequest
             'content.sections' => 'nullable|array',
             'content.sections.*.title' => ['required_with:content.sections', ...$this->getSafeTextRules(255), new NoScriptTags()],
             'content.sections.*.content' => ['required_with:content.sections', ...$this->getRichTextRules(65535), new SafeHtml()],
-            'featured_image' => [...$this->getSafeTextRules(255, false)],
+            'featured_image' => 'nullable|string|max:2048',
             'author_id' => 'required|exists:users,id',
             'category_id' => 'nullable|exists:categories,id',
             'tags' => 'nullable|array|max:20',

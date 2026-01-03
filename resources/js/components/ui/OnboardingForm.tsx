@@ -161,9 +161,9 @@ const OnboardingForm = ({ steps, submitText = "Submit", onSuccess }: OnboardingF
                   className={cn(
                     "w-4 h-4 rounded-full cursor-pointer transition-colors duration-300",
                     index < currentStep
-                      ? "bg-primary"
+                      ? "bg-agency-accent"
                       : index === currentStep
-                        ? "bg-primary ring-4 ring-primary/20"
+                        ? "bg-agency-accent ring-4 ring-agency-accent/20"
                         : "bg-muted",
                   )}
                   onClick={() => {
@@ -177,7 +177,7 @@ const OnboardingForm = ({ steps, submitText = "Submit", onSuccess }: OnboardingF
                   className={cn(
                     "text-xs mt-1.5 hidden sm:block",
                     index === currentStep
-                      ? "text-primary font-medium"
+                      ? "text-agency-accent font-medium"
                       : "text-muted-foreground",
                   )}
                 >
@@ -188,7 +188,7 @@ const OnboardingForm = ({ steps, submitText = "Submit", onSuccess }: OnboardingF
           </div>
           <div className="w-full bg-muted h-1.5 rounded-full overflow-hidden mt-2">
             <motion.div
-              className="h-full bg-primary"
+              className="h-full bg-agency-accent"
               initial={{ width: 0 }}
               animate={{ width: `${(currentStep / (steps.length - 1)) * 100}%` }}
               transition={{ duration: 0.3 }}
@@ -342,7 +342,7 @@ const OnboardingForm = ({ steps, submitText = "Submit", onSuccess }: OnboardingF
                   currentStep === steps.length - 1 ? () => handleSubmit() : nextStep
                 }
                 disabled={!isStepValid() || isSubmitting}
-                className="flex items-center gap-1 transition-all duration-300 rounded-2xl"
+                className="flex items-center gap-1 transition-all duration-300 rounded-2xl bg-agency-accent hover:bg-agency-accent/90 text-agency-primary"
               >
                 {isSubmitting ? (
                   <>

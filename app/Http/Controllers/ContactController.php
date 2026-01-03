@@ -26,27 +26,42 @@ class ContactController extends Controller
                 ])->with('error', 'Rate limit exceeded');
             }
 
-            // Flexible validation: accept dynamic form fields
-            $request->validate([
-                'email' => 'required_without:tel|email|nullable|max:255',
-                'name' => 'required|string|max:255|regex:/^[\pL\s\-]+$/u',
-                'message' => 'sometimes|string|max:5000|min:10',
-            ]);
-
             $data = $request->except(['_token', 'form_title']);
             
-            // Extract common fields with fallbacks
-            $name = $data['name'] ?? $data['full_name'] ?? 'Anonymous';
-            $email = $data['email'] ?? $data['email_address'] ?? 'no-email@provided.com';
-            $message = $data['message'] ?? $data['comments'] ?? json_encode($data);
-            $type = $request->input('form_title', 'General');
+            // Try to find name and email from dynamic field names
+            $name = null;
+            $email = null;
+            $message = null;
+            
+            foreach ($data as $key => $value) {
+                if (is_string($value)) {
+                    // Check if this looks like an email
+                    if (!$email && filter_var($value, FILTER_VALIDATE_EMAIL)) {
+                        $email = $value;
+                    }
+                    // Check if this could be a name (no @ symbol, reasonable length)
+                    elseif (!$name && !str_contains($value, '@') && strlen($value) > 2 && strlen($value) < 100) {
+                        $name = $value;
+                    }
+                    // Use longer text as message
+                    elseif (!$message && strlen($value) > 20) {
+                        $message = $value;
+                    }
+                }
+            }
+            
+            // Fallback to explicit field names if dynamic detection didn't work
+            $name = $name ?? $data['name'] ?? $data['full_name'] ?? 'Form Submission';
+            $email = $email ?? $data['email'] ?? $data['email_address'] ?? 'no-email@provided.com';
+            $message = $message ?? $data['message'] ?? $data['comments'] ?? json_encode($data, JSON_PRETTY_PRINT);
+            $type = $request->input('form_title', 'Multi-step Form');
 
             // Store with additional security metadata
             ContactInquiry::create([
                 'name' => strip_tags($name),
                 'email' => $email,
                 'subject' => $type . ' Submission',
-                'message' => strip_tags($message),
+                'message' => is_string($message) ? strip_tags($message) : json_encode($data, JSON_PRETTY_PRINT),
                 'status' => 'new',
                 'metadata' => [
                     'all_fields' => $data,

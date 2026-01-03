@@ -145,7 +145,7 @@ export const Navigation: React.FC<NavigationProps> = ({ className }) => {
                         <AppLogo 
                             ref={logoRef as any}
                             className="transition-transform duration-500 group-hover:rotate-[5deg] group-hover:scale-110" 
-                            logoClassName="h-10 w-auto shadow-lg shadow-agency-accent/20"
+                            logoClassName="h-6 w-auto"
                         />
                     </Link>
 
