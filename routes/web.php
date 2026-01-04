@@ -19,6 +19,10 @@ Route::middleware(['cache.headers:public'])->group(function () {
 
     Route::get('/blog', [App\Http\Controllers\BlogController::class, 'index'])->name('blog');
     Route::get('/blog/{slug}', [App\Http\Controllers\BlogController::class, 'show'])->name('blog.show');
+
+    Route::get('/documentation', function () {
+        return Inertia::render('Documentation');
+    })->name('documentation');
 });
 
 // Contact form (no caching for POST)

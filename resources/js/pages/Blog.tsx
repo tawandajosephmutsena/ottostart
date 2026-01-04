@@ -13,7 +13,7 @@ interface Props {
     page?: Page;
 }
 
-export default function Blog({ insights, categories }: Props) {
+export default function Blog({ insights, categories, page }: Props) {
     const [activeCategoryId, setActiveCategoryId] = useState<number | 'all'>('all');
 
     const posts = insights.data;

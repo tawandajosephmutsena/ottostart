@@ -16,6 +16,7 @@ import {
     Settings,
     Globe,
     PanelsTopLeft,
+    BookOpen,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import React from 'react';
@@ -400,6 +401,12 @@ export default function Dashboard({ stats, recent_activity }: DashboardProps) {
                             description="Configure your website"
                             icon={Settings}
                             href="/admin/settings"
+                        />
+                        <QuickActionCard
+                            title="Documentation"
+                            description="User & developer guides"
+                            icon={BookOpen}
+                            href="/documentation"
                         />
                     </div>
                 </div>

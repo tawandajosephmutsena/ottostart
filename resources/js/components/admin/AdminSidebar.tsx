@@ -23,6 +23,7 @@ import {
     Settings,
     Home,
     MessageSquare,
+    BookOpen,
 } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 
@@ -85,6 +86,11 @@ const quickNavItems = [
         title: 'View Site',
         href: '/',
         icon: Home,
+    },
+    {
+        title: 'Documentation',
+        href: '/documentation',
+        icon: BookOpen,
     },
 ];
 

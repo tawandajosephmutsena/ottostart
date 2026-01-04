@@ -196,8 +196,8 @@ export class AccessibilityManager {
         `;
         document.body.appendChild(this.screenReaderAnnouncements);
 
-        // Add skip link
-        this.addSkipLink();
+        // Skip link removed per user request
+        // this.addSkipLink();
     }
 
     /**

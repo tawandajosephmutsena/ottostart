@@ -22,7 +22,7 @@ const iconMap: Record<string, LucideIcon> = {
     zap: Zap,
 };
 
-export default function Services({ services }: Props) {
+export default function Services({ services, page }: Props) {
     const renderIcon = (iconName: string | null) => {
         const Icon = iconMap[iconName?.toLowerCase() || 'zap'] || Zap;
         return <Icon className="size-8 text-agency-accent group-hover:text-white dark:group-hover:text-agency-primary" />;

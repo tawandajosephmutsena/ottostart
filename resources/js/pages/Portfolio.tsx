@@ -10,7 +10,7 @@ interface Props {
     page?: Page;
 }
 
-export default function Portfolio({ portfolioItems }: Props) {
+export default function Portfolio({ portfolioItems, page }: Props) {
     const projects = portfolioItems.data;
     
     // Extract unique technologies for dummy filtering or use categories if available
