@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Service;
+use App\Models\Page;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -23,8 +24,11 @@ class ServiceController extends Controller
                 ->get();
         });
 
+        $page = Page::published()->where('slug', 'services')->first();
+        
         return Inertia::render('Services', [
             'services' => $services,
+            'page' => $page,
         ]);
     }
 

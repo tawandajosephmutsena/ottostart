@@ -9,10 +9,6 @@ use App\Http\Controllers\HomeController;
 Route::middleware(['cache.headers:public'])->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
 
-    Route::get('/about', function () {
-        return Inertia::render('About');
-    })->name('about');
-
     Route::get('/services', [App\Http\Controllers\ServiceController::class, 'index'])->name('services');
     Route::get('/services/{slug}', [App\Http\Controllers\ServiceController::class, 'show'])->name('services.show');
 
@@ -23,10 +19,6 @@ Route::middleware(['cache.headers:public'])->group(function () {
 
     Route::get('/blog', [App\Http\Controllers\BlogController::class, 'index'])->name('blog');
     Route::get('/blog/{slug}', [App\Http\Controllers\BlogController::class, 'show'])->name('blog.show');
-
-    Route::get('/contact', function () {
-        return Inertia::render('Contact');
-    })->name('contact');
 });
 
 // Contact form (no caching for POST)

@@ -75,14 +75,9 @@ class BreadcrumbService
                 ['title' => 'Team', 'url' => route('team'), 'active' => true],
             ],
 
-            // About routes
-            'about' => [
-                ['title' => 'About', 'url' => route('about'), 'active' => true],
-            ],
-
-            // Contact routes
-            'contact' => [
-                ['title' => 'Contact', 'url' => route('contact'), 'active' => true],
+            // Dynamic Page routes
+            'pages.show' => [
+                ['title' => $this->getModelTitle('page', $parameters), 'url' => null, 'active' => true],
             ],
 
             // Admin routes
@@ -165,6 +160,10 @@ class BreadcrumbService
                 case 'service':
                     $model = \App\Models\Service::where('slug', $slug)->first();
                     return $model?->title ?? 'Service';
+                    
+                case 'page':
+                    $model = \App\Models\Page::where('slug', $slug)->first();
+                    return $model?->title ?? 'Page';
                     
                 default:
                     return ucfirst($type);

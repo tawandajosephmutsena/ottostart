@@ -114,6 +114,71 @@ export interface FormBlock extends BaseBlock {
     };
 }
 
+export interface StoryBlock extends BaseBlock {
+    type: 'story';
+    content: {
+        title: string;
+        subtitle: string;
+        body: string;
+        items: Array<{
+            value: string;
+            label: string;
+        }>;
+    };
+}
+
+export interface ManifestoBlock extends BaseBlock {
+    type: 'manifesto';
+    content: {
+        title: string;
+        subtitle: string;
+        items: Array<{
+            emoji: string;
+            title: string;
+            desc: string;
+        }>;
+    };
+}
+
+export interface ProcessBlock extends BaseBlock {
+    type: 'process';
+    content: {
+        title: string;
+        subtitle: string;
+        items: Array<{
+            step: string;
+            title: string;
+            desc: string;
+        }>;
+    };
+}
+
+export interface ContactInfoBlock extends BaseBlock {
+    type: 'contact_info';
+    content: {
+        title: string;
+        subtitle: string;
+        items: Array<{
+            label: string;
+            value: string;
+            href?: string;
+        }>;
+        office_hours: string[];
+    };
+}
+
+export interface FaqBlock extends BaseBlock {
+    type: 'faq';
+    content: {
+        title: string;
+        subtitle: string;
+        items: Array<{
+            q: string;
+            a: string;
+        }>;
+    };
+}
+
 export type PageBlock =
     | HeroBlock
     | StatsBlock
@@ -124,7 +189,12 @@ export type PageBlock =
     | TextBlock
     | ImageBlock
     | CinematicHeroBlock
-    | FormBlock;
+    | FormBlock
+    | StoryBlock
+    | ManifestoBlock
+    | ProcessBlock
+    | ContactInfoBlock
+    | FaqBlock;
 
 export interface PageContent {
     blocks: PageBlock[];

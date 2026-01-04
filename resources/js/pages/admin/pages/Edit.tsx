@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { Page } from '@/types';
 import { useForm, Link } from '@inertiajs/react';
-import { ChevronLeft, Save, Plus, Trash, ArrowUp, ArrowDown, Image as ImageIcon, Type, Layout, Eye, List, EyeOff } from 'lucide-react';
+import { ChevronLeft, Save, Plus, Trash, ArrowUp, ArrowDown, Image as ImageIcon, Type, Layout, Eye, List, EyeOff, BookOpen, HelpCircle, PhoneCall, AlertCircle } from 'lucide-react';
 import React, { useState } from 'react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
@@ -20,12 +20,12 @@ interface Props {
 }
 
 // Define the structure of our blocks
-type BlockType = 'hero' | 'text' | 'image' | 'features' | 'stats' | 'services' | 'portfolio' | 'insights' | 'cta' | 'cinematic_hero' | 'form' | 'video';
+type BlockType = 'hero' | 'text' | 'image' | 'features' | 'stats' | 'services' | 'portfolio' | 'insights' | 'cta' | 'cinematic_hero' | 'form' | 'video' | 'story' | 'manifesto' | 'process' | 'contact_info' | 'faq';
 
 interface Block {
     id: string;
     type: BlockType;
-    content: any;
+    content: Record<string, any>;
     is_enabled: boolean;
 }
 
@@ -121,32 +121,80 @@ const getDefaultContentForType = (type: BlockType) => {
             ]
         };
         case 'video': return { url: 'https://videos.pexels.com/video-files/30333849/13003128_2560_1440_25fps.mp4' };
+        case 'story': return { 
+            title: 'A journey of obsession.', 
+            subtitle: 'Story',
+            body: 'Founded in 2019, Avant-Garde emerged from a singular conviction...', 
+            items: [
+                { value: '5+', label: 'Years of Craft' },
+                { value: '50+', label: 'Successes' }
+            ]
+        };
+        case 'manifesto': return { 
+            title: 'Our Core Pillars', 
+            subtitle: 'Manifesto',
+            items: [
+                { title: 'Radical Innovation', desc: 'We don\'t follow trends; we set them.', emoji: '🚀' },
+                { title: 'Obsessive Detail', desc: 'Every pixel is scrutinized for perfection.', emoji: '🎯' },
+                { title: 'Transparent Partnership', desc: 'We integrate with your team as partners.', emoji: '🤝' }
+            ]
+        };
+        case 'process': return { 
+            title: 'From Vision to Reality.', 
+            subtitle: 'Our Process',
+            items: [
+                { step: '01', title: 'Discovery', desc: 'In-depth research and strategy.' },
+                { step: '02', title: 'Ideation', desc: 'Creative brainstorming and conceptual design.' },
+                { step: '03', title: 'Realization', desc: 'Technical execution and design refinement.' },
+                { step: '04', title: 'Infinity', desc: 'Launch and continuous optimization.' }
+            ]
+        };
+        case 'contact_info': return { 
+            title: 'We\'re Listening.', 
+            subtitle: 'Inquiries',
+            items: [
+                { label: 'Email', value: 'hello@avant-garde.com', href: 'mailto:hello@avant-garde.com' },
+                { label: 'Phone', value: '+1 (555) 123-4567', href: 'tel:+15551234567' },
+                { label: 'Address', value: 'San Francisco, CA', href: '' }
+            ],
+            office_hours: [
+                'Mon — Fri: 09:00 — 18:00',
+                'Sat: 10:00 — 14:00',
+                'Sun: Closed'
+            ]
+        };
+        case 'faq': return { 
+            title: 'Common Queries.', 
+            subtitle: 'Quick Answers',
+            items: [
+                { q: 'How long does a typical project take?', a: 'Most boutique projects take 4-12 weeks.' },
+                { q: 'Do you work with global clients?', a: 'Absolutely. We have clients across 4 continents.' }
+            ]
+        };
         default: return {};
     }
 };
 
 export default function Edit({ page }: Props) {
     // Parse initial content or default to empty array
-    const initialBlocks = (Array.isArray(page.content?.blocks) ? page.content.blocks : []) as Block[];
-
-    const { data, setData: _setData, put, processing, errors } = useForm({
+    const { data, setData, put, processing, errors } = useForm({
         title: page.title,
         slug: page.slug,
         meta_title: page.meta_title || '',
         meta_description: page.meta_description || '',
-        template: page.template,
+        template: page.template as 'default' | 'home' | 'contact',
         is_published: page.is_published,
-        content: page.content || { blocks: [] },
+        content: (page.content as any) || { blocks: [] },
     } as any);
 
-    const setData = _setData as any;
-
+    const initialBlocks = (Array.isArray(data.content?.blocks) ? data.content.blocks : []) as Block[];
     const [blocks, setBlocks] = useState<Block[]>(initialBlocks);
 
     // Update form data when blocks change
     React.useEffect(() => {
+        // @ts-ignore - Depth issue with useForm and blocks
         setData('content', { blocks });
-    }, [blocks]);
+    }, [blocks, setData]);
 
     const addBlock = React.useCallback((type: BlockType) => {
         const newBlock: Block = {
@@ -176,7 +224,7 @@ export default function Edit({ page }: Props) {
         setBlocks(newBlocks);
     };
 
-    const updateBlockContent = (id: string, content: any) => {
+    const updateBlockContent = (id: string, content: Record<string, any>) => {
         setBlocks(blocks.map(b => b.id === id ? { ...b, content: { ...b.content, ...content } } : b));
     };
 
@@ -261,6 +309,21 @@ export default function Edit({ page }: Props) {
                                 </Button>
                                 <Button type="button" variant="secondary" size="sm" onClick={() => addBlock('video')}>
                                     <Eye className="h-4 w-4 mr-2" /> Video
+                                </Button>
+                                <Button type="button" variant="secondary" size="sm" onClick={() => addBlock('story')}>
+                                    <BookOpen className="h-4 w-4 mr-2" /> Story
+                                </Button>
+                                <Button type="button" variant="secondary" size="sm" onClick={() => addBlock('manifesto')}>
+                                    <AlertCircle className="h-4 w-4 mr-2" /> Manifesto
+                                </Button>
+                                <Button type="button" variant="secondary" size="sm" onClick={() => addBlock('process')}>
+                                    <List className="h-4 w-4 mr-2" /> Process
+                                </Button>
+                                <Button type="button" variant="secondary" size="sm" onClick={() => addBlock('contact_info')}>
+                                    <PhoneCall className="h-4 w-4 mr-2" /> Contact Info
+                                </Button>
+                                <Button type="button" variant="secondary" size="sm" onClick={() => addBlock('faq')}>
+                                    <HelpCircle className="h-4 w-4 mr-2" /> FAQ
                                 </Button>
                              </div>
                         </Card>
@@ -1022,6 +1085,399 @@ export default function Edit({ page }: Props) {
                                                             </Card>
                                                         ))}
                                                     </div>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {block.type === 'story' && (
+                                            <div className="space-y-4">
+                                                <div className="grid grid-cols-2 gap-4">
+                                                    <div>
+                                                        <Label className="text-xs">Title</Label>
+                                                        <Input 
+                                                            value={block.content.title} 
+                                                            onChange={(e) => updateBlockContent(block.id, { title: e.target.value })}
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <Label className="text-xs">Subtitle</Label>
+                                                        <Input 
+                                                            value={block.content.subtitle} 
+                                                            onChange={(e) => updateBlockContent(block.id, { subtitle: e.target.value })}
+                                                        />
+                                                    </div>
+                                                    <div className="col-span-2">
+                                                        <Label className="text-xs">Body Text</Label>
+                                                        <Textarea 
+                                                            className="min-h-[100px]"
+                                                            value={block.content.body} 
+                                                            onChange={(e) => updateBlockContent(block.id, { body: e.target.value })}
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div className="space-y-4">
+                                                    <Label className="text-xs font-bold">Stats</Label>
+                                                    {(block.content.items || []).map((item: any, i: number) => (
+                                                        <div key={i} className="flex gap-2 items-end border p-3 rounded bg-muted/10">
+                                                            <div className="flex-1">
+                                                                <Label className="text-[10px]">Value</Label>
+                                                                <Input 
+                                                                    value={item.value} 
+                                                                    onChange={(e) => {
+                                                                        const newItems = [...block.content.items];
+                                                                        newItems[i] = { ...item, value: e.target.value };
+                                                                        updateBlockContent(block.id, { items: newItems });
+                                                                    }}
+                                                                />
+                                                            </div>
+                                                            <div className="flex-1">
+                                                                <Label className="text-[10px]">Label</Label>
+                                                                <Input 
+                                                                    value={item.label} 
+                                                                    onChange={(e) => {
+                                                                        const newItems = [...block.content.items];
+                                                                        newItems[i] = { ...item, label: e.target.value };
+                                                                        updateBlockContent(block.id, { items: newItems });
+                                                                    }}
+                                                                />
+                                                            </div>
+                                                            <Button variant="ghost" size="icon" className="text-destructive" onClick={() => {
+                                                                const newItems = block.content.items.filter((_:any, idx:number) => idx !== i);
+                                                                updateBlockContent(block.id, { items: newItems });
+                                                            }}>
+                                                                <Trash className="h-4 w-4" />
+                                                            </Button>
+                                                        </div>
+                                                    ))}
+                                                    <Button variant="outline" size="sm" onClick={() => {
+                                                        const newItems = [...(block.content.items || []), { value: '0', label: 'New Stat' }];
+                                                        updateBlockContent(block.id, { items: newItems });
+                                                    }}>
+                                                        <Plus className="h-3 w-3 mr-2" /> Add Stat
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {block.type === 'manifesto' && (
+                                            <div className="space-y-4">
+                                                <div className="grid grid-cols-2 gap-4">
+                                                    <div>
+                                                        <Label className="text-xs">Title</Label>
+                                                        <Input 
+                                                            value={block.content.title} 
+                                                            onChange={(e) => updateBlockContent(block.id, { title: e.target.value })}
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <Label className="text-xs">Subtitle</Label>
+                                                        <Input 
+                                                            value={block.content.subtitle} 
+                                                            onChange={(e) => updateBlockContent(block.id, { subtitle: e.target.value })}
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div className="space-y-4">
+                                                    <Label className="text-xs font-bold">Pillars</Label>
+                                                    {(block.content.items || []).map((item: any, i: number) => (
+                                                        <div key={i} className="space-y-2 border p-3 rounded bg-muted/10">
+                                                            <div className="flex gap-2">
+                                                                <div className="w-20">
+                                                                    <Label className="text-[10px]">Emoji</Label>
+                                                                    <Input 
+                                                                        value={item.emoji} 
+                                                                        onChange={(e) => {
+                                                                            const newItems = [...block.content.items];
+                                                                            newItems[i] = { ...item, emoji: e.target.value };
+                                                                            updateBlockContent(block.id, { items: newItems });
+                                                                        }}
+                                                                    />
+                                                                </div>
+                                                                <div className="flex-1">
+                                                                    <Label className="text-[10px]">Title</Label>
+                                                                    <Input 
+                                                                        value={item.title} 
+                                                                        onChange={(e) => {
+                                                                            const newItems = [...block.content.items];
+                                                                            newItems[i] = { ...item, title: e.target.value };
+                                                                            updateBlockContent(block.id, { items: newItems });
+                                                                        }}
+                                                                    />
+                                                                </div>
+                                                                <Button variant="ghost" size="icon" className="text-destructive mt-6" onClick={() => {
+                                                                    const newItems = block.content.items.filter((_:any, idx:number) => idx !== i);
+                                                                    updateBlockContent(block.id, { items: newItems });
+                                                                }}>
+                                                                    <Trash className="h-4 w-4" />
+                                                                </Button>
+                                                            </div>
+                                                            <div>
+                                                                <Label className="text-[10px]">Description</Label>
+                                                                <Textarea 
+                                                                    className="h-16 text-xs"
+                                                                    value={item.desc} 
+                                                                    onChange={(e) => {
+                                                                        const newItems = [...block.content.items];
+                                                                        newItems[i] = { ...item, desc: e.target.value };
+                                                                        updateBlockContent(block.id, { items: newItems });
+                                                                    }}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                    <Button variant="outline" size="sm" onClick={() => {
+                                                        const newItems = [...(block.content.items || []), { title: 'New Pillar', desc: '', emoji: '✨' }];
+                                                        updateBlockContent(block.id, { items: newItems });
+                                                    }}>
+                                                        <Plus className="h-3 w-3 mr-2" /> Add Pillar
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {block.type === 'process' && (
+                                            <div className="space-y-4">
+                                                <div className="grid grid-cols-2 gap-4">
+                                                    <div>
+                                                        <Label className="text-xs">Title</Label>
+                                                        <Input 
+                                                            value={block.content.title} 
+                                                            onChange={(e) => updateBlockContent(block.id, { title: e.target.value })}
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <Label className="text-xs">Subtitle</Label>
+                                                        <Input 
+                                                            value={block.content.subtitle} 
+                                                            onChange={(e) => updateBlockContent(block.id, { subtitle: e.target.value })}
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div className="space-y-4">
+                                                    <Label className="text-xs font-bold">Steps</Label>
+                                                    {(block.content.items || []).map((item: any, i: number) => (
+                                                        <div key={i} className="space-y-2 border p-3 rounded bg-muted/10">
+                                                            <div className="flex gap-2">
+                                                                <div className="w-20">
+                                                                    <Label className="text-[10px]">Step #</Label>
+                                                                    <Input 
+                                                                        value={item.step} 
+                                                                        onChange={(e) => {
+                                                                            const newItems = [...block.content.items];
+                                                                            newItems[i] = { ...item, step: e.target.value };
+                                                                            updateBlockContent(block.id, { items: newItems });
+                                                                        }}
+                                                                    />
+                                                                </div>
+                                                                <div className="flex-1">
+                                                                    <Label className="text-[10px]">Title</Label>
+                                                                    <Input 
+                                                                        value={item.title} 
+                                                                        onChange={(e) => {
+                                                                            const newItems = [...block.content.items];
+                                                                            newItems[i] = { ...item, title: e.target.value };
+                                                                            updateBlockContent(block.id, { items: newItems });
+                                                                        }}
+                                                                    />
+                                                                </div>
+                                                                <Button variant="ghost" size="icon" className="text-destructive mt-6" onClick={() => {
+                                                                    const newItems = block.content.items.filter((_:any, idx:number) => idx !== i);
+                                                                    updateBlockContent(block.id, { items: newItems });
+                                                                }}>
+                                                                    <Trash className="h-4 w-4" />
+                                                                </Button>
+                                                            </div>
+                                                            <div>
+                                                                <Label className="text-[10px]">Description</Label>
+                                                                <Textarea 
+                                                                    className="h-16 text-xs"
+                                                                    value={item.desc} 
+                                                                    onChange={(e) => {
+                                                                        const newItems = [...block.content.items];
+                                                                        newItems[i] = { ...item, desc: e.target.value };
+                                                                        updateBlockContent(block.id, { items: newItems });
+                                                                    }}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                    <Button variant="outline" size="sm" onClick={() => {
+                                                        const newItems = [...(block.content.items || []), { title: 'New Step', desc: '', step: '0' + ((block.content.items?.length || 0) + 1) }];
+                                                        updateBlockContent(block.id, { items: newItems });
+                                                    }}>
+                                                        <Plus className="h-3 w-3 mr-2" /> Add Step
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {block.type === 'contact_info' && (
+                                            <div className="space-y-6">
+                                                <div className="grid grid-cols-2 gap-4">
+                                                    <div>
+                                                        <Label className="text-xs">Title</Label>
+                                                        <Input 
+                                                            value={block.content.title} 
+                                                            onChange={(e) => updateBlockContent(block.id, { title: e.target.value })}
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <Label className="text-xs">Subtitle</Label>
+                                                        <Input 
+                                                            value={block.content.subtitle} 
+                                                            onChange={(e) => updateBlockContent(block.id, { subtitle: e.target.value })}
+                                                        />
+                                                    </div>
+                                                </div>
+                                                
+                                                <div className="space-y-4">
+                                                    <Label className="text-xs font-bold">Contact Items</Label>
+                                                    {(block.content.items || []).map((item: any, i: number) => (
+                                                        <div key={i} className="space-y-2 border p-3 rounded bg-muted/10">
+                                                            <div className="grid grid-cols-3 gap-2">
+                                                                <div>
+                                                                    <Label className="text-[10px]">Label</Label>
+                                                                    <Input 
+                                                                        value={item.label} 
+                                                                        onChange={(e) => {
+                                                                            const newItems = [...block.content.items];
+                                                                            newItems[i] = { ...item, label: e.target.value };
+                                                                            updateBlockContent(block.id, { items: newItems });
+                                                                        }}
+                                                                    />
+                                                                </div>
+                                                                <div className="col-span-1">
+                                                                    <Label className="text-[10px]">Value</Label>
+                                                                    <Input 
+                                                                        value={item.value} 
+                                                                        onChange={(e) => {
+                                                                            const newItems = [...block.content.items];
+                                                                            newItems[i] = { ...item, value: e.target.value };
+                                                                            updateBlockContent(block.id, { items: newItems });
+                                                                        }}
+                                                                    />
+                                                                </div>
+                                                                <div className="flex gap-2">
+                                                                    <div className="flex-1">
+                                                                        <Label className="text-[10px]">Link (href)</Label>
+                                                                        <Input 
+                                                                            value={item.href} 
+                                                                            onChange={(e) => {
+                                                                                const newItems = [...block.content.items];
+                                                                                newItems[i] = { ...item, href: e.target.value };
+                                                                                updateBlockContent(block.id, { items: newItems });
+                                                                            }}
+                                                                        />
+                                                                    </div>
+                                                                    <Button variant="ghost" size="icon" className="text-destructive mt-6" onClick={() => {
+                                                                        const newItems = block.content.items.filter((_:any, idx:number) => idx !== i);
+                                                                        updateBlockContent(block.id, { items: newItems });
+                                                                    }}>
+                                                                        <Trash className="h-4 w-4" />
+                                                                    </Button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                    <Button variant="outline" size="sm" onClick={() => {
+                                                        const newItems = [...(block.content.items || []), { label: 'New Label', value: '', href: '' }];
+                                                        updateBlockContent(block.id, { items: newItems });
+                                                    }}>
+                                                        <Plus className="h-3 w-3 mr-2" /> Add Contact Item
+                                                    </Button>
+                                                </div>
+
+                                                <div className="space-y-4">
+                                                    <Label className="text-xs font-bold">Office Hours</Label>
+                                                    {(block.content.office_hours || []).map((hour: string, i: number) => (
+                                                        <div key={i} className="flex gap-2">
+                                                            <Input 
+                                                                value={hour} 
+                                                                onChange={(e) => {
+                                                                    const newHours = [...block.content.office_hours];
+                                                                    newHours[i] = e.target.value;
+                                                                    updateBlockContent(block.id, { office_hours: newHours });
+                                                                }}
+                                                            />
+                                                            <Button variant="ghost" size="icon" className="text-destructive" onClick={() => {
+                                                                const newHours = block.content.office_hours.filter((_:any, idx:number) => idx !== i);
+                                                                updateBlockContent(block.id, { office_hours: newHours });
+                                                            }}>
+                                                                <Trash className="h-4 w-4" />
+                                                            </Button>
+                                                        </div>
+                                                    ))}
+                                                    <Button variant="outline" size="sm" onClick={() => {
+                                                        const newHours = [...(block.content.office_hours || []), 'Mon — Fri: 09:00 — 18:00'];
+                                                        updateBlockContent(block.id, { office_hours: newHours });
+                                                    }}>
+                                                        <Plus className="h-3 w-3 mr-2" /> Add Office Hour
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {block.type === 'faq' && (
+                                            <div className="space-y-4">
+                                                <div className="grid grid-cols-2 gap-4">
+                                                    <div>
+                                                        <Label className="text-xs">Title</Label>
+                                                        <Input 
+                                                            value={block.content.title} 
+                                                            onChange={(e) => updateBlockContent(block.id, { title: e.target.value })}
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <Label className="text-xs">Subtitle</Label>
+                                                        <Input 
+                                                            value={block.content.subtitle} 
+                                                            onChange={(e) => updateBlockContent(block.id, { subtitle: e.target.value })}
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div className="space-y-4">
+                                                    <Label className="text-xs font-bold">Q&A Items</Label>
+                                                    {(block.content.items || []).map((item: any, i: number) => (
+                                                        <div key={i} className="space-y-2 border p-3 rounded bg-muted/10">
+                                                            <div>
+                                                                <Label className="text-[10px]">Question</Label>
+                                                                <div className="flex gap-2">
+                                                                    <Input 
+                                                                        value={item.q} 
+                                                                        onChange={(e) => {
+                                                                            const newItems = [...block.content.items];
+                                                                            newItems[i] = { ...item, q: e.target.value };
+                                                                            updateBlockContent(block.id, { items: newItems });
+                                                                        }}
+                                                                    />
+                                                                    <Button variant="ghost" size="icon" className="text-destructive" onClick={() => {
+                                                                        const newItems = block.content.items.filter((_:any, idx:number) => idx !== i);
+                                                                        updateBlockContent(block.id, { items: newItems });
+                                                                    }}>
+                                                                        <Trash className="h-4 w-4" />
+                                                                    </Button>
+                                                                </div>
+                                                            </div>
+                                                            <div>
+                                                                <Label className="text-[10px]">Answer</Label>
+                                                                <Textarea 
+                                                                    className="h-16 text-xs"
+                                                                    value={item.a} 
+                                                                    onChange={(e) => {
+                                                                        const newItems = [...block.content.items];
+                                                                        newItems[i] = { ...item, a: e.target.value };
+                                                                        updateBlockContent(block.id, { items: newItems });
+                                                                    }}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                    <Button variant="outline" size="sm" onClick={() => {
+                                                        const newItems = [...(block.content.items || []), { q: 'Question?', a: 'Answer...' }];
+                                                        updateBlockContent(block.id, { items: newItems });
+                                                    }}>
+                                                        <Plus className="h-3 w-3 mr-2" /> Add FAQ Item
+                                                    </Button>
                                                 </div>
                                             </div>
                                         )}

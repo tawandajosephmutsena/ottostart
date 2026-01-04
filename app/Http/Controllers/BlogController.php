@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Insight;
 use App\Models\Category;
+use App\Models\Page;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -47,10 +48,13 @@ class BlogController extends Controller
             return Category::where('type', 'insight')->get(['id', 'name', 'slug']);
         });
 
+        $dynamicPage = Page::published()->where('slug', 'blog')->first();
+
         return Inertia::render('Blog', [
             'insights' => $insights,
             'categories' => $categories,
             'filters' => $request->only(['category', 'search']),
+            'page' => $dynamicPage,
         ]);
     }
 

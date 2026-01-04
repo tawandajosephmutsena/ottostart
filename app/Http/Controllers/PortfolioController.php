@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\PortfolioItem;
+use App\Models\Page;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -24,8 +25,11 @@ class PortfolioController extends Controller
                 ->paginate(12);
         });
 
+        $dynamicPage = Page::published()->where('slug', 'portfolio')->first();
+
         return Inertia::render('Portfolio', [
             'portfolioItems' => $portfolioItems,
+            'page' => $dynamicPage,
         ]);
     }
 
