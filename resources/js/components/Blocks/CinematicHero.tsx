@@ -14,90 +14,108 @@ interface CinematicHeroProps {
 }
 
 /**
- * Premium Cinematic Hero Slider
- * - Smooth crossfade transitions with Ken Burns effect
- * - Elegant text animations with blur and slide effects
- * - Auto-plays with pause on hover
- * - Click/tap navigation
+ * Ultra-Premium Cinematic Hero Slider
+ * - IntersectionObserver based entry and performance management
+ * - Mouse-parallax for depth perception
+ * - Smooth 3D text reveals with blur and staggering
+ * - Auto-playing lifecycle tied to visibility
+ * - Cinematic film grain and vignette effects
  */
 export const CinematicHero: React.FC<CinematicHeroProps> = ({ 
     slides = [], 
-    autoPlayInterval = 6000 
+    autoPlayInterval = 7000 
 }) => {
+    const sectionRef = useRef<HTMLElement>(null);
     const [activeIndex, setActiveIndex] = useState(0);
     const [previousIndex, setPreviousIndex] = useState<number | null>(null);
     const [isAnimating, setIsAnimating] = useState(false);
     const [textVisible, setTextVisible] = useState(true);
+    const [isInView, setIsInView] = useState(false);
+    const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
     const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
     
     const slideCount = slides.length || 1;
     const currentSlide = slides[activeIndex] || slides[0];
     const titleWords = useMemo(() => currentSlide?.title?.split(' ') || [], [currentSlide?.title]);
 
-    // Go to specific slide with smooth text transition
+    // Intersection Observer to manage lifecycle
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                setIsInView(entry.isIntersecting);
+            },
+            { threshold: 0.1 }
+        );
+
+        if (sectionRef.current) {
+            observer.observe(sectionRef.current);
+        }
+
+        return () => observer.disconnect();
+    }, []);
+
+    // Mouse Parallax logic
+    const handleMouseMove = useCallback((e: React.MouseEvent) => {
+        if (!isInView) return;
+        const { clientX, clientY } = e;
+        const x = (clientX / window.innerWidth - 0.5) * 20; // max 20px move
+        const y = (clientY / window.innerHeight - 0.5) * 20;
+        setMousePos({ x, y });
+    }, [isInView]);
+
+    // Go to specific slide with fluid transition
     const goToSlide = useCallback((index: number) => {
         if (isAnimating || index === activeIndex) return;
         
         setIsAnimating(true);
-        setTextVisible(false); // Fade out text first
+        setTextVisible(false);
         
-        // Wait for text to fade out, then switch slide
         setTimeout(() => {
             setPreviousIndex(activeIndex);
             setActiveIndex(index);
             
-            // Fade text back in after image starts transitioning
             setTimeout(() => {
                 setTextVisible(true);
                 setTimeout(() => setIsAnimating(false), 1200);
-            }, 400);
-        }, 500);
+            }, 500);
+        }, 600);
     }, [isAnimating, activeIndex]);
 
-    // Go to next slide
     const nextSlide = useCallback(() => {
         goToSlide((activeIndex + 1) % slideCount);
     }, [activeIndex, slideCount, goToSlide]);
 
-    // Auto-play functionality
+    // Auto-play synced with visibility
     useEffect(() => {
-        if (slides.length <= 1) return;
+        if (!isInView || slides.length <= 1) {
+            if (intervalRef.current) clearInterval(intervalRef.current);
+            return;
+        }
         
         intervalRef.current = setInterval(nextSlide, autoPlayInterval);
-        
         return () => {
-            if (intervalRef.current) {
-                clearInterval(intervalRef.current);
-            }
+            if (intervalRef.current) clearInterval(intervalRef.current);
         };
-    }, [nextSlide, autoPlayInterval, slides.length]);
+    }, [isInView, nextSlide, autoPlayInterval, slides.length]);
 
-    // Pause auto-play on hover
-    const handleMouseEnter = () => {
-        if (intervalRef.current) {
-            clearInterval(intervalRef.current);
-            intervalRef.current = null;
-        }
-    };
-
-    const handleMouseLeave = () => {
-        if (slides.length > 1 && !intervalRef.current) {
-            intervalRef.current = setInterval(nextSlide, autoPlayInterval);
-        }
-    };
-
-    if (!slides || slides.length === 0) {
-        return null;
-    }
+    if (!slides || slides.length === 0) return null;
 
     return (
         <section 
+            ref={sectionRef}
             className="relative w-full h-screen overflow-hidden bg-black"
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
+            onMouseMove={handleMouseMove}
         >
-            {/* Background Images with Premium Crossfade + Ken Burns */}
-            <div className="absolute inset-0">
+            {/* Cinematic Noise/Grain Overlay */}
+            <div className="absolute inset-0 z-50 pointer-events-none opacity-[0.03] mix-blend-overlay animate-grain" />
+
+            {/* Background Layers with Mouse Parallax */}
+            <div 
+                className="absolute inset-[-5%] w-[110%] h-[110%] transition-transform duration-700 ease-out"
+                style={{ 
+                    transform: `translate3d(${mousePos.x}px, ${mousePos.y}px, 0)`,
+                }}
+            >
                 {slides.map((slide, idx) => {
                     const isActive = idx === activeIndex;
                     const isPrevious = idx === previousIndex;
@@ -107,57 +125,53 @@ export const CinematicHero: React.FC<CinematicHeroProps> = ({
                             key={idx}
                             className={cn(
                                 "absolute inset-0 w-full h-full",
-                                "transition-all duration-[1800ms] ease-[cubic-bezier(0.4,0,0.2,1)]",
-                                isActive && "opacity-100 z-20",
-                                isPrevious && "opacity-0 z-10",
-                                !isActive && !isPrevious && "opacity-0 z-0"
+                                "transition-all duration-[2000ms] ease-[cubic-bezier(0.23,1,0.32,1)]",
+                                isActive && "opacity-100 z-20 scale-100",
+                                isPrevious && "opacity-0 z-10 scale-105 blur-sm",
+                                !isActive && !isPrevious && "opacity-0 z-0 scale-110"
                             )}
                             style={{ 
                                 backgroundImage: `url('${slide.image}')`, 
                                 backgroundSize: 'cover',
-                                backgroundPosition: 'center 40%',
-                                transform: isActive ? 'scale(1.02)' : 'scale(1.08)',
+                                backgroundPosition: 'center 45%',
                             }}
                         >
-                            {/* Multi-layer cinematic overlays */}
-                            <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/20 to-black/90" />
-                            <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-black/40" />
-                            <div className="absolute inset-0 bg-black/10" style={{ backdropFilter: 'saturate(1.2)' }} />
+                            {/* Sophisticated Cinematic Gradients */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-black/60" />
+                            <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-black/50" />
+                            <div className="absolute inset-0 bg-black/5" style={{ backdropFilter: 'contrast(1.1) saturate(1.1)' }} />
                         </div>
                     );
                 })}
             </div>
 
-            {/* Animated Vignette Effect */}
-            <div className="absolute inset-0 z-30 pointer-events-none">
-                <div className="absolute inset-0 shadow-[inset_0_0_200px_rgba(0,0,0,0.8)]" />
-            </div>
-
-            {/* Content Layer */}
+            {/* Content Layer (Inverse Parallax for Depth) */}
             <div 
                 className={cn(
-                    "relative z-40 h-full w-full max-w-[1920px] mx-auto p-8 md:p-24 pt-32 md:pt-40 flex flex-col justify-between pointer-events-none",
-                    "transition-all duration-700 ease-out",
-                    textVisible ? "opacity-100" : "opacity-0"
+                    "relative z-40 h-full w-full max-w-[1920px] mx-auto p-8 md:p-24 pt-32 md:pt-40 flex flex-col justify-between pointer-events-none transition-all duration-1000",
+                    isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
                 )}
+                style={{
+                    transform: `translate3d(${-mousePos.x * 0.5}px, ${-mousePos.y * 0.5}px, 0)`
+                }}
             >
                 {/* Header: Title + Tagline */}
                 <div className="flex flex-col md:flex-row justify-between items-start w-full gap-8">
                     <div className="overflow-visible">
                         <h1 
                             key={`title-${activeIndex}`}
-                            className="font-display font-black text-4xl md:text-6xl lg:text-7xl text-agency-accent leading-[0.9] tracking-tighter uppercase max-w-4xl drop-shadow-2xl flex flex-wrap gap-x-4"
+                            className="font-display font-black text-4xl md:text-6xl lg:text-8xl text-agency-accent leading-[0.85] tracking-tighter uppercase max-w-5xl drop-shadow-2xl flex flex-wrap gap-x-6"
                         >
                             {titleWords.map((word, i) => (
                                 <span 
                                     key={`${activeIndex}-${i}`} 
                                     className={cn(
                                         "inline-block",
-                                        textVisible && "animate-text-reveal"
+                                        textVisible && "animate-epic-reveal"
                                     )}
                                     style={{ 
-                                        animationDelay: `${i * 0.12}s`,
-                                        textShadow: '0 4px 30px rgba(0,0,0,0.5), 0 0 60px rgba(var(--primary-rgb), 0.3)'
+                                        animationDelay: `${i * 0.15}s`,
+                                        textShadow: '0 10px 40px rgba(0,0,0,0.6)'
                                     }}
                                 >
                                     {word}
@@ -169,159 +183,144 @@ export const CinematicHero: React.FC<CinematicHeroProps> = ({
                     <div 
                         key={`tagline-${activeIndex}`}
                         className={cn(
-                            "mt-4 md:mt-12 border-l-4 border-primary pl-6 py-2 shrink-0",
-                            textVisible && "animate-slide-fade-in"
+                            "mt-4 md:mt-20 border-l-[6px] border-agency-accent pl-8 py-3 shrink-0",
+                            textVisible && "animate-slide-left-reveal"
                         )}
-                        style={{ animationDelay: '0.4s' }}
+                        style={{ animationDelay: '0.6s' }}
                     >
-                        <div 
-                            className="font-sans font-bold text-lg md:text-xl text-white tracking-[0.2em] uppercase"
-                            style={{ textShadow: '0 2px 20px rgba(0,0,0,0.5)' }}
-                        >
+                        <div className="font-sans font-bold text-xl md:text-2xl text-white tracking-[0.3em] uppercase opacity-90">
                             {currentSlide.tagline}
                         </div>
                     </div>
                 </div>
 
                 {/* Footer: Progress + Subtitle */}
-                <div className="flex flex-col md:flex-row justify-between items-end w-full gap-12">
-                    {/* Navigation Dots */}
-                    <div className="hidden md:flex flex-col gap-4 mb-12 pointer-events-auto">
+                <div className="flex flex-col md:flex-row justify-between items-end w-full gap-16">
+                    {/* Navigation Dashboard */}
+                    <div className="hidden md:flex flex-col gap-6 mb-12 pointer-events-auto">
                         {slides.map((_, idx) => (
                             <button 
                                 key={idx} 
-                                className="flex items-center gap-4 group cursor-pointer transition-transform duration-300 hover:translate-x-1"
+                                className="flex items-center gap-6 group cursor-pointer transition-all duration-300"
                                 onClick={() => goToSlide(idx)}
                                 aria-label={`Go to slide ${idx + 1}`}
                             >
                                 <span className={cn(
-                                    "font-mono text-xs transition-all duration-500", 
+                                    "font-mono text-sm transition-all duration-700", 
                                     idx === activeIndex 
-                                        ? "text-primary scale-110 font-bold" 
-                                        : "text-white/30 group-hover:text-white/70"
+                                        ? "text-agency-accent scale-125 font-bold translate-x-2" 
+                                        : "text-white/20 group-hover:text-white/60"
                                 )}>
-                                    0{idx + 1}
+                                    {String(idx + 1).padStart(2, '0')}
                                 </span>
-                                <div className="h-10 w-[3px] bg-white/10 relative overflow-hidden rounded-full">
+                                <div className="h-12 w-[4px] bg-white/5 relative overflow-hidden rounded-full">
                                     <div 
                                         className={cn(
-                                            "absolute top-0 left-0 w-full bg-primary rounded-full",
-                                            "transition-all duration-700 ease-out"
+                                            "absolute top-0 left-0 w-full bg-agency-accent rounded-full transition-all duration-1000 ease-out",
+                                            idx === activeIndex ? "height-100 shadow-[0_0_20px_rgba(var(--agency-accent-rgb),0.8)]" : "height-0"
                                         )}
-                                        style={{ 
-                                            height: idx === activeIndex ? '100%' : '0%',
-                                            boxShadow: idx === activeIndex ? '0 0 12px rgba(var(--primary-rgb), 0.6)' : 'none'
-                                        }}
+                                        style={{ height: idx === activeIndex ? '100%' : '0%' }}
                                     />
                                 </div>
                             </button>
                         ))}
                     </div>
 
-                    {/* Subtitle */}
+                    {/* Subtitle with elegant underline */}
                     <div 
                         key={`subtitle-${activeIndex}`}
                         className={cn(
-                            "max-w-xl text-right",
-                            textVisible && "animate-slide-fade-in"
+                            "max-w-2xl text-right",
+                            textVisible && "animate-slide-up-reveal"
                         )}
-                        style={{ animationDelay: '0.6s' }}
+                        style={{ animationDelay: '0.8s' }}
                     >
-                        <p 
-                            className="font-sans text-lg md:text-2xl text-white/90 font-light leading-relaxed tracking-tight"
-                            style={{ textShadow: '0 2px 15px rgba(0,0,0,0.4)' }}
-                        >
+                        <p className="font-sans text-xl md:text-3xl text-white/80 font-light leading-relaxed tracking-tight italic">
                             {currentSlide.subtitle}
                         </p>
-                        <div 
-                            className={cn(
-                                "h-[2px] mt-6 w-full rounded-full",
-                                "bg-gradient-to-r from-transparent via-primary/60 to-primary",
-                                textVisible && "animate-line-expand"
-                            )}
-                            style={{ 
-                                animationDelay: '0.9s',
-                                boxShadow: '0 0 20px rgba(var(--primary-rgb), 0.4)'
-                            }}
-                        />
+                        <div className="mt-8 relative h-[3px] w-full bg-white/5 self-end overflow-hidden">
+                            <div 
+                                className={cn(
+                                    "absolute inset-0 bg-gradient-to-r from-transparent via-agency-accent to-agency-accent transition-transform duration-[1.5s] ease-out-expo origin-right",
+                                    textVisible ? "scale-x-100" : "scale-x-0"
+                                )}
+                            />
+                        </div>
                     </div>
                 </div>
 
-                {/* Mobile Navigation Dots */}
-                <div className="flex md:hidden justify-center gap-3 absolute bottom-8 left-1/2 -translate-x-1/2 pointer-events-auto">
+                {/* Mobile Dash */}
+                <div className="flex md:hidden justify-center gap-4 absolute bottom-12 left-1/2 -translate-x-1/2 pointer-events-auto">
                     {slides.map((_, idx) => (
                         <button
                             key={idx}
                             onClick={() => goToSlide(idx)}
                             className={cn(
-                                "h-2 rounded-full transition-all duration-500",
+                                "h-[3px] transition-all duration-700",
                                 idx === activeIndex 
-                                    ? "bg-primary w-10 shadow-[0_0_15px_rgba(var(--primary-rgb),0.5)]" 
-                                    : "bg-white/25 w-2 hover:bg-white/50"
+                                    ? "bg-agency-accent w-12" 
+                                    : "bg-white/20 w-4"
                             )}
-                            aria-label={`Go to slide ${idx + 1}`}
                         />
                     ))}
                 </div>
             </div>
 
-            {/* Premium CSS Animations */}
+            {/* Premium Styles */}
             <style>{`
-                @keyframes text-reveal {
+                @keyframes epic-reveal {
                     0% {
                         opacity: 0;
-                        transform: translateY(40px) rotateX(15deg);
-                        filter: blur(12px);
-                    }
-                    50% {
-                        filter: blur(4px);
+                        transform: translateY(100px) scale(1.1) rotateX(-20deg);
+                        filter: blur(20px);
                     }
                     100% {
                         opacity: 1;
-                        transform: translateY(0) rotateX(0deg);
+                        transform: translateY(0) scale(1) rotateX(0deg);
                         filter: blur(0);
                     }
                 }
                 
-                @keyframes slide-fade-in {
-                    0% {
-                        opacity: 0;
-                        transform: translateX(30px);
-                        filter: blur(8px);
-                    }
-                    100% {
-                        opacity: 1;
-                        transform: translateX(0);
-                        filter: blur(0);
-                    }
+                @keyframes slide-left-reveal {
+                    0% { opacity: 0; transform: translateX(50px); filter: blur(10px); }
+                    100% { opacity: 1; transform: translateX(0); filter: blur(0); }
                 }
                 
-                @keyframes line-expand {
-                    0% {
-                        opacity: 0;
-                        transform: scaleX(0);
-                        transform-origin: right;
-                    }
-                    100% {
-                        opacity: 1;
-                        transform: scaleX(1);
-                        transform-origin: right;
-                    }
+                @keyframes slide-up-reveal {
+                    0% { opacity: 0; transform: translateY(30px); filter: blur(5px); }
+                    100% { opacity: 1; transform: translateY(0); filter: blur(0); }
                 }
-                
-                .animate-text-reveal {
+
+                @keyframes grain {
+                    0%, 100% { transform: translate(0, 0); }
+                    10% { transform: translate(-1%, -1%); }
+                    30% { transform: translate(1%, 1%); }
+                    50% { transform: translate(-1%, 1%); }
+                    70% { transform: translate(1%, -1%); }
+                }
+
+                .animate-epic-reveal {
                     opacity: 0;
-                    animation: text-reveal 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+                    animation: epic-reveal 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
                 }
                 
-                .animate-slide-fade-in {
+                .animate-slide-left-reveal {
                     opacity: 0;
-                    animation: slide-fade-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+                    animation: slide-left-reveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
                 }
                 
-                .animate-line-expand {
+                .animate-slide-up-reveal {
                     opacity: 0;
-                    animation: line-expand 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+                    animation: slide-up-reveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+                }
+
+                .animate-grain {
+                    background-image: url('https://grainy-gradients.vercel.app/noise.svg');
+                    animation: grain 0.5s steps(10) infinite;
+                }
+
+                .ease-out-expo {
+                    transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
                 }
             `}</style>
         </section>
