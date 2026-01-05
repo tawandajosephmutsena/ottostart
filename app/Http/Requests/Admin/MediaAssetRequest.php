@@ -33,7 +33,7 @@ class MediaAssetRequest extends SecureFormRequest
             $rules['files'] = 'required|array|min:1|max:10';
             $rules['files.*'] = $this->getFileRules(
                 ['jpeg', 'jpg', 'png', 'gif', 'webp', 'svg', 'pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'mp4', 'mov', 'avi', 'wmv', 'flv', 'webm', 'mp3', 'wav', 'ogg'],
-                10240, // 10MB
+                204800, // 200MB
                 true
             );
         }
@@ -97,7 +97,7 @@ class MediaAssetRequest extends SecureFormRequest
             $tags = array_filter($this->tags, function ($tag) {
                 return !empty(trim($tag));
             });
-            
+
             // Remove duplicates and re-index
             $this->merge([
                 'tags' => array_values(array_unique($tags)),
@@ -124,7 +124,7 @@ class MediaAssetRequest extends SecureFormRequest
                         // Check for potentially dangerous file extensions
                         $dangerousExtensions = ['php', 'phtml', 'php3', 'php4', 'php5', 'phar', 'exe', 'bat', 'cmd', 'com', 'scr', 'vbs', 'js', 'jar'];
                         $extension = strtolower($file->getClientOriginalExtension());
-                        
+
                         if (in_array($extension, $dangerousExtensions)) {
                             $validator->errors()->add("files.{$index}", 'This file type is not allowed for security reasons.');
                         }

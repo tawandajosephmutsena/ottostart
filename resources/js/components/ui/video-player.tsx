@@ -132,6 +132,28 @@ return (
       src={src}
       onClick={togglePlay}
     />
+    
+    <AnimatePresence>
+      {!isPlaying && (
+        <motion.div 
+            className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition-colors cursor-pointer"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={togglePlay}
+        >
+            <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center pl-1 border border-white/30 text-white shadow-2xl"
+            >
+                <Play className="w-10 h-10 fill-white" />
+            </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
 
     <AnimatePresence>
       {showControls && (

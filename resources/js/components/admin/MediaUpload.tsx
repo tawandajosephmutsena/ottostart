@@ -43,7 +43,7 @@ export default function MediaUpload({
     folder = 'uploads', 
     onSuccess,
     maxFiles = 20,
-    maxFileSize = 50,
+    maxFileSize = 200,
     acceptedTypes = ['image/*', 'video/*', 'application/pdf'],
     enableTagging = true,
     enableFolders = true
