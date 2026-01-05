@@ -106,7 +106,7 @@ export default function Team({ teamMembers }: Props) {
                                 </div>
                             </div>
                         </div>
-                        <div className="md:col-span-4 p-12 rounded-[60px] bg-agency-primary text-white flex flex-col justify-center text-center">
+                        <div className="md:col-span-4 p-12 rounded-[60px] bg-agency-primary dark:bg-white/10 text-white flex flex-col justify-center text-center">
                             <span className="text-6xl font-black mb-4">100%</span>
                             <span className="text-xs font-bold uppercase tracking-widest opacity-60">Human Centered</span>
                         </div>

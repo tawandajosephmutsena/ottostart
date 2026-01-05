@@ -179,6 +179,13 @@ export interface FaqBlock extends BaseBlock {
     };
 }
 
+export interface VideoBlock extends BaseBlock {
+    type: 'video';
+    content: {
+        url: string;
+    };
+}
+
 export type PageBlock =
     | HeroBlock
     | StatsBlock
@@ -194,7 +201,8 @@ export type PageBlock =
     | ManifestoBlock
     | ProcessBlock
     | ContactInfoBlock
-    | FaqBlock;
+    | FaqBlock
+    | VideoBlock;
 
 export interface PageContent {
     blocks: PageBlock[];

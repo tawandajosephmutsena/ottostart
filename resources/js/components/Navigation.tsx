@@ -1,16 +1,42 @@
+
 import { useMagneticEffect } from '@/hooks/useAnimations';
 import { cn } from '@/lib/utils';
 import { SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { LogIn, UserPlus, LayoutDashboard } from 'lucide-react';
+import { UserPlus, LayoutDashboard, LogIn } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react';
-import AppLogo from './app-logo';
+import AppLogo from '@/components/app-logo';
 
 interface NavigationProps {
     className?: string;
 }
+
+// Extracted NavLink component for magnetic effect on individual items
+const NavLink = ({ item, isActive }: { item: { name: string; href: string }; isActive: boolean }) => {
+    const linkRef = useRef<HTMLAnchorElement>(null);
+    
+    useMagneticEffect(linkRef as React.RefObject<HTMLElement>, {
+        strength: 0.3,
+        speed: 0.3,
+    });
+
+    return (
+        <Link
+            ref={linkRef}
+            href={item.href}
+            className={cn(
+                'px-4 py-2 text-[11px] font-bold uppercase tracking-widest transition-all duration-500 rounded-full relative overflow-hidden',
+                isActive
+                    ? 'bg-agency-accent text-agency-primary shadow-lg shadow-agency-accent/20'
+                    : 'text-agency-primary/60 dark:text-white/60 hover:text-agency-accent hover:bg-agency-accent/5',
+            )}
+        >
+            <span className="relative z-10">{item.name}</span>
+        </Link>
+    );
+};
 
 const navigationItems = [
     { name: 'Home', href: '/' },
@@ -89,8 +115,8 @@ export const Navigation: React.FC<NavigationProps> = ({ className }) => {
         setLastUrl(url);
         if (isMenuOpen) setIsMenuOpen(false);
     }
-
-    const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+    
+    // const toggleMenu = () => setIsMenuOpen(!isMenuOpen); // Unused
 
     // Enhanced menu overlay animations
     useEffect(() => {
@@ -111,6 +137,16 @@ export const Navigation: React.FC<NavigationProps> = ({ className }) => {
             const tl = gsap.timeline({ 
                 onComplete: () => { 
                     gsap.set(overlay, { display: 'none' }); 
+                } 
+            });
+            tl.to(contactInfo, { y: 40, opacity: 0, duration: 0.3 })
+              .to(menuItems, { y: -100, opacity: 0, skewY: -5, duration: 0.5, stagger: 0.05, ease: 'expo.in' }, '-=0.2')
+              .to(closeButton, { opacity: 0, scale: 0.5, duration: 0.3 }, '-=0.4')
+              .to(overlay, { opacity: 0, duration: 0.4 }, '-=0.3')
+              .to(menuBg, { scaleY: 0, duration: 0.6, ease: 'expo.inOut' }, '-=0.3');
+        }
+    }, [isMenuOpen]);
+
     return (
         <>
             {/* Main Navigation */}
@@ -183,29 +219,6 @@ export const Navigation: React.FC<NavigationProps> = ({ className }) => {
     );
 };
 
-// Extracted NavLink component for magnetic effect on individual items
-const NavLink = ({ item, isActive }: { item: { name: string; href: string }; isActive: boolean }) => {
-    const linkRef = useRef<HTMLAnchorElement>(null);
-    
-    useMagneticEffect(linkRef as React.RefObject<HTMLElement>, {
-        strength: 0.3,
-        speed: 0.3,
-    });
 
-    return (
-        <Link
-            ref={linkRef}
-            href={item.href}
-            className={cn(
-                'px-4 py-2 text-[11px] font-bold uppercase tracking-widest transition-all duration-500 rounded-full relative overflow-hidden',
-                isActive
-                    ? 'bg-agency-accent text-agency-primary shadow-lg shadow-agency-accent/20'
-                    : 'text-agency-primary/60 dark:text-white/60 hover:text-agency-accent hover:bg-agency-accent/5',
-            )}
-        >
-            <span className="relative z-10">{item.name}</span>
-        </Link>
-    );
-};
 
 export default Navigation;
