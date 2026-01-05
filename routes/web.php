@@ -23,6 +23,10 @@ Route::middleware(['cache.headers:public'])->group(function () {
     Route::get('/documentation', function () {
         return Inertia::render('Documentation');
     })->name('documentation');
+
+    Route::get('/contact', function () {
+        return Inertia::render('Contact');
+    })->name('contact');
 });
 
 // Contact form (no caching for POST)

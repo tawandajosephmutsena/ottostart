@@ -1,5 +1,6 @@
 import { InertiaLinkProps } from '@inertiajs/react';
 import { LucideIcon } from 'lucide-react';
+import { PageBlock } from './page-blocks';
 
 export interface Auth {
     user: User;
@@ -188,7 +189,7 @@ export interface Page {
     slug: string;
     meta_title: string | null;
     meta_description: string | null;
-    content: Record<string, unknown> | null;
+    content: { blocks?: PageBlock[] } | null;
     template: 'default' | 'home' | 'contact';
     is_published: boolean;
     created_at: string;

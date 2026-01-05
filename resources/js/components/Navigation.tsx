@@ -4,7 +4,7 @@ import { SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { X, LogIn, UserPlus, LayoutDashboard } from 'lucide-react';
+import { LogIn, UserPlus, LayoutDashboard } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react';
 import AppLogo from './app-logo';
 
@@ -14,7 +14,6 @@ interface NavigationProps {
 
 const navigationItems = [
     { name: 'Home', href: '/' },
-    { name: 'About', href: '/about' },
     { name: 'Services', href: '/services' },
     { name: 'Portfolio', href: '/portfolio' },
     { name: 'Team', href: '/team' },
@@ -112,18 +111,6 @@ export const Navigation: React.FC<NavigationProps> = ({ className }) => {
             const tl = gsap.timeline({ 
                 onComplete: () => { 
                     gsap.set(overlay, { display: 'none' }); 
-                } 
-            });
-            tl.to(contactInfo, { y: 40, opacity: 0, duration: 0.3 })
-              .to(menuItems, { y: -100, opacity: 0, skewY: -5, duration: 0.5, stagger: 0.05, ease: 'expo.in' }, '-=0.2')
-              .to(closeButton, { opacity: 0, scale: 0.5, duration: 0.3 }, '-=0.4')
-              .to(overlay, { opacity: 0, duration: 0.4 }, '-=0.3')
-              .to(menuBg, { scaleY: 0, duration: 0.6, ease: 'expo.inOut' }, '-=0.3');
-        }
-    }, [isMenuOpen]);
-
-    const site = props.site || { name: 'Avant-Garde', logo: '', tagline: 'Premium Agency' };
-
     return (
         <>
             {/* Main Navigation */}
@@ -143,7 +130,7 @@ export const Navigation: React.FC<NavigationProps> = ({ className }) => {
                     {/* Logo */}
                     <Link href="/" className="flex items-center font-display relative z-10 group overflow-visible">
                         <AppLogo 
-                            ref={logoRef as any}
+                            ref={logoRef as React.RefObject<HTMLDivElement>}
                             className="transition-transform duration-500 group-hover:rotate-[5deg] group-hover:scale-110" 
                         />
                     </Link>
@@ -151,18 +138,11 @@ export const Navigation: React.FC<NavigationProps> = ({ className }) => {
                     {/* Desktop Navigation */}
                     <div className="hidden lg:flex items-center gap-1">
                         {navigationItems.map((item) => (
-                            <Link
-                                key={item.name}
-                                href={item.href}
-                                className={cn(
-                                    'px-4 py-2 text-[11px] font-bold uppercase tracking-widest transition-all duration-500 rounded-full',
-                                    url === item.href
-                                        ? 'bg-agency-accent text-agency-primary shadow-lg shadow-agency-accent/20'
-                                        : 'text-agency-primary/60 dark:text-white/60 hover:text-agency-accent hover:bg-agency-accent/5',
-                                )}
-                            >
-                                {item.name}
-                            </Link>
+                            <NavLink 
+                                key={item.name} 
+                                item={item} 
+                                isActive={url === item.href || (item.href !== '/' && url.startsWith(item.href))} 
+                            />
                         ))}
                     </div>
 
@@ -195,28 +175,36 @@ export const Navigation: React.FC<NavigationProps> = ({ className }) => {
                         </div>
 
                         {/* Burger menu hidden as per request */}
-                        {/* <button
-                            className={cn(
-                                'size-11 rounded-full border border-current/10 flex flex-col items-center justify-center gap-1.5 transition-all duration-500 hover:bg-agency-accent group',
-                                isMenuOpen && 'bg-agency-accent border-transparent'
-                            )}
-                            onClick={toggleMenu}
-                            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-                            title={isMenuOpen ? "Close menu" : "Open menu"}
-                        >
-                            <div className={cn('w-5 h-0.5 bg-current transition-all duration-500', isMenuOpen && 'rotate-45 translate-y-2')}></div>
-                            <div className={cn('w-5 h-0.5 bg-current transition-all duration-500', isMenuOpen && 'opacity-0')}></div>
-                            <div className={cn('w-5 h-0.5 bg-current transition-all duration-500', isMenuOpen && '-rotate-45 -translate-y-2')}></div>
-                        </button> */}
+                        {/* <button ... /> */}
                     </div>
                 </div>
             </nav>
-
-            {/* Full-Screen Menu Overlay hidden as per request */}
-            {/* <div id="menu-overlay" className="fixed inset-0 z-[150] hidden flex-col items-center justify-center overflow-hidden">
-                ...
-            </div> */}
         </>
+    );
+};
+
+// Extracted NavLink component for magnetic effect on individual items
+const NavLink = ({ item, isActive }: { item: { name: string; href: string }; isActive: boolean }) => {
+    const linkRef = useRef<HTMLAnchorElement>(null);
+    
+    useMagneticEffect(linkRef as React.RefObject<HTMLElement>, {
+        strength: 0.3,
+        speed: 0.3,
+    });
+
+    return (
+        <Link
+            ref={linkRef}
+            href={item.href}
+            className={cn(
+                'px-4 py-2 text-[11px] font-bold uppercase tracking-widest transition-all duration-500 rounded-full relative overflow-hidden',
+                isActive
+                    ? 'bg-agency-accent text-agency-primary shadow-lg shadow-agency-accent/20'
+                    : 'text-agency-primary/60 dark:text-white/60 hover:text-agency-accent hover:bg-agency-accent/5',
+            )}
+        >
+            <span className="relative z-10">{item.name}</span>
+        </Link>
     );
 };
 
