@@ -61,9 +61,9 @@ class SecureFileUploadService
      * Maximum file sizes by category (in bytes)
      */
     private array $maxFileSizes = [
-        'image' => 5242880,    // 5MB
-        'document' => 10485760, // 10MB
-        'video' => 104857600,   // 100MB
+        'image' => 52428800,    // 50MB
+        'document' => 52428800, // 50MB
+        'video' => 209715200,   // 200MB
         'audio' => 52428800,    // 50MB
     ];
 

@@ -130,8 +130,8 @@ class MediaAssetRequest extends SecureFormRequest
                         }
 
                         // Check file size more strictly for images
-                        if (str_starts_with($file->getMimeType(), 'image/') && $file->getSize() > 5242880) { // 5MB for images
-                            $validator->errors()->add("files.{$index}", 'Image files cannot exceed 5MB in size.');
+                        if (str_starts_with($file->getMimeType(), 'image/') && $file->getSize() > 52428800) { // 50MB for images
+                            $validator->errors()->add("files.{$index}", 'Image files cannot exceed 50MB in size.');
                         }
                     }
                 }

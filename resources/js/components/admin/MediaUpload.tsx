@@ -58,6 +58,7 @@ export default function MediaUpload({
 
     const validateFile = useCallback((file: File): string | null => {
         // Check file size
+        console.log(`Validating file: ${file.name}, Size: ${file.size}, Max: ${maxFileSize}`);
         if (file.size > maxFileSize * 1024 * 1024) {
             return `File size exceeds ${maxFileSize}MB limit`;
         }
@@ -71,6 +72,16 @@ export default function MediaUpload({
         });
 
         if (!isValidType) {
+            // Fallback: Check extension for common video files if video/* is accepted
+            const ext = file.name.split('.').pop()?.toLowerCase();
+            const videoAccepted = acceptedTypes.some(t => t.startsWith('video/'));
+            
+            if (videoAccepted && (ext === 'mp4' || ext === 'mov' || ext === 'webm')) {
+                console.log(`MIME check failed (${file.type}) but extension .${ext} is allowed.`);
+                return null;
+            }
+
+            console.error(`File type validation failed. File: ${file.name}, Type: ${file.type}, Accepted: ${acceptedTypes.join(', ')}`);
             return `File type ${file.type} is not supported`;
         }
 

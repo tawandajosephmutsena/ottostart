@@ -101,6 +101,7 @@ class SecurityHeaders
             "object-src 'none'",
             "base-uri 'self'",
             "form-action 'self'",
+            "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com https://vimeo.com",
             "frame-ancestors 'none'",
         ];
 
