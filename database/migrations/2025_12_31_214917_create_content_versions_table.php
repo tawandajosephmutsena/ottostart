@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -16,7 +15,7 @@ return new class extends Migration
             $table->morphs('versionable'); // polymorphic relationship
             $table->unsignedInteger('version_number');
             $table->json('content_data'); // stores the full content snapshot
-            $table->foreignId('author_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('author_id')->nullable()->constrained('users')->onDelete('cascade');
             $table->string('change_summary')->nullable();
             $table->text('change_notes')->nullable();
             $table->boolean('is_published')->default(false);

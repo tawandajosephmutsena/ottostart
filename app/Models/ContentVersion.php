@@ -100,7 +100,7 @@ class ContentVersion extends Model
             'versionable_id' => $model->id,
             'version_number' => $versionNumber,
             'content_data' => $model->toArray(),
-            'author_id' => auth()->id(),
+            'author_id' => auth()->id() ?? $model->author_id ?? null,
             'change_summary' => $changeSummary,
             'change_notes' => $changeNotes,
             'is_current' => true,

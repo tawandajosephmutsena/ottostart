@@ -158,7 +158,7 @@ class Insight extends Model
             'versionable_id' => $this->id,
             'version_number' => ContentVersion::getNextVersionNumber(get_class($this), $this->id),
             'content_data' => $tempModel->toArray(),
-            'author_id' => auth()->id(),
+            'author_id' => auth()->id() ?? $this->author_id ?? null,
             'change_summary' => 'Draft version',
             'change_notes' => $changeNotes,
             'is_current' => false,
