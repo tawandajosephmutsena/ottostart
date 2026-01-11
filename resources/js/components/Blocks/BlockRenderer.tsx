@@ -4,6 +4,7 @@ import AnimatedSection from '@/components/AnimatedSection';
 import CinematicHero from './CinematicHero';
 import VideoPlayer from '@/components/ui/video-player';
 import { PageBlock } from '@/types/page-blocks';
+import { cn } from '@/lib/utils';
 
 // Import all block components
 import HeroSection from '@/components/HeroSection';
@@ -40,20 +41,118 @@ const VideoBlock = ({ content }: { content: any }) => {
     );
 };
 
-const TextBlock = ({ content }: { content: any }) => {
-    const { body, title } = content;
-    
-    // Sanitize HTML content to prevent XSS attacks
-    const sanitizedHTML = DOMPurify.sanitize(body || '', {
-        ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li', 'a', 'blockquote', 'code', 'pre'],
-        ALLOWED_ATTR: ['href', 'target', 'rel', 'class']
-    });
+// Helper functions for TextBlock
+const getGridClass = (layout: string): string => {
+    switch (layout) {
+        case '1':     return 'grid grid-cols-1 gap-8';
+        case '1-1':   return 'grid grid-cols-1 md:grid-cols-2 gap-8';
+        case '1-1-1': return 'grid grid-cols-1 md:grid-cols-3 gap-8';
+        case '2-1':   return 'grid grid-cols-1 md:grid-cols-3 gap-8 [&>*:first-child]:md:col-span-2';
+        case '1-2':   return 'grid grid-cols-1 md:grid-cols-3 gap-8 [&>*:last-child]:md:col-span-2';
+        default:      return 'grid grid-cols-1 gap-8';
+    }
+};
 
+const getTextSizeClass = (size: string): string => {
+    switch (size) {
+        case 'sm':   return 'prose-sm';
+        case 'base': return 'prose-base';
+        case 'lg':   return 'prose-lg';
+        case 'xl':   return 'prose-xl';
+        case '2xl':  return 'prose-2xl';
+        default:     return 'prose-base';
+    }
+};
+
+const getTextAlignClass = (align: string): string => {
+    switch (align) {
+        case 'left':   return 'text-left';
+        case 'center': return 'text-center';
+        case 'right':  return 'text-right';
+        default:       return 'text-left';
+    }
+};
+
+// Column content renderer for TextBlock
+const ColumnRenderer = ({ column }: { column: any }) => {
+    const { type, content } = column;
+
+    switch (type) {
+        case 'text': {
+            const sanitizedHTML = DOMPurify.sanitize(content?.body || '', {
+                ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li', 'a', 'blockquote', 'code', 'pre'],
+                ALLOWED_ATTR: ['href', 'target', 'rel', 'class']
+            });
+            const sizeClass = getTextSizeClass(content?.textSize || 'base');
+            const alignClass = getTextAlignClass(content?.textAlign || 'left');
+            return (
+                <div className={cn('prose dark:prose-invert max-w-none', sizeClass, alignClass)}>
+                    <div dangerouslySetInnerHTML={{ __html: sanitizedHTML }} />
+                </div>
+            );
+        }
+        case 'image':
+            if (!content?.url) return null;
+            return (
+                <figure className="relative">
+                    <img 
+                        src={content.url} 
+                        alt={content?.alt || 'Image'} 
+                        className="w-full rounded-2xl shadow-lg object-cover" 
+                    />
+                    {content?.caption && (
+                        <figcaption className="mt-3 text-center text-sm text-muted-foreground">
+                            {content.caption}
+                        </figcaption>
+                    )}
+                </figure>
+            );
+        case 'video':
+            if (!content?.url) return null;
+            return <VideoPlayer src={content.url} />;
+        default:
+            return null;
+    }
+};
+
+const TextBlock = ({ content }: { content: any }) => {
+    const { title, layout, columns, body } = content;
+    
+    // Legacy support: if no columns exist, render old-style text block
+    if (!columns || columns.length === 0) {
+        const sanitizedHTML = DOMPurify.sanitize(body || '', {
+            ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li', 'a', 'blockquote', 'code', 'pre'],
+            ALLOWED_ATTR: ['href', 'target', 'rel', 'class']
+        });
+
+        return (
+            <section className="py-20 px-4">
+                <div className="max-w-4xl mx-auto prose dark:prose-invert">
+                    {title && <h2>{title}</h2>}
+                    <div dangerouslySetInnerHTML={{ __html: sanitizedHTML }} />
+                </div>
+            </section>
+        );
+    }
+
+    // New multi-column layout
+    const gridClass = getGridClass(layout || '1');
+    
     return (
-        <section className="py-20 px-4">
-            <div className="max-w-4xl mx-auto prose dark:prose-invert">
-                {title && <h2>{title}</h2>}
-                <div dangerouslySetInnerHTML={{ __html: sanitizedHTML }} />
+        <section className="py-20 px-4 md:px-8">
+            <div className="max-w-7xl mx-auto">
+                {title && (
+                    <AnimatedSection animation="fade-up" className="mb-12 text-center">
+                        <h2 className="text-4xl font-black uppercase tracking-tight">{title}</h2>
+                    </AnimatedSection>
+                )}
+                <div className={gridClass}>
+                    {columns.map((col: any, idx: number) => (
+                        <AnimatedSection key={col.id || idx} animation="fade-up" delay={idx * 100}>
+                            <ColumnRenderer column={col} />
+                        </AnimatedSection>
+                    ))}
+                </div>
             </div>
         </section>
     );

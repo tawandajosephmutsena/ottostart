@@ -6,9 +6,11 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Page } from '@/types';
 import { useForm, Link } from '@inertiajs/react';
-import { ChevronLeft, Save, Plus, Trash, ArrowUp, ArrowDown, Image as ImageIcon, Type, Layout, Eye, List, EyeOff, BookOpen, HelpCircle, PhoneCall, AlertCircle } from 'lucide-react';
+import { ChevronLeft, Save, Plus, Trash, ArrowUp, ArrowDown, Image as ImageIcon, Type, Layout, Eye, List, EyeOff, BookOpen, HelpCircle, PhoneCall, AlertCircle, Video, AlignLeft, AlignCenter, AlignRight, Columns2, Columns3, Square, RectangleHorizontal } from 'lucide-react';
 import React, { useState } from 'react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
@@ -45,7 +47,22 @@ const getDefaultContentForType = (type: BlockType) => {
                 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2670&auto=format&fit=crop'
             ]
         };
-        case 'text': return { title: '', body: 'Enter your text here...' };
+        case 'text': return { 
+            title: '', 
+            layout: '1',
+            columns: [
+                {
+                    id: 'col-' + Date.now(),
+                    type: 'text',
+                    content: {
+                        body: '',
+                        textSize: 'base',
+                        textAlign: 'left',
+                    }
+                }
+            ],
+            body: '' // Legacy field for backward compatibility
+        };
         case 'image': return { url: '', alt: '', caption: '' };
         case 'features': return { title: 'Our Features', items: [{ title: 'Feature 1', desc: 'Description' }] };
         case 'stats': return { items: [{ value: '10', label: 'Projects', suffix: '+' }] };
@@ -595,14 +612,288 @@ export default function Edit({ page }: Props) {
                                         )}
 
                                         {block.type === 'text' && (
-                                            <div className="space-y-4">
+                                            <div className="space-y-6">
+                                                {/* Section Title */}
                                                 <div>
-                                                    <Label className="text-xs">Content (Markdown supported)</Label>
-                                                    <Textarea 
-                                                        className="min-h-[150px] font-mono text-sm"
-                                                        value={block.content.body} 
-                                                        onChange={(e) => updateBlockContent(block.id, { body: e.target.value })}
+                                                    <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Section Title (Optional)</Label>
+                                                    <Input 
+                                                        placeholder="Enter a section title..."
+                                                        value={block.content.title || ''} 
+                                                        onChange={(e) => updateBlockContent(block.id, { title: e.target.value })}
                                                     />
+                                                </div>
+
+                                                {/* Layout Selector */}
+                                                <div className="space-y-2">
+                                                    <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Layout</Label>
+                                                    <ToggleGroup 
+                                                        type="single" 
+                                                        value={block.content.layout || '1'}
+                                                        onValueChange={(value) => {
+                                                            if (!value) return;
+                                                            const layoutColumnCount: Record<string, number> = { '1': 1, '1-1': 2, '1-1-1': 3, '2-1': 2, '1-2': 2 };
+                                                            const targetCount = layoutColumnCount[value] || 1;
+                                                            let newColumns = [...(block.content.columns || [])];
+                                                            
+                                                            // Add columns if needed
+                                                            while (newColumns.length < targetCount) {
+                                                                newColumns.push({
+                                                                    id: 'col-' + Date.now() + '-' + newColumns.length,
+                                                                    type: 'text',
+                                                                    content: { body: '', textSize: 'base', textAlign: 'left' }
+                                                                });
+                                                            }
+                                                            // Remove columns if needed (keep first N)
+                                                            if (newColumns.length > targetCount) {
+                                                                newColumns = newColumns.slice(0, targetCount);
+                                                            }
+                                                            
+                                                            updateBlockContent(block.id, { layout: value, columns: newColumns });
+                                                        }}
+                                                        className="justify-start"
+                                                        variant="outline"
+                                                    >
+                                                        <ToggleGroupItem value="1" aria-label="Single column" className="flex items-center gap-2 px-3">
+                                                            <Square className="h-4 w-4" />
+                                                            <span className="text-xs">1</span>
+                                                        </ToggleGroupItem>
+                                                        <ToggleGroupItem value="1-1" aria-label="Two equal columns" className="flex items-center gap-2 px-3">
+                                                            <Columns2 className="h-4 w-4" />
+                                                            <span className="text-xs">1:1</span>
+                                                        </ToggleGroupItem>
+                                                        <ToggleGroupItem value="1-1-1" aria-label="Three equal columns" className="flex items-center gap-2 px-3">
+                                                            <Columns3 className="h-4 w-4" />
+                                                            <span className="text-xs">1:1:1</span>
+                                                        </ToggleGroupItem>
+                                                        <ToggleGroupItem value="2-1" aria-label="Two-thirds / one-third" className="flex items-center gap-2 px-3">
+                                                            <RectangleHorizontal className="h-4 w-4" />
+                                                            <span className="text-xs">2:1</span>
+                                                        </ToggleGroupItem>
+                                                        <ToggleGroupItem value="1-2" aria-label="One-third / two-thirds" className="flex items-center gap-2 px-3">
+                                                            <RectangleHorizontal className="h-4 w-4 rotate-180" />
+                                                            <span className="text-xs">1:2</span>
+                                                        </ToggleGroupItem>
+                                                    </ToggleGroup>
+                                                </div>
+
+                                                {/* Column Tabs */}
+                                                <div className="space-y-2">
+                                                    <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Columns</Label>
+                                                    <Tabs defaultValue={(block.content.columns?.[0]?.id) || 'col-0'} className="w-full">
+                                                        <TabsList className="w-full justify-start">
+                                                            {(block.content.columns || []).map((col: any, colIdx: number) => (
+                                                                <TabsTrigger key={col.id || colIdx} value={col.id || `col-${colIdx}`} className="flex items-center gap-2">
+                                                                    {col.type === 'text' && <Type className="h-3 w-3" />}
+                                                                    {col.type === 'image' && <ImageIcon className="h-3 w-3" />}
+                                                                    {col.type === 'video' && <Video className="h-3 w-3" />}
+                                                                    Column {colIdx + 1}
+                                                                </TabsTrigger>
+                                                            ))}
+                                                        </TabsList>
+
+                                                        {(block.content.columns || []).map((col: any, colIdx: number) => (
+                                                            <TabsContent key={col.id || colIdx} value={col.id || `col-${colIdx}`} className="mt-4 space-y-4 border rounded-lg p-4 bg-muted/10">
+                                                                {/* Content Type Selector */}
+                                                                <div className="flex items-center justify-between">
+                                                                    <div className="flex items-center gap-4">
+                                                                        <Label className="text-xs">Content Type</Label>
+                                                                        <Select 
+                                                                            value={col.type} 
+                                                                            onValueChange={(val) => {
+                                                                                const newColumns = [...block.content.columns];
+                                                                                const defaultContent: Record<string, any> = {
+                                                                                    text: { body: '', textSize: 'base', textAlign: 'left' },
+                                                                                    image: { url: '', alt: '', caption: '' },
+                                                                                    video: { url: '' }
+                                                                                };
+                                                                                newColumns[colIdx] = { ...col, type: val, content: defaultContent[val] };
+                                                                                updateBlockContent(block.id, { columns: newColumns });
+                                                                            }}
+                                                                        >
+                                                                            <SelectTrigger className="w-32 h-8">
+                                                                                <SelectValue />
+                                                                            </SelectTrigger>
+                                                                            <SelectContent>
+                                                                                <SelectItem value="text"><div className="flex items-center gap-2"><Type className="h-3 w-3" /> Text</div></SelectItem>
+                                                                                <SelectItem value="image"><div className="flex items-center gap-2"><ImageIcon className="h-3 w-3" /> Image</div></SelectItem>
+                                                                                <SelectItem value="video"><div className="flex items-center gap-2"><Video className="h-3 w-3" /> Video</div></SelectItem>
+                                                                            </SelectContent>
+                                                                        </Select>
+                                                                    </div>
+                                                                </div>
+
+                                                                {/* Text Content Editor */}
+                                                                {col.type === 'text' && (
+                                                                    <div className="space-y-4">
+                                                                        <div className="flex items-center gap-4 flex-wrap">
+                                                                            <div className="flex items-center gap-2">
+                                                                                <Label className="text-xs">Size</Label>
+                                                                                <Select 
+                                                                                    value={col.content?.textSize || 'base'} 
+                                                                                    onValueChange={(val) => {
+                                                                                        const newColumns = [...block.content.columns];
+                                                                                        newColumns[colIdx] = { ...col, content: { ...col.content, textSize: val } };
+                                                                                        updateBlockContent(block.id, { columns: newColumns });
+                                                                                    }}
+                                                                                >
+                                                                                    <SelectTrigger className="w-24 h-8">
+                                                                                        <SelectValue />
+                                                                                    </SelectTrigger>
+                                                                                    <SelectContent>
+                                                                                        <SelectItem value="sm">Small</SelectItem>
+                                                                                        <SelectItem value="base">Base</SelectItem>
+                                                                                        <SelectItem value="lg">Large</SelectItem>
+                                                                                        <SelectItem value="xl">XL</SelectItem>
+                                                                                        <SelectItem value="2xl">2XL</SelectItem>
+                                                                                    </SelectContent>
+                                                                                </Select>
+                                                                            </div>
+                                                                            <div className="flex items-center gap-2">
+                                                                                <Label className="text-xs">Align</Label>
+                                                                                <ToggleGroup 
+                                                                                    type="single" 
+                                                                                    value={col.content?.textAlign || 'left'}
+                                                                                    onValueChange={(val) => {
+                                                                                        if (!val) return;
+                                                                                        const newColumns = [...block.content.columns];
+                                                                                        newColumns[colIdx] = { ...col, content: { ...col.content, textAlign: val } };
+                                                                                        updateBlockContent(block.id, { columns: newColumns });
+                                                                                    }}
+                                                                                    variant="outline"
+                                                                                    size="sm"
+                                                                                >
+                                                                                    <ToggleGroupItem value="left" aria-label="Align left">
+                                                                                        <AlignLeft className="h-3 w-3" />
+                                                                                    </ToggleGroupItem>
+                                                                                    <ToggleGroupItem value="center" aria-label="Align center">
+                                                                                        <AlignCenter className="h-3 w-3" />
+                                                                                    </ToggleGroupItem>
+                                                                                    <ToggleGroupItem value="right" aria-label="Align right">
+                                                                                        <AlignRight className="h-3 w-3" />
+                                                                                    </ToggleGroupItem>
+                                                                                </ToggleGroup>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div>
+                                                                            <Label className="text-xs">Content (Markdown supported)</Label>
+                                                                            <Textarea 
+                                                                                className="min-h-[150px] font-mono text-sm mt-1"
+                                                                                placeholder="Enter your text content here..."
+                                                                                value={col.content?.body || ''} 
+                                                                                onChange={(e) => {
+                                                                                    const newColumns = [...block.content.columns];
+                                                                                    newColumns[colIdx] = { ...col, content: { ...col.content, body: e.target.value } };
+                                                                                    updateBlockContent(block.id, { columns: newColumns });
+                                                                                }}
+                                                                            />
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+
+                                                                {/* Image Content Editor */}
+                                                                {col.type === 'image' && (
+                                                                    <div className="space-y-4">
+                                                                        <div>
+                                                                            <Label className="text-xs">Image</Label>
+                                                                            <div className="flex gap-2 mt-1">
+                                                                                <MediaLibrary 
+                                                                                    onSelect={(asset: MediaAsset) => {
+                                                                                        const newColumns = [...block.content.columns];
+                                                                                        newColumns[colIdx] = { ...col, content: { ...col.content, url: asset.url } };
+                                                                                        updateBlockContent(block.id, { columns: newColumns });
+                                                                                    }}
+                                                                                    trigger={
+                                                                                        <Button type="button" variant="outline" size="sm" className="h-10">
+                                                                                            <ImageIcon className="h-4 w-4 mr-2" /> Select
+                                                                                        </Button>
+                                                                                    }
+                                                                                />
+                                                                                <Input 
+                                                                                    className="flex-1"
+                                                                                    placeholder="Or enter image URL..."
+                                                                                    value={col.content?.url || ''} 
+                                                                                    onChange={(e) => {
+                                                                                        const newColumns = [...block.content.columns];
+                                                                                        newColumns[colIdx] = { ...col, content: { ...col.content, url: e.target.value } };
+                                                                                        updateBlockContent(block.id, { columns: newColumns });
+                                                                                    }}
+                                                                                />
+                                                                            </div>
+                                                                        </div>
+                                                                        {col.content?.url && (
+                                                                            <div className="aspect-video rounded-lg overflow-hidden border bg-muted/20">
+                                                                                <img src={col.content.url} alt={col.content?.alt || ''} className="w-full h-full object-cover" />
+                                                                            </div>
+                                                                        )}
+                                                                        <div className="grid grid-cols-2 gap-4">
+                                                                            <div>
+                                                                                <Label className="text-xs">Alt Text</Label>
+                                                                                <Input 
+                                                                                    placeholder="Describe the image..."
+                                                                                    value={col.content?.alt || ''} 
+                                                                                    onChange={(e) => {
+                                                                                        const newColumns = [...block.content.columns];
+                                                                                        newColumns[colIdx] = { ...col, content: { ...col.content, alt: e.target.value } };
+                                                                                        updateBlockContent(block.id, { columns: newColumns });
+                                                                                    }}
+                                                                                />
+                                                                            </div>
+                                                                            <div>
+                                                                                <Label className="text-xs">Caption (Optional)</Label>
+                                                                                <Input 
+                                                                                    placeholder="Image caption..."
+                                                                                    value={col.content?.caption || ''} 
+                                                                                    onChange={(e) => {
+                                                                                        const newColumns = [...block.content.columns];
+                                                                                        newColumns[colIdx] = { ...col, content: { ...col.content, caption: e.target.value } };
+                                                                                        updateBlockContent(block.id, { columns: newColumns });
+                                                                                    }}
+                                                                                />
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+
+                                                                {/* Video Content Editor */}
+                                                                {col.type === 'video' && (
+                                                                    <div className="space-y-4">
+                                                                        <div>
+                                                                            <Label className="text-xs">Video (YouTube, Vimeo, or direct URL)</Label>
+                                                                            <div className="flex gap-2 mt-1">
+                                                                                <MediaLibrary 
+                                                                                    onSelect={(asset: MediaAsset) => {
+                                                                                        const newColumns = [...block.content.columns];
+                                                                                        newColumns[colIdx] = { ...col, content: { ...col.content, url: asset.url } };
+                                                                                        updateBlockContent(block.id, { columns: newColumns });
+                                                                                    }}
+                                                                                    trigger={
+                                                                                        <Button type="button" variant="outline" size="sm" className="h-10">
+                                                                                            <Video className="h-4 w-4 mr-2" /> Select
+                                                                                        </Button>
+                                                                                    }
+                                                                                />
+                                                                                <Input 
+                                                                                    className="flex-1"
+                                                                                    placeholder="https://youtube.com/watch?v=... or video URL"
+                                                                                    value={col.content?.url || ''} 
+                                                                                    onChange={(e) => {
+                                                                                        const newColumns = [...block.content.columns];
+                                                                                        newColumns[colIdx] = { ...col, content: { ...col.content, url: e.target.value } };
+                                                                                        updateBlockContent(block.id, { columns: newColumns });
+                                                                                    }}
+                                                                                />
+                                                                            </div>
+                                                                        </div>
+                                                                        {col.content?.url && (
+                                                                            <div className="aspect-video rounded-lg overflow-hidden border bg-black/5 flex items-center justify-center">
+                                                                                <video src={col.content.url} className="max-h-full max-w-full" />
+                                                                            </div>
+                                                                        )}
+                                                                    </div>
+                                                                )}
+                                                            </TabsContent>
+                                                        ))}
+                                                    </Tabs>
                                                 </div>
                                             </div>
                                         )}
