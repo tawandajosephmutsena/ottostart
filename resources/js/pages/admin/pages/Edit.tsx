@@ -220,20 +220,36 @@ const getDefaultContentForType = (type: BlockType) => {
                     image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200&h=200&fit=crop",
                     name: "Sarah Jenkins",
                     role: "Frontend Developer"
-                }
+                },
+                {
+                   text: "Our team productivity has skyrocketed since we started using this platform.",
+                   image: "https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=200&h=200&fit=crop",
+                   name: "Michael Ross",
+                   role: "CTO"
+               },
+               {
+                   text: "The customer support is incredible. They went above and beyond to help us get set up.",
+                   image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop",
+                   name: "Emily Watson",
+                   role: "Operations Manager"
+               },
+               {
+                   text: "A game changer for our business logic and daily operations management.",
+                   image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop",
+                   name: "James Wilson",
+                   role: "CEO"
+               }
             ]
         };
         case 'logo_cloud': return {
             title: 'Powering the best teams',
             items: [
-                { name: 'Nvidia', url: 'https://html.tailus.io/blocks/customers/nvidia.svg' },
-                { name: 'Column', url: 'https://html.tailus.io/blocks/customers/column.svg' },
-                { name: 'GitHub', url: 'https://html.tailus.io/blocks/customers/github.svg' },
-                { name: 'Nike', url: 'https://html.tailus.io/blocks/customers/nike.svg' },
-                { name: 'Lemon Squeezy', url: 'https://html.tailus.io/blocks/customers/lemonsqueezy.svg' },
-                { name: 'Laravel', url: 'https://html.tailus.io/blocks/customers/laravel.svg' },
-                { name: 'Lilly', url: 'https://html.tailus.io/blocks/customers/lilly.svg' },
-                { name: 'OpenAI', url: 'https://html.tailus.io/blocks/customers/openai.svg' }
+                { name: 'Partner 1', url: 'https://placehold.co/200x80?text=Partner+1' },
+                { name: 'Partner 2', url: 'https://placehold.co/200x80?text=Partner+2' },
+                { name: 'Partner 3', url: 'https://placehold.co/200x80?text=Partner+3' },
+                { name: 'Partner 4', url: 'https://placehold.co/200x80?text=Partner+4' },
+                { name: 'Partner 5', url: 'https://placehold.co/200x80?text=Partner+5' },
+                { name: 'Partner 6', url: 'https://placehold.co/200x80?text=Partner+6' }
             ]
         };
         default: return {};
@@ -397,7 +413,7 @@ export default function Edit({ page }: Props) {
                                     <Type className="h-4 w-4 mr-2" /> Testimonials
                                 </Button>
                                 <Button type="button" variant="secondary" size="sm" onClick={() => addBlock('logo_cloud')}>
-                                    <Image-Icon className="h-4 w-4 mr-2" /> Logo Cloud
+                                    <ImageIcon className="h-4 w-4 mr-2" /> Logo Cloud
                                 </Button>
                              </div>
                         </Card>
@@ -488,11 +504,13 @@ export default function Edit({ page }: Props) {
                                                             <div className="grid grid-cols-4 gap-2 border p-2 rounded bg-muted/10">
                                                                 {(block.content.backgroundImages || []).map((img: string, idx: number) => (
                                                                     <div key={idx} className="relative group aspect-video rounded overflow-hidden border">
-                                                                        <img src={img} className="w-full h-full object-cover" />
+                                                                        <img src={img} alt={`Background ${idx + 1}`} className="w-full h-full object-cover" />
                                                                         <button 
                                                                             type="button"
+                                                                            title="Remove image"
+                                                                            aria-label="Remove image"
                                                                             onClick={() => {
-                                                                                const updated = block.content.backgroundImages.filter((_: any, i: number) => i !== idx);
+                                                                                const updated = block.content.backgroundImages.filter((_: unknown, i: number) => i !== idx);
                                                                                 updateBlockContent(block.id, { backgroundImages: updated });
                                                                             }}
                                                                             className="absolute top-1 right-1 bg-destructive p-1 rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity"
@@ -781,7 +799,7 @@ export default function Edit({ page }: Props) {
                                                                                  updateBlockContent(block.id, { items: newItems });
                                                                              }}
                                                                              trigger={
-                                                                                 <Button type="button" variant="ghost" size="icon" className="h-7 w-7">
+                                                                                 <Button type="button" variant="ghost" size="icon" className="h-7 w-7" title="Select logo" aria-label="Select logo">
                                                                                      <ImageIcon className="h-3 w-3" />
                                                                                  </Button>
                                                                              }
@@ -790,8 +808,10 @@ export default function Edit({ page }: Props) {
                                                                 </div>
                                                                 <button 
                                                                     type="button"
+                                                                    title="Remove logo"
+                                                                    aria-label="Remove logo"
                                                                     onClick={() => {
-                                                                        const newItems = block.content.items.filter((_: any, idx: number) => idx !== i);
+                                                                        const newItems = block.content.items.filter((_: unknown, idx: number) => idx !== i);
                                                                         updateBlockContent(block.id, { items: newItems });
                                                                     }}
                                                                     className="absolute top-1 right-1 bg-destructive p-1 rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity"
@@ -804,7 +824,7 @@ export default function Edit({ page }: Props) {
                                                             variant="outline" 
                                                             className="h-full min-h-[140px] flex flex-col items-center justify-center gap-2 border-dashed"
                                                             onClick={() => {
-                                                                const newItems = [...(block.content.items || []), { name: 'New Logo', url: 'https://placehold.co/100x40' }];
+                                                                const newItems = [...(block.content.items || []), { name: 'New Logo', url: 'https://placehold.co/200x80?text=Logo' }];
                                                                 updateBlockContent(block.id, { items: newItems });
                                                             }}
                                                         >
@@ -1320,7 +1340,7 @@ export default function Edit({ page }: Props) {
                                                                 size="icon"
                                                                 className="text-destructive h-8 w-8"
                                                                 onClick={() => {
-                                                                    const newItems = block.content.items.filter((_: any, idx: number) => idx !== i);
+                                                                    const newItems = block.content.items.filter((_: unknown, idx: number) => idx !== i);
                                                                     updateBlockContent(block.id, { items: newItems });
                                                                 }}
                                                             >
@@ -1442,7 +1462,7 @@ export default function Edit({ page }: Props) {
                                                                 size="icon"
                                                                 className="text-destructive h-8 w-8"
                                                                 onClick={() => {
-                                                                    const newItems = block.content.items.filter((_: any, idx: number) => idx !== i);
+                                                                    const newItems = block.content.items.filter((_: unknown, idx: number) => idx !== i);
                                                                     updateBlockContent(block.id, { items: newItems });
                                                                 }}
                                                             >
@@ -1499,7 +1519,7 @@ export default function Edit({ page }: Props) {
                                                                         size="icon"
                                                                         className="h-6 w-6 text-destructive"
                                                                         onClick={() => {
-                                                                            const newSlides = block.content.slides.filter((_: any, idx: number) => idx !== i);
+                                                                            const newSlides = block.content.slides.filter((_: unknown, idx: number) => idx !== i);
                                                                             updateBlockContent(block.id, { slides: newSlides });
                                                                         }}
                                                                     >
@@ -1653,7 +1673,7 @@ export default function Edit({ page }: Props) {
                                                                             size="icon" 
                                                                             className="h-8 w-8 text-destructive"
                                                                             onClick={() => {
-                                                                                const newSteps = block.content.steps.filter((_: any, idx: number) => idx !== stepIdx);
+                                                                                const newSteps = block.content.steps.filter((_: unknown, idx: number) => idx !== stepIdx);
                                                                                 updateBlockContent(block.id, { steps: newSteps });
                                                                             }}
                                                                         >
@@ -1768,7 +1788,7 @@ export default function Edit({ page }: Props) {
                                                                                                 className="h-7 w-7 text-destructive"
                                                                                                 onClick={() => {
                                                                                                     const newSteps = [...block.content.steps];
-                                                                                                    newSteps[stepIdx].fields = step.fields.filter((_: any, idx: number) => idx !== fieldIdx);
+                                                                                                    newSteps[stepIdx].fields = step.fields.filter((_: unknown, idx: number) => idx !== fieldIdx);
                                                                                                     updateBlockContent(block.id, { steps: newSteps });
                                                                                                 }}
                                                                                             >

@@ -15,7 +15,9 @@ interface TestimonialsSectionProps {
   description?: string;
   testimonials?: Testimonial[];
 }
-
+const testimonials: Testimonial[] = [
+  {
+    text: "This solution has significantly improved our workflow. Highly recommended for any growing business.",
     image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150&h=150",
     name: "Zainab Hussain",
     role: "Project Manager",
@@ -45,10 +47,6 @@ interface TestimonialsSectionProps {
     role: "E-commerce Manager",
   },
 ];
-
-const firstColumn = testimonials.slice(0, 3);
-const secondColumn = testimonials.slice(3, 6);
-const thirdColumn = testimonials.slice(6, 9);
 
 // --- Sub-Components ---
 const TestimonialsColumn = (props: {
@@ -131,10 +129,20 @@ const TestimonialsSection = ({
   testimonials: customTestimonials
 }: TestimonialsSectionProps) => {
 
+  /* Logic to ensure we have enough items for 3 columns */
   const activeTestimonials = customTestimonials || testimonials;
-  const firstColumn = activeTestimonials.slice(0, 3);
-  const secondColumn = activeTestimonials.slice(3, 6);
-  const thirdColumn = activeTestimonials.slice(6, 9);
+  let displayTestimonials = [...activeTestimonials];
+  
+  // If we have fewer than 9 items, duplicate them to fill the grid appearance
+  while (displayTestimonials.length < 9) {
+      displayTestimonials = [...displayTestimonials, ...activeTestimonials];
+  }
+  
+  // Ensure we don't have too many (cap at 9 for the grid slice logic, or just slice safely)
+  // Actually, let's just slice from the expanded array
+  const firstColumn = displayTestimonials.slice(0, 3);
+  const secondColumn = displayTestimonials.slice(3, 6);
+  const thirdColumn = displayTestimonials.slice(6, 9);
   return (
     <section 
       aria-labelledby="testimonials-heading"

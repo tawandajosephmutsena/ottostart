@@ -21,11 +21,12 @@ export function InfiniteSlider({
   reverse = false,
   className,
 }: InfiniteSliderProps) {
-  const [currentDuration, setCurrentDuration] = useState(duration);
   const ref = useRef<HTMLDivElement>(null);
   const translation = useMotionValue(0);
   const [isHovered, setIsHovered] = useState(false);
   const [contentSize, setContentSize] = useState(0);
+
+  const currentDuration = (isHovered && durationOnHover) ? durationOnHover : duration;
 
   useEffect(() => {
     let controls: any;
@@ -41,7 +42,15 @@ export function InfiniteSlider({
     };
 
     measureContent();
-    window.addEventListener('resize', measureContent);
+
+    const observer = new ResizeObserver(() => {
+      measureContent();
+    });
+
+    observer.observe(element);
+    
+    // Force measurement after a small delay to handle image loading/layout shifts
+    const timeoutId = setTimeout(measureContent, 100);
 
     if (contentSize > 0) {
         controls = animate(translation, reverse ? [-contentSize, 0] : [0, -contentSize], {
@@ -62,18 +71,10 @@ export function InfiniteSlider({
 
     return () => {
       controls?.stop();
-      window.removeEventListener('resize', measureContent);
+      observer.disconnect();
+      clearTimeout(timeoutId);
     };
-  }, [translation, currentDuration, contentSize, direction, reverse]); // Added reverse to dependencies
-
-  useEffect(() => {
-     if (isHovered && durationOnHover) {
-       if (currentDuration !== durationOnHover) setCurrentDuration(durationOnHover);
-     } else {
-       if (currentDuration !== duration) setCurrentDuration(duration);
-     }
-  }, [isHovered, duration, durationOnHover, currentDuration]);
-
+  }, [translation, currentDuration, contentSize, direction, reverse]);
 
   return (
     <div
@@ -84,6 +85,7 @@ export function InfiniteSlider({
       <div
         ref={ref}
         className={cn('flex w-max', direction === 'vertical' && 'flex-col h-max')}
+        // eslint-disable-next-line
         style={{ gap: gap }}
       >
         {children}

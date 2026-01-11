@@ -22,6 +22,14 @@ const LogoCloudBlock: React.FC<LogoCloudBlockProps> = ({
     speedOnHover = 20,
     gap = 112
 }) => {
+    if (!items || items.length === 0) {
+        return (
+            <section className="bg-background py-16 text-center border-dashed border-2 m-4 rounded-lg">
+                <p className="text-muted-foreground">Logo Cloud Block: No logos added. Please edit this block to add logos.</p>
+            </section>
+        );
+    }
+
     return (
         <section className="bg-background overflow-hidden py-16">
             <div className="group relative m-auto max-w-7xl px-6">
@@ -34,12 +42,12 @@ const LogoCloudBlock: React.FC<LogoCloudBlockProps> = ({
                             duration={(100 - speed) / 2} // Convert arbitrary speed (0-100) to duration (higher speed = lower duration)
                             durationOnHover={(100 - speedOnHover) / 2}
                             gap={gap}
-                            className="flex items-center"
+                            className="flex items-center w-full"
                         >
                             {items.map((item, idx) => (
-                                <div key={idx} className="flex px-4">
+                                <div key={idx} className="flex px-8">
                                     <img
-                                        className={cn("mx-auto h-8 w-auto dark:invert opacity-70 hover:opacity-100 transition-opacity", item.className)}
+                                        className={cn("mx-auto h-8 w-auto opacity-70 hover:opacity-100 transition-opacity dark:brightness-0 dark:invert", item.className)}
                                         src={item.url}
                                         alt={item.name}
                                         height="32"

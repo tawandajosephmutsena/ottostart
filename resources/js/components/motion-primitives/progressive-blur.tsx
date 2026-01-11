@@ -40,6 +40,7 @@ export function ProgressiveBlur({
   return (
     <div
       className={cn('absolute z-10', className)}
+      // eslint-disable-next-line
       style={{
         backdropFilter: `blur(${blurIntensity * 8}px)`,
         maskImage: getGradient(),
