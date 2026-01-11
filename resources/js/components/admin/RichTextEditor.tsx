@@ -38,7 +38,8 @@ import {
     Eye,
     Save,
     AlertCircle,
-    CheckCircle
+    CheckCircle,
+    MousePointerClick
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import MediaLibrary from './MediaLibrary';
@@ -52,6 +53,8 @@ import {
     FocusModePlugin,
     TableOfContentsPlugin 
 } from './editor/EditorPlugins';
+import { ButtonExtension } from './editor/ButtonExtension';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface RichTextEditorProps {
     content: string;
@@ -81,6 +84,11 @@ export default function RichTextEditor({
     const [linkUrl, setLinkUrl] = React.useState('');
     const [linkDialogOpen, setLinkDialogOpen] = React.useState(false);
     const [mediaDialogOpen, setMediaDialogOpen] = React.useState(false);
+    const [buttonDialogOpen, setButtonDialogOpen] = React.useState(false);
+    const [buttonText, setButtonText] = React.useState('Click Here');
+    const [buttonUrl, setButtonUrl] = React.useState('');
+    const [buttonStyle, setButtonStyle] = React.useState('primary');
+    const [buttonAlign, setButtonAlign] = React.useState('left');
     const [focusMode, setFocusMode] = React.useState(false);
     const [validationErrors, setValidationErrors] = React.useState<string[]>([]);
     const [isValid, setIsValid] = React.useState(true);
@@ -144,6 +152,7 @@ export default function RichTextEditor({
                 enabled: focusMode,
             }),
             TableOfContentsPlugin,
+            ButtonExtension,
         ],
         content,
         editable,
@@ -172,6 +181,22 @@ export default function RichTextEditor({
             editor.chain().focus().setImage({ src: url }).run();
         }
     }, [editor]);
+
+    const addButton = useCallback(() => {
+        if (editor && buttonText) {
+            editor.chain().focus().setButton({ 
+                text: buttonText, 
+                href: buttonUrl || '#', 
+                style: buttonStyle,
+                align: buttonAlign
+            }).run();
+            setButtonText('Click Here');
+            setButtonUrl('');
+            setButtonStyle('primary');
+            setButtonAlign('left');
+            setButtonDialogOpen(false);
+        }
+    }, [editor, buttonText, buttonUrl, buttonStyle, buttonAlign]);
 
     const setLink = useCallback(() => {
         if (editor && linkUrl) {
@@ -485,6 +510,92 @@ export default function RichTextEditor({
                         </DialogContent>
                     </Dialog>
 
+                    {/* Button Dialog */}
+                    <Dialog open={buttonDialogOpen} onOpenChange={setButtonDialogOpen}>
+                        <DialogTrigger asChild>
+                            <ToolbarButton
+                                onClick={() => setButtonDialogOpen(true)}
+                                title="Add Button"
+                            >
+                                <MousePointerClick className="h-4 w-4" />
+                            </ToolbarButton>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>Add Button</DialogTitle>
+                            </DialogHeader>
+                            <div className="space-y-4">
+                                <div>
+                                    <Label htmlFor="button-text">Button Text</Label>
+                                    <Input
+                                        id="button-text"
+                                        value={buttonText}
+                                        onChange={(e) => setButtonText(e.target.value)}
+                                        placeholder="Click Here"
+                                    />
+                                </div>
+                                <div>
+                                    <Label htmlFor="button-url">Link URL</Label>
+                                    <Input
+                                        id="button-url"
+                                        value={buttonUrl}
+                                        onChange={(e) => setButtonUrl(e.target.value)}
+                                        placeholder="https://example.com or /page-slug"
+                                    />
+                                </div>
+                                <div>
+                                    <Label htmlFor="button-style">Style</Label>
+                                    <Select value={buttonStyle} onValueChange={setButtonStyle}>
+                                        <SelectTrigger className="w-full mt-1">
+                                            <SelectValue />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="primary">Primary (Filled)</SelectItem>
+                                            <SelectItem value="secondary">Secondary (Subtle)</SelectItem>
+                                            <SelectItem value="outline">Outline</SelectItem>
+                                            <SelectItem value="ghost">Ghost (Text only)</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div>
+                                    <Label>Alignment</Label>
+                                    <div className="flex gap-1 mt-1">
+                                        <Button
+                                            type="button"
+                                            variant={buttonAlign === 'left' ? 'default' : 'outline'}
+                                            size="sm"
+                                            onClick={() => setButtonAlign('left')}
+                                            className="h-9 w-9 p-0"
+                                        >
+                                            <AlignLeft className="h-4 w-4" />
+                                        </Button>
+                                        <Button
+                                            type="button"
+                                            variant={buttonAlign === 'center' ? 'default' : 'outline'}
+                                            size="sm"
+                                            onClick={() => setButtonAlign('center')}
+                                            className="h-9 w-9 p-0"
+                                        >
+                                            <AlignCenter className="h-4 w-4" />
+                                        </Button>
+                                        <Button
+                                            type="button"
+                                            variant={buttonAlign === 'right' ? 'default' : 'outline'}
+                                            size="sm"
+                                            onClick={() => setButtonAlign('right')}
+                                            className="h-9 w-9 p-0"
+                                        >
+                                            <AlignRight className="h-4 w-4" />
+                                        </Button>
+                                    </div>
+                                </div>
+                                <Button onClick={addButton} disabled={!buttonText}>
+                                    Insert Button
+                                </Button>
+                            </div>
+                        </DialogContent>
+                    </Dialog>
+
                     <Separator orientation="vertical" className="h-6 mx-1" />
 
                     {/* Undo/Redo */}
@@ -536,7 +647,9 @@ export default function RichTextEditor({
                         <EditorContent 
                             editor={editor} 
                             className={cn(
-                                "prose prose-sm max-w-none p-4 min-h-[300px] focus-within:outline-none",
+                                "prose prose-base dark:prose-invert max-w-none p-4 min-h-[300px] focus-within:outline-none",
+                                "prose-headings:font-bold prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg",
+                                "prose-p:my-2 prose-ul:my-2 prose-ol:my-2",
                                 focusMode && "focus-mode"
                             )}
                         />

@@ -80,8 +80,22 @@ const ColumnRenderer = ({ column }: { column: any }) => {
     switch (type) {
         case 'text': {
             const sanitizedHTML = DOMPurify.sanitize(content?.body || '', {
-                ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li', 'a', 'blockquote', 'code', 'pre'],
-                ALLOWED_ATTR: ['href', 'target', 'rel', 'class']
+                ALLOWED_TAGS: [
+                    'p', 'br', 'strong', 'b', 'em', 'i', 'u', 's', 'strike', 'del',
+                    'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+                    'ul', 'ol', 'li',
+                    'a', 'blockquote', 'code', 'pre',
+                    'mark', 'span', 'div',
+                    'img', 'figure', 'figcaption',
+                    'table', 'thead', 'tbody', 'tr', 'th', 'td',
+                    'hr'
+                ],
+                ALLOWED_ATTR: [
+                    'href', 'target', 'rel', 'class', 'style',
+                    'src', 'alt', 'title', 'width', 'height',
+                    'data-*', 'id'
+                ],
+                ALLOW_DATA_ATTR: true
             });
             const sizeClass = getTextSizeClass(content?.textSize || 'base');
             const alignClass = getTextAlignClass(content?.textAlign || 'left');
@@ -110,6 +124,34 @@ const ColumnRenderer = ({ column }: { column: any }) => {
         case 'video':
             if (!content?.url) return null;
             return <VideoPlayer src={content.url} />;
+        case 'button': {
+            if (!content?.text) return null;
+            const getButtonClasses = (style: string) => {
+                const baseClasses = "inline-flex items-center justify-center rounded-lg px-6 py-3 font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2";
+                switch (style) {
+                    case 'primary':
+                        return `${baseClasses} bg-primary text-primary-foreground hover:bg-primary/90 shadow-md hover:shadow-lg`;
+                    case 'secondary':
+                        return `${baseClasses} bg-secondary text-secondary-foreground hover:bg-secondary/80`;
+                    case 'outline':
+                        return `${baseClasses} border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground`;
+                    case 'ghost':
+                        return `${baseClasses} text-primary hover:bg-primary/10 underline-offset-4 hover:underline`;
+                    default:
+                        return `${baseClasses} bg-primary text-primary-foreground hover:bg-primary/90`;
+                }
+            };
+            return (
+                <div className="flex items-center">
+                    <a 
+                        href={content.url || '#'} 
+                        className={getButtonClasses(content.style || 'primary')}
+                    >
+                        {content.text}
+                    </a>
+                </div>
+            );
+        }
         default:
             return null;
     }
@@ -121,8 +163,22 @@ const TextBlock = ({ content }: { content: any }) => {
     // Legacy support: if no columns exist, render old-style text block
     if (!columns || columns.length === 0) {
         const sanitizedHTML = DOMPurify.sanitize(body || '', {
-            ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li', 'a', 'blockquote', 'code', 'pre'],
-            ALLOWED_ATTR: ['href', 'target', 'rel', 'class']
+            ALLOWED_TAGS: [
+                'p', 'br', 'strong', 'b', 'em', 'i', 'u', 's', 'strike', 'del',
+                'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+                'ul', 'ol', 'li',
+                'a', 'blockquote', 'code', 'pre',
+                'mark', 'span', 'div',
+                'img', 'figure', 'figcaption',
+                'table', 'thead', 'tbody', 'tr', 'th', 'td',
+                'hr'
+            ],
+            ALLOWED_ATTR: [
+                'href', 'target', 'rel', 'class', 'style',
+                'src', 'alt', 'title', 'width', 'height',
+                'data-*', 'id'
+            ],
+            ALLOW_DATA_ATTR: true
         });
 
         return (

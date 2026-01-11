@@ -10,11 +10,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Page } from '@/types';
 import { useForm, Link } from '@inertiajs/react';
-import { ChevronLeft, Save, Plus, Trash, ArrowUp, ArrowDown, Image as ImageIcon, Type, Layout, Eye, List, EyeOff, BookOpen, HelpCircle, PhoneCall, AlertCircle, Video, AlignLeft, AlignCenter, AlignRight, Columns2, Columns3, Square, RectangleHorizontal } from 'lucide-react';
+import { ChevronLeft, Save, Plus, Trash, ArrowUp, ArrowDown, Image as ImageIcon, Type, Layout, Eye, List, EyeOff, BookOpen, HelpCircle, PhoneCall, AlertCircle, Video, AlignLeft, AlignCenter, AlignRight, Columns2, Columns3, Square, RectangleHorizontal, Link2 } from 'lucide-react';
 import React, { useState } from 'react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import MediaLibrary from '@/components/admin/MediaLibrary';
+import RichTextEditor from '@/components/admin/RichTextEditor';
 import { MediaAsset } from '@/types';
 
 interface Props {
@@ -704,7 +705,8 @@ export default function Edit({ page }: Props) {
                                                                                 const defaultContent: Record<string, any> = {
                                                                                     text: { body: '', textSize: 'base', textAlign: 'left' },
                                                                                     image: { url: '', alt: '', caption: '' },
-                                                                                    video: { url: '' }
+                                                                                    video: { url: '' },
+                                                                                    button: { text: 'Click Here', url: '', style: 'primary' }
                                                                                 };
                                                                                 newColumns[colIdx] = { ...col, type: val, content: defaultContent[val] };
                                                                                 updateBlockContent(block.id, { columns: newColumns });
@@ -717,6 +719,7 @@ export default function Edit({ page }: Props) {
                                                                                 <SelectItem value="text"><div className="flex items-center gap-2"><Type className="h-3 w-3" /> Text</div></SelectItem>
                                                                                 <SelectItem value="image"><div className="flex items-center gap-2"><ImageIcon className="h-3 w-3" /> Image</div></SelectItem>
                                                                                 <SelectItem value="video"><div className="flex items-center gap-2"><Video className="h-3 w-3" /> Video</div></SelectItem>
+                                                                                <SelectItem value="button"><div className="flex items-center gap-2"><Link2 className="h-3 w-3" /> Button</div></SelectItem>
                                                                             </SelectContent>
                                                                         </Select>
                                                                     </div>
@@ -775,17 +778,21 @@ export default function Edit({ page }: Props) {
                                                                             </div>
                                                                         </div>
                                                                         <div>
-                                                                            <Label className="text-xs">Content (Markdown supported)</Label>
-                                                                            <Textarea 
-                                                                                className="min-h-[150px] font-mono text-sm mt-1"
-                                                                                placeholder="Enter your text content here..."
-                                                                                value={col.content?.body || ''} 
-                                                                                onChange={(e) => {
-                                                                                    const newColumns = [...block.content.columns];
-                                                                                    newColumns[colIdx] = { ...col, content: { ...col.content, body: e.target.value } };
-                                                                                    updateBlockContent(block.id, { columns: newColumns });
-                                                                                }}
-                                                                            />
+                                                                            <Label className="text-xs">Content</Label>
+                                                                            <div className="mt-1">
+                                                                                <RichTextEditor
+                                                                                    content={col.content?.body || ''}
+                                                                                    onChange={(html) => {
+                                                                                        const newColumns = [...block.content.columns];
+                                                                                        newColumns[colIdx] = { ...col, content: { ...col.content, body: html } };
+                                                                                        updateBlockContent(block.id, { columns: newColumns });
+                                                                                    }}
+                                                                                    placeholder="Write your content here..."
+                                                                                    limit={50000}
+                                                                                    showWordCount={true}
+                                                                                    className="min-h-[200px]"
+                                                                                />
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 )}
@@ -889,6 +896,70 @@ export default function Edit({ page }: Props) {
                                                                                 <video src={col.content.url} className="max-h-full max-w-full" />
                                                                             </div>
                                                                         )}
+                                                                    </div>
+                                                                )}
+
+                                                                {/* Button Content Editor */}
+                                                                {col.type === 'button' && (
+                                                                    <div className="space-y-4">
+                                                                        <div>
+                                                                            <Label className="text-xs">Button Text</Label>
+                                                                            <Input 
+                                                                                className="mt-1"
+                                                                                placeholder="Enter button text..."
+                                                                                value={col.content?.text || ''} 
+                                                                                onChange={(e) => {
+                                                                                    const newColumns = [...block.content.columns];
+                                                                                    newColumns[colIdx] = { ...col, content: { ...col.content, text: e.target.value } };
+                                                                                    updateBlockContent(block.id, { columns: newColumns });
+                                                                                }}
+                                                                            />
+                                                                        </div>
+                                                                        <div>
+                                                                            <Label className="text-xs">Link URL</Label>
+                                                                            <Input 
+                                                                                className="mt-1"
+                                                                                placeholder="https://example.com or /page-slug"
+                                                                                value={col.content?.url || ''} 
+                                                                                onChange={(e) => {
+                                                                                    const newColumns = [...block.content.columns];
+                                                                                    newColumns[colIdx] = { ...col, content: { ...col.content, url: e.target.value } };
+                                                                                    updateBlockContent(block.id, { columns: newColumns });
+                                                                                }}
+                                                                            />
+                                                                        </div>
+                                                                        <div>
+                                                                            <Label className="text-xs">Button Style</Label>
+                                                                            <Select 
+                                                                                value={col.content?.style || 'primary'} 
+                                                                                onValueChange={(val) => {
+                                                                                    const newColumns = [...block.content.columns];
+                                                                                    newColumns[colIdx] = { ...col, content: { ...col.content, style: val } };
+                                                                                    updateBlockContent(block.id, { columns: newColumns });
+                                                                                }}
+                                                                            >
+                                                                                <SelectTrigger className="w-full mt-1">
+                                                                                    <SelectValue />
+                                                                                </SelectTrigger>
+                                                                                <SelectContent>
+                                                                                    <SelectItem value="primary">Primary (Filled)</SelectItem>
+                                                                                    <SelectItem value="secondary">Secondary (Subtle)</SelectItem>
+                                                                                    <SelectItem value="outline">Outline</SelectItem>
+                                                                                    <SelectItem value="ghost">Ghost (Text only)</SelectItem>
+                                                                                </SelectContent>
+                                                                            </Select>
+                                                                        </div>
+                                                                        {/* Button Preview */}
+                                                                        <div className="p-4 border rounded-lg bg-muted/20">
+                                                                            <Label className="text-xs text-muted-foreground mb-2 block">Preview</Label>
+                                                                            <Button 
+                                                                                type="button" 
+                                                                                variant={col.content?.style || 'default'}
+                                                                                className="pointer-events-none"
+                                                                            >
+                                                                                {col.content?.text || 'Button'}
+                                                                            </Button>
+                                                                        </div>
                                                                     </div>
                                                                 )}
                                                             </TabsContent>
