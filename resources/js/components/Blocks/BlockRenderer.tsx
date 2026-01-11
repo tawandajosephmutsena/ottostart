@@ -6,6 +6,8 @@ import VideoPlayer from '@/components/ui/video-player';
 import { PageBlock } from '@/types/page-blocks';
 import { cn } from '@/lib/utils';
 
+import AnimatedShaderHero from '@/components/ui/animated-shader-hero';
+
 // Import all block components
 import HeroSection from '@/components/HeroSection';
 import StatsSection from '@/components/StatsSection';
@@ -277,6 +279,26 @@ export default function BlockRenderer({
                 if (block.is_enabled === false) return null;
 
                 switch (block.type) {
+                    case 'animated_shader_hero':
+                        return (
+                            <div key={block.id} className="relative z-0">
+                                <AnimatedShaderHero
+                                    trustBadge={block.content.trustBadge}
+                                    headline={block.content.headline}
+                                    subtitle={block.content.subtitle}
+                                    buttons={{
+                                        primary: { 
+                                            text: block.content.buttons?.primary?.text || '', 
+                                            onClick: () => window.location.href = block.content.buttons?.primary?.url || '#' 
+                                        },
+                                        secondary: { 
+                                            text: block.content.buttons?.secondary?.text || '', 
+                                            onClick: () => window.location.href = block.content.buttons?.secondary?.url || '#' 
+                                        }
+                                    }}
+                                />
+                            </div>
+                        );
                     case 'hero':
                         return (
                             <HeroSection

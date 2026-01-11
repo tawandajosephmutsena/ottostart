@@ -23,7 +23,7 @@ interface Props {
 }
 
 // Define the structure of our blocks
-type BlockType = 'hero' | 'text' | 'image' | 'features' | 'stats' | 'services' | 'portfolio' | 'insights' | 'cta' | 'cinematic_hero' | 'form' | 'video' | 'story' | 'manifesto' | 'process' | 'contact_info' | 'faq';
+type BlockType = 'hero' | 'text' | 'image' | 'features' | 'stats' | 'services' | 'portfolio' | 'insights' | 'cta' | 'cinematic_hero' | 'form' | 'video' | 'story' | 'manifesto' | 'process' | 'contact_info' | 'faq' | 'animated_shader_hero';
 
 interface Block {
     id: string;
@@ -75,6 +75,15 @@ const getDefaultContentForType = (type: BlockType) => {
             { title: 'A Childhood Stolen', subtitle: 'When laws fail to protect the vulnerable, they actively participate in the cycle of neglect.', tagline: '#protectourgirls', image: '/images/hero-2.jpg' },
             { title: 'Break the Cycle', subtitle: 'Justice is the only path to a world where childhood is a non-negotiable right.', tagline: '#changethelaw', image: '/images/hero-3.jpg' }
         ] };
+        case 'animated_shader_hero': return {
+            trustBadge: { text: "Trusted by visionaries", icons: ["✨", "🚀"] },
+            headline: { line1: "Launch Your", line2: "Next Big Idea" },
+            subtitle: "Create stunning digital experiences with our AI-powered platform.",
+            buttons: {
+                primary: { text: "Get Started", url: "#" },
+                secondary: { text: "Learn More", url: "#" }
+            }
+        };
         case 'form': return {
             title: 'Onboarding',
             description: 'Tell us about your project',
@@ -298,6 +307,9 @@ export default function Edit({ page }: Props) {
                                 <Button type="button" variant="secondary" size="sm" onClick={() => addBlock('hero')}>
                                     <Layout className="h-4 w-4 mr-2" /> Hero
                                 </Button>
+                                <Button type="button" variant="secondary" size="sm" onClick={() => addBlock('animated_shader_hero')}>
+                                    <Layout className="h-4 w-4 mr-2" /> Shader Hero
+                                </Button>
                                 <Button type="button" variant="secondary" size="sm" onClick={() => addBlock('cinematic_hero')}>
                                     <Layout className="h-4 w-4 mr-2" /> Cinematic Hero
                                 </Button>
@@ -471,6 +483,112 @@ export default function Edit({ page }: Props) {
                                                             value={block.content.ctaHref} 
                                                             onChange={(e) => updateBlockContent(block.id, { ctaHref: e.target.value })}
                                                         />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {block.type === 'animated_shader_hero' && (
+                                            <div className="space-y-4">
+                                                <div className="grid grid-cols-2 gap-4">
+                                                    <div className="col-span-2 space-y-2 border p-3 rounded bg-muted/10">
+                                                        <Label className="text-xs font-bold uppercase tracking-wider">Trust Badge</Label>
+                                                        <div className="grid grid-cols-2 gap-4">
+                                                            <div>
+                                                                <Label className="text-xs">Badge Text</Label>
+                                                                <Input 
+                                                                    value={block.content.trustBadge?.text || ''} 
+                                                                    onChange={(e) => updateBlockContent(block.id, { trustBadge: { ...block.content.trustBadge, text: e.target.value } })}
+                                                                />
+                                                            </div>
+                                                            <div>
+                                                                <Label className="text-xs">Icons (Optional)</Label>
+                                                                <div className="flex gap-2">
+                                                                    {(block.content.trustBadge?.icons || []).map((icon: string, i: number) => (
+                                                                        <Input 
+                                                                            key={i}
+                                                                            className="w-10 text-center px-0"
+                                                                            value={icon}
+                                                                            onChange={(e) => {
+                                                                                const newIcons = [...(block.content.trustBadge?.icons || [])];
+                                                                                newIcons[i] = e.target.value;
+                                                                                updateBlockContent(block.id, { trustBadge: { ...block.content.trustBadge, icons: newIcons } });
+                                                                            }}
+                                                                        />
+                                                                    ))}
+                                                                    <Button size="sm" variant="outline" onClick={() => {
+                                                                         const newIcons = [...(block.content.trustBadge?.icons || []), "✨"];
+                                                                         updateBlockContent(block.id, { trustBadge: { ...block.content.trustBadge, icons: newIcons } });
+                                                                    }}>+</Button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="col-span-2 space-y-2">
+                                                        <Label className="text-xs font-bold uppercase tracking-wider">Headline</Label>
+                                                        <div className="grid grid-cols-2 gap-4">
+                                                            <div>
+                                                                <Label className="text-xs">Line 1</Label>
+                                                                <Input 
+                                                                    value={block.content.headline?.line1 || ''} 
+                                                                    onChange={(e) => updateBlockContent(block.id, { headline: { ...block.content.headline, line1: e.target.value } })}
+                                                                />
+                                                            </div>
+                                                            <div>
+                                                                <Label className="text-xs">Line 2 (Gradient)</Label>
+                                                                <Input 
+                                                                    value={block.content.headline?.line2 || ''} 
+                                                                    onChange={(e) => updateBlockContent(block.id, { headline: { ...block.content.headline, line2: e.target.value } })}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="col-span-2">
+                                                        <Label className="text-xs">Subtitle</Label>
+                                                        <Textarea 
+                                                            value={block.content.subtitle || ''} 
+                                                            onChange={(e) => updateBlockContent(block.id, { subtitle: e.target.value })}
+                                                            className="h-20"
+                                                        />
+                                                    </div>
+
+                                                    <div className="col-span-2 grid grid-cols-2 gap-4">
+                                                        <div className="p-3 border rounded bg-muted/5 space-y-2">
+                                                            <Label className="text-xs font-bold">Primary Button</Label>
+                                                            <div>
+                                                                <Label className="text-[10px]">Text</Label>
+                                                                <Input 
+                                                                    value={block.content.buttons?.primary?.text || ''} 
+                                                                    onChange={(e) => updateBlockContent(block.id, { buttons: { ...block.content.buttons, primary: { ...block.content.buttons?.primary, text: e.target.value } } })}
+                                                                />
+                                                            </div>
+                                                            <div>
+                                                                <Label className="text-[10px]">URL</Label>
+                                                                <Input 
+                                                                    value={block.content.buttons?.primary?.url || ''} 
+                                                                    onChange={(e) => updateBlockContent(block.id, { buttons: { ...block.content.buttons, primary: { ...block.content.buttons?.primary, url: e.target.value } } })}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                        <div className="p-3 border rounded bg-muted/5 space-y-2">
+                                                            <Label className="text-xs font-bold">Secondary Button</Label>
+                                                            <div>
+                                                                <Label className="text-[10px]">Text</Label>
+                                                                <Input 
+                                                                    value={block.content.buttons?.secondary?.text || ''} 
+                                                                    onChange={(e) => updateBlockContent(block.id, { buttons: { ...block.content.buttons, secondary: { ...block.content.buttons?.secondary, text: e.target.value } } })}
+                                                                />
+                                                            </div>
+                                                            <div>
+                                                                <Label className="text-[10px]">URL</Label>
+                                                                <Input 
+                                                                    value={block.content.buttons?.secondary?.url || ''} 
+                                                                    onChange={(e) => updateBlockContent(block.id, { buttons: { ...block.content.buttons, secondary: { ...block.content.buttons?.secondary, url: e.target.value } } })}
+                                                                />
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>

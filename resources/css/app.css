@@ -138,6 +138,35 @@
     to { opacity: 1; }
 }
 
+/* Animated Shader Hero Keyframes */
+@keyframes shader-fade-in-down {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes shader-fade-in-up {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes shader-gradient-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
 :root {
     --background: oklch(0.9818 0.0054 95.0986);
     --foreground: oklch(0.3438 0.0269 95.7226);
@@ -338,6 +367,27 @@
     }
 
     .fade-in { animation: fade-in 0.3s ease-in-out; }
+
+    /* Animated Shader Hero Utilities */
+    .animate-shader-fade-in-down {
+        animation: shader-fade-in-down 0.8s ease-out forwards;
+    }
+    
+    .animate-shader-fade-in-up {
+        animation: shader-fade-in-up 0.8s ease-out forwards;
+        opacity: 0;
+    }
+    
+    .animate-shader-gradient {
+        background-size: 200% 200%;
+        animation: shader-gradient-shift 3s ease infinite;
+    }
+    
+    .shader-delay-200 { animation-delay: 0.2s; }
+    .shader-delay-400 { animation-delay: 0.4s; }
+    .shader-delay-600 { animation-delay: 0.6s; }
+    .shader-delay-800 { animation-delay: 0.8s; }
+
 
     .contain-layout { contain: layout; }
     .contain-paint { contain: paint; }

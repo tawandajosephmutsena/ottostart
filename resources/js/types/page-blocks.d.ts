@@ -186,6 +186,30 @@ export interface VideoBlock extends BaseBlock {
     };
 }
 
+export interface AnimatedShaderHeroBlock extends BaseBlock {
+    type: 'animated_shader_hero';
+    content: {
+        trustBadge?: { text: string; icons?: string[] };
+        headline: { line1: string; line2: string };
+        subtitle: string;
+        buttons?: {
+            primary?: { text: string; url?: string };
+            secondary?: { text: string; url?: string };
+        };
+    };
+}
+
+export interface FeaturesBlock extends BaseBlock {
+    type: 'features';
+    content: {
+        title: string;
+        items: Array<{
+            title: string;
+            desc: string;
+        }>;
+    };
+}
+
 export type PageBlock =
     | HeroBlock
     | StatsBlock
@@ -202,7 +226,9 @@ export type PageBlock =
     | ProcessBlock
     | ContactInfoBlock
     | FaqBlock
-    | VideoBlock;
+    | VideoBlock
+    | FeaturesBlock
+    | AnimatedShaderHeroBlock;
 
 export interface PageContent {
     blocks: PageBlock[];
