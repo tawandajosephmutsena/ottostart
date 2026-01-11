@@ -23,7 +23,7 @@ interface Props {
 }
 
 // Define the structure of our blocks
-type BlockType = 'hero' | 'text' | 'image' | 'features' | 'stats' | 'services' | 'portfolio' | 'insights' | 'cta' | 'cinematic_hero' | 'form' | 'video' | 'story' | 'manifesto' | 'process' | 'contact_info' | 'faq' | 'animated_shader_hero' | 'testimonials' | 'logo_cloud' | 'apple_cards_carousel';
+type BlockType = 'hero' | 'text' | 'image' | 'features' | 'stats' | 'services' | 'portfolio' | 'insights' | 'cta' | 'cinematic_hero' | 'form' | 'video' | 'story' | 'manifesto' | 'process' | 'contact_info' | 'faq' | 'animated_shader_hero' | 'testimonials' | 'logo_cloud' | 'apple_cards_carousel' | 'cover_demo';
 
 interface Block {
     id: string;
@@ -262,6 +262,13 @@ const getDefaultContentForType = (type: BlockType) => {
                  { category: 'Hiring', title: 'Hiring for a Staff Software Engineer', src: 'https://images.unsplash.com/photo-1621237022370-3d707252064c?q=80&w=2670&auto=format&fit=crop', content: '<p>Content goes here</p>', link: '' }
             ]
         };
+        case 'cover_demo': return {
+            titleOne: 'Build amazing websites',
+            titleTwo: 'at',
+            coverText: 'warp speed',
+            fontSize: 'text-4xl md:text-4xl lg:text-6xl',
+            fontWeight: 'font-semibold'
+        };
         default: return {};
     }
 };
@@ -427,6 +434,9 @@ export default function Edit({ page }: Props) {
                                 </Button>
                                 <Button type="button" variant="secondary" size="sm" onClick={() => addBlock('apple_cards_carousel')}>
                                     <Layout className="h-4 w-4 mr-2" /> Cards Carousel
+                                </Button>
+                                <Button type="button" variant="secondary" size="sm" onClick={() => addBlock('cover_demo')}>
+                                    <Type className="h-4 w-4 mr-2" /> Cover Demo
                                 </Button>
                              </div>
                         </Card>
@@ -2357,6 +2367,70 @@ export default function Edit({ page }: Props) {
                                                     }}>
                                                         <Plus className="h-3 w-3 mr-2" /> Add FAQ Item
                                                     </Button>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {block.type === 'cover_demo' && (
+                                            <div className="space-y-4">
+                                                <div className="grid grid-cols-2 gap-4">
+                                                    <div>
+                                                        <Label className="text-xs">Title Part 1</Label>
+                                                        <Input 
+                                                            value={block.content.titleOne || ''} 
+                                                            onChange={(e) => updateBlockContent(block.id, { titleOne: e.target.value })}
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <Label className="text-xs">Title Part 2</Label>
+                                                        <Input 
+                                                            value={block.content.titleTwo || ''} 
+                                                            onChange={(e) => updateBlockContent(block.id, { titleTwo: e.target.value })}
+                                                        />
+                                                    </div>
+                                                    <div className="col-span-2">
+                                                        <Label className="text-xs">Cover Text (Animated)</Label>
+                                                        <Input 
+                                                            value={block.content.coverText || ''} 
+                                                            onChange={(e) => updateBlockContent(block.id, { coverText: e.target.value })}
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <Label className="text-xs">Font Size (Tailwind)</Label>
+                                                        <Select 
+                                                            value={block.content.fontSize || 'text-4xl md:text-4xl lg:text-6xl'} 
+                                                            onValueChange={(value) => updateBlockContent(block.id, { fontSize: value })}
+                                                        >
+                                                            <SelectTrigger>
+                                                                <SelectValue placeholder="Select size" />
+                                                            </SelectTrigger>
+                                                            <SelectContent>
+                                                                <SelectItem value="text-2xl md:text-3xl lg:text-4xl">Small (2xl/4xl)</SelectItem>
+                                                                <SelectItem value="text-3xl md:text-4xl lg:text-5xl">Medium (3xl/5xl)</SelectItem>
+                                                                <SelectItem value="text-4xl md:text-4xl lg:text-6xl">Large (4xl/6xl) - Default</SelectItem>
+                                                                <SelectItem value="text-5xl md:text-6xl lg:text-7xl">X-Large (5xl/7xl)</SelectItem>
+                                                                <SelectItem value="text-6xl md:text-7xl lg:text-8xl">Jumbo (6xl/8xl)</SelectItem>
+                                                            </SelectContent>
+                                                        </Select>
+                                                    </div>
+                                                    <div>
+                                                        <Label className="text-xs">Font Weight</Label>
+                                                        <Select 
+                                                            value={block.content.fontWeight || 'font-semibold'} 
+                                                            onValueChange={(value) => updateBlockContent(block.id, { fontWeight: value })}
+                                                        >
+                                                            <SelectTrigger>
+                                                                <SelectValue placeholder="Select weight" />
+                                                            </SelectTrigger>
+                                                            <SelectContent>
+                                                                <SelectItem value="font-normal">Normal (400)</SelectItem>
+                                                                <SelectItem value="font-medium">Medium (500)</SelectItem>
+                                                                <SelectItem value="font-semibold">Semibold (600) - Default</SelectItem>
+                                                                <SelectItem value="font-bold">Bold (700)</SelectItem>
+                                                                <SelectItem value="font-black">Black (900)</SelectItem>
+                                                            </SelectContent>
+                                                        </Select>
+                                                    </div>
                                                 </div>
                                             </div>
                                         )}

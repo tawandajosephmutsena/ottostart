@@ -238,7 +238,9 @@ export type PageBlock =
     | FeaturesBlock
     | AnimatedShaderHeroBlock
     | TestimonialBlock
-    | LogoCloudBlock;
+    | LogoCloudBlock
+    | CoverDemoBlock
+    | AppleCardsCarouselBlock;
 
 export interface TestimonialBlock extends BaseBlock {
     type: 'testimonials';
@@ -262,6 +264,31 @@ export interface LogoCloudBlock extends BaseBlock {
         items?: Array<{
             name: string;
             url: string;
+        }>;
+    };
+}
+
+export interface CoverDemoBlock extends BaseBlock {
+    type: 'cover_demo';
+    content: {
+        titleOne?: string;
+        titleTwo?: string;
+        coverText?: string;
+        fontSize?: string;
+        fontWeight?: string;
+    };
+}
+
+export interface AppleCardsCarouselBlock extends BaseBlock {
+    type: 'apple_cards_carousel';
+    content: {
+        title?: string;
+        items?: Array<{
+            image: string;
+            title: string;
+            category: string;
+            content: string;
+            link?: string;
         }>;
     };
 }
