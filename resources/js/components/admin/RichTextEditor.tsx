@@ -34,8 +34,6 @@ import {
     AlignRight,
     AlignJustify,
     Highlighter,
-    Type,
-    Eye,
     Save,
     AlertCircle,
     CheckCircle,
@@ -55,6 +53,38 @@ import {
 } from './editor/EditorPlugins';
 import { ButtonExtension } from './editor/ButtonExtension';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+
+// ToolbarButton component - defined outside to prevent recreation during render
+interface ToolbarButtonProps {
+    onClick: () => void;
+    isActive?: boolean;
+    disabled?: boolean;
+    children: React.ReactNode;
+    title?: string;
+}
+
+const ToolbarButton = ({ 
+    onClick, 
+    isActive = false, 
+    disabled = false, 
+    children, 
+    title 
+}: ToolbarButtonProps) => (
+    <Button
+        type="button"
+        variant={isActive ? "default" : "ghost"}
+        size="sm"
+        onClick={onClick}
+        disabled={disabled}
+        title={title}
+        className={cn(
+            "h-8 w-8 p-0",
+            isActive && "bg-agency-accent text-agency-primary"
+        )}
+    >
+        {children}
+    </Button>
+);
 
 interface RichTextEditorProps {
     content: string;
@@ -233,35 +263,6 @@ export default function RichTextEditor({
     if (!editor) {
         return null;
     }
-
-    const ToolbarButton = ({ 
-        onClick, 
-        isActive = false, 
-        disabled = false, 
-        children, 
-        title 
-    }: {
-        onClick: () => void;
-        isActive?: boolean;
-        disabled?: boolean;
-        children: React.ReactNode;
-        title?: string;
-    }) => (
-        <Button
-            type="button"
-            variant={isActive ? "default" : "ghost"}
-            size="sm"
-            onClick={onClick}
-            disabled={disabled}
-            title={title}
-            className={cn(
-                "h-8 w-8 p-0",
-                isActive && "bg-agency-accent text-agency-primary"
-            )}
-        >
-            {children}
-        </Button>
-    );
 
     return (
         <div className={cn("border rounded-lg overflow-hidden", className)}>
