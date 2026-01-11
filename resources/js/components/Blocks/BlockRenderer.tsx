@@ -23,6 +23,7 @@ import FAQBlock from './FAQBlock';
 import CtaBlock from './CtaBlock';
 import TestimonialBlock from './TestimonialBlock';
 import LogoCloudBlock from './LogoCloudBlock';
+import AppleCardsCarouselBlock from './AppleCardsCarouselBlock';
 
 interface BlockRendererProps {
     blocks: PageBlock[];
@@ -372,6 +373,8 @@ export default function BlockRenderer({
                         return <TestimonialBlock key={block.id} {...block.content} />;
                     case 'logo_cloud':
                         return <LogoCloudBlock key={block.id} {...block.content} />;
+                    case 'apple_cards_carousel':
+                        return <AppleCardsCarouselBlock key={block.id} {...block.content} />;
                     default:
                         return null;
                 }

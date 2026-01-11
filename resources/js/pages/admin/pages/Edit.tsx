@@ -23,7 +23,7 @@ interface Props {
 }
 
 // Define the structure of our blocks
-type BlockType = 'hero' | 'text' | 'image' | 'features' | 'stats' | 'services' | 'portfolio' | 'insights' | 'cta' | 'cinematic_hero' | 'form' | 'video' | 'story' | 'manifesto' | 'process' | 'contact_info' | 'faq' | 'animated_shader_hero' | 'testimonials' | 'logo_cloud';
+type BlockType = 'hero' | 'text' | 'image' | 'features' | 'stats' | 'services' | 'portfolio' | 'insights' | 'cta' | 'cinematic_hero' | 'form' | 'video' | 'story' | 'manifesto' | 'process' | 'contact_info' | 'faq' | 'animated_shader_hero' | 'testimonials' | 'logo_cloud' | 'apple_cards_carousel';
 
 interface Block {
     id: string;
@@ -252,6 +252,16 @@ const getDefaultContentForType = (type: BlockType) => {
                 { name: 'Partner 6', url: 'https://placehold.co/200x80?text=Partner+6' }
             ]
         };
+        case 'apple_cards_carousel': return {
+            title: 'Get to know your iSad.',
+            items: [
+                 { category: 'Artificial Intelligence', title: 'You can do more with AI.', src: 'https://images.unsplash.com/photo-1593508512255-86ab42a8e620?q=80&w=3556&auto=format&fit=crop', content: '<p>Content goes here</p>', link: '' },
+                 { category: 'Productivity', title: 'Enhance your productivity.', src: 'https://images.unsplash.com/photo-1531554694128-c4c6665f59c2?q=80&w=3387&auto=format&fit=crop', content: '<p>Content goes here</p>', link: '' },
+                 { category: 'Product', title: 'Launching the new Apple Vision Pro.', src: 'https://images.unsplash.com/photo-1713869791518-a770879e60dc?q=80&w=2333&auto=format&fit=crop', content: '<p>Content goes here</p>', link: '' },
+                 { category: 'Product', title: 'Macbook Pro M4.', src: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=2626&auto=format&fit=crop', content: '<p>Content goes here</p>', link: '' },
+                 { category: 'Hiring', title: 'Hiring for a Staff Software Engineer', src: 'https://images.unsplash.com/photo-1621237022370-3d707252064c?q=80&w=2670&auto=format&fit=crop', content: '<p>Content goes here</p>', link: '' }
+            ]
+        };
         default: return {};
     }
 };
@@ -414,6 +424,9 @@ export default function Edit({ page }: Props) {
                                 </Button>
                                 <Button type="button" variant="secondary" size="sm" onClick={() => addBlock('logo_cloud')}>
                                     <ImageIcon className="h-4 w-4 mr-2" /> Logo Cloud
+                                </Button>
+                                <Button type="button" variant="secondary" size="sm" onClick={() => addBlock('apple_cards_carousel')}>
+                                    <Layout className="h-4 w-4 mr-2" /> Cards Carousel
                                 </Button>
                              </div>
                         </Card>
@@ -832,6 +845,120 @@ export default function Edit({ page }: Props) {
                                                             <span>Add Logo</span>
                                                         </Button>
                                                     </div>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {block.type === 'apple_cards_carousel' && (
+                                            <div className="space-y-4">
+                                                <div>
+                                                    <Label className="text-xs">Section Title</Label>
+                                                    <Input 
+                                                        value={block.content.title || ''} 
+                                                        onChange={(e) => updateBlockContent(block.id, { title: e.target.value })}
+                                                    />
+                                                </div>
+                                                <div className="space-y-4">
+                                                    <Label className="text-xs">Cards</Label>
+                                                    {(block.content.items || []).map((item: any, i: number) => (
+                                                        <div key={i} className="border p-4 rounded bg-muted/10 space-y-3 relative group">
+                                                            <div className="absolute top-2 right-2 flex gap-2">
+                                                                <Button variant="ghost" size="icon" className="h-6 w-6 text-destructive" onClick={() => {
+                                                                    const newItems = block.content.items.filter((_: any, idx: number) => idx !== i);
+                                                                    updateBlockContent(block.id, { items: newItems });
+                                                                }}>
+                                                                    <Trash className="h-3 w-3" />
+                                                                </Button>
+                                                            </div>
+
+                                                            <div className="grid grid-cols-2 gap-4">
+                                                                <div>
+                                                                    <Label className="text-[10px]">Category</Label>
+                                                                    <Input 
+                                                                        value={item.category}
+                                                                        onChange={(e) => {
+                                                                            const newItems = [...block.content.items];
+                                                                            newItems[i] = { ...item, category: e.target.value };
+                                                                            updateBlockContent(block.id, { items: newItems });
+                                                                        }}
+                                                                        className="h-8 text-xs"
+                                                                    />
+                                                                </div>
+                                                                <div>
+                                                                    <Label className="text-[10px]">Title</Label>
+                                                                    <Input 
+                                                                        value={item.title}
+                                                                        onChange={(e) => {
+                                                                            const newItems = [...block.content.items];
+                                                                            newItems[i] = { ...item, title: e.target.value };
+                                                                            updateBlockContent(block.id, { items: newItems });
+                                                                        }}
+                                                                        className="h-8 text-xs"
+                                                                    />
+                                                                </div>
+                                                            </div>
+
+                                                            <div>
+                                                                <Label className="text-[10px]">Image</Label>
+                                                                <div className="flex gap-2">
+                                                                     <Input 
+                                                                        value={item.src}
+                                                                        onChange={(e) => {
+                                                                            const newItems = [...block.content.items];
+                                                                            newItems[i] = { ...item, src: e.target.value };
+                                                                            updateBlockContent(block.id, { items: newItems });
+                                                                        }}
+                                                                        className="h-8 text-xs flex-1"
+                                                                    />
+                                                                    <MediaLibrary 
+                                                                         onSelect={(asset: MediaAsset) => {
+                                                                             const newItems = [...block.content.items];
+                                                                             newItems[i] = { ...item, src: asset.url };
+                                                                             updateBlockContent(block.id, { items: newItems });
+                                                                         }}
+                                                                         trigger={
+                                                                             <Button type="button" variant="outline" size="sm" className="h-8">
+                                                                                 <ImageIcon className="h-3 w-3" />
+                                                                             </Button>
+                                                                         }
+                                                                     />
+                                                                </div>
+                                                            </div>
+
+                                                            <div>
+                                                                <Label className="text-[10px]">Link (Optional - Click to navigate)</Label>
+                                                                <Input 
+                                                                    value={item.link || ''}
+                                                                    onChange={(e) => {
+                                                                        const newItems = [...block.content.items];
+                                                                        newItems[i] = { ...item, link: e.target.value };
+                                                                        updateBlockContent(block.id, { items: newItems });
+                                                                    }}
+                                                                    className="h-8 text-xs"
+                                                                    placeholder="https://..."
+                                                                />
+                                                            </div>
+                                                            
+                                                             <div>
+                                                                <Label className="text-[10px]">Content (Shown in Modal if no link)</Label>
+                                                                <Textarea 
+                                                                    value={item.content || ''}
+                                                                    onChange={(e) => {
+                                                                        const newItems = [...block.content.items];
+                                                                        newItems[i] = { ...item, content: e.target.value };
+                                                                        updateBlockContent(block.id, { items: newItems });
+                                                                    }}
+                                                                    className="h-20 text-xs"
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                    <Button variant="outline" size="sm" onClick={() => {
+                                                        const newItems = [...(block.content.items || []), { category: 'New', title: 'New Card', src: '', content: '', link: '' }];
+                                                        updateBlockContent(block.id, { items: newItems });
+                                                    }}>
+                                                        <Plus className="h-3 w-3 mr-2" /> Add Card
+                                                    </Button>
                                                 </div>
                                             </div>
                                         )}
