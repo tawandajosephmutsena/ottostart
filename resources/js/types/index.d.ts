@@ -2,6 +2,8 @@ import { InertiaLinkProps } from '@inertiajs/react';
 import { LucideIcon } from 'lucide-react';
 import { PageBlock } from './page-blocks';
 
+export type { PageBlock } from './page-blocks';
+
 export interface Auth {
     user: User;
 }

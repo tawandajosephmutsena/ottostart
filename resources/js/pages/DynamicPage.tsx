@@ -1,13 +1,12 @@
 import React from 'react';
-import { Head } from '@inertiajs/react';
 import MainLayout from '@/layouts/MainLayout';
 import { SeoHead } from '@/components/SeoHead';
 import BlockRenderer from '@/components/Blocks/BlockRenderer';
-import { Page } from '@/types';
+import { Page, PageBlock } from '@/types';
 
 interface CustomPage extends Page {
     content: {
-        blocks: any[];
+        blocks: PageBlock[];
     };
 }
 
@@ -18,7 +17,7 @@ export default function DynamicPage({ page }: { page: CustomPage }) {
         <MainLayout>
             <SeoHead 
                 title={page.meta_title || page.title}
-                description={page.meta_description}
+                description={page.meta_description ?? undefined}
             />
             
             <BlockRenderer blocks={blocks} />

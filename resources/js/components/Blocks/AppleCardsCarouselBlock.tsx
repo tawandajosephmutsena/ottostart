@@ -6,7 +6,7 @@ interface AppleCardsCarouselBlockProps {
     items?: {
         category: string;
         title: string;
-        src: string;
+        image: string;  // Matches page-blocks.d.ts
         content?: string;
         link?: string;
     }[];
@@ -18,9 +18,9 @@ const AppleCardsCarouselBlock: React.FC<AppleCardsCarouselBlockProps> = ({
 }) => {
     const cards = items.map((card, index) => (
         <Card 
-            key={card.src + index} 
+            key={card.image + index} 
             card={{
-                src: card.src,
+                src: card.image,  // Map image to src for the Card component
                 title: card.title,
                 category: card.category,
                 link: card.link,

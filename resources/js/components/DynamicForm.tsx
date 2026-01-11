@@ -33,15 +33,15 @@ export default function DynamicForm({
     successMessage = 'Thank you for your submission!',
     className
 }: DynamicFormProps) {
-    const initialData: Record<string, any> = {};
+    const initialData: Record<string, string> = {};
+    if (title) {
+        initialData.form_title = title;
+    }
     fields.forEach(field => {
         initialData[field.name || field.label.toLowerCase().replace(/\s+/g, '_')] = '';
     });
 
-    const { data, setData, post, processing, reset, errors } = useForm<any>({
-        ...initialData,
-        form_title: title, // Track which form it is
-    });
+    const { data, setData, post, processing, reset, errors } = useForm(initialData);
 
     const [submitted, setSubmitted] = useState(false);
 

@@ -10,6 +10,8 @@ interface AnimatedSectionProps {
         | 'fade'
         | 'fade-in'
         | 'fade-up'
+        | 'fade-left'
+        | 'fade-right'
         | 'slide-left'
         | 'slide-right'
         | 'slide-up'
@@ -86,6 +88,12 @@ export const AnimatedSection: React.FC<AnimatedSectionProps> = ({
                 case 'fade':
                 case 'fade-in':
                     initialState.y = 30;
+                    break;
+                case 'fade-left':
+                    initialState.x = -30;
+                    break;
+                case 'fade-right':
+                    initialState.x = 30;
                     break;
                 case 'slide-left':
                     initialState.x = -30;

@@ -26,11 +26,56 @@ import LogoCloudBlock from './LogoCloudBlock';
 import AppleCardsCarouselBlock from './AppleCardsCarouselBlock';
 import CoverDemoBlock from './CoverDemoBlock';
 
+// Type definitions for external data
+interface ServiceItem {
+    id: number;
+    title: string;
+    slug: string;
+    description: string;
+    icon?: string | null;
+    featured_image?: string | null;
+    price_range?: string | null;
+}
+
+interface ProjectItem {
+    id: number;
+    title: string;
+    slug: string;
+    description: string;
+    featured_image?: string | null;
+    client?: string | null;
+    technologies?: string[] | null;
+}
+
+interface InsightItem {
+    id: number;
+    title: string;
+    slug: string;
+    excerpt: string;
+    featured_image?: string | null;
+    author?: { name: string; avatar?: string | null };
+    category?: { name: string; slug: string };
+    published_at: string | null;
+    reading_time?: number | null;
+}
+
+// Column content type for text blocks
+interface ColumnContent {
+    body?: string;
+    textSize?: string;
+    textAlign?: string;
+    url?: string;
+    alt?: string;
+    caption?: string;
+    text?: string;
+    style?: string;
+}
+
 interface BlockRendererProps {
     blocks: PageBlock[];
-    featuredServices?: Record<string, any>[];
-    featuredProjects?: Record<string, any>[];
-    recentInsights?: Record<string, any>[];
+    featuredServices?: ServiceItem[];
+    featuredProjects?: ProjectItem[];
+    recentInsights?: InsightItem[];
 }
 
 const VideoBlock = ({ content }: { content: VideoBlockType['content'] }) => {
@@ -81,11 +126,14 @@ const getTextAlignClass = (align: string): string => {
 
 // Column content renderer for TextBlock
 const ColumnRenderer = ({ column }: { column: NonNullable<TextBlockType['content']['columns']>[number] }) => {
-    const { type, content } = column;
+    const { type, content: rawContent } = column;
+    // Cast to ColumnContent for proper type access
+    const content = rawContent as ColumnContent;
 
     switch (type) {
         case 'text': {
-            const sanitizedHTML = DOMPurify.sanitize(content?.body || '', {
+            const body = (content?.body as string) || '';
+            const sanitizedHTML = DOMPurify.sanitize(body, {
                 ALLOWED_TAGS: [
                     'p', 'br', 'strong', 'b', 'em', 'i', 'u', 's', 'strike', 'del',
                     'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
@@ -111,27 +159,32 @@ const ColumnRenderer = ({ column }: { column: NonNullable<TextBlockType['content
                 </div>
             );
         }
-        case 'image':
-            if (!content?.url) return null;
+        case 'image': {
+            const url = content?.url as string;
+            if (!url) return null;
             return (
                 <figure className="relative">
                     <img 
-                        src={content.url} 
-                        alt={content?.alt || 'Image'} 
+                        src={url} 
+                        alt={(content?.alt as string) || 'Image'} 
                         className="w-full rounded-2xl shadow-lg object-cover" 
                     />
                     {content?.caption && (
                         <figcaption className="mt-3 text-center text-sm text-muted-foreground">
-                            {content.caption}
+                            {content.caption as string}
                         </figcaption>
                     )}
                 </figure>
             );
-        case 'video':
-            if (!content?.url) return null;
-            return <VideoPlayer src={content.url} />;
+        }
+        case 'video': {
+            const url = content?.url as string;
+            if (!url) return null;
+            return <VideoPlayer src={url} />;
+        }
         case 'button': {
-            if (!content?.text) return null;
+            const text = content?.text as string;
+            if (!text) return null;
             const getButtonClasses = (style: string) => {
                 const baseClasses = "inline-flex items-center justify-center rounded-lg px-6 py-3 font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2";
                 switch (style) {
@@ -150,10 +203,10 @@ const ColumnRenderer = ({ column }: { column: NonNullable<TextBlockType['content
             return (
                 <div className="flex items-center">
                     <a 
-                        href={content.url || '#'} 
-                        className={getButtonClasses(content.style || 'primary')}
+                        href={(content?.url as string) || '#'} 
+                        className={getButtonClasses((content?.style as string) || 'primary')}
                     >
-                        {content.text}
+                        {text}
                     </a>
                 </div>
             );

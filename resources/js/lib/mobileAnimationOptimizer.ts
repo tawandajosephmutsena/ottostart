@@ -186,14 +186,15 @@ export class MobileAnimationOptimizer {
     private supportsPassiveEvents(): boolean {
         let passiveSupported = false;
         try {
-            const options = {
-                get passive() {
+            const options = Object.defineProperty({}, 'passive', {
+                get: function() {
                     passiveSupported = true;
-                    return false;
-                },
-            };
-            window.addEventListener('test', () => {}, options);
-            window.removeEventListener('test', () => {}, options);
+                    return true;
+                }
+            });
+            const noop = () => {};
+            window.addEventListener('testPassive', noop, options as EventListenerOptions);
+            window.removeEventListener('testPassive', noop, options as EventListenerOptions);
         } catch (err) {
             passiveSupported = false;
         }
@@ -444,7 +445,7 @@ export class MobileAnimationOptimizer {
         if (!this.isMobile) return;
 
         // Add momentum scrolling for iOS
-        document.body.style.webkitOverflowScrolling = 'touch';
+        (document.body.style as unknown as Record<string, string>).webkitOverflowScrolling = 'touch';
 
         // Optimize scroll events
         let ticking = false;

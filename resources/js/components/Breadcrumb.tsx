@@ -108,7 +108,7 @@ export const PageBreadcrumb: React.FC<PageBreadcrumbProps> = ({
 }) => {
     const items = [
         ...parentPages.map(page => ({ ...page, active: false })),
-        { title, active: true }
+        { title, url: '', active: true }
     ];
 
     return <Breadcrumb items={items} className={className} />;
@@ -138,7 +138,7 @@ export const AdminBreadcrumb: React.FC<AdminBreadcrumbProps> = ({
                           action === 'show' ? (itemTitle || 'View') :
                           action;
         
-        items.push({ title: actionTitle, active: true });
+        items.push({ title: actionTitle, url: '', active: true });
     }
 
     return <Breadcrumb items={items} className={className} />;
@@ -170,7 +170,7 @@ export const BlogBreadcrumb: React.FC<BlogBreadcrumbProps> = ({
     }
 
     if (postTitle) {
-        items.push({ title: postTitle, active: true });
+        items.push({ title: postTitle, url: '', active: true });
     }
 
     return <Breadcrumb items={items} className={className} />;
@@ -190,7 +190,7 @@ export const PortfolioBreadcrumb: React.FC<PortfolioBreadcrumbProps> = ({
     ];
 
     if (projectTitle) {
-        items.push({ title: projectTitle, active: true });
+        items.push({ title: projectTitle, url: '', active: true });
     }
 
     return <Breadcrumb items={items} className={className} />;
@@ -210,7 +210,7 @@ export const ServicesBreadcrumb: React.FC<ServicesBreadcrumbProps> = ({
     ];
 
     if (serviceTitle) {
-        items.push({ title: serviceTitle, active: true });
+        items.push({ title: serviceTitle, url: '', active: true });
     }
 
     return <Breadcrumb items={items} className={className} />;

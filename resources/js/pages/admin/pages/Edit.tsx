@@ -10,7 +10,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Page } from '@/types';
 import { useForm, Link } from '@inertiajs/react';
-import { ChevronLeft, Save, Plus, Trash, ArrowUp, ArrowDown, Image as ImageIcon, Type, Layout, Eye, List, EyeOff, BookOpen, HelpCircle, PhoneCall, AlertCircle, Video, AlignLeft, AlignCenter, AlignRight, Columns2, Columns3, Square, RectangleHorizontal, Link2 } from 'lucide-react';
+import { ChevronLeft, Save, Plus, Trash, ArrowUp, ArrowDown, Image as ImageIcon, Type, Layout, Eye, List, EyeOff, BookOpen, HelpCircle, PhoneCall, AlertCircle, Video, AlignLeft, AlignCenter, AlignRight, Columns2, Columns3, Square, RectangleHorizontal, Link2, Copy, ChevronDown, GripVertical } from 'lucide-react';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
+import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import React, { useState } from 'react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
@@ -287,6 +291,47 @@ export default function Edit({ page }: Props) {
 
     const initialBlocks = (Array.isArray(data.content?.blocks) ? data.content.blocks : []) as Block[];
     const [blocks, setBlocks] = useState<Block[]>(initialBlocks);
+    const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
+        heroes: true,
+        content: false,
+        showcase: false,
+        about: false,
+        interaction: false,
+    });
+    const [collapsedBlocks, setCollapsedBlocks] = useState<Record<string, boolean>>({});
+
+    const toggleSection = (section: string) => {
+        setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
+    };
+
+    const toggleBlockCollapse = (blockId: string) => {
+        setCollapsedBlocks(prev => ({ ...prev, [blockId]: !prev[blockId] }));
+    };
+
+    // Drag and drop sensors
+    const sensors = useSensors(
+        useSensor(PointerSensor, {
+            activationConstraint: {
+                distance: 8,
+            },
+        }),
+        useSensor(KeyboardSensor, {
+            coordinateGetter: sortableKeyboardCoordinates,
+        })
+    );
+
+    const handleDragEnd = (event: DragEndEvent) => {
+        const { active, over } = event;
+        
+        if (over && active.id !== over.id) {
+            setBlocks((items) => {
+                const oldIndex = items.findIndex((item) => item.id === active.id);
+                const newIndex = items.findIndex((item) => item.id === over.id);
+                return arrayMove(items, oldIndex, newIndex);
+            });
+            toast.success('Block reordered');
+        }
+    };
 
     // Update form data when blocks change
     React.useEffect(() => {
@@ -326,6 +371,21 @@ export default function Edit({ page }: Props) {
         setBlocks(blocks.map(b => b.id === id ? { ...b, content: { ...b.content, ...content } } : b));
     };
 
+    const duplicateBlock = (id: string) => {
+        const blockToClone = blocks.find(b => b.id === id);
+        if (!blockToClone) return;
+        
+        const newBlock: Block = {
+            ...blockToClone,
+            id: Date.now().toString(36) + Math.random().toString(36).substr(2, 5),
+            content: { ...blockToClone.content },
+        };
+        const blockIndex = blocks.findIndex(b => b.id === id);
+        const newBlocks = [...blocks];
+        newBlocks.splice(blockIndex + 1, 0, newBlock);
+        setBlocks(newBlocks);
+        toast.success('Block duplicated');
+    };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -373,100 +433,248 @@ export default function Edit({ page }: Props) {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Main Content Area - The Page Builder */}
                     <div className="lg:col-span-2 space-y-6">
+                        {/* Block Toolbar - Collapsible Categories */}
                         <Card className="bg-muted/30 border-dashed border-2">
-                             <div className="p-4 flex flex-wrap gap-2 justify-center">
-                                <Button type="button" variant="secondary" size="sm" onClick={() => addBlock('hero')}>
-                                    <Layout className="h-4 w-4 mr-2" /> Hero
-                                </Button>
-                                <Button type="button" variant="secondary" size="sm" onClick={() => addBlock('animated_shader_hero')}>
-                                    <Layout className="h-4 w-4 mr-2" /> Shader Hero
-                                </Button>
-                                <Button type="button" variant="secondary" size="sm" onClick={() => addBlock('cinematic_hero')}>
-                                    <Layout className="h-4 w-4 mr-2" /> Cinematic Hero
-                                </Button>
-                                <Button type="button" variant="secondary" size="sm" onClick={() => addBlock('stats')}>
-                                    <Plus className="h-4 w-4 mr-2" /> Stats
-                                </Button>
-                                <Button type="button" variant="secondary" size="sm" onClick={() => addBlock('services')}>
-                                    <Layout className="h-4 w-4 mr-2" /> Services
-                                </Button>
-                                <Button type="button" variant="secondary" size="sm" onClick={() => addBlock('portfolio')}>
-                                    <Layout className="h-4 w-4 mr-2" /> Portfolio
-                                </Button>
-                                <Button type="button" variant="secondary" size="sm" onClick={() => addBlock('insights')}>
-                                    <Layout className="h-4 w-4 mr-2" /> Insights
-                                </Button>
-                                <Button type="button" variant="secondary" size="sm" onClick={() => addBlock('cta')}>
-                                    <Plus className="h-4 w-4 mr-2" /> CTA
-                                </Button>
-                                <Button type="button" variant="secondary" size="sm" onClick={() => addBlock('text')}>
-                                    <Type className="h-4 w-4 mr-2" /> Text
-                                </Button>
-                                <Button type="button" variant="secondary" size="sm" onClick={() => addBlock('image')}>
-                                    <ImageIcon className="h-4 w-4 mr-2" /> Image
-                                </Button>
-                                <Button type="button" variant="secondary" size="sm" onClick={() => addBlock('form')}>
-                                    <List className="h-4 w-4 mr-2" /> Form
-                                </Button>
-                                <Button type="button" variant="secondary" size="sm" onClick={() => addBlock('video')}>
-                                    <Eye className="h-4 w-4 mr-2" /> Video
-                                </Button>
-                                <Button type="button" variant="secondary" size="sm" onClick={() => addBlock('story')}>
-                                    <BookOpen className="h-4 w-4 mr-2" /> Story
-                                </Button>
-                                <Button type="button" variant="secondary" size="sm" onClick={() => addBlock('manifesto')}>
-                                    <AlertCircle className="h-4 w-4 mr-2" /> Manifesto
-                                </Button>
-                                <Button type="button" variant="secondary" size="sm" onClick={() => addBlock('process')}>
-                                    <List className="h-4 w-4 mr-2" /> Process
-                                </Button>
-                                <Button type="button" variant="secondary" size="sm" onClick={() => addBlock('contact_info')}>
-                                    <PhoneCall className="h-4 w-4 mr-2" /> Contact Info
-                                </Button>
-                                <Button type="button" variant="secondary" size="sm" onClick={() => addBlock('faq')}>
-                                    <HelpCircle className="h-4 w-4 mr-2" /> FAQ
-                                </Button>
-                                <Button type="button" variant="secondary" size="sm" onClick={() => addBlock('testimonials')}>
-                                    <Type className="h-4 w-4 mr-2" /> Testimonials
-                                </Button>
-                                <Button type="button" variant="secondary" size="sm" onClick={() => addBlock('logo_cloud')}>
-                                    <ImageIcon className="h-4 w-4 mr-2" /> Logo Cloud
-                                </Button>
-                                <Button type="button" variant="secondary" size="sm" onClick={() => addBlock('apple_cards_carousel')}>
-                                    <Layout className="h-4 w-4 mr-2" /> Cards Carousel
-                                </Button>
-                                <Button type="button" variant="secondary" size="sm" onClick={() => addBlock('cover_demo')}>
-                                    <Type className="h-4 w-4 mr-2" /> Cover Demo
-                                </Button>
-                             </div>
+                            <div className="p-4 space-y-2">
+                                <div className="flex items-center justify-between mb-3">
+                                    <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Add Block</h3>
+                                    <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">{blocks.length} blocks</span>
+                                </div>
+                                
+                                {/* Hero Blocks */}
+                                <Collapsible open={expandedSections.heroes} onOpenChange={() => toggleSection('heroes')}>
+                                    <CollapsibleTrigger className="flex items-center justify-between w-full p-2 rounded-md hover:bg-muted/50 transition-colors">
+                                        <span className="text-xs font-medium text-muted-foreground flex items-center gap-2">
+                                            <Layout className="h-3 w-3" /> Heroes & Headers
+                                            <span className="text-[10px] bg-muted px-1.5 rounded">4</span>
+                                        </span>
+                                        <ChevronDown className={cn("h-3 w-3 transition-transform text-muted-foreground", expandedSections.heroes && "rotate-180")} />
+                                    </CollapsibleTrigger>
+                                    <CollapsibleContent className="pt-2">
+                                        <div className="grid grid-cols-4 gap-1.5">
+                                            <Button type="button" variant="ghost" size="sm" className="h-auto py-2 px-2 flex-col gap-1 text-xs" onClick={() => addBlock('hero')}>
+                                                <Layout className="h-4 w-4" />
+                                                <span>Hero</span>
+                                            </Button>
+                                            <Button type="button" variant="ghost" size="sm" className="h-auto py-2 px-2 flex-col gap-1 text-xs" onClick={() => addBlock('animated_shader_hero')}>
+                                                <Layout className="h-4 w-4" />
+                                                <span>Shader</span>
+                                            </Button>
+                                            <Button type="button" variant="ghost" size="sm" className="h-auto py-2 px-2 flex-col gap-1 text-xs" onClick={() => addBlock('cinematic_hero')}>
+                                                <Layout className="h-4 w-4" />
+                                                <span>Cinematic</span>
+                                            </Button>
+                                            <Button type="button" variant="ghost" size="sm" className="h-auto py-2 px-2 flex-col gap-1 text-xs" onClick={() => addBlock('cover_demo')}>
+                                                <Type className="h-4 w-4" />
+                                                <span>Cover</span>
+                                            </Button>
+                                        </div>
+                                    </CollapsibleContent>
+                                </Collapsible>
+                                
+                                {/* Content Blocks */}
+                                <Collapsible open={expandedSections.content} onOpenChange={() => toggleSection('content')}>
+                                    <CollapsibleTrigger className="flex items-center justify-between w-full p-2 rounded-md hover:bg-muted/50 transition-colors">
+                                        <span className="text-xs font-medium text-muted-foreground flex items-center gap-2">
+                                            <Type className="h-3 w-3" /> Content
+                                            <span className="text-[10px] bg-muted px-1.5 rounded">4</span>
+                                        </span>
+                                        <ChevronDown className={cn("h-3 w-3 transition-transform text-muted-foreground", expandedSections.content && "rotate-180")} />
+                                    </CollapsibleTrigger>
+                                    <CollapsibleContent className="pt-2">
+                                        <div className="grid grid-cols-4 gap-1.5">
+                                            <Button type="button" variant="ghost" size="sm" className="h-auto py-2 px-2 flex-col gap-1 text-xs" onClick={() => addBlock('text')}>
+                                                <Type className="h-4 w-4" />
+                                                <span>Text</span>
+                                            </Button>
+                                            <Button type="button" variant="ghost" size="sm" className="h-auto py-2 px-2 flex-col gap-1 text-xs" onClick={() => addBlock('image')}>
+                                                <ImageIcon className="h-4 w-4" />
+                                                <span>Image</span>
+                                            </Button>
+                                            <Button type="button" variant="ghost" size="sm" className="h-auto py-2 px-2 flex-col gap-1 text-xs" onClick={() => addBlock('video')}>
+                                                <Video className="h-4 w-4" />
+                                                <span>Video</span>
+                                            </Button>
+                                            <Button type="button" variant="ghost" size="sm" className="h-auto py-2 px-2 flex-col gap-1 text-xs" onClick={() => addBlock('stats')}>
+                                                <Plus className="h-4 w-4" />
+                                                <span>Stats</span>
+                                            </Button>
+                                        </div>
+                                    </CollapsibleContent>
+                                </Collapsible>
+                                
+                                {/* Showcase Blocks */}
+                                <Collapsible open={expandedSections.showcase} onOpenChange={() => toggleSection('showcase')}>
+                                    <CollapsibleTrigger className="flex items-center justify-between w-full p-2 rounded-md hover:bg-muted/50 transition-colors">
+                                        <span className="text-xs font-medium text-muted-foreground flex items-center gap-2">
+                                            <Layout className="h-3 w-3" /> Showcase
+                                            <span className="text-[10px] bg-muted px-1.5 rounded">6</span>
+                                        </span>
+                                        <ChevronDown className={cn("h-3 w-3 transition-transform text-muted-foreground", expandedSections.showcase && "rotate-180")} />
+                                    </CollapsibleTrigger>
+                                    <CollapsibleContent className="pt-2">
+                                        <div className="grid grid-cols-4 gap-1.5">
+                                            <Button type="button" variant="ghost" size="sm" className="h-auto py-2 px-2 flex-col gap-1 text-xs" onClick={() => addBlock('services')}>
+                                                <Layout className="h-4 w-4" />
+                                                <span>Services</span>
+                                            </Button>
+                                            <Button type="button" variant="ghost" size="sm" className="h-auto py-2 px-2 flex-col gap-1 text-xs" onClick={() => addBlock('portfolio')}>
+                                                <Layout className="h-4 w-4" />
+                                                <span>Portfolio</span>
+                                            </Button>
+                                            <Button type="button" variant="ghost" size="sm" className="h-auto py-2 px-2 flex-col gap-1 text-xs" onClick={() => addBlock('insights')}>
+                                                <Layout className="h-4 w-4" />
+                                                <span>Insights</span>
+                                            </Button>
+                                            <Button type="button" variant="ghost" size="sm" className="h-auto py-2 px-2 flex-col gap-1 text-xs" onClick={() => addBlock('testimonials')}>
+                                                <Type className="h-4 w-4" />
+                                                <span>Reviews</span>
+                                            </Button>
+                                            <Button type="button" variant="ghost" size="sm" className="h-auto py-2 px-2 flex-col gap-1 text-xs" onClick={() => addBlock('logo_cloud')}>
+                                                <ImageIcon className="h-4 w-4" />
+                                                <span>Logos</span>
+                                            </Button>
+                                            <Button type="button" variant="ghost" size="sm" className="h-auto py-2 px-2 flex-col gap-1 text-xs" onClick={() => addBlock('apple_cards_carousel')}>
+                                                <Layout className="h-4 w-4" />
+                                                <span>Carousel</span>
+                                            </Button>
+                                        </div>
+                                    </CollapsibleContent>
+                                </Collapsible>
+                                
+                                {/* About & Story Blocks */}
+                                <Collapsible open={expandedSections.about} onOpenChange={() => toggleSection('about')}>
+                                    <CollapsibleTrigger className="flex items-center justify-between w-full p-2 rounded-md hover:bg-muted/50 transition-colors">
+                                        <span className="text-xs font-medium text-muted-foreground flex items-center gap-2">
+                                            <BookOpen className="h-3 w-3" /> About & Story
+                                            <span className="text-[10px] bg-muted px-1.5 rounded">3</span>
+                                        </span>
+                                        <ChevronDown className={cn("h-3 w-3 transition-transform text-muted-foreground", expandedSections.about && "rotate-180")} />
+                                    </CollapsibleTrigger>
+                                    <CollapsibleContent className="pt-2">
+                                        <div className="grid grid-cols-4 gap-1.5">
+                                            <Button type="button" variant="ghost" size="sm" className="h-auto py-2 px-2 flex-col gap-1 text-xs" onClick={() => addBlock('story')}>
+                                                <BookOpen className="h-4 w-4" />
+                                                <span>Story</span>
+                                            </Button>
+                                            <Button type="button" variant="ghost" size="sm" className="h-auto py-2 px-2 flex-col gap-1 text-xs" onClick={() => addBlock('manifesto')}>
+                                                <AlertCircle className="h-4 w-4" />
+                                                <span>Manifesto</span>
+                                            </Button>
+                                            <Button type="button" variant="ghost" size="sm" className="h-auto py-2 px-2 flex-col gap-1 text-xs" onClick={() => addBlock('process')}>
+                                                <List className="h-4 w-4" />
+                                                <span>Process</span>
+                                            </Button>
+                                        </div>
+                                    </CollapsibleContent>
+                                </Collapsible>
+                                
+                                {/* Interaction Blocks */}
+                                <Collapsible open={expandedSections.interaction} onOpenChange={() => toggleSection('interaction')}>
+                                    <CollapsibleTrigger className="flex items-center justify-between w-full p-2 rounded-md hover:bg-muted/50 transition-colors">
+                                        <span className="text-xs font-medium text-muted-foreground flex items-center gap-2">
+                                            <PhoneCall className="h-3 w-3" /> Interaction
+                                            <span className="text-[10px] bg-muted px-1.5 rounded">4</span>
+                                        </span>
+                                        <ChevronDown className={cn("h-3 w-3 transition-transform text-muted-foreground", expandedSections.interaction && "rotate-180")} />
+                                    </CollapsibleTrigger>
+                                    <CollapsibleContent className="pt-2">
+                                        <div className="grid grid-cols-4 gap-1.5">
+                                            <Button type="button" variant="ghost" size="sm" className="h-auto py-2 px-2 flex-col gap-1 text-xs" onClick={() => addBlock('form')}>
+                                                <List className="h-4 w-4" />
+                                                <span>Form</span>
+                                            </Button>
+                                            <Button type="button" variant="ghost" size="sm" className="h-auto py-2 px-2 flex-col gap-1 text-xs" onClick={() => addBlock('contact_info')}>
+                                                <PhoneCall className="h-4 w-4" />
+                                                <span>Contact</span>
+                                            </Button>
+                                            <Button type="button" variant="ghost" size="sm" className="h-auto py-2 px-2 flex-col gap-1 text-xs" onClick={() => addBlock('faq')}>
+                                                <HelpCircle className="h-4 w-4" />
+                                                <span>FAQ</span>
+                                            </Button>
+                                            <Button type="button" variant="ghost" size="sm" className="h-auto py-2 px-2 flex-col gap-1 text-xs" onClick={() => addBlock('cta')}>
+                                                <Plus className="h-4 w-4" />
+                                                <span>CTA</span>
+                                            </Button>
+                                        </div>
+                                    </CollapsibleContent>
+                                </Collapsible>
+                            </div>
                         </Card>
 
-                        <div className="space-y-4">
-                            {blocks.map((block, index) => (
-                                <Card key={block.id} className={cn("relative group hover:border-agency-accent/50 transition-colors", !block.is_enabled && "opacity-60")}>
-                                    <div className="absolute right-4 top-4 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <Button type="button" size="icon" variant="ghost" className="h-6 w-6" onClick={() => toggleBlock(block.id)}>
-                                            {block.is_enabled ? <Eye className="h-3 w-3" /> : <EyeOff className="h-3 w-3" />}
-                                        </Button>
-                                        <Button type="button" size="icon" variant="ghost" className="h-6 w-6" onClick={() => moveBlock(index, 'up')} disabled={index === 0}>
-                                            <ArrowUp className="h-3 w-3" />
-                                        </Button>
-                                        <Button type="button" size="icon" variant="ghost" className="h-6 w-6" onClick={() => moveBlock(index, 'down')} disabled={index === blocks.length - 1}>
-                                            <ArrowDown className="h-3 w-3" />
-                                        </Button>
-                                        <Button type="button" size="icon" variant="ghost" className="h-6 w-6 text-destructive" onClick={() => removeBlock(block.id)}>
-                                            <Trash className="h-3 w-3" />
-                                        </Button>
-                                    </div>
+                        <DndContext
+                            sensors={sensors}
+                            collisionDetection={closestCenter}
+                            onDragEnd={handleDragEnd}
+                        >
+                            <SortableContext
+                                items={blocks.map(b => b.id)}
+                                strategy={verticalListSortingStrategy}
+                            >
+                                <div className="space-y-2">
+                                    {blocks.map((block, index) => {
+                                        const {
+                                            attributes,
+                                            listeners,
+                                            setNodeRef,
+                                            transform,
+                                            transition,
+                                            isDragging,
+                                        } = useSortable({ id: block.id });
 
-                                    <CardHeader className="py-3 px-6 bg-muted/20 border-b">
-                                        <CardTitle className="text-xs uppercase tracking-widest font-bold text-muted-foreground flex items-center gap-2">
-                                            {!block.is_enabled && <span className="text-[10px] bg-destructive/10 text-destructive px-1.5 rounded-full mr-2">HIDDEN</span>}
-                                            {block.type} Block
-                                        </CardTitle>
-                                    </CardHeader>
+                                        const style = {
+                                            transform: CSS.Transform.toString(transform),
+                                            transition,
+                                            opacity: isDragging ? 0.5 : 1,
+                                            zIndex: isDragging ? 100 : 'auto' as const,
+                                        };
 
-                                    <CardContent className="p-6">
+                                        return (
+                                            <div key={block.id} ref={setNodeRef} style={style} {...attributes}>
+                                                <Collapsible 
+                                                    open={!collapsedBlocks[block.id]} 
+                                                    onOpenChange={() => toggleBlockCollapse(block.id)}
+                                                >
+                                                    <Card className={cn("relative hover:border-agency-accent/50 transition-colors", !block.is_enabled && "opacity-60")}>
+                                                        <div className="flex items-center justify-between px-4 py-2 bg-muted/20 border-b">
+                                                            <div className="flex items-center gap-3 flex-1">
+                                                                <button
+                                                                    type="button"
+                                                                    className="cursor-grab active:cursor-grabbing touch-none"
+                                                                    {...listeners}
+                                                                >
+                                                                    <GripVertical className="h-4 w-4 text-muted-foreground" />
+                                                                </button>
+                                                                <CollapsibleTrigger className="flex items-center gap-2 flex-1 text-left">
+                                                                    <div className="flex items-center gap-2">
+                                                                        {!block.is_enabled && <span className="text-[10px] bg-destructive/10 text-destructive px-1.5 rounded-full">HIDDEN</span>}
+                                                                        <span className="text-xs uppercase tracking-widest font-bold text-muted-foreground">{block.type.replace(/_/g, ' ')}</span>
+                                                                        <span className="text-xs text-muted-foreground/50">#{index + 1}</span>
+                                                                    </div>
+                                                                    <ChevronDown className={cn("h-3 w-3 ml-2 transition-transform text-muted-foreground", !collapsedBlocks[block.id] && "rotate-180")} />
+                                                                </CollapsibleTrigger>
+                                                            </div>
+                                                            <div className="flex gap-0.5">
+                                                                <Button type="button" size="icon" variant="ghost" className="h-7 w-7" onClick={() => toggleBlock(block.id)} title={block.is_enabled ? 'Hide block' : 'Show block'}>
+                                                                    {block.is_enabled ? <Eye className="h-3.5 w-3.5" /> : <EyeOff className="h-3.5 w-3.5" />}
+                                                                </Button>
+                                                                <Button type="button" size="icon" variant="ghost" className="h-7 w-7" onClick={() => moveBlock(index, 'up')} disabled={index === 0} title="Move up">
+                                                                    <ArrowUp className="h-3.5 w-3.5" />
+                                                                </Button>
+                                                                <Button type="button" size="icon" variant="ghost" className="h-7 w-7" onClick={() => moveBlock(index, 'down')} disabled={index === blocks.length - 1} title="Move down">
+                                                                    <ArrowDown className="h-3.5 w-3.5" />
+                                                                </Button>
+                                                                <Button type="button" size="icon" variant="ghost" className="h-7 w-7" onClick={() => duplicateBlock(block.id)} title="Duplicate block">
+                                                                    <Copy className="h-3.5 w-3.5" />
+                                                                </Button>
+                                                                <Button type="button" size="icon" variant="ghost" className="h-7 w-7 text-destructive hover:text-destructive" onClick={() => removeBlock(block.id)} title="Delete block">
+                                                                    <Trash className="h-3.5 w-3.5" />
+                                                                </Button>
+                                                            </div>
+                                                        </div>
+
+                                        <CollapsibleContent>
+                                            <CardContent className="p-6">
                                         {block.type === 'hero' && (
                                             <div className="space-y-4">
                                                 <div className="grid grid-cols-2 gap-4">
@@ -2434,17 +2642,23 @@ export default function Edit({ page }: Props) {
                                                 </div>
                                             </div>
                                         )}
-                                    </CardContent>
-                                </Card>
-                            ))}
+                                            </CardContent>
+                                        </CollapsibleContent>
+                                    </Card>
+                                </Collapsible>
+                            </div>
+                        );
+                    })}
 
-                            {blocks.length === 0 && (
-                                <div className="text-center py-12 text-muted-foreground border-2 border-dashed rounded-lg">
-                                    <p>No content blocks added yet.</p>
-                                    <p className="text-sm">Click the buttons above to start building your page.</p>
-                                </div>
-                            )}
+                    {blocks.length === 0 && (
+                        <div className="text-center py-12 text-muted-foreground border-2 border-dashed rounded-lg">
+                            <p>No content blocks added yet.</p>
+                            <p className="text-sm">Click the buttons above to start building your page.</p>
                         </div>
+                    )}
+                            </div>
+                        </SortableContext>
+                    </DndContext>
                     </div>
 
                     {/* Sidebar Settings */}

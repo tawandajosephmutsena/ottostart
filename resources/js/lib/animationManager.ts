@@ -162,9 +162,9 @@ export class AnimationManager {
 
         const trigger = ScrollTrigger.create({
             ...config,
-            onRefresh: () => {
+            onRefresh: (self) => {
                 this.recordMetric('scrolltrigger_refresh', performance.now());
-                config.onRefresh?.();
+                config.onRefresh?.(self);
             },
         });
 
@@ -222,7 +222,7 @@ export class AnimationManager {
                         animationPerformanceMonitor.startAnimationMeasure(animationId);
                         
                         // Set will-change for animation properties
-                        const animationProperties = [];
+                        const animationProperties: string[] = [];
                         if (animation.x !== undefined || animation.y !== undefined) {
                             animationProperties.push('transform');
                         }
@@ -365,10 +365,11 @@ export class AnimationManager {
         );
         
         // Check for limited hardware concurrency
-        const limitedCores = navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4;
+        const limitedCores = Boolean(navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4);
         
-        // Check for limited memory (if available)
-        const limitedMemory = (navigator as any).deviceMemory && (navigator as any).deviceMemory <= 4;
+        // Check for limited memory (if available) - deviceMemory is not in standard Navigator type
+        const nav = navigator as Navigator & { deviceMemory?: number };
+        const limitedMemory = Boolean(nav.deviceMemory && nav.deviceMemory <= 4);
         
         return isMobile || limitedCores || limitedMemory;
     }

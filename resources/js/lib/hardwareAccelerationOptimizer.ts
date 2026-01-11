@@ -391,14 +391,15 @@ export class HardwareAccelerationOptimizer {
     private supportsPassiveEvents(): boolean {
         let passiveSupported = false;
         try {
-            const options = {
-                get passive() {
+            const options = Object.defineProperty({}, 'passive', {
+                get: function() {
                     passiveSupported = true;
-                    return false;
-                },
-            };
-            window.addEventListener('test', () => {}, options);
-            window.removeEventListener('test', () => {}, options);
+                    return true;
+                }
+            });
+            const noop = () => {};
+            window.addEventListener('testPassive', noop, options as EventListenerOptions);
+            window.removeEventListener('testPassive', noop, options as EventListenerOptions);
         } catch (err) {
             passiveSupported = false;
         }
