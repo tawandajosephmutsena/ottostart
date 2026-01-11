@@ -23,7 +23,7 @@ interface Props {
 }
 
 // Define the structure of our blocks
-type BlockType = 'hero' | 'text' | 'image' | 'features' | 'stats' | 'services' | 'portfolio' | 'insights' | 'cta' | 'cinematic_hero' | 'form' | 'video' | 'story' | 'manifesto' | 'process' | 'contact_info' | 'faq' | 'animated_shader_hero';
+type BlockType = 'hero' | 'text' | 'image' | 'features' | 'stats' | 'services' | 'portfolio' | 'insights' | 'cta' | 'cinematic_hero' | 'form' | 'video' | 'story' | 'manifesto' | 'process' | 'contact_info' | 'faq' | 'animated_shader_hero' | 'testimonials' | 'logo_cloud';
 
 interface Block {
     id: string;
@@ -198,6 +198,44 @@ const getDefaultContentForType = (type: BlockType) => {
                 { q: 'Do you work with global clients?', a: 'Absolutely. We have clients across 4 continents.' }
             ]
         };
+        case 'testimonials': return {
+            title: 'What our users say',
+            subtitle: 'Testimonials',
+            description: 'Discover how thousands of teams streamline their operations with our platform.',
+            items: [
+                {
+                    text: "The aesthetic of this platform is simply unmatched. It makes every interaction feel premium.",
+                    image: "https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=200&h=200&fit=crop",
+                    name: "Alex Morgan",
+                    role: "Design Director"
+                },
+                {
+                    text: "I've never seen a tool that combines functionality with such a beautiful interface.",
+                    image: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&h=200&fit=crop",
+                    name: "David Chen",
+                    role: "Product Manager"
+                },
+                {
+                    text: "It's not just a tool; it's an experience. The attention to detail is evident in every pixel.",
+                    image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200&h=200&fit=crop",
+                    name: "Sarah Jenkins",
+                    role: "Frontend Developer"
+                }
+            ]
+        };
+        case 'logo_cloud': return {
+            title: 'Powering the best teams',
+            items: [
+                { name: 'Nvidia', url: 'https://html.tailus.io/blocks/customers/nvidia.svg' },
+                { name: 'Column', url: 'https://html.tailus.io/blocks/customers/column.svg' },
+                { name: 'GitHub', url: 'https://html.tailus.io/blocks/customers/github.svg' },
+                { name: 'Nike', url: 'https://html.tailus.io/blocks/customers/nike.svg' },
+                { name: 'Lemon Squeezy', url: 'https://html.tailus.io/blocks/customers/lemonsqueezy.svg' },
+                { name: 'Laravel', url: 'https://html.tailus.io/blocks/customers/laravel.svg' },
+                { name: 'Lilly', url: 'https://html.tailus.io/blocks/customers/lilly.svg' },
+                { name: 'OpenAI', url: 'https://html.tailus.io/blocks/customers/openai.svg' }
+            ]
+        };
         default: return {};
     }
 };
@@ -354,6 +392,12 @@ export default function Edit({ page }: Props) {
                                 </Button>
                                 <Button type="button" variant="secondary" size="sm" onClick={() => addBlock('faq')}>
                                     <HelpCircle className="h-4 w-4 mr-2" /> FAQ
+                                </Button>
+                                <Button type="button" variant="secondary" size="sm" onClick={() => addBlock('testimonials')}>
+                                    <Type className="h-4 w-4 mr-2" /> Testimonials
+                                </Button>
+                                <Button type="button" variant="secondary" size="sm" onClick={() => addBlock('logo_cloud')}>
+                                    <Image-Icon className="h-4 w-4 mr-2" /> Logo Cloud
                                 </Button>
                              </div>
                         </Card>
@@ -688,6 +732,87 @@ export default function Edit({ page }: Props) {
                                                 }}>
                                                     <Plus className="h-3 w-3 mr-2" /> Add Stat
                                                 </Button>
+                                            </div>
+                                        )}
+
+                                        {block.type === 'logo_cloud' && (
+                                            <div className="space-y-4">
+                                                <div>
+                                                    <Label className="text-xs">Section Title</Label>
+                                                    <Input 
+                                                        value={block.content.title || ''} 
+                                                        onChange={(e) => updateBlockContent(block.id, { title: e.target.value })}
+                                                    />
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <Label className="text-xs">Logos</Label>
+                                                    <div className="grid grid-cols-4 gap-4">
+                                                        {(block.content.items || []).map((item: any, i: number) => (
+                                                            <div key={i} className="relative group border p-2 rounded bg-muted/10">
+                                                                <div className="aspect-video flex items-center justify-center p-2 bg-background rounded mb-2">
+                                                                     <img src={item.url} alt={item.name} className="max-h-8 w-auto" />
+                                                                </div>
+                                                                <div className="space-y-2">
+                                                                    <Input 
+                                                                        className="h-7 text-xs" 
+                                                                        placeholder="Name"
+                                                                        value={item.name} 
+                                                                        onChange={(e) => {
+                                                                            const newItems = [...block.content.items];
+                                                                            newItems[i] = { ...item, name: e.target.value };
+                                                                            updateBlockContent(block.id, { items: newItems });
+                                                                        }}
+                                                                    />
+                                                                    <div className="flex gap-1">
+                                                                        <Input 
+                                                                            className="h-7 text-xs flex-1" 
+                                                                            placeholder="URL"
+                                                                            value={item.url} 
+                                                                            onChange={(e) => {
+                                                                                const newItems = [...block.content.items];
+                                                                                newItems[i] = { ...item, url: e.target.value };
+                                                                                updateBlockContent(block.id, { items: newItems });
+                                                                            }}
+                                                                        />
+                                                                        <MediaLibrary 
+                                                                             onSelect={(asset: MediaAsset) => {
+                                                                                 const newItems = [...block.content.items];
+                                                                                 newItems[i] = { ...item, url: asset.url };
+                                                                                 updateBlockContent(block.id, { items: newItems });
+                                                                             }}
+                                                                             trigger={
+                                                                                 <Button type="button" variant="ghost" size="icon" className="h-7 w-7">
+                                                                                     <ImageIcon className="h-3 w-3" />
+                                                                                 </Button>
+                                                                             }
+                                                                         />
+                                                                    </div>
+                                                                </div>
+                                                                <button 
+                                                                    type="button"
+                                                                    onClick={() => {
+                                                                        const newItems = block.content.items.filter((_: any, idx: number) => idx !== i);
+                                                                        updateBlockContent(block.id, { items: newItems });
+                                                                    }}
+                                                                    className="absolute top-1 right-1 bg-destructive p-1 rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                                                                >
+                                                                    <Trash className="h-3 w-3" />
+                                                                </button>
+                                                            </div>
+                                                        ))}
+                                                        <Button 
+                                                            variant="outline" 
+                                                            className="h-full min-h-[140px] flex flex-col items-center justify-center gap-2 border-dashed"
+                                                            onClick={() => {
+                                                                const newItems = [...(block.content.items || []), { name: 'New Logo', url: 'https://placehold.co/100x40' }];
+                                                                updateBlockContent(block.id, { items: newItems });
+                                                            }}
+                                                        >
+                                                            <Plus className="h-6 w-6" />
+                                                            <span>Add Logo</span>
+                                                        </Button>
+                                                    </div>
+                                                </div>
                                             </div>
                                         )}
 
@@ -1213,6 +1338,133 @@ export default function Edit({ page }: Props) {
                                                         }}
                                                     >
                                                         <Plus className="h-3 w-3 mr-2" /> Add Feature Item
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {block.type === 'testimonials' && (
+                                            <div className="space-y-4">
+                                                <div className="grid grid-cols-2 gap-4">
+                                                    <div>
+                                                        <Label className="text-xs">Title</Label>
+                                                        <Input 
+                                                            value={block.content.title} 
+                                                            onChange={(e) => updateBlockContent(block.id, { title: e.target.value })}
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <Label className="text-xs">Subtitle</Label>
+                                                        <Input 
+                                                            value={block.content.subtitle} 
+                                                            onChange={(e) => updateBlockContent(block.id, { subtitle: e.target.value })}
+                                                        />
+                                                    </div>
+                                                    <div className="col-span-2">
+                                                        <Label className="text-xs">Description</Label>
+                                                        <Textarea 
+                                                            value={block.content.description} 
+                                                            onChange={(e) => updateBlockContent(block.id, { description: e.target.value })}
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                                <div className="space-y-3">
+                                                    <Label className="text-xs">Testimonial Items</Label>
+                                                    {(block.content.items || []).map((item: any, i: number) => (
+                                                        <div key={i} className="flex gap-4 items-start border p-3 rounded-md bg-background">
+                                                            <div className="w-16 h-16 flex-shrink-0">
+                                                                <div className="relative w-full h-full rounded-full overflow-hidden bg-muted">
+                                                                    <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                                                                </div>
+                                                            </div>
+                                                            <div className="flex-1 space-y-2">
+                                                                <div className="grid grid-cols-2 gap-2">
+                                                                    <Input 
+                                                                        placeholder="Name"
+                                                                        className="h-8 text-xs"
+                                                                        value={item.name} 
+                                                                        onChange={(e) => {
+                                                                            const newItems = [...(block.content.items || [])];
+                                                                            newItems[i] = { ...item, name: e.target.value };
+                                                                            updateBlockContent(block.id, { items: newItems });
+                                                                        }}
+                                                                    />
+                                                                    <Input 
+                                                                        placeholder="Role"
+                                                                        className="h-8 text-xs"
+                                                                        value={item.role} 
+                                                                        onChange={(e) => {
+                                                                            const newItems = [...(block.content.items || [])];
+                                                                            newItems[i] = { ...item, role: e.target.value };
+                                                                            updateBlockContent(block.id, { items: newItems });
+                                                                        }}
+                                                                    />
+                                                                </div>
+                                                                <div className="flex gap-2">
+                                                                    <MediaLibrary 
+                                                                        onSelect={(asset: MediaAsset) => {
+                                                                            const newItems = [...(block.content.items || [])];
+                                                                            newItems[i] = { ...item, image: asset.url };
+                                                                            updateBlockContent(block.id, { items: newItems });
+                                                                        }}
+                                                                        trigger={
+                                                                            <Button type="button" variant="outline" size="sm" className="h-8 w-8 p-0">
+                                                                                <ImageIcon className="h-3 w-3" />
+                                                                            </Button>
+                                                                        }
+                                                                    />
+                                                                     <Input 
+                                                                        placeholder="Image URL"
+                                                                        className="h-8 text-xs flex-1"
+                                                                        value={item.image} 
+                                                                        onChange={(e) => {
+                                                                            const newItems = [...(block.content.items || [])];
+                                                                            newItems[i] = { ...item, image: e.target.value };
+                                                                            updateBlockContent(block.id, { items: newItems });
+                                                                        }}
+                                                                    />
+                                                                </div>
+                                                                <Textarea 
+                                                                    placeholder="Testimonial Text"
+                                                                    className="h-20 text-xs"
+                                                                    value={item.text} 
+                                                                    onChange={(e) => {
+                                                                        const newItems = [...(block.content.items || [])];
+                                                                        newItems[i] = { ...item, text: e.target.value };
+                                                                        updateBlockContent(block.id, { items: newItems });
+                                                                    }}
+                                                                />
+                                                            </div>
+                                                            <Button
+                                                                type="button"
+                                                                variant="ghost" 
+                                                                size="icon"
+                                                                className="text-destructive h-8 w-8"
+                                                                onClick={() => {
+                                                                    const newItems = block.content.items.filter((_: any, idx: number) => idx !== i);
+                                                                    updateBlockContent(block.id, { items: newItems });
+                                                                }}
+                                                            >
+                                                                <Trash className="h-4 w-4" />
+                                                            </Button>
+                                                        </div>
+                                                    ))}
+                                                    <Button 
+                                                        type="button" 
+                                                        variant="outline" 
+                                                        size="sm" 
+                                                        onClick={() => {
+                                                            const newItems = [...(block.content.items || []), { 
+                                                                name: 'New User', 
+                                                                role: 'User', 
+                                                                image: 'https://via.placeholder.com/150',
+                                                                text: 'Testimonial text goes here...' 
+                                                            }];
+                                                            updateBlockContent(block.id, { items: newItems });
+                                                        }}
+                                                    >
+                                                        <Plus className="h-3 w-3 mr-2" /> Add Testimonial
                                                     </Button>
                                                 </div>
                                             </div>

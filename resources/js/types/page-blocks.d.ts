@@ -76,6 +76,14 @@ export interface TextBlock extends BaseBlock {
     content: {
         title?: string;
         body: string;
+        layout?: string;
+        textSize?: string;
+        textAlign?: string;
+        columns?: Array<{
+            id: string;
+            type: 'text' | 'image' | 'video' | 'button';
+            content: Record<string, unknown>; // Using Record for flexibility
+        }>;
     };
 }
 
@@ -228,7 +236,36 @@ export type PageBlock =
     | FaqBlock
     | VideoBlock
     | FeaturesBlock
-    | AnimatedShaderHeroBlock;
+    | AnimatedShaderHeroBlock
+    | TestimonialBlock
+    | LogoCloudBlock;
+
+export interface TestimonialBlock extends BaseBlock {
+    type: 'testimonials';
+    content: {
+        title?: string;
+        subtitle?: string;
+        description?: string;
+        items?: Array<{
+            text: string;
+            image: string;
+            name: string;
+            role: string;
+        }>;
+    };
+}
+
+export interface LogoCloudBlock extends BaseBlock {
+    type: 'logo_cloud';
+    content: {
+        title?: string;
+        items?: Array<{
+            name: string;
+            url: string;
+        }>;
+    };
+}
+
 
 export interface PageContent {
     blocks: PageBlock[];

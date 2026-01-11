@@ -33,6 +33,10 @@ Route::middleware(['cache.headers:public'])->group(function () {
         return Inertia::render('demo/AnimatedShaderHeroDemo');
     })->name('demo.animated-shader-hero');
 
+    Route::get('/demo/testimonial-v2', function () {
+        return Inertia::render('demo-one');
+    })->name('demo.testimonial-v2');
+
 });
 
 // Contact form (no caching for POST)

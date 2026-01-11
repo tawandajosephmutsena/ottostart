@@ -3,7 +3,7 @@ import DOMPurify from 'dompurify';
 import AnimatedSection from '@/components/AnimatedSection';
 import CinematicHero from './CinematicHero';
 import VideoPlayer from '@/components/ui/video-player';
-import { PageBlock } from '@/types/page-blocks';
+import { PageBlock, VideoBlock as VideoBlockType, TextBlock as TextBlockType, ImageBlock as ImageBlockType, FeaturesBlock as FeaturesBlockType, TestimonialBlock as TestimonialBlockType } from '@/types/page-blocks';
 import { cn } from '@/lib/utils';
 
 import AnimatedShaderHero from '@/components/ui/animated-shader-hero';
@@ -21,15 +21,17 @@ import ProcessBlock from './ProcessBlock';
 import ContactInfoBlock from './ContactInfoBlock';
 import FAQBlock from './FAQBlock';
 import CtaBlock from './CtaBlock';
+import TestimonialBlock from './TestimonialBlock';
+import LogoCloudBlock from './LogoCloudBlock';
 
 interface BlockRendererProps {
     blocks: PageBlock[];
-    featuredServices?: any[];
-    featuredProjects?: any[];
-    recentInsights?: any[];
+    featuredServices?: Record<string, any>[];
+    featuredProjects?: Record<string, any>[];
+    recentInsights?: Record<string, any>[];
 }
 
-const VideoBlock = ({ content }: { content: any }) => {
+const VideoBlock = ({ content }: { content: VideoBlockType['content'] }) => {
     const { url } = content;
     if (!url) return null;
     return (
@@ -76,7 +78,7 @@ const getTextAlignClass = (align: string): string => {
 };
 
 // Column content renderer for TextBlock
-const ColumnRenderer = ({ column }: { column: any }) => {
+const ColumnRenderer = ({ column }: { column: NonNullable<TextBlockType['content']['columns']>[number] }) => {
     const { type, content } = column;
 
     switch (type) {
@@ -159,7 +161,7 @@ const ColumnRenderer = ({ column }: { column: any }) => {
     }
 };
 
-const TextBlock = ({ content }: { content: any }) => {
+const TextBlock = ({ content }: { content: TextBlockType['content'] }) => {
     const { title, layout, columns, body } = content;
     
     // Legacy support: if no columns exist, render old-style text block
@@ -216,7 +218,7 @@ const TextBlock = ({ content }: { content: any }) => {
     );
 };
 
-const ImageBlock = ({ content }: { content: any }) => {
+const ImageBlock = ({ content }: { content: ImageBlockType['content'] }) => {
     const { url, alt, caption } = content;
     return (
         <section className="py-20 bg-background px-4">
@@ -240,7 +242,7 @@ const ImageBlock = ({ content }: { content: any }) => {
     );
 };
 
-const FeaturesBlock = ({ content }: { content: any }) => {
+const FeaturesBlock = ({ content }: { content: FeaturesBlockType['content'] }) => {
     const { title, items } = content;
     return (
         <section className="py-24 bg-muted/20">
@@ -366,6 +368,10 @@ export default function BlockRenderer({
                         return <ContactInfoBlock key={block.id} {...block.content} />;
                     case 'faq':
                         return <FAQBlock key={block.id} {...block.content} />;
+                    case 'testimonials':
+                        return <TestimonialBlock key={block.id} {...block.content} />;
+                    case 'logo_cloud':
+                        return <LogoCloudBlock key={block.id} {...block.content} />;
                     default:
                         return null;
                 }
