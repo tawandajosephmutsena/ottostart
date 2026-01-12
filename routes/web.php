@@ -141,6 +141,14 @@ Route::middleware(['auth', 'verified', 'admin', 'cache.headers:no-cache'])->pref
     // Page management
     Route::resource('pages', App\Http\Controllers\Admin\PageController::class);
 
+    // Navigation Menu management
+    Route::get('menus', [App\Http\Controllers\Admin\MenuController::class, 'index'])->name('menus.index');
+    Route::get('menus/{menu}', [App\Http\Controllers\Admin\MenuController::class, 'show'])->name('menus.show');
+    Route::put('menus/{menu}', [App\Http\Controllers\Admin\MenuController::class, 'update'])->name('menus.update');
+    Route::post('menus/{menu}/items', [App\Http\Controllers\Admin\MenuController::class, 'storeItem'])->name('menus.items.store');
+    Route::delete('menus/{menu}/items/{item}', [App\Http\Controllers\Admin\MenuController::class, 'destroyItem'])->name('menus.items.destroy');
+    Route::post('menus/{menu}/items/reorder', [App\Http\Controllers\Admin\MenuController::class, 'reorderItems'])->name('menus.items.reorder');
+
     // Content Versioning
     Route::prefix('content-versions')->name('content-versions.')->group(function () {
         Route::get('{contentType}/{contentId}', [App\Http\Controllers\Admin\ContentVersionController::class, 'index'])->name('index');

@@ -39,6 +39,7 @@ const footerLinks = {
 export const Footer: React.FC<FooterProps> = ({ className }) => {
     const { props } = usePage<SharedData>();
     const site = props.site || { name: 'Avant-Garde', logo: '', tagline: 'Premium Agency' };
+    const menuItems = props.menus?.main || [];
 
     // Map social links from settings
     const socialLinks = [
@@ -87,13 +88,23 @@ export const Footer: React.FC<FooterProps> = ({ className }) => {
                         <div>
                             <h3 className="text-xs font-bold uppercase tracking-[0.3em] text-agency-accent mb-8">Navigation</h3>
                             <ul className="space-y-4">
-                                {footerLinks.company.map((link) => (
-                                    <li key={link.name}>
-                                        <Link href={link.href} className="text-xl font-bold opacity-40 hover:opacity-100 transition-opacity">
-                                            {link.name}
-                                        </Link>
-                                    </li>
-                                ))}
+                                {menuItems.length > 0 ? (
+                                    menuItems.map((link) => (
+                                        <li key={link.name}>
+                                            <Link href={link.href} target={link.target} className="text-xl font-bold opacity-40 hover:opacity-100 transition-opacity">
+                                                {link.name}
+                                            </Link>
+                                        </li>
+                                    ))
+                                ) : (
+                                    footerLinks.company.map((link) => (
+                                        <li key={link.name}>
+                                            <Link href={link.href} className="text-xl font-bold opacity-40 hover:opacity-100 transition-opacity">
+                                                {link.name}
+                                            </Link>
+                                        </li>
+                                    ))
+                                )}
                             </ul>
                         </div>
                         <div>

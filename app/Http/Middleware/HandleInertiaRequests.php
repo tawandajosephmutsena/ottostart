@@ -87,6 +87,37 @@ class HandleInertiaRequests extends Middleware
                 ],
             ],
             'nonce' => \Illuminate\Support\Facades\Vite::cspNonce(),
+            'menus' => \Illuminate\Support\Facades\Cache::remember('navigation_menus', 60 * 60, function () {
+                $mainMenu = \App\Models\NavigationMenu::where('slug', 'main-menu')
+                    ->where('is_active', true)
+                    ->with(['items' => function ($query) {
+                        $query->where('is_visible', true)
+                            ->orderBy('order')
+                            ->with('page:id,title,slug');
+                    }, 'items.children' => function ($query) {
+                        $query->where('is_visible', true)
+                            ->orderBy('order')
+                            ->with('page:id,title,slug');
+                    }])
+                    ->first();
+
+                return [
+                    'main' => $mainMenu ? $mainMenu->items->map(function ($item) {
+                        return [
+                            'name' => $item->title,
+                            'href' => $item->resolved_url,
+                            'target' => $item->open_in_new_tab ? '_blank' : '_self',
+                            'children' => $item->children->map(function ($child) {
+                                return [
+                                    'name' => $child->title,
+                                    'href' => $child->resolved_url,
+                                    'target' => $child->open_in_new_tab ? '_blank' : '_self',
+                                ];
+                            }),
+                        ];
+                    }) : [],
+                ];
+            }),
         ];
     }
 }

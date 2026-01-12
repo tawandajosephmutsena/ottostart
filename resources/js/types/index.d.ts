@@ -55,6 +55,18 @@ export interface SharedData {
     }>;
     breadcrumbStructuredData?: Record<string, unknown>;
     nonce?: string;
+    menus?: {
+        main: Array<{
+            name: string;
+            href: string;
+            target: string;
+            children: Array<{
+                name: string;
+                href: string;
+                target: string;
+            }>;
+        }>;
+    };
     [key: string]: unknown;
 }
 

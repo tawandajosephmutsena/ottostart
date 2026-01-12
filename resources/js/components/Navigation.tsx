@@ -38,22 +38,23 @@ const NavLink = ({ item, isActive }: { item: { name: string; href: string }; isA
     );
 };
 
-const navigationItems = [
-    { name: 'Home', href: '/' },
-    { name: 'Services', href: '/services' },
-    { name: 'Portfolio', href: '/portfolio' },
-    { name: 'Team', href: '/team' },
-    { name: 'Blog', href: '/blog' },
-    { name: 'Contact', href: '/contact' },
-];
-
 export const Navigation: React.FC<NavigationProps> = ({ className }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
     const { url, props } = usePage<SharedData>();
-    const { auth } = props;
+    const { auth, menus } = props;
     const navRef = useRef<HTMLElement>(null);
     const logoRef = useRef<HTMLDivElement>(null);
+
+    // Fallback if no menu data
+    const menuItems = (menus?.main && menus.main.length > 0) ? menus.main : [
+        { name: 'Home', href: '/', target: '_self' },
+        { name: 'Services', href: '/services', target: '_self' },
+        { name: 'Portfolio', href: '/portfolio', target: '_self' },
+        { name: 'Team', href: '/team', target: '_self' },
+        { name: 'Blog', href: '/blog', target: '_self' },
+        { name: 'Contact', href: '/contact', target: '_self' },
+    ];
 
     // Add magnetic effect to logo
     useMagneticEffect(logoRef as React.RefObject<HTMLElement>, {
@@ -173,7 +174,7 @@ export const Navigation: React.FC<NavigationProps> = ({ className }) => {
 
                     {/* Desktop Navigation */}
                     <div className="hidden lg:flex items-center gap-1">
-                        {navigationItems.map((item) => (
+                        {menuItems.map((item) => (
                             <NavLink 
                                 key={item.name} 
                                 item={item} 
