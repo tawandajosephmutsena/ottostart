@@ -11,7 +11,19 @@ interface CustomPage extends Page {
 }
 
 export default function DynamicPage({ page }: { page: CustomPage }) {
-    const blocks = page.content?.blocks || [];
+    const [blocks, setBlocks] = React.useState<PageBlock[]>(page.content?.blocks || []);
+
+    // Listen for preview updates from the admin builder
+    React.useEffect(() => {
+        const handleMessage = (event: MessageEvent) => {
+            if (event.data?.type === 'PREVIEW_DATA_UPDATE') {
+                setBlocks(event.data.blocks);
+            }
+        };
+
+        window.addEventListener('message', handleMessage);
+        return () => window.removeEventListener('message', handleMessage);
+    }, []);
 
     return (
         <MainLayout>

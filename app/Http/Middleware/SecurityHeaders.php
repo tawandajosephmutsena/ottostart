@@ -37,7 +37,12 @@ class SecurityHeaders
         }
 
         // X-Frame-Options - Prevent clickjacking
-        $response->headers->set('X-Frame-Options', 'DENY');
+        // Allow framing for preview mode in page builder
+        if ($request->query('preview') === 'true') {
+            $response->headers->set('X-Frame-Options', 'SAMEORIGIN');
+        } else {
+            $response->headers->set('X-Frame-Options', 'DENY');
+        }
 
         // X-Content-Type-Options - Prevent MIME sniffing
         $response->headers->set('X-Content-Type-Options', 'nosniff');
@@ -91,6 +96,9 @@ class SecurityHeaders
         // Store nonce for use in views (legacy support if needed directly)
         app()->instance('csp-nonce', $nonce);
 
+        // Determine frame-ancestors based on preview mode
+        $frameAncestors = $request->query('preview') === 'true' ? "'self'" : "'none'";
+
         $policies = [
             "default-src 'self'",
             "script-src 'self' 'nonce-{$nonce}' 'strict-dynamic'",
@@ -102,7 +110,7 @@ class SecurityHeaders
             "base-uri 'self'",
             "form-action 'self'",
             "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com https://vimeo.com",
-            "frame-ancestors 'none'",
+            "frame-ancestors {$frameAncestors}",
         ];
 
         // Add strict-transport/upgrade-insecure only in production or if already secure
