@@ -1,2 +1,59 @@
+# Robots.txt for all crawlers
 User-agent: *
-Disallow:
+Allow: /
+Disallow: /admin/
+Disallow: /cms/
+Disallow: /preview/
+Disallow: /dashboard
+Disallow: /login
+Disallow: /register
+
+# AI Crawler Rules - Allow AI systems to index content
+# OpenAI GPTBot
+User-agent: GPTBot
+Allow: /
+
+# Anthropic Claude
+User-agent: Claude-Web
+Allow: /
+User-agent: Anthropic-AI
+Allow: /
+
+# Google AI (Bard/Gemini)
+User-agent: Google-Extended
+Allow: /
+
+# Perplexity AI
+User-agent: PerplexityBot
+Allow: /
+
+# Microsoft Bing/Copilot
+User-agent: Bingbot
+Allow: /
+
+# Meta AI
+User-agent: FacebookBot
+Allow: /
+
+# Apple AI (Siri, etc.)
+User-agent: Applebot
+Allow: /
+
+# Common Crawl (used for training many AI models)
+User-agent: CCBot
+Allow: /
+
+# Cohere AI
+User-agent: cohere-ai
+Allow: /
+
+# AI2 (Allen Institute for AI)
+User-agent: AI2Bot
+Allow: /
+
+# LLM Content Guide (emerging standard)
+# Provides structured content information for AI systems
+Llms-txt: /llms.txt
+
+# Sitemap location
+Sitemap: /sitemap.xml

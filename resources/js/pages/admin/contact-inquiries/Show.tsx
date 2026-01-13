@@ -1,9 +1,9 @@
 import AdminLayout from '@/layouts/AdminLayout';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Link, router } from '@inertiajs/react';
-import { ArrowLeft, Mail, Calendar, User, MessageSquare, Trash2, Archive, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Mail, Calendar, User, Trash2, Archive, CheckCircle, Globe, Clock, Building, Briefcase, FileText } from 'lucide-react';
 import React from 'react';
 
 interface ContactInquiry {
@@ -13,13 +13,50 @@ interface ContactInquiry {
     subject: string;
     message: string;
     status: 'new' | 'read' | 'replied' | 'archived';
-    metadata?: Record<string, unknown> | null;
+    metadata?: {
+        all_fields?: Record<string, unknown>;
+        ip_address?: string;
+        user_agent?: string;
+        submitted_at?: string;
+        referer?: string;
+    } | null;
     created_at: string;
 }
 
 interface Props {
     inquiry: ContactInquiry;
 }
+
+// Get an appropriate icon for a field name
+const getFieldIcon = (fieldName: string) => {
+    const lower = fieldName.toLowerCase();
+    if (lower.includes('name') || lower.includes('full')) return User;
+    if (lower.includes('email')) return Mail;
+    if (lower.includes('company') || lower.includes('organization')) return Building;
+    if (lower.includes('profession') || lower.includes('job') || lower.includes('role')) return Briefcase;
+    if (lower.includes('date') || lower.includes('time')) return Clock;
+    if (lower.includes('website') || lower.includes('url')) return Globe;
+    return FileText;
+};
+
+// Format field name to readable label
+const formatFieldName = (name: string): string => {
+    return name
+        .replace(/[-_]/g, ' ')
+        .replace(/([a-z])([A-Z])/g, '$1 $2')
+        .replace(/\b\w/g, c => c.toUpperCase());
+};
+
+// Format field value for display
+const formatValue = (value: unknown): string => {
+    if (Array.isArray(value)) {
+        return value.map(v => String(v).replace(/-/g, ' ')).join(', ');
+    }
+    if (typeof value === 'object' && value !== null) {
+        return JSON.stringify(value, null, 2);
+    }
+    return String(value);
+};
 
 export default function ContactInquiryShow({ inquiry }: Props) {
     const breadcrumbs = [
@@ -48,9 +85,14 @@ export default function ContactInquiryShow({ inquiry }: Props) {
         }
     };
 
+    // Get all fields from metadata, or empty object
+    const allFields = inquiry.metadata?.all_fields || {};
+    const hasFields = Object.keys(allFields).length > 0;
+
     return (
         <AdminLayout title={`Inquiry from ${inquiry.name}`} breadcrumbs={breadcrumbs}>
-            <div className="space-y-6">
+            <div className="max-w-6xl mx-auto space-y-6">
+                {/* Header */}
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
                         <Link href="/admin/contact-inquiries">
@@ -59,10 +101,13 @@ export default function ContactInquiryShow({ inquiry }: Props) {
                             </Button>
                         </Link>
                         <div>
-                            <h1 className="text-3xl font-bold tracking-tight">View Inquiry</h1>
-                            <div className="flex items-center gap-2 mt-1">
+                            <h1 className="text-3xl font-bold tracking-tight">{inquiry.subject}</h1>
+                            <div className="flex items-center gap-3 mt-2">
                                 {getStatusBadge(inquiry.status)}
-                                <span className="text-xs text-muted-foreground">Received on {new Date(inquiry.created_at).toLocaleString()}</span>
+                                <span className="text-sm text-muted-foreground flex items-center gap-1">
+                                    <Calendar className="size-3" />
+                                    {new Date(inquiry.created_at).toLocaleString()}
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -74,7 +119,7 @@ export default function ContactInquiryShow({ inquiry }: Props) {
                             onClick={() => updateStatus('replied')}
                             className={inquiry.status === 'replied' ? 'bg-green-50/50 text-green-600 border-green-200' : ''}
                         >
-                            <CheckCircle className="size-4 mr-2" /> Mark as Replied
+                            <CheckCircle className="size-4 mr-2" /> Replied
                         </Button>
                         <Button 
                             variant="outline" 
@@ -89,123 +134,158 @@ export default function ContactInquiryShow({ inquiry }: Props) {
                             className="text-destructive hover:bg-destructive/10"
                             onClick={handleDelete}
                         >
-                            <Trash2 className="size-4 mr-2" /> Delete
+                            <Trash2 className="size-4" />
                         </Button>
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div className="lg:col-span-2 space-y-6">
-                        <Card>
-                            <CardHeader>
-                                <CardTitle className="text-xl flex items-center gap-2">
-                                    <MessageSquare className="size-5 text-agency-accent" />
-                                    {inquiry.subject}
-                                </CardTitle>
-                                <CardDescription>Message content</CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                {(() => {
-                                    try {
-                                        const isJson = inquiry.message?.trim().startsWith('{') || inquiry.message?.trim().startsWith('[');
-                                        const data = isJson ? JSON.parse(inquiry.message) : null;
-                                        
-                                        if (data && typeof data === 'object') {
-                                            return (
-                                                <div className="grid gap-4">
-                                                    {Object.entries(data).map(([key, value]) => (
-                                                        <div key={key} className="p-4 rounded-xl bg-muted/30 border border-muted/50">
-                                                            <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1">
-                                                                {key.replace(/field_\d+/, '').replace(/_/g, ' ').trim() || key}
-                                                            </p>
-                                                            <div className="text-sm font-medium leading-relaxed">
-                                                                {Array.isArray(value) ? (
-                                                                    <div className="flex flex-wrap gap-2 mt-1">
-                                                                        {value.map((v, i) => (
-                                                                            <Badge key={i} variant="outline" className="bg-agency-accent/5 font-bold uppercase text-[10px]">
-                                                                                {String(v)}
-                                                                            </Badge>
-                                                                        ))}
-                                                                    </div>
-                                                                ) : (
-                                                                    String(value)
-                                                                )}
-                                                            </div>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            );
-                                        }
-                                    } catch (e) {
-                                        // Not JSON, fall back to default rendering
-                                    }
-
-                                    return (
-                                        <div className="p-6 rounded-2xl bg-muted/30 whitespace-pre-wrap leading-relaxed">
-                                            {inquiry.message}
-                                        </div>
-                                    );
-                                })()}
-                            </CardContent>
-                        </Card>
-
-                        <div className="flex justify-center">
-                            <Button asChild className="bg-agency-accent text-agency-primary hover:bg-agency-accent/90 px-8 h-12 rounded-full font-bold">
+                {/* Sender Info Bar */}
+                <Card className="bg-gradient-to-r from-agency-accent/5 to-transparent border-agency-accent/20">
+                    <CardContent className="py-4">
+                        <div className="flex items-center justify-between flex-wrap gap-4">
+                            <div className="flex items-center gap-3">
+                                <div className="size-12 rounded-full bg-agency-accent/20 flex items-center justify-center">
+                                    <User className="size-6 text-agency-accent" />
+                                </div>
+                                <div>
+                                    <p className="font-bold text-lg">{inquiry.name}</p>
+                                    <a 
+                                        href={`mailto:${inquiry.email}`} 
+                                        className="text-sm text-agency-accent hover:underline"
+                                    >
+                                        {inquiry.email}
+                                    </a>
+                                </div>
+                            </div>
+                            <Button asChild className="bg-agency-accent text-agency-primary hover:bg-agency-accent/90 rounded-full font-bold px-6">
                                 <a href={`mailto:${inquiry.email}?subject=Re: ${inquiry.subject}`}>
                                     <Mail className="size-4 mr-2" /> Reply via Email
                                 </a>
                             </Button>
                         </div>
-                    </div>
+                    </CardContent>
+                </Card>
 
-                    <div className="space-y-6">
-                        <Card>
-                            <CardHeader>
-                                <CardTitle className="text-base">Sender Details</CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-4">
-                                <div className="flex items-center gap-3">
-                                    <div className="size-10 rounded-full bg-agency-accent/10 flex items-center justify-center">
-                                        <User className="size-5 text-agency-accent" />
+                {/* Main Content: All Submitted Fields */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div className="lg:col-span-2 space-y-6">
+                        {hasFields && (
+                            <Card>
+                                <CardHeader className="pb-4">
+                                    <CardTitle className="text-xl">Submission Details</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="grid sm:grid-cols-2 gap-4">
+                                        {Object.entries(allFields).map(([key, value]) => {
+                                            const Icon = getFieldIcon(key);
+                                            const isLongText = typeof value === 'string' && value.length > 100;
+                                            
+                                            return (
+                                                <div 
+                                                    key={key} 
+                                                    className={`p-4 rounded-xl bg-muted/40 border border-muted hover:border-agency-accent/30 transition-colors ${isLongText ? 'sm:col-span-2' : ''}`}
+                                                >
+                                                    <div className="flex items-start gap-3">
+                                                        <div className="size-8 rounded-lg bg-agency-accent/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                                            <Icon className="size-4 text-agency-accent" />
+                                                        </div>
+                                                        <div className="flex-1 min-w-0">
+                                                            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1">
+                                                                {formatFieldName(key)}
+                                                            </p>
+                                                            {Array.isArray(value) ? (
+                                                                <div className="flex flex-wrap gap-1.5">
+                                                                    {(value as unknown[]).map((v, i) => (
+                                                                        <Badge 
+                                                                            key={i} 
+                                                                            variant="secondary" 
+                                                                            className="text-xs font-medium capitalize"
+                                                                        >
+                                                                            {String(v).replace(/-/g, ' ')}
+                                                                        </Badge>
+                                                                    ))}
+                                                                </div>
+                                                            ) : (
+                                                                <p className="text-sm font-medium leading-relaxed break-words">
+                                                                    {formatValue(value)}
+                                                                </p>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
                                     </div>
-                                    <div>
-                                        <p className="text-sm font-bold">{inquiry.name}</p>
-                                        <p className="text-xs text-muted-foreground">Name</p>
-                                    </div>
-                                </div>
-                                <div className="flex items-center gap-3">
-                                    <div className="size-10 rounded-full bg-agency-accent/10 flex items-center justify-center">
-                                        <Mail className="size-5 text-agency-accent" />
-                                    </div>
-                                    <div className="overflow-hidden">
-                                        <p className="text-sm font-bold truncate">{inquiry.email}</p>
-                                        <p className="text-xs text-muted-foreground">Email</p>
-                                    </div>
-                                </div>
-                                <div className="flex items-center gap-3">
-                                    <div className="size-10 rounded-full bg-agency-accent/10 flex items-center justify-center">
-                                        <Calendar className="size-5 text-agency-accent" />
-                                    </div>
-                                    <div>
-                                        <p className="text-sm font-bold">{new Date(inquiry.created_at).toLocaleDateString()}</p>
-                                        <p className="text-xs text-muted-foreground">Date Received</p>
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
+                                </CardContent>
+                            </Card>
+                        )}
 
-                        {inquiry.metadata && (
+                        {/* Fallback: Show message if no metadata fields */}
+                        {!hasFields && inquiry.message && (
                             <Card>
                                 <CardHeader>
+                                    <CardTitle className="text-xl">Message</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="p-6 rounded-xl bg-muted/40 whitespace-pre-wrap leading-relaxed">
+                                        {inquiry.message}
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        )}
+                    </div>
+
+                    {/* Sidebar: Technical Info */}
+                    <div className="space-y-6">
+                        {inquiry.metadata && (
+                            <Card>
+                                <CardHeader className="pb-3">
                                     <CardTitle className="text-base">Technical Info</CardTitle>
                                 </CardHeader>
                                 <CardContent className="space-y-3 text-xs">
-                                    {Object.entries(inquiry.metadata || {}).map(([key, value]) => (
-                                        <div key={key} className="flex justify-between py-1 border-b border-muted last:border-0">
-                                            <span className="text-muted-foreground uppercase font-medium">{key.replace('_', ' ')}</span>
-                                            <span className="font-mono text-right truncate max-w-[150px]">{String(value)}</span>
+                                    {inquiry.metadata.submitted_at && (
+                                        <div className="flex items-center gap-3">
+                                            <div className="size-8 rounded-lg bg-muted flex items-center justify-center">
+                                                <Clock className="size-4 text-muted-foreground" />
+                                            </div>
+                                            <div>
+                                                <p className="text-muted-foreground">Submitted</p>
+                                                <p className="font-medium">{inquiry.metadata.submitted_at}</p>
+                                            </div>
                                         </div>
-                                    ))}
+                                    )}
+                                    {inquiry.metadata.ip_address && (
+                                        <div className="flex items-center gap-3">
+                                            <div className="size-8 rounded-lg bg-muted flex items-center justify-center">
+                                                <Globe className="size-4 text-muted-foreground" />
+                                            </div>
+                                            <div>
+                                                <p className="text-muted-foreground">IP Address</p>
+                                                <p className="font-mono font-medium">{inquiry.metadata.ip_address}</p>
+                                            </div>
+                                        </div>
+                                    )}
+                                    {inquiry.metadata.referer && (
+                                        <div className="flex items-start gap-3">
+                                            <div className="size-8 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
+                                                <ArrowLeft className="size-4 text-muted-foreground" />
+                                            </div>
+                                            <div className="min-w-0">
+                                                <p className="text-muted-foreground">Source Page</p>
+                                                <p className="font-medium truncate" title={inquiry.metadata.referer}>
+                                                    {inquiry.metadata.referer}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    )}
+                                    {inquiry.metadata.user_agent && (
+                                        <div className="pt-3 border-t">
+                                            <p className="text-muted-foreground mb-1">Browser</p>
+                                            <p className="font-mono text-[10px] leading-relaxed break-all opacity-70">
+                                                {inquiry.metadata.user_agent}
+                                            </p>
+                                        </div>
+                                    )}
                                 </CardContent>
                             </Card>
                         )}

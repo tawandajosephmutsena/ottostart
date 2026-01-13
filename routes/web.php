@@ -46,14 +46,76 @@ Route::post('/contact', [App\Http\Controllers\ContactController::class, 'store']
 
 // SEO and Sitemap routes
 Route::get('/sitemap.xml', [App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
+
+// LLMs.txt - AI/LLM content discovery (emerging standard)
+Route::get('/llms.txt', [App\Http\Controllers\LlmsController::class, 'index'])->name('llms');
+
+// Robots.txt with AI crawler rules
 Route::get('/robots.txt', function () {
-    $robotsTxt = "User-agent: *\n";
-    $robotsTxt .= "Allow: /\n";
-    $robotsTxt .= "Disallow: /admin/\n";
-    $robotsTxt .= "Disallow: /cms/\n";
-    $robotsTxt .= "Disallow: /preview/\n";
-    $robotsTxt .= "\n";
-    $robotsTxt .= "Sitemap: " . url('/sitemap.xml') . "\n";
+    $sitemapUrl = url('/sitemap.xml');
+    $llmsUrl = url('/llms.txt');
+    
+    $robotsTxt = <<<ROBOTS
+# Robots.txt for all crawlers
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /cms/
+Disallow: /preview/
+Disallow: /dashboard
+Disallow: /login
+Disallow: /register
+
+# AI Crawler Rules - Allow AI systems to index content
+# OpenAI GPTBot
+User-agent: GPTBot
+Allow: /
+
+# Anthropic Claude
+User-agent: Claude-Web
+Allow: /
+User-agent: Anthropic-AI
+Allow: /
+
+# Google AI (Bard/Gemini)
+User-agent: Google-Extended
+Allow: /
+
+# Perplexity AI
+User-agent: PerplexityBot
+Allow: /
+
+# Microsoft Bing/Copilot
+User-agent: Bingbot
+Allow: /
+
+# Meta AI
+User-agent: FacebookBot
+Allow: /
+
+# Apple AI (Siri, etc.)
+User-agent: Applebot
+Allow: /
+
+# Common Crawl (used for training many AI models)
+User-agent: CCBot
+Allow: /
+
+# Cohere AI
+User-agent: cohere-ai
+Allow: /
+
+# AI2 (Allen Institute for AI)
+User-agent: AI2Bot
+Allow: /
+
+# LLM Content Guide (emerging standard)
+# Provides structured content information for AI systems
+Llms-txt: {$llmsUrl}
+
+# Sitemap location
+Sitemap: {$sitemapUrl}
+ROBOTS;
     
     return response($robotsTxt, 200, ['Content-Type' => 'text/plain']);
 })->name('robots');

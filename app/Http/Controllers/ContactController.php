@@ -28,43 +28,65 @@ class ContactController extends Controller
 
             $data = $request->except(['_token', 'form_title']);
             
+            // Format all fields for clean display
+            $formattedFields = [];
+            foreach ($data as $fieldName => $value) {
+                // Convert field names to readable format (e.g., 'full_name' -> 'Full Name')
+                $readableKey = ucwords(str_replace(['-', '_'], ' ', preg_replace('/([a-z])([A-Z])/', '$1 $2', $fieldName)));
+                $formattedFields[$readableKey] = $value;
+            }
+            
             // Try to find name and email from dynamic field names
             $name = null;
             $email = null;
             $message = null;
             
-            foreach ($data as $key => $value) {
+            foreach ($data as $fieldKey => $value) {
                 if (is_string($value)) {
-                    // Check if this looks like an email
-                    if (!$email && filter_var($value, FILTER_VALIDATE_EMAIL)) {
+                    $lowerKey = strtolower($fieldKey);
+                    // Check if field name suggests it's an email field
+                    if (!$email && (str_contains($lowerKey, 'email') || filter_var($value, FILTER_VALIDATE_EMAIL))) {
                         $email = $value;
                     }
-                    // Check if this could be a name (no @ symbol, reasonable length)
-                    elseif (!$name && !str_contains($value, '@') && strlen($value) > 2 && strlen($value) < 100) {
+                    // Check if field name suggests it's a name field
+                    elseif (!$name && (str_contains($lowerKey, 'name') || str_contains($lowerKey, 'full'))) {
                         $name = $value;
                     }
-                    // Use longer text as message
-                    elseif (!$message && strlen($value) > 20) {
+                    // Check if field name suggests it's a message field
+                    elseif (!$message && (str_contains($lowerKey, 'message') || str_contains($lowerKey, 'comment') || str_contains($lowerKey, 'description'))) {
                         $message = $value;
                     }
                 }
             }
             
-            // Fallback to explicit field names if dynamic detection didn't work
-            $name = $name ?? $data['name'] ?? $data['full_name'] ?? 'Form Submission';
-            $email = $email ?? $data['email'] ?? $data['email_address'] ?? 'no-email@provided.com';
-            $message = $message ?? $data['message'] ?? $data['comments'] ?? json_encode($data, JSON_PRETTY_PRINT);
+            // Fallback values
+            $name = $name ?? 'Form Submission';
+            $email = $email ?? 'no-email@provided.com';
             $type = $request->input('form_title', 'Multi-step Form');
+            
+            // Create a readable summary of all fields if no message was found
+            if (!$message) {
+                $summaryLines = [];
+                foreach ($formattedFields as $label => $value) {
+                    if (is_array($value)) {
+                        $summaryLines[] = $label . ': ' . implode(', ', array_map(fn($v) => ucwords(str_replace('-', ' ', $v)), $value));
+                    } else {
+                        $summaryLines[] = $label . ': ' . $value;
+                    }
+                }
+                $message = implode("\n", $summaryLines);
+            }
 
             // Store with additional security metadata
             ContactInquiry::create([
                 'name' => strip_tags($name),
                 'email' => $email,
                 'subject' => $type . ' Submission',
-                'message' => is_string($message) ? strip_tags($message) : json_encode($data, JSON_PRETTY_PRINT),
+                'message' => strip_tags($message),
                 'status' => 'new',
                 'metadata' => [
                     'all_fields' => $data,
+                    'formatted_fields' => $formattedFields,
                     'ip_address' => $request->ip(),
                     'user_agent' => $request->userAgent(),
                     'submitted_at' => now()->toDateTimeString(),

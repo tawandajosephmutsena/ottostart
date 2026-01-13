@@ -110,4 +110,36 @@ return [
         'yandex' => env('SEO_YANDEX_VERIFICATION'),
         'pinterest' => env('SEO_PINTEREST_VERIFICATION'),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | AI Optimization (LLM/AEO Settings)
+    |--------------------------------------------------------------------------
+    | Settings for AI discoverability and Answer Engine Optimization (AEO).
+    | These help AI assistants like ChatGPT, Claude, and Perplexity
+    | discover and properly cite your content.
+    |--------------------------------------------------------------------------
+    */
+    'ai_optimization' => [
+        // Enable/disable llms.txt generation
+        'llms_txt_enabled' => env('AI_LLMS_TXT_ENABLED', true),
+        
+        // Allow AI crawlers to index content
+        'allow_ai_crawlers' => env('AI_ALLOW_CRAWLERS', true),
+        
+        // How AI should cite content: 'with-attribution', 'with-link', 'reference-only'
+        'citation_preference' => env('AI_CITATION_PREFERENCE', 'with-attribution'),
+        
+        // Content rating for AI: 'safe', 'general', 'mature'
+        'content_rating' => env('AI_CONTENT_RATING', 'safe'),
+        
+        // Enable speakable structured data for voice assistants
+        'speakable_enabled' => env('AI_SPEAKABLE_ENABLED', true),
+        
+        // Maximum snippet length for AI responses
+        'max_snippet_length' => env('AI_MAX_SNIPPET_LENGTH', -1), // -1 = no limit
+        
+        // Cache duration for llms.txt (in seconds)
+        'llms_txt_cache_duration' => env('AI_LLMS_TXT_CACHE', 3600),
+    ],
 ];

@@ -67,6 +67,11 @@ export interface SharedData {
             }>;
         }>;
     };
+    ai?: {
+        citationPreference: string;
+        contentRating: string;
+        llmsTxtUrl: string;
+    };
     [key: string]: unknown;
 }
 

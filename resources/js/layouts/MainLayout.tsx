@@ -47,8 +47,8 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
     showBreadcrumbs = false,
     customBreadcrumbs,
 }) => {
-    // Get breadcrumb data from shared props
-    const { breadcrumbs, nonce } = usePage<SharedData>().props;
+    // Get shared props including AI optimization settings
+    const { breadcrumbs, nonce, ai, site } = usePage<SharedData>().props;
     
     // Initialize smooth scrolling with enhanced controls
     const { scrollTo, stop, start } = useSmoothScroll();
@@ -125,7 +125,24 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
 
     return (
         <>
-            <Head title={title} />
+            <Head title={title}>
+                {/* AI Optimization Meta Tags */}
+                {/* Robots directive for AI crawlers - allow full snippets and image previews */}
+                <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+                
+                {/* AI-specific meta tags for citation and content rating */}
+                <meta name="ai:content:rating" content={ai?.contentRating ?? 'safe'} />
+                <meta name="ai:citation:preference" content={ai?.citationPreference ?? 'with-attribution'} />
+                
+                {/* Link to llms.txt for AI content discovery */}
+                {ai?.llmsTxtUrl && <link rel="alternate" type="text/markdown" href={ai.llmsTxtUrl} title="LLM Content Guide" />}
+                
+                {/* Publisher information for AI attribution */}
+                <meta name="publisher" content={site?.name ?? 'Website'} />
+                
+                {/* Indicate content is suitable for AI consumption */}
+                <meta name="ai:accessible" content="true" />
+            </Head>
             <ThemeStyles />
             <div
                 className={cn(

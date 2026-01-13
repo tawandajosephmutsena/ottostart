@@ -393,4 +393,171 @@ class StructuredDataService
             '@graph' => $items,
         ];
     }
+
+    /**
+     * Generate speakable structured data for voice assistants
+     * This helps AI assistants like Google Assistant, Siri, and Alexa
+     * identify which parts of the page are suitable for text-to-speech
+     * 
+     * @param string $headline The main headline of the content
+     * @param string $summary A brief summary suitable for voice reading
+     * @param array $cssSelectors CSS selectors pointing to speakable content sections
+     */
+    public function generateSpeakableData(string $headline, string $summary, array $cssSelectors = []): array
+    {
+        if (!config('seo.ai_optimization.speakable_enabled', true)) {
+            return [];
+        }
+
+        $speakable = [
+            '@type' => 'SpeakableSpecification',
+        ];
+
+        // Use CSS selectors if provided (preferred method)
+        if (!empty($cssSelectors)) {
+            $speakable['cssSelector'] = $cssSelectors;
+        } else {
+            // Default to common content selectors
+            $speakable['cssSelector'] = [
+                'article h1',
+                'article .summary',
+                'article .excerpt',
+                '.speakable-content',
+            ];
+        }
+
+        return [
+            '@context' => 'https://schema.org',
+            '@type' => 'WebPage',
+            'name' => $headline,
+            'speakable' => $speakable,
+        ];
+    }
+
+    /**
+     * Generate Q&A Page structured data
+     * Useful for pages with question-answer content that AI can cite
+     * 
+     * @param string $question The main question
+     * @param string $answer The answer to the question
+     * @param array $options Additional options (author, date, etc.)
+     */
+    public function generateQAPageData(string $question, string $answer, array $options = []): array
+    {
+        $data = [
+            '@context' => 'https://schema.org',
+            '@type' => 'QAPage',
+            'mainEntity' => [
+                '@type' => 'Question',
+                'name' => $question,
+                'text' => $question,
+                'answerCount' => 1,
+                'acceptedAnswer' => [
+                    '@type' => 'Answer',
+                    'text' => $answer,
+                    'upvoteCount' => $options['upvotes'] ?? 0,
+                ],
+            ],
+        ];
+
+        // Add author if provided
+        if (!empty($options['author'])) {
+            $data['mainEntity']['author'] = [
+                '@type' => 'Person',
+                'name' => $options['author'],
+            ];
+            $data['mainEntity']['acceptedAnswer']['author'] = [
+                '@type' => 'Person',
+                'name' => $options['author'],
+            ];
+        }
+
+        // Add date if provided
+        if (!empty($options['date'])) {
+            $data['mainEntity']['dateCreated'] = $options['date'];
+            $data['mainEntity']['acceptedAnswer']['dateCreated'] = $options['date'];
+        }
+
+        return $data;
+    }
+
+    /**
+     * Generate HowTo structured data for instructional content
+     * AI systems often reference how-to content for step-by-step guidance
+     * 
+     * @param string $name Name of the how-to guide
+     * @param string $description Brief description
+     * @param array $steps Array of steps with 'name', 'text', and optional 'image'
+     * @param array $options Additional options (totalTime, estimatedCost, etc.)
+     */
+    public function generateHowToData(string $name, string $description, array $steps, array $options = []): array
+    {
+        $stepItems = [];
+        
+        foreach ($steps as $index => $step) {
+            $stepItem = [
+                '@type' => 'HowToStep',
+                'position' => $index + 1,
+                'name' => $step['name'] ?? "Step " . ($index + 1),
+                'text' => $step['text'],
+            ];
+
+            if (!empty($step['image'])) {
+                $stepItem['image'] = [
+                    '@type' => 'ImageObject',
+                    'url' => asset($step['image']),
+                ];
+            }
+
+            if (!empty($step['url'])) {
+                $stepItem['url'] = $step['url'];
+            }
+
+            $stepItems[] = $stepItem;
+        }
+
+        $data = [
+            '@context' => 'https://schema.org',
+            '@type' => 'HowTo',
+            'name' => $name,
+            'description' => $description,
+            'step' => $stepItems,
+        ];
+
+        // Add total time if provided
+        if (!empty($options['totalTime'])) {
+            $data['totalTime'] = $options['totalTime']; // ISO 8601 duration, e.g., "PT30M"
+        }
+
+        // Add estimated cost if provided
+        if (!empty($options['estimatedCost'])) {
+            $data['estimatedCost'] = [
+                '@type' => 'MonetaryAmount',
+                'value' => $options['estimatedCost'],
+                'currency' => $options['currency'] ?? 'USD',
+            ];
+        }
+
+        // Add supply list if provided
+        if (!empty($options['supplies'])) {
+            $data['supply'] = array_map(function ($supply) {
+                return [
+                    '@type' => 'HowToSupply',
+                    'name' => $supply,
+                ];
+            }, $options['supplies']);
+        }
+
+        // Add tool list if provided
+        if (!empty($options['tools'])) {
+            $data['tool'] = array_map(function ($tool) {
+                return [
+                    '@type' => 'HowToTool',
+                    'name' => $tool,
+                ];
+            }, $options['tools']);
+        }
+
+        return $data;
+    }
 }

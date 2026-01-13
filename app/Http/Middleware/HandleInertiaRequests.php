@@ -86,6 +86,11 @@ class HandleInertiaRequests extends Middleware
                     'body' => $settings['font_body'] ?? 'Inter',
                 ],
             ],
+            'ai' => [
+                'citationPreference' => config('seo.ai_optimization.citation_preference', 'with-attribution'),
+                'contentRating' => config('seo.ai_optimization.content_rating', 'safe'),
+                'llmsTxtUrl' => url('/llms.txt'),
+            ],
             'nonce' => \Illuminate\Support\Facades\Vite::cspNonce(),
             'menus' => \Illuminate\Support\Facades\Cache::remember('navigation_menus', 60 * 60, function () {
                 $mainMenu = \App\Models\NavigationMenu::where('slug', 'main-menu')
