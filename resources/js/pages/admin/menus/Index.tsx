@@ -41,6 +41,7 @@ import {
     FileText,
     Link as LinkIcon,
     Settings,
+    RotateCcw,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -181,6 +182,16 @@ export default function MenuBuilder({ menus, pages, activeMenu: initialActiveMen
         }
     };
 
+    const resetMenu = () => {
+        if (!activeMenu) return;
+        if (confirm('Are you sure you want to reset this menu to its default items? This will remove all current items.')) {
+            router.post(`/admin/menus/${activeMenu.id}/reset`, {}, {
+                preserveScroll: true,
+                onSuccess: () => toast.success('Menu reset to default'),
+            });
+        }
+    };
+
     const handleDragEnd = (event: any) => {
         const { active, over } = event;
 
@@ -198,7 +209,7 @@ export default function MenuBuilder({ menus, pages, activeMenu: initialActiveMen
                 order: index,
             }));
 
-            router.post(route('admin.menus.items.reorder', activeMenu.id), {
+            router.post(`/admin/menus/${activeMenu.id}/items/reorder`, {
                  items: reorderedItems
             }, {
                 preserveScroll: true,
@@ -211,7 +222,7 @@ export default function MenuBuilder({ menus, pages, activeMenu: initialActiveMen
         e.preventDefault();
         if (!activeMenu) return;
 
-        postCustomLink(route('admin.menus.items.store', activeMenu.id), {
+        postCustomLink(`/admin/menus/${activeMenu.id}/items`, {
             preserveScroll: true,
             onSuccess: () => {
                 resetCustomLink();
@@ -224,7 +235,7 @@ export default function MenuBuilder({ menus, pages, activeMenu: initialActiveMen
         e.preventDefault();
         if (!activeMenu || !pageLinkData.page_id) return;
 
-        postPageLink(route('admin.menus.items.store', activeMenu.id), {
+        postPageLink(`/admin/menus/${activeMenu.id}/items`, {
             preserveScroll: true,
             onSuccess: () => {
                 resetPageLink();
@@ -236,7 +247,7 @@ export default function MenuBuilder({ menus, pages, activeMenu: initialActiveMen
     const removeMenuItem = (item: MenuItem) => {
         if (!activeMenu || !item.id) return;
         if (confirm('Are you sure you want to remove this item?')) {
-            router.delete(route('admin.menus.items.destroy', [activeMenu.id, item.id]), {
+            router.delete(`/admin/menus/${activeMenu.id}/items/${item.id}`, {
                 preserveScroll: true,
                 onSuccess: () => toast.success('Item removed'),
             });
@@ -256,7 +267,7 @@ export default function MenuBuilder({ menus, pages, activeMenu: initialActiveMen
 
          const updatedItems = activeMenu.items.map(i => i.id === item.id ? item : i);
          
-         router.put(route('admin.menus.update', activeMenu.id), {
+         router.put(`/admin/menus/${activeMenu.id}`, {
              items: updatedItems.map(i => ({
                  id: i.id,
                  title: i.title,
@@ -301,8 +312,17 @@ export default function MenuBuilder({ menus, pages, activeMenu: initialActiveMen
                         {/* Left Column: Menu Selection & Add Items */}
                         <div className="space-y-6 lg:col-span-1">
                             <Card>
-                                <CardHeader>
+                                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                     <CardTitle>Select Menu</CardTitle>
+                                    <Button 
+                                        variant="ghost" 
+                                        size="sm" 
+                                        onClick={resetMenu}
+                                        className="h-8 text-xs text-muted-foreground hover:text-destructive"
+                                        disabled={!activeMenu}
+                                    >
+                                        <RotateCcw className="w-3 h-3 mr-1" /> Reset
+                                    </Button>
                                 </CardHeader>
                                 <CardContent>
                                     <Select value={selectedMenuId} onValueChange={handleMenuChange}>

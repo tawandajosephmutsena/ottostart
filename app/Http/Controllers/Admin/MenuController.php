@@ -7,6 +7,7 @@ use App\Models\NavigationMenu;
 use App\Models\NavigationMenuItem;
 use App\Models\Page;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -103,6 +104,9 @@ class MenuController extends Controller
             }
         });
 
+        // Clear the navigation menu cache so frontend reflects changes
+        Cache::forget('navigation_menus');
+
         return back()->with('success', 'Menu updated successfully.');
     }
 
@@ -131,6 +135,9 @@ class MenuController extends Controller
             'open_in_new_tab' => $validated['open_in_new_tab'] ?? false,
         ]);
 
+        // Clear the navigation menu cache so frontend reflects changes
+        Cache::forget('navigation_menus');
+
         return back()->with('success', 'Menu item added.');
     }
 
@@ -144,6 +151,9 @@ class MenuController extends Controller
         }
 
         $item->delete();
+
+        // Clear the navigation menu cache so frontend reflects changes
+        Cache::forget('navigation_menus');
 
         return back()->with('success', 'Menu item removed.');
     }
@@ -167,6 +177,46 @@ class MenuController extends Controller
             }
         });
 
+        // Clear the navigation menu cache so frontend reflects changes
+        Cache::forget('navigation_menus');
+
         return back()->with('success', 'Menu order updated.');
+    }
+
+    /**
+     * Reset a menu to its default items.
+     */
+    public function resetToDefault(NavigationMenu $menu)
+    {
+        DB::transaction(function () use ($menu) {
+            // Delete all existing items for this menu
+            $menu->allItems()->delete();
+
+            // Default navigation items
+            $defaultItems = [
+                ['title' => 'Home', 'url' => '/', 'order' => 0],
+                ['title' => 'About', 'url' => '/about', 'order' => 1],
+                ['title' => 'Services', 'url' => '/services', 'order' => 2],
+                ['title' => 'Portfolio', 'url' => '/portfolio', 'order' => 3],
+                ['title' => 'Team', 'url' => '/team', 'order' => 4],
+                ['title' => 'Blog', 'url' => '/blog', 'order' => 5],
+                ['title' => 'Contact', 'url' => '/contact', 'order' => 6],
+            ];
+
+            foreach ($defaultItems as $item) {
+                NavigationMenuItem::create([
+                    'menu_id' => $menu->id,
+                    'title' => $item['title'],
+                    'url' => $item['url'],
+                    'order' => $item['order'],
+                    'is_visible' => true,
+                ]);
+            }
+        });
+
+        // Clear the navigation menu cache so frontend reflects changes
+        Cache::forget('navigation_menus');
+
+        return back()->with('success', 'Menu reset to default.');
     }
 }

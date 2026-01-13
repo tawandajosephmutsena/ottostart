@@ -211,6 +211,7 @@ Route::middleware(['auth', 'verified', 'admin', 'cache.headers:no-cache'])->pref
     Route::post('menus/{menu}/items', [App\Http\Controllers\Admin\MenuController::class, 'storeItem'])->name('menus.items.store');
     Route::delete('menus/{menu}/items/{item}', [App\Http\Controllers\Admin\MenuController::class, 'destroyItem'])->name('menus.items.destroy');
     Route::post('menus/{menu}/items/reorder', [App\Http\Controllers\Admin\MenuController::class, 'reorderItems'])->name('menus.items.reorder');
+    Route::post('menus/{menu}/reset', [App\Http\Controllers\Admin\MenuController::class, 'resetToDefault'])->name('menus.reset');
 
     // Content Versioning
     Route::prefix('content-versions')->name('content-versions.')->group(function () {
