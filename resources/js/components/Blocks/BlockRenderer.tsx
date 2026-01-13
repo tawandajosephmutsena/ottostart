@@ -25,6 +25,7 @@ import TestimonialBlock from './TestimonialBlock';
 import LogoCloudBlock from './LogoCloudBlock';
 import AppleCardsCarouselBlock from './AppleCardsCarouselBlock';
 import CoverDemoBlock from './CoverDemoBlock';
+import VideoBackgroundHero from './VideoBackgroundHero';
 
 // Type definitions for external data
 interface ServiceItem {
@@ -431,6 +432,8 @@ export default function BlockRenderer({
                         return <AppleCardsCarouselBlock key={block.id} {...block.content} />;
                     case 'cover_demo':
                         return <CoverDemoBlock key={block.id} {...block.content} />;
+                    case 'video_background_hero':
+                        return <VideoBackgroundHero key={block.id} {...block.content} />;
                     default:
                         return null;
                 }

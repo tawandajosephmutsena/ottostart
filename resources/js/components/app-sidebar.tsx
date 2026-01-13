@@ -22,6 +22,11 @@ const mainNavItems: NavItem[] = [
         href: dashboard(),
         icon: LayoutGrid,
     },
+    {
+        title: 'Plugins',
+        href: '/admin/plugins',
+        icon: Folder,
+    },
 ];
 
 const footerNavItems: NavItem[] = [

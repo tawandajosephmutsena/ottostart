@@ -240,7 +240,8 @@ export type PageBlock =
     | TestimonialBlock
     | LogoCloudBlock
     | CoverDemoBlock
-    | AppleCardsCarouselBlock;
+    | AppleCardsCarouselBlock
+    | VideoBackgroundHeroBlock;
 
 export interface TestimonialBlock extends BaseBlock {
     type: 'testimonials';
@@ -293,6 +294,18 @@ export interface AppleCardsCarouselBlock extends BaseBlock {
     };
 }
 
+export interface VideoBackgroundHeroBlock extends BaseBlock {
+    type: 'video_background_hero';
+    content: {
+        title?: string;
+        subtitle?: string;
+        ctaText1?: string;
+        ctaLink1?: string;
+        ctaText2?: string;
+        ctaLink2?: string;
+        videoUrl?: string;
+    };
+}
 
 export interface PageContent {
     blocks: PageBlock[];

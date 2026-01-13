@@ -97,7 +97,7 @@ class SecurityHeaders
             "style-src 'self' 'unsafe-inline' https://fonts.bunny.net https://fonts.googleapis.com http://localhost:5173 http://127.0.0.1:5173",
             "font-src 'self' https://fonts.bunny.net https://fonts.gstatic.com http://localhost:5173 http://127.0.0.1:5173",
             "img-src 'self' data: https: http://localhost:5173 http://127.0.0.1:5173",
-            "media-src 'self' http://localhost:5173 http://127.0.0.1:5173",
+            "media-src 'self' https: http://localhost:5173 http://127.0.0.1:5173",
             "object-src 'none'",
             "base-uri 'self'",
             "form-action 'self'",

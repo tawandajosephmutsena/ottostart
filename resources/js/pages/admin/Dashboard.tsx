@@ -75,9 +75,17 @@ interface RecentActivity {
     inquiries: RecentActivityItem[];
 }
 
+interface SeoStats {
+    average_score: number;
+    pages_needing_attention: number;
+    total_pages: number;
+}
+
 interface DashboardProps {
     stats: DashboardStats;
     recent_activity: RecentActivity;
+    system_activity: number[];
+    seo_stats: SeoStats;
 }
 
 const StatCard = ({
@@ -231,15 +239,15 @@ const RecentActivityCard = ({
     </Card>
 );
 
-export default function Dashboard({ stats, recent_activity }: DashboardProps) {
+export default function Dashboard({ stats, recent_activity, system_activity, seo_stats }: DashboardProps) {
     const breadcrumbs = [
         { title: 'Admin', href: '/admin' },
         { title: 'Dashboard', href: '/admin' },
     ];
 
-    // Simulated activity data for visual appeal
-    const activityData = [45, 52, 38, 65, 48, 72, 58, 63, 80, 75, 90, 85];
-    const maxVal = Math.max(...activityData);
+    // Use actual system activity from backend or fallback to empty array if undefined
+    const activityData = system_activity || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    const maxVal = Math.max(...activityData, 1); // Prevent division by zero
 
     return (
         <AdminLayout title="Dashboard" breadcrumbs={breadcrumbs}>
@@ -321,6 +329,18 @@ export default function Dashboard({ stats, recent_activity }: DashboardProps) {
                         <CardContent className="flex-1 flex flex-col justify-center space-y-4">
                             <div className="space-y-1">
                                 <div className="flex justify-between text-xs font-medium">
+                                    <span>SEO Health Score</span>
+                                    <span>{seo_stats.average_score}%</span>
+                                </div>
+                                <div className="w-full bg-muted h-1 rounded-full overflow-hidden">
+                                    <div 
+                                        className={cn("h-full", seo_stats.average_score >= 80 ? "bg-green-500" : seo_stats.average_score >= 60 ? "bg-yellow-500" : "bg-red-500")} 
+                                        style={{ width: `${seo_stats.average_score}%` }} 
+                                    />
+                                </div>
+                            </div>
+                            <div className="space-y-1">
+                                <div className="flex justify-between text-xs font-medium">
                                     <span>Portfolio Published</span>
                                     <span>{Math.round((stats.portfolio_items.published / (stats.portfolio_items.total || 1)) * 100)}%</span>
                                 </div>
@@ -335,15 +355,6 @@ export default function Dashboard({ stats, recent_activity }: DashboardProps) {
                                 </div>
                                 <div className="w-full bg-muted h-1 rounded-full overflow-hidden">
                                     <div className="bg-purple-400 h-full" style={{ width: `${(stats.insights.published / (stats.insights.total || 1)) * 100}%` }} />
-                                </div>
-                            </div>
-                            <div className="space-y-1">
-                                <div className="flex justify-between text-xs font-medium">
-                                    <span>Team Engagement</span>
-                                    <span>{Math.round((stats.team_members.active / (stats.team_members.total || 1)) * 100)}%</span>
-                                </div>
-                                <div className="w-full bg-muted h-1 rounded-full overflow-hidden">
-                                    <div className="bg-blue-400 h-full" style={{ width: `${(stats.team_members.active / (stats.team_members.total || 1)) * 100}%` }} />
                                 </div>
                             </div>
                         </CardContent>

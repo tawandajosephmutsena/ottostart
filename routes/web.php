@@ -63,6 +63,7 @@ Route::get('/preview/{token}', [App\Http\Controllers\Admin\PreviewLinkController
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
+        /** @var \App\Models\User $user */
         $user = auth()->user();
         
         if ($user->isAdmin()) {
@@ -204,6 +205,9 @@ Route::middleware(['auth', 'verified', 'admin', 'cache.headers:no-cache'])->pref
         Route::post('/bulk-analyze', [App\Http\Controllers\Admin\WebCoreVitalsController::class, 'bulkAnalyze'])->name('bulk-analyze');
         Route::get('/dashboard', [App\Http\Controllers\Admin\WebCoreVitalsController::class, 'getDashboardData'])->name('dashboard-data');
     });
+
+    // Plugin Management
+    Route::resource('plugins', App\Http\Controllers\Admin\PluginController::class)->only(['index', 'store', 'update', 'destroy']);
 });
 
 // Dynamic Pages (Catch-all)

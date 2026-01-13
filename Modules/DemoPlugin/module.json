@@ -1,0 +1,11 @@
+{
+    "name": "DemoPlugin",
+    "alias": "demoplugin",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\DemoPlugin\\Providers\\DemoPluginServiceProvider"
+    ],
+    "files": []
+}

@@ -27,7 +27,7 @@ interface Props {
 }
 
 // Define the structure of our blocks
-type BlockType = 'hero' | 'text' | 'image' | 'features' | 'stats' | 'services' | 'portfolio' | 'insights' | 'cta' | 'cinematic_hero' | 'form' | 'video' | 'story' | 'manifesto' | 'process' | 'contact_info' | 'faq' | 'animated_shader_hero' | 'testimonials' | 'logo_cloud' | 'apple_cards_carousel' | 'cover_demo';
+type BlockType = 'hero' | 'text' | 'image' | 'features' | 'stats' | 'services' | 'portfolio' | 'insights' | 'cta' | 'cinematic_hero' | 'form' | 'video' | 'story' | 'manifesto' | 'process' | 'contact_info' | 'faq' | 'animated_shader_hero' | 'testimonials' | 'logo_cloud' | 'apple_cards_carousel' | 'cover_demo' | 'video_background_hero';
 
 interface Block {
     id: string;
@@ -273,9 +273,117 @@ const getDefaultContentForType = (type: BlockType) => {
             fontSize: 'text-4xl md:text-4xl lg:text-6xl',
             fontWeight: 'font-semibold'
         };
+        case 'video_background_hero': return {
+            title: 'Build 10x Faster with NS',
+            subtitle: 'Highly customizable components for building modern websites and applications you mean it.',
+            ctaText1: 'Start Building',
+            ctaLink1: '#',
+            ctaText2: 'Request a demo',
+            ctaLink2: '#',
+            videoUrl: 'https://videos.pexels.com/video-files/30333849/13003128_2560_1440_25fps.mp4'
+        };
         default: return {};
     }
 };
+
+// Props interface for the sortable block item
+interface SortableBlockItemProps {
+    block: Block;
+    index: number;
+    blocksLength: number;
+    collapsedBlocks: Record<string, boolean>;
+    toggleBlockCollapse: (id: string) => void;
+    toggleBlock: (id: string) => void;
+    moveBlock: (index: number, direction: 'up' | 'down') => void;
+    duplicateBlock: (id: string) => void;
+    removeBlock: (id: string) => void;
+    updateBlockContent: (id: string, content: Record<string, unknown>) => void;
+    children: React.ReactNode;
+}
+
+// Extracted component to fix Rules of Hooks - useSortable must be called at component level
+function SortableBlockItem({
+    block,
+    index,
+    blocksLength,
+    collapsedBlocks,
+    toggleBlockCollapse,
+    toggleBlock,
+    moveBlock,
+    duplicateBlock,
+    removeBlock,
+    children,
+}: SortableBlockItemProps) {
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition,
+        isDragging,
+    } = useSortable({ id: block.id });
+
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+        opacity: isDragging ? 0.5 : 1,
+        zIndex: isDragging ? 100 : 'auto' as const,
+    };
+
+    return (
+        <div ref={setNodeRef} style={style} {...attributes}>
+            <Collapsible 
+                open={!collapsedBlocks[block.id]} 
+                onOpenChange={() => toggleBlockCollapse(block.id)}
+            >
+                <Card className={cn("relative hover:border-agency-accent/50 transition-colors", !block.is_enabled && "opacity-60")}>
+                    <div className="flex items-center justify-between px-4 py-2 bg-muted/20 border-b">
+                        <div className="flex items-center gap-3 flex-1">
+                            <button
+                                type="button"
+                                className="cursor-grab active:cursor-grabbing touch-none"
+                                {...listeners}
+                            >
+                                <GripVertical className="h-4 w-4 text-muted-foreground" />
+                            </button>
+                            <CollapsibleTrigger className="flex items-center gap-2 flex-1 text-left">
+                                <div className="flex items-center gap-2">
+                                    {!block.is_enabled && <span className="text-[10px] bg-destructive/10 text-destructive px-1.5 rounded-full">HIDDEN</span>}
+                                    <span className="text-xs uppercase tracking-widest font-bold text-muted-foreground">{block.type.replace(/_/g, ' ')}</span>
+                                    <span className="text-xs text-muted-foreground/50">#{index + 1}</span>
+                                </div>
+                                <ChevronDown className={cn("h-3 w-3 ml-2 transition-transform text-muted-foreground", !collapsedBlocks[block.id] && "rotate-180")} />
+                            </CollapsibleTrigger>
+                        </div>
+                        <div className="flex gap-0.5">
+                            <Button type="button" size="icon" variant="ghost" className="h-7 w-7" onClick={() => toggleBlock(block.id)} title={block.is_enabled ? 'Hide block' : 'Show block'}>
+                                {block.is_enabled ? <Eye className="h-3.5 w-3.5" /> : <EyeOff className="h-3.5 w-3.5" />}
+                            </Button>
+                            <Button type="button" size="icon" variant="ghost" className="h-7 w-7" onClick={() => moveBlock(index, 'up')} disabled={index === 0} title="Move up">
+                                <ArrowUp className="h-3.5 w-3.5" />
+                            </Button>
+                            <Button type="button" size="icon" variant="ghost" className="h-7 w-7" onClick={() => moveBlock(index, 'down')} disabled={index === blocksLength - 1} title="Move down">
+                                <ArrowDown className="h-3.5 w-3.5" />
+                            </Button>
+                            <Button type="button" size="icon" variant="ghost" className="h-7 w-7" onClick={() => duplicateBlock(block.id)} title="Duplicate block">
+                                <Copy className="h-3.5 w-3.5" />
+                            </Button>
+                            <Button type="button" size="icon" variant="ghost" className="h-7 w-7 text-destructive hover:text-destructive" onClick={() => removeBlock(block.id)} title="Delete block">
+                                <Trash className="h-3.5 w-3.5" />
+                            </Button>
+                        </div>
+                    </div>
+
+                    <CollapsibleContent>
+                        <CardContent className="p-6">
+                            {children}
+                        </CardContent>
+                    </CollapsibleContent>
+                </Card>
+            </Collapsible>
+        </div>
+    );
+}
 
 export default function Edit({ page }: Props) {
     // Parse initial content or default to empty array
@@ -468,6 +576,10 @@ export default function Edit({ page }: Props) {
                                                 <Type className="h-4 w-4" />
                                                 <span>Cover</span>
                                             </Button>
+                                            <Button type="button" variant="ghost" size="sm" className="h-auto py-2 px-2 flex-col gap-1 text-xs" onClick={() => addBlock('video_background_hero')}>
+                                                <Video className="h-4 w-4" />
+                                                <span>Video Hero</span>
+                                            </Button>
                                         </div>
                                     </CollapsibleContent>
                                 </Collapsible>
@@ -612,69 +724,76 @@ export default function Edit({ page }: Props) {
                                 strategy={verticalListSortingStrategy}
                             >
                                 <div className="space-y-2">
-                                    {blocks.map((block, index) => {
-                                        const {
-                                            attributes,
-                                            listeners,
-                                            setNodeRef,
-                                            transform,
-                                            transition,
-                                            isDragging,
-                                        } = useSortable({ id: block.id });
+                                    {blocks.map((block, index) => (
+                                        <SortableBlockItem
+                                            key={block.id}
+                                            block={block}
+                                            index={index}
+                                            blocksLength={blocks.length}
+                                            collapsedBlocks={collapsedBlocks}
+                                            toggleBlockCollapse={toggleBlockCollapse}
+                                            toggleBlock={toggleBlock}
+                                            moveBlock={moveBlock}
+                                            duplicateBlock={duplicateBlock}
+                                            removeBlock={removeBlock}
+                                            updateBlockContent={updateBlockContent}
+                                        >
+                                        {block.type === 'video_background_hero' && (
+                                            <div className="space-y-4">
+                                                <div className="grid grid-cols-2 gap-4">
+                                                    <div className="col-span-2">
+                                                        <Label className="text-xs">Headline</Label>
+                                                        <Input 
+                                                            value={block.content.title || ''} 
+                                                            onChange={(e) => updateBlockContent(block.id, { title: e.target.value })}
+                                                        />
+                                                    </div>
+                                                    <div className="col-span-2">
+                                                        <Label className="text-xs">Subtitle</Label>
+                                                        <Input 
+                                                            value={block.content.subtitle || ''} 
+                                                            onChange={(e) => updateBlockContent(block.id, { subtitle: e.target.value })}
+                                                        />
+                                                    </div>
+                                                    <div className="col-span-2">
+                                                        <Label className="text-xs">Video URL</Label>
+                                                        <Input 
+                                                            value={block.content.videoUrl || ''} 
+                                                            onChange={(e) => updateBlockContent(block.id, { videoUrl: e.target.value })}
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <Label className="text-xs">Primary CTA Text</Label>
+                                                        <Input 
+                                                            value={block.content.ctaText1 || ''} 
+                                                            onChange={(e) => updateBlockContent(block.id, { ctaText1: e.target.value })}
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <Label className="text-xs">Primary CTA Link</Label>
+                                                        <Input 
+                                                            value={block.content.ctaLink1 || ''} 
+                                                            onChange={(e) => updateBlockContent(block.id, { ctaLink1: e.target.value })}
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <Label className="text-xs">Secondary CTA Text</Label>
+                                                        <Input 
+                                                            value={block.content.ctaText2 || ''} 
+                                                            onChange={(e) => updateBlockContent(block.id, { ctaText2: e.target.value })}
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <Label className="text-xs">Secondary CTA Link</Label>
+                                                        <Input 
+                                                            value={block.content.ctaLink2 || ''} 
+                                                            onChange={(e) => updateBlockContent(block.id, { ctaLink2: e.target.value })}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
 
-                                        const style = {
-                                            transform: CSS.Transform.toString(transform),
-                                            transition,
-                                            opacity: isDragging ? 0.5 : 1,
-                                            zIndex: isDragging ? 100 : 'auto' as const,
-                                        };
-
-                                        return (
-                                            <div key={block.id} ref={setNodeRef} style={style} {...attributes}>
-                                                <Collapsible 
-                                                    open={!collapsedBlocks[block.id]} 
-                                                    onOpenChange={() => toggleBlockCollapse(block.id)}
-                                                >
-                                                    <Card className={cn("relative hover:border-agency-accent/50 transition-colors", !block.is_enabled && "opacity-60")}>
-                                                        <div className="flex items-center justify-between px-4 py-2 bg-muted/20 border-b">
-                                                            <div className="flex items-center gap-3 flex-1">
-                                                                <button
-                                                                    type="button"
-                                                                    className="cursor-grab active:cursor-grabbing touch-none"
-                                                                    {...listeners}
-                                                                >
-                                                                    <GripVertical className="h-4 w-4 text-muted-foreground" />
-                                                                </button>
-                                                                <CollapsibleTrigger className="flex items-center gap-2 flex-1 text-left">
-                                                                    <div className="flex items-center gap-2">
-                                                                        {!block.is_enabled && <span className="text-[10px] bg-destructive/10 text-destructive px-1.5 rounded-full">HIDDEN</span>}
-                                                                        <span className="text-xs uppercase tracking-widest font-bold text-muted-foreground">{block.type.replace(/_/g, ' ')}</span>
-                                                                        <span className="text-xs text-muted-foreground/50">#{index + 1}</span>
-                                                                    </div>
-                                                                    <ChevronDown className={cn("h-3 w-3 ml-2 transition-transform text-muted-foreground", !collapsedBlocks[block.id] && "rotate-180")} />
-                                                                </CollapsibleTrigger>
-                                                            </div>
-                                                            <div className="flex gap-0.5">
-                                                                <Button type="button" size="icon" variant="ghost" className="h-7 w-7" onClick={() => toggleBlock(block.id)} title={block.is_enabled ? 'Hide block' : 'Show block'}>
-                                                                    {block.is_enabled ? <Eye className="h-3.5 w-3.5" /> : <EyeOff className="h-3.5 w-3.5" />}
-                                                                </Button>
-                                                                <Button type="button" size="icon" variant="ghost" className="h-7 w-7" onClick={() => moveBlock(index, 'up')} disabled={index === 0} title="Move up">
-                                                                    <ArrowUp className="h-3.5 w-3.5" />
-                                                                </Button>
-                                                                <Button type="button" size="icon" variant="ghost" className="h-7 w-7" onClick={() => moveBlock(index, 'down')} disabled={index === blocks.length - 1} title="Move down">
-                                                                    <ArrowDown className="h-3.5 w-3.5" />
-                                                                </Button>
-                                                                <Button type="button" size="icon" variant="ghost" className="h-7 w-7" onClick={() => duplicateBlock(block.id)} title="Duplicate block">
-                                                                    <Copy className="h-3.5 w-3.5" />
-                                                                </Button>
-                                                                <Button type="button" size="icon" variant="ghost" className="h-7 w-7 text-destructive hover:text-destructive" onClick={() => removeBlock(block.id)} title="Delete block">
-                                                                    <Trash className="h-3.5 w-3.5" />
-                                                                </Button>
-                                                            </div>
-                                                        </div>
-
-                                        <CollapsibleContent>
-                                            <CardContent className="p-6">
                                         {block.type === 'hero' && (
                                             <div className="space-y-4">
                                                 <div className="grid grid-cols-2 gap-4">
@@ -2642,13 +2761,8 @@ export default function Edit({ page }: Props) {
                                                 </div>
                                             </div>
                                         )}
-                                            </CardContent>
-                                        </CollapsibleContent>
-                                    </Card>
-                                </Collapsible>
-                            </div>
-                        );
-                    })}
+                                        </SortableBlockItem>
+                                    ))}
 
                     {blocks.length === 0 && (
                         <div className="text-center py-12 text-muted-foreground border-2 border-dashed rounded-lg">

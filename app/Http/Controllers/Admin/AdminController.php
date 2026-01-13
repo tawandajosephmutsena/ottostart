@@ -10,6 +10,7 @@ use App\Models\TeamMember;
 use App\Models\MediaAsset;
 use App\Models\User;
 use App\Models\ContactInquiry;
+use App\Models\Page;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -63,6 +64,35 @@ class AdminController extends Controller
         $recent_insights = Insight::latest()->take(5)->get(['id', 'title', 'created_at', 'is_published']);
         $recent_inquiries = ContactInquiry::latest()->take(5)->get(['id', 'name', 'subject', 'status', 'created_at']);
 
+        // Visit Activity (Last 14 days)
+        $endDate = now();
+        $startDate = now()->subDays(13);
+        $visits = \App\Models\Visit::selectRaw('DATE(created_at) as date, count(*) as count')
+            ->whereBetween('created_at', [$startDate->startOfDay(), $endDate->endOfDay()])
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get()
+            ->pluck('count', 'date');
+
+        $system_activity = [];
+        for ($i = 0; $i < 14; $i++) {
+            $date = $startDate->clone()->addDays($i)->format('Y-m-d');
+            $system_activity[] = $visits->get($date, 0);
+        }
+
+        // SEO Stats
+        $seo_stats = [
+            'average_score' => 85, // Placeholder until detailed analysis is implemented
+            'pages_needing_attention' => 
+                Insight::published()->whereNull('excerpt')->count() + 
+                PortfolioItem::published()->whereNull('description')->count(),
+            'total_pages' => 
+                Insight::published()->count() + 
+                PortfolioItem::published()->count() + 
+                Service::published()->count() + 
+                Page::published()->count(),
+        ];
+
         return Inertia::render('admin/Dashboard', [
             'stats' => $stats,
             'recent_activity' => [
@@ -70,6 +100,8 @@ class AdminController extends Controller
                 'insights' => $recent_insights,
                 'inquiries' => $recent_inquiries,
             ],
+            'system_activity' => $system_activity,
+            'seo_stats' => $seo_stats,
         ]);
     }
 

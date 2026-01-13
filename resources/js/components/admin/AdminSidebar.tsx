@@ -24,6 +24,7 @@ import {
     Home,
     MessageSquare,
     BookOpen,
+    List,
 } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 
@@ -60,6 +61,11 @@ const contentNavItems = [
         title: 'Pages',
         href: '/admin/pages',
         icon: LayoutDashboard,
+    },
+    {
+        title: 'Menus',
+        href: '/admin/menus',
+        icon: List,
     },
     {
         title: 'Inquiries',
