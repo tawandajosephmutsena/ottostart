@@ -41,7 +41,7 @@ export default function PageBuilder({
             {!isPreviewFullscreen && (
                 <div 
                     style={{ width: `${sidebarWidth}px` }}
-                    className="flex-shrink-0 border-r bg-muted/10 flex flex-col"
+                    className="flex-shrink-0 border-r bg-muted/10 flex flex-col overflow-hidden min-h-0"
                 >
                     <BlockList 
                         blocks={blocks}

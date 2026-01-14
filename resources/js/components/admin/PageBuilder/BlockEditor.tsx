@@ -121,6 +121,46 @@ export default function BlockEditor({ block, onUpdate }: BlockEditorProps) {
                             placeholder="Scrolling background text..."
                         />
                     </div>
+                    <div className="space-y-4 pt-4 border-t">
+                        <Label className="text-xs font-bold uppercase tracking-wider">Background Images (Floating Grid)</Label>
+                        <p className="text-[10px] text-muted-foreground">These images appear in the collage/floating grid behind the hero content.</p>
+                        <div className="space-y-3">
+                            {[0, 1, 2].map((idx) => {
+                                const bgImages = (block.content.backgroundImages as string[]) || [];
+                                const currentImg = bgImages[idx] || '';
+                                return (
+                                    <div key={idx} className="p-3 border rounded-lg bg-muted/10 space-y-2">
+                                        <Label className="text-[10px] text-muted-foreground">Image {idx + 1}</Label>
+                                        {currentImg && (
+                                            <img src={currentImg} className="w-full h-20 object-cover rounded-md" alt={`Background ${idx + 1}`} />
+                                        )}
+                                        <div className="flex gap-2">
+                                            <MediaLibrary 
+                                                onSelect={(asset: MediaAsset) => {
+                                                    const newBgImages = [...bgImages];
+                                                    while (newBgImages.length < 3) newBgImages.push('');
+                                                    newBgImages[idx] = asset.url;
+                                                    updateContent({ backgroundImages: newBgImages });
+                                                }}
+                                                trigger={<Button type="button" variant="outline" size="sm" className="h-8 text-xs"><ImageIcon className="h-3 w-3 mr-1" />{currentImg ? 'Change' : 'Upload'}</Button>}
+                                            />
+                                            <Input 
+                                                className="h-8 text-xs flex-1"
+                                                value={currentImg} 
+                                                onChange={(e) => {
+                                                    const newBgImages = [...bgImages];
+                                                    while (newBgImages.length < 3) newBgImages.push('');
+                                                    newBgImages[idx] = e.target.value;
+                                                    updateContent({ backgroundImages: newBgImages });
+                                                }}
+                                                placeholder="Or paste image URL..."
+                                            />
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
                 </div>
             );
 
@@ -234,7 +274,7 @@ export default function BlockEditor({ block, onUpdate }: BlockEditorProps) {
                                                     </SelectContent>
                                                 </Select>
                                             </div>
-                                            <div className="min-h-[200px] border rounded-lg bg-white overflow-hidden">
+                                            <div className="min-h-[200px] border rounded-lg bg-background overflow-hidden">
                                                 <RichTextEditor 
                                                     content={String((col.content as Record<string, unknown>).body || '')} 
                                                     onChange={(val) => updateColumn(i, { body: val })}
@@ -804,7 +844,19 @@ export default function BlockEditor({ block, onUpdate }: BlockEditorProps) {
                                         <Input className="h-8 text-xs" value={item.category} onChange={(e) => { const n = [...items]; n[i] = { ...item, category: e.target.value }; updateContent({ items: n }); }} placeholder="Category" />
                                         <Input className="h-8 text-xs" value={item.title} onChange={(e) => { const n = [...items]; n[i] = { ...item, title: e.target.value }; updateContent({ items: n }); }} placeholder="Title" />
                                     </div>
-                                    <Input className="h-8 text-xs" value={item.src} onChange={(e) => { const n = [...items]; n[i] = { ...item, src: e.target.value }; updateContent({ items: n }); }} placeholder="Image URL" />
+                                    <div className="space-y-2">
+                                        <Label className="text-[10px] text-muted-foreground">Card Image</Label>
+                                        {item.src && (
+                                            <img src={item.src} className="w-full h-24 object-cover rounded-md" alt={item.title || 'Card image'} />
+                                        )}
+                                        <div className="flex gap-2">
+                                            <MediaLibrary 
+                                                onSelect={(asset: MediaAsset) => { const n = [...items]; n[i] = { ...item, src: asset.url }; updateContent({ items: n }); }}
+                                                trigger={<Button type="button" variant="outline" size="sm" className="h-8 text-xs"><ImageIcon className="h-3 w-3 mr-1" />{item.src ? 'Change' : 'Upload'}</Button>}
+                                            />
+                                            <Input className="h-8 text-xs flex-1" value={item.src} onChange={(e) => { const n = [...items]; n[i] = { ...item, src: e.target.value }; updateContent({ items: n }); }} placeholder="Or paste image URL..." />
+                                        </div>
+                                    </div>
                                     <Input className="h-8 text-xs" value={item.link} onChange={(e) => { const n = [...items]; n[i] = { ...item, link: e.target.value }; updateContent({ items: n }); }} placeholder="Link (optional)" />
                                 </div>
                             ))}

@@ -65,8 +65,8 @@ export default function BlockList({
 
     if (activeBlockId && activeBlock) {
         return (
-            <div className="flex flex-col h-full bg-background">
-                <div className="flex items-center gap-2 p-4 border-b">
+            <div className="flex flex-col h-full bg-background overflow-hidden">
+                <div className="flex items-center gap-2 p-4 border-b flex-shrink-0">
                     <Button 
                         variant="ghost" 
                         size="icon" 
@@ -83,7 +83,7 @@ export default function BlockList({
                         <Settings2 className="h-4 w-4" />
                     </Button>
                 </div>
-                <ScrollArea className="flex-1">
+                <ScrollArea className="flex-1 min-h-0">
                     <div className="p-4">
                         <BlockEditor 
                             block={activeBlock} 
@@ -96,8 +96,8 @@ export default function BlockList({
     }
 
     return (
-        <div className="flex flex-col h-full bg-background">
-            <div className="flex items-center justify-between p-4 border-b sticky top-0 bg-background z-10">
+        <div className="flex flex-col h-full bg-background overflow-hidden">
+            <div className="flex items-center justify-between p-4 border-b sticky top-0 bg-background z-10 flex-shrink-0">
                 <div className="flex flex-col">
                     <h2 className="text-lg font-bold tracking-tight">Blocks</h2>
                     <p className="text-xs text-muted-foreground">{blocks.length} sections active</p>
@@ -105,7 +105,7 @@ export default function BlockList({
                 <AddBlockMenu onAddBlock={onAddBlock} />
             </div>
 
-            <ScrollArea className="flex-1">
+            <ScrollArea className="flex-1 min-h-0">
                 <div className="p-3">
                     <DndContext
                         sensors={sensors}
