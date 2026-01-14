@@ -6,11 +6,12 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useForm, router } from '@inertiajs/react';
-import React, { useState } from 'react';
-import { Save, ImagePlus, X, RotateCcw } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Save, ImagePlus, X, RotateCcw, Check, Palette } from 'lucide-react';
 import { toast } from 'sonner';
 import MediaLibrary from '@/components/admin/MediaLibrary';
 import { MediaAsset } from '@/types';
+import { cn } from '@/lib/utils';
 
 interface SettingItem {
     id?: number;
@@ -20,8 +21,37 @@ interface SettingItem {
     group_name: string;
 }
 
+interface ThemeColors {
+    background?: string;
+    foreground?: string;
+    primary?: string;
+    'primary-foreground'?: string;
+    secondary?: string;
+    accent?: string;
+    muted?: string;
+    destructive?: string;
+    border?: string;
+    ring?: string;
+    [key: string]: string | undefined;
+}
+
+interface ThemePreset {
+    name: string;
+    description: string;
+    fonts: { sans: string; serif: string; mono: string };
+    radius: string;
+    light: ThemeColors;
+    dark: ThemeColors;
+}
+
+interface ThemePresetsConfig {
+    default: string;
+    themes: Record<string, ThemePreset>;
+}
+
 interface Props {
     settings: Record<string, SettingItem[]>;
+    themePresets?: ThemePresetsConfig;
 }
 
 // Define the known settings structure to auto-generate default values if missing
@@ -98,7 +128,7 @@ const SETTINGS_STRUCT: Record<string, StructItem[]> = {
     ]
 };
 
-export default function SettingsIndex({ settings }: Props) {
+export default function SettingsIndex({ settings, themePresets }: Props) {
     // Flatten settings for easier access
     const flatSettings = Object.values(settings).flat();
 
@@ -117,12 +147,42 @@ export default function SettingsIndex({ settings }: Props) {
         items.forEach(item => {
             acc[item.key] = getSettingValue(item.key);
         });
+        // Add theme_preset to form data
+        acc['theme_preset'] = getSettingValue('theme_preset') || themePresets?.default || 'ottostart_default';
         return acc;
     }, {} as Record<string, string>);
 
     const { data, setData: _setData } = useForm(initialData);
     const setData = _setData as (key: string, value: string | string[] | null) => void;
     const [processing, setProcessing] = useState(false);
+    const [selectedPreset, setSelectedPreset] = useState<string>(initialData['theme_preset']);
+
+    // Apply theme preview when preset changes
+    useEffect(() => {
+        if (!themePresets?.themes[selectedPreset]) return;
+        
+        const preset = themePresets.themes[selectedPreset];
+        const root = document.documentElement;
+        
+        // Apply light mode colors as preview
+        Object.entries(preset.light).forEach(([key, value]) => {
+            if (value) root.style.setProperty(`--${key}`, value);
+        });
+        root.style.setProperty('--radius', preset.radius);
+        root.style.setProperty('--font-sans', `${preset.fonts.sans}, sans-serif`);
+        
+        return () => {
+            // Reset inline styles on cleanup
+            Object.keys(preset.light).forEach(key => {
+                root.style.removeProperty(`--${key}`);
+            });
+        };
+    }, [selectedPreset, themePresets]);
+
+    const handlePresetSelect = (presetKey: string) => {
+        setSelectedPreset(presetKey);
+        setData('theme_preset', presetKey);
+    };
     
     const handleReset = (group: keyof typeof SETTINGS_STRUCT) => {
         if (confirm(`Are you sure you want to reset ${group} settings to default values?`)) {
@@ -228,7 +288,67 @@ export default function SettingsIndex({ settings }: Props) {
                                             )}
                                         </div>
                                     </CardHeader>
-                                    <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <CardContent className="space-y-6">
+                                        {/* Theme Presets Grid - only shown in theme tab */}
+                                        {group === 'theme' && themePresets && (
+                                            <div className="space-y-4">
+                                                <div className="flex items-center gap-2">
+                                                    <Palette className="w-5 h-5 text-primary" />
+                                                    <Label className="text-base font-semibold">Choose a Theme Preset</Label>
+                                                </div>
+                                                <p className="text-sm text-muted-foreground">
+                                                    Select a pre-designed theme to instantly change your site's look. Changes preview immediately.
+                                                </p>
+                                                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                                                    {Object.entries(themePresets.themes).map(([key, preset]) => (
+                                                        <button
+                                                            key={key}
+                                                            type="button"
+                                                            onClick={() => handlePresetSelect(key)}
+                                                            className={cn(
+                                                                "relative rounded-lg border-2 p-3 text-left transition-all hover:shadow-md",
+                                                                selectedPreset === key
+                                                                    ? "border-primary ring-2 ring-primary/20 bg-accent/50"
+                                                                    : "border-border hover:border-primary/50"
+                                                            )}
+                                                        >
+                                                            {selectedPreset === key && (
+                                                                <div className="absolute top-2 right-2 bg-primary text-primary-foreground rounded-full p-0.5">
+                                                                    <Check className="w-3 h-3" />
+                                                                </div>
+                                                            )}
+                                                            {/* Color swatches */}
+                                                            <div className="flex gap-1 mb-2">
+                                                                <div 
+                                                                    className="w-6 h-6 rounded-full border border-border/50"
+                                                                    style={{ backgroundColor: preset.light.primary }}
+                                                                    title="Primary"
+                                                                />
+                                                                <div 
+                                                                    className="w-6 h-6 rounded-full border border-border/50"
+                                                                    style={{ backgroundColor: preset.light.accent || preset.light.secondary }}
+                                                                    title="Accent"
+                                                                />
+                                                                <div 
+                                                                    className="w-6 h-6 rounded-full border border-border/50"
+                                                                    style={{ backgroundColor: preset.light.background }}
+                                                                    title="Background"
+                                                                />
+                                                            </div>
+                                                            <p className="font-medium text-sm truncate">{preset.name}</p>
+                                                            <p className="text-xs text-muted-foreground truncate">{preset.description}</p>
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                                <hr className="my-4" />
+                                                <p className="text-xs text-muted-foreground italic">
+                                                    Or customize individual colors below to create your own theme.
+                                                </p>
+                                            </div>
+                                        )}
+                                        
+                                        {/* Individual Settings Fields */}
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         {items.map((item) => (
                                             <div key={item.key} className={`grid gap-2 ${(item.type === 'textarea' || item.type === 'image') ? 'md:col-span-2' : ''}`}>
                                                 <Label htmlFor={item.key} className="text-agency-accent font-medium">{item.label}</Label>
@@ -297,6 +417,7 @@ export default function SettingsIndex({ settings }: Props) {
                                                 )}
                                             </div>
                                         ))}
+                                        </div>
                                     </CardContent>
                                 </Card>
                             </TabsContent>

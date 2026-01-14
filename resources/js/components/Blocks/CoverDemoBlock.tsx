@@ -7,6 +7,8 @@ interface CoverDemoBlockProps {
     coverText?: string;
     fontSize?: string;
     fontWeight?: string;
+    beamDuration?: number;
+    beamDelay?: number;
 }
 
 const CoverDemoBlock: React.FC<CoverDemoBlockProps> = (props) => {
@@ -19,6 +21,8 @@ const CoverDemoBlock: React.FC<CoverDemoBlockProps> = (props) => {
                 titleTwo={props.titleTwo}
                 coverText={props.coverText}
                 titleClassName={titleClassName}
+                beamDuration={props.beamDuration}
+                beamDelay={props.beamDelay}
             />
         </section>
     );

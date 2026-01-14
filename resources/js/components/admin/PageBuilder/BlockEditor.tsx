@@ -757,7 +757,8 @@ export default function BlockEditor({ block, onUpdate }: BlockEditorProps) {
             );
         }
 
-        case 'video_background_hero':
+        case 'video_background_hero': {
+            const logos = (block.content.logos as LogoItem[]) || [];
             return (
                 <div className="space-y-6">
                     <div className="space-y-2">
@@ -790,8 +791,38 @@ export default function BlockEditor({ block, onUpdate }: BlockEditorProps) {
                             <Input className="h-8 text-xs" value={String(block.content.ctaLink2 || '')} onChange={(e) => updateContent({ ctaLink2: e.target.value })} />
                         </div>
                     </div>
+
+                    <div className="space-y-4 pt-4 border-t">
+                        <div className="flex items-center justify-between">
+                            <Label className="text-xs font-bold uppercase tracking-wider">Logo Slider</Label>
+                            <Button variant="outline" size="sm" onClick={() => updateContent({ logos: [...logos, { name: '', url: '' }] })}>
+                                <Plus className="h-3 w-3 mr-1" /> Add Logo
+                            </Button>
+                        </div>
+                        <div className="space-y-3">
+                            {logos.map((logo, i) => (
+                                <div key={i} className="group relative p-3 border rounded-lg bg-muted/10 space-y-2">
+                                    <button type="button" title="Remove" className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-destructive text-white flex items-center justify-center opacity-0 group-hover:opacity-100" onClick={() => updateContent({ logos: logos.filter((_, idx) => idx !== i) })}>
+                                        <Trash className="h-3 w-3" />
+                                    </button>
+                                    <Input className="h-8 text-xs font-semibold" value={logo.name} onChange={(e) => { const n = [...logos]; n[i] = { ...logo, name: e.target.value }; updateContent({ logos: n }); }} placeholder="Company Name" />
+                                    <div className="flex gap-2">
+                                        <MediaLibrary 
+                                            onSelect={(asset: MediaAsset) => { const n = [...logos]; n[i] = { ...logo, url: asset.url }; updateContent({ logos: n }); }}
+                                            trigger={<Button type="button" variant="outline" size="sm" className="h-8 text-xs"><ImageIcon className="h-3 w-3 mr-1" /> {logo.url ? 'Change' : 'Upload'}</Button>}
+                                        />
+                                        <Input className="h-8 text-xs flex-1" value={logo.url} onChange={(e) => { const n = [...logos]; n[i] = { ...logo, url: e.target.value }; updateContent({ logos: n }); }} placeholder="Logo URL" />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        {logos.length === 0 && (
+                            <p className="text-[10px] text-muted-foreground italic">No logos added. Default logos will be shown.</p>
+                        )}
+                    </div>
                 </div>
             );
+        }
 
         case 'logo_cloud': {
             const items = (block.content.items as LogoItem[]) || [];
@@ -810,12 +841,18 @@ export default function BlockEditor({ block, onUpdate }: BlockEditorProps) {
                         </div>
                         <div className="space-y-3">
                             {items.map((item, i) => (
-                                <div key={i} className="group relative grid grid-cols-[1fr_2fr] gap-2 p-3 border rounded-lg bg-muted/10">
+                                <div key={i} className="group relative p-3 border rounded-lg bg-muted/10 space-y-2">
                                     <button type="button" title="Remove" className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-destructive text-white flex items-center justify-center opacity-0 group-hover:opacity-100" onClick={() => updateContent({ items: items.filter((_, idx) => idx !== i) })}>
                                         <Trash className="h-3 w-3" />
                                     </button>
-                                    <Input className="h-8 text-xs" value={item.name} onChange={(e) => { const n = [...items]; n[i] = { ...item, name: e.target.value }; updateContent({ items: n }); }} placeholder="Name" />
-                                    <Input className="h-8 text-xs" value={item.url} onChange={(e) => { const n = [...items]; n[i] = { ...item, url: e.target.value }; updateContent({ items: n }); }} placeholder="Logo URL" />
+                                    <Input className="h-8 text-xs font-semibold" value={item.name} onChange={(e) => { const n = [...items]; n[i] = { ...item, name: e.target.value }; updateContent({ items: n }); }} placeholder="Name" />
+                                    <div className="flex gap-2">
+                                        <MediaLibrary 
+                                            onSelect={(asset: MediaAsset) => { const n = [...items]; n[i] = { ...item, url: asset.url }; updateContent({ items: n }); }}
+                                            trigger={<Button type="button" variant="outline" size="sm" className="h-8 text-xs"><ImageIcon className="h-3 w-3 mr-1" /> {item.url ? 'Change' : 'Upload'}</Button>}
+                                        />
+                                        <Input className="h-8 text-xs flex-1" value={item.url} onChange={(e) => { const n = [...items]; n[i] = { ...item, url: e.target.value }; updateContent({ items: n }); }} placeholder="Logo URL" />
+                                    </div>
                                 </div>
                             ))}
                         </div>
@@ -826,47 +863,90 @@ export default function BlockEditor({ block, onUpdate }: BlockEditorProps) {
 
         case 'apple_cards_carousel': {
             const items = (block.content.items as AppleCardItem[]) || [];
+            const feedSource = (block.content.feedSource as string) || 'manual';
+            const maxItems = Number(block.content.maxItems) || 6;
+            const sourceCategory = String(block.content.sourceCategory || 'all');
+
             return (
                 <div className="space-y-6">
                     <div className="space-y-2">
                         <Label>Title</Label>
                         <Input value={String(block.content.title || '')} onChange={(e) => updateContent({ title: e.target.value })} />
                     </div>
+
                     <div className="space-y-4 pt-4 border-t">
-                        <div className="flex items-center justify-between">
-                            <Label className="text-xs font-bold uppercase tracking-wider">Cards</Label>
-                            <Button variant="outline" size="sm" onClick={() => updateContent({ items: [...items, { category: '', title: '', src: '', content: '', link: '' }] })}>
-                                <Plus className="h-3 w-3 mr-1" /> Add
-                            </Button>
-                        </div>
-                        <div className="space-y-3">
-                            {items.map((item, i) => (
-                                <div key={i} className="group relative p-3 border rounded-lg bg-muted/10 space-y-2">
-                                    <button type="button" title="Remove" className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-destructive text-white flex items-center justify-center opacity-0 group-hover:opacity-100" onClick={() => updateContent({ items: items.filter((_, idx) => idx !== i) })}>
-                                        <Trash className="h-3 w-3" />
-                                    </button>
-                                    <div className="grid grid-cols-2 gap-2">
-                                        <Input className="h-8 text-xs" value={item.category} onChange={(e) => { const n = [...items]; n[i] = { ...item, category: e.target.value }; updateContent({ items: n }); }} placeholder="Category" />
-                                        <Input className="h-8 text-xs" value={item.title} onChange={(e) => { const n = [...items]; n[i] = { ...item, title: e.target.value }; updateContent({ items: n }); }} placeholder="Title" />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label className="text-[10px] text-muted-foreground">Card Image</Label>
-                                        {item.src && (
-                                            <img src={item.src} className="w-full h-24 object-cover rounded-md" alt={item.title || 'Card image'} />
-                                        )}
-                                        <div className="flex gap-2">
-                                            <MediaLibrary 
-                                                onSelect={(asset: MediaAsset) => { const n = [...items]; n[i] = { ...item, src: asset.url }; updateContent({ items: n }); }}
-                                                trigger={<Button type="button" variant="outline" size="sm" className="h-8 text-xs"><ImageIcon className="h-3 w-3 mr-1" />{item.src ? 'Change' : 'Upload'}</Button>}
-                                            />
-                                            <Input className="h-8 text-xs flex-1" value={item.src} onChange={(e) => { const n = [...items]; n[i] = { ...item, src: e.target.value }; updateContent({ items: n }); }} placeholder="Or paste image URL..." />
-                                        </div>
-                                    </div>
-                                    <Input className="h-8 text-xs" value={item.link} onChange={(e) => { const n = [...items]; n[i] = { ...item, link: e.target.value }; updateContent({ items: n }); }} placeholder="Link (optional)" />
-                                </div>
-                            ))}
-                        </div>
+                        <Label className="text-xs font-bold uppercase tracking-wider">Content Source</Label>
+                        <Select value={feedSource} onValueChange={(val) => updateContent({ feedSource: val })}>
+                            <SelectTrigger>
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="manual">Manual Cards</SelectItem>
+                                <SelectItem value="services">Dynamic: Services</SelectItem>
+                                <SelectItem value="portfolio">Dynamic: Portfolio</SelectItem>
+                                <SelectItem value="insights">Dynamic: Insights</SelectItem>
+                            </SelectContent>
+                        </Select>
                     </div>
+
+                    {feedSource !== 'manual' ? (
+                        <div className="space-y-4 p-4 border rounded-xl bg-primary/5">
+                            <div className="flex items-center gap-2 mb-2">
+                                <AlertCircle className="h-4 w-4 text-primary" />
+                                <span className="text-xs font-bold text-primary uppercase">Dynamic Feed Settings</span>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label className="text-[10px]">Max Items</Label>
+                                    <Input type="number" min="1" max="20" value={maxItems} onChange={(e) => updateContent({ maxItems: parseInt(e.target.value) || 6 })} />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label className="text-[10px]">Category Filter</Label>
+                                    <Input value={sourceCategory} onChange={(e) => updateContent({ sourceCategory: e.target.value })} placeholder="e.g. Design or 'all'" />
+                                </div>
+                            </div>
+                            <p className="text-[10px] text-muted-foreground">
+                                Cards will be automatically populated from your <strong>{feedSource}</strong> collection.
+                            </p>
+                        </div>
+                    ) : (
+                        <div className="space-y-4 pt-4 border-t">
+                            <div className="flex items-center justify-between">
+                                <Label className="text-xs font-bold uppercase tracking-wider">Manual Cards</Label>
+                                <Button variant="outline" size="sm" onClick={() => updateContent({ items: [...items, { category: 'New', title: 'New Card', src: '', content: '', link: '' }] })}>
+                                    <Plus className="h-3 w-3 mr-1" /> Add Card
+                                </Button>
+                            </div>
+                            <div className="space-y-3">
+                                {items.map((item, i) => (
+                                    <div key={i} className="group relative p-3 border rounded-lg bg-muted/10 space-y-2">
+                                        <button type="button" title="Remove" className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-destructive text-white flex items-center justify-center opacity-0 group-hover:opacity-100" onClick={() => updateContent({ items: items.filter((_, idx) => idx !== i) })}>
+                                            <Trash className="h-3 w-3" />
+                                        </button>
+                                        <div className="grid grid-cols-2 gap-2">
+                                            <Input className="h-8 text-xs" value={item.category} onChange={(e) => { const n = [...items]; n[i] = { ...item, category: e.target.value }; updateContent({ items: n }); }} placeholder="Category" />
+                                            <Input className="h-8 text-xs font-semibold" value={item.title} onChange={(e) => { const n = [...items]; n[i] = { ...item, title: e.target.value }; updateContent({ items: n }); }} placeholder="Title" />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label className="text-[10px] text-muted-foreground">Card Image</Label>
+                                            <div className="flex gap-2">
+                                                <MediaLibrary 
+                                                    onSelect={(asset: MediaAsset) => { const n = [...items]; n[i] = { ...item, src: asset.url }; updateContent({ items: n }); }}
+                                                    trigger={<Button type="button" variant="outline" size="sm" className="h-8 text-xs"><ImageIcon className="h-3 w-3 mr-1" /> {item.src ? 'Change' : 'Upload'}</Button>}
+                                                />
+                                                <Input className="h-8 text-xs flex-1" value={item.src} onChange={(e) => { const n = [...items]; n[i] = { ...item, src: e.target.value }; updateContent({ items: n }); }} placeholder="Image URL..." />
+                                            </div>
+                                        </div>
+                                        <div className="space-y-1">
+                                            <Label className="text-[10px] text-muted-foreground">Expand Content (HTML)</Label>
+                                            <Textarea className="h-20 text-xs" value={item.content} onChange={(e) => { const n = [...items]; n[i] = { ...item, content: e.target.value }; updateContent({ items: n }); }} placeholder="Content shown when card is clicked..." />
+                                        </div>
+                                        <Input className="h-8 text-xs" value={item.link} onChange={(e) => { const n = [...items]; n[i] = { ...item, link: e.target.value }; updateContent({ items: n }); }} placeholder="Link (optional)" />
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                 </div>
             );
         }
@@ -885,6 +965,43 @@ export default function BlockEditor({ block, onUpdate }: BlockEditorProps) {
                     <div className="space-y-2">
                         <Label>Cover Text (Animated)</Label>
                         <Input value={String(block.content.coverText || '')} onChange={(e) => updateContent({ coverText: e.target.value })} />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4 pt-4 border-t">
+                        <div className="space-y-2">
+                            <Label>Font Size</Label>
+                            <Select value={String(block.content.fontSize || 'text-4xl md:text-4xl lg:text-6xl')} onValueChange={(val) => updateContent({ fontSize: val })}>
+                                <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="text-2xl md:text-3xl lg:text-4xl">Small</SelectItem>
+                                    <SelectItem value="text-3xl md:text-4xl lg:text-5xl">Medium</SelectItem>
+                                    <SelectItem value="text-4xl md:text-4xl lg:text-6xl">Large (Default)</SelectItem>
+                                    <SelectItem value="text-5xl md:text-6xl lg:text-8xl">Extra Large</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="space-y-2">
+                            <Label>Font Weight</Label>
+                            <Select value={String(block.content.fontWeight || 'font-semibold')} onValueChange={(val) => updateContent({ fontWeight: val })}>
+                                <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="font-normal">Normal</SelectItem>
+                                    <SelectItem value="font-medium">Medium</SelectItem>
+                                    <SelectItem value="font-semibold">Semibold</SelectItem>
+                                    <SelectItem value="font-bold">Bold</SelectItem>
+                                    <SelectItem value="font-black">Black</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4 pt-4 border-t">
+                        <div className="space-y-2">
+                            <Label>Beam Duration (s)</Label>
+                            <Input type="number" step="0.1" value={Number(block.content.beamDuration) || 10} onChange={(e) => updateContent({ beamDuration: parseFloat(e.target.value) || 10 })} />
+                        </div>
+                        <div className="space-y-2">
+                            <Label>Beam Delay (s)</Label>
+                            <Input type="number" step="0.1" value={Number(block.content.beamDelay) || 2} onChange={(e) => updateContent({ beamDelay: parseFloat(e.target.value) || 2 })} />
+                        </div>
                     </div>
                 </div>
             );

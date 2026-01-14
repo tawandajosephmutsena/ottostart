@@ -3,7 +3,7 @@ import DOMPurify from 'dompurify';
 import AnimatedSection from '@/components/AnimatedSection';
 import CinematicHero from './CinematicHero';
 import VideoPlayer from '@/components/ui/video-player';
-import { PageBlock, VideoBlock as VideoBlockType, TextBlock as TextBlockType, ImageBlock as ImageBlockType, FeaturesBlock as FeaturesBlockType, TestimonialBlock as TestimonialBlockType } from '@/types/page-blocks';
+import { PageBlock, VideoBlock as VideoBlockType, TextBlock as TextBlockType, ImageBlock as ImageBlockType, FeaturesBlock as FeaturesBlockType } from '@/types/page-blocks';
 import { cn } from '@/lib/utils';
 
 import AnimatedShaderHero from '@/components/ui/animated-shader-hero';
@@ -263,9 +263,9 @@ const TextBlock = ({ content }: { content: TextBlockType['content'] }) => {
                     </AnimatedSection>
                 )}
                 <div className={gridClass}>
-                    {columns.map((col: any, idx: number) => (
-                        <AnimatedSection key={col.id || idx} animation="fade-up" delay={idx * 100}>
-                            <ColumnRenderer column={col} />
+                    {columns.map((col: unknown, idx: number) => (
+                        <AnimatedSection key={(col as any).id || idx} animation="fade-up" delay={idx * 100}>
+                            <ColumnRenderer column={col as any} />
                         </AnimatedSection>
                     ))}
                 </div>
@@ -311,10 +311,10 @@ const FeaturesBlock = ({ content }: { content: FeaturesBlockType['content'] }) =
                     </div>
                 )}
                 <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-                    {(items || []).map((item: any, i: number) => (
+                    {(items || []).map((item: Record<string, unknown>, i: number) => (
                         <AnimatedSection key={i} animation="fade-up" delay={i * 100} className="rounded-2xl border bg-card p-8 shadow-sm">
-                            <h3 className="mb-4 text-xl font-bold">{item.title}</h3>
-                            <p className="text-muted-foreground">{item.desc}</p>
+                            <h3 className="mb-4 text-xl font-bold">{item.title as string}</h3>
+                            <p className="text-muted-foreground">{item.desc as string}</p>
                         </AnimatedSection>
                     ))}
                 </div>
@@ -341,17 +341,17 @@ export default function BlockRenderer({
                         return (
                             <div key={block.id} className="relative z-0">
                                 <AnimatedShaderHero
-                                    trustBadge={block.content.trustBadge}
-                                    headline={block.content.headline}
-                                    subtitle={block.content.subtitle}
+                                    trustBadge={block.content.trustBadge as any}
+                                    headline={block.content.headline as any}
+                                    subtitle={block.content.subtitle as string}
                                     buttons={{
                                         primary: { 
-                                            text: block.content.buttons?.primary?.text || '', 
-                                            onClick: () => window.location.href = block.content.buttons?.primary?.url || '#' 
+                                            text: (block.content.buttons as any)?.primary?.text || '', 
+                                            onClick: () => window.location.href = (block.content.buttons as any)?.primary?.url || '#' 
                                         },
                                         secondary: { 
-                                            text: block.content.buttons?.secondary?.text || '', 
-                                            onClick: () => window.location.href = block.content.buttons?.secondary?.url || '#' 
+                                            text: (block.content.buttons as any)?.secondary?.text || '', 
+                                            onClick: () => window.location.href = (block.content.buttons as any)?.secondary?.url || '#' 
                                         }
                                     }}
                                 />
@@ -361,57 +361,57 @@ export default function BlockRenderer({
                         return (
                             <HeroSection
                                 key={block.id}
-                                title={block.content.title}
-                                subtitle={block.content.subtitle}
-                                description={block.content.description}
-                                ctaText={block.content.ctaText}
-                                ctaHref={block.content.ctaHref}
-                                marqueeText={block.content.marqueeText}
-                                backgroundImages={block.content.backgroundImages}
+                                title={block.content.title as string}
+                                subtitle={block.content.subtitle as string}
+                                description={block.content.description as string}
+                                ctaText={block.content.ctaText as string}
+                                ctaHref={block.content.ctaHref as string}
+                                marqueeText={block.content.marqueeText as string}
+                                backgroundImages={block.content.backgroundImages as string[]}
                             />
                         );
                     case 'text':
-                        return <TextBlock key={block.id} content={block.content} />;
+                        return <TextBlock key={block.id} content={block.content as any} />;
                     case 'image':
-                        return <ImageBlock key={block.id} content={block.content} />;
+                        return <ImageBlock key={block.id} content={block.content as any} />;
                     case 'features':
-                        return <FeaturesBlock key={block.id} content={block.content} />;
+                        return <FeaturesBlock key={block.id} content={block.content as any} />;
                     case 'stats':
-                        return <StatsSection key={block.id} stats={block.content.items} />;
+                        return <StatsSection key={block.id} stats={block.content.items as any} />;
                     case 'services':
-                        return <ServicesSection key={block.id} title={block.content.title} services={featuredServices?.slice(0, block.content.limit || 3)} useStackedCards={block.content.useStackedCards} />;
+                        return <ServicesSection key={block.id} title={block.content.title as string} services={featuredServices?.slice(0, Number(block.content.limit) || 3)} useStackedCards={block.content.useStackedCards as boolean} />;
                     case 'portfolio':
-                        return <FeaturedProjects key={block.id} title={block.content.title} projects={featuredProjects?.slice(0, block.content.limit || 3)} />;
+                        return <FeaturedProjects key={block.id} title={block.content.title as string} projects={featuredProjects?.slice(0, Number(block.content.limit) || 3)} />;
                     case 'insights':
-                        return <RecentInsights key={block.id} title={block.content.title} insights={recentInsights?.slice(0, block.content.limit || 3)} />;
+                        return <RecentInsights key={block.id} title={block.content.title as string} insights={recentInsights?.slice(0, Number(block.content.limit) || 3)} />;
                     case 'cta':
                         return (
                             <CtaBlock 
                                 key={block.id}
-                                title={block.content.title}
-                                subtitle={block.content.subtitle}
-                                ctaText={block.content.ctaText}
-                                ctaHref={block.content.ctaHref}
-                                email={block.content.email}
+                                title={block.content.title as string}
+                                subtitle={block.content.subtitle as string}
+                                ctaText={block.content.ctaText as string}
+                                ctaHref={block.content.ctaHref as string}
+                                email={block.content.email as string}
                             />
                         );
                     case 'cinematic_hero':
-                        return <CinematicHero key={block.id} slides={block.content.slides || []} />;
+                        return <CinematicHero key={block.id} slides={block.content.slides as any[] || []} />;
                     case 'video':
-                        return <VideoBlock key={block.id} content={block.content} />;
+                        return <VideoBlock key={block.id} content={block.content as any} />;
                     case 'form':
                         return (
                             <FormSection 
                                 key={block.id}
-                                title={block.content.title}
-                                description={block.content.description}
-                                steps={(block.content.steps || []).map((step: any) => ({
+                                title={block.content.title as string}
+                                description={block.content.description as string}
+                                steps={(block.content.steps as any[] || []).map((step: any) => ({
                                     ...step,
                                     id: step.id || Math.random().toString(36).substr(2, 9),
                                     title: step.title || '',
                                     fields: step.fields || [],
                                 }))}
-                                submitText={block.content.submitText}
+                                submitText={block.content.submitText as string}
                             />
                         );
                     case 'story':
@@ -429,7 +429,15 @@ export default function BlockRenderer({
                     case 'logo_cloud':
                         return <LogoCloudBlock key={block.id} {...block.content} />;
                     case 'apple_cards_carousel':
-                        return <AppleCardsCarouselBlock key={block.id} {...block.content} />;
+                        return (
+                            <AppleCardsCarouselBlock 
+                                key={block.id} 
+                                {...block.content} 
+                                services={featuredServices}
+                                portfolio={featuredProjects}
+                                insights={recentInsights}
+                            />
+                        );
                     case 'cover_demo':
                         return <CoverDemoBlock key={block.id} {...block.content} />;
                     case 'video_background_hero':

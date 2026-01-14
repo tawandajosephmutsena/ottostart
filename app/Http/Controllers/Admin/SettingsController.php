@@ -17,9 +17,11 @@ class SettingsController extends Controller
     public function index(): Response
     {
         $settings = Setting::all()->groupBy('group_name');
+        $themePresets = config('theme-presets');
 
         return Inertia::render('admin/settings/Index', [
             'settings' => $settings,
+            'themePresets' => $themePresets,
         ]);
     }
 

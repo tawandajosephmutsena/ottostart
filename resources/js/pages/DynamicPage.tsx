@@ -10,7 +10,19 @@ interface CustomPage extends Page {
     };
 }
 
-export default function DynamicPage({ page }: { page: CustomPage }) {
+interface DynamicPageProps {
+    page: CustomPage;
+    featuredServices?: any[];
+    featuredProjects?: any[];
+    recentInsights?: any[];
+}
+
+export default function DynamicPage({ 
+    page,
+    featuredServices = [],
+    featuredProjects = [],
+    recentInsights = []
+}: DynamicPageProps) {
     const [blocks, setBlocks] = React.useState<PageBlock[]>(page.content?.blocks || []);
 
     // Listen for preview updates from the admin builder
@@ -32,7 +44,12 @@ export default function DynamicPage({ page }: { page: CustomPage }) {
                 description={page.meta_description ?? undefined}
             />
             
-            <BlockRenderer blocks={blocks} />
+            <BlockRenderer 
+                blocks={blocks} 
+                featuredServices={featuredServices}
+                featuredProjects={featuredProjects}
+                recentInsights={recentInsights}
+            />
             
             {blocks.length === 0 && (
                 <div className="py-40 text-center">

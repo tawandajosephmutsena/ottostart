@@ -15,6 +15,15 @@ interface LogoCloudBlockProps {
     gap?: number;
 }
 
+const DEFAULT_LOGOS: LogoCloudBlockProps['items'] = [
+    { name: 'Apple', url: 'https://cdn.simpleicons.org/apple/888888' },
+    { name: 'Google', url: 'https://cdn.simpleicons.org/google/888888' },
+    { name: 'Amazon', url: 'https://cdn.simpleicons.org/amazon/888888' },
+    { name: 'Microsoft', url: 'https://cdn.simpleicons.org/microsoft/888888' },
+    { name: 'Meta', url: 'https://cdn.simpleicons.org/meta/888888' },
+    { name: 'Netflix', url: 'https://cdn.simpleicons.org/netflix/888888' },
+];
+
 const LogoCloudBlock: React.FC<LogoCloudBlockProps> = ({ 
     title = "Powering the best teams", 
     items = [], 
@@ -22,13 +31,7 @@ const LogoCloudBlock: React.FC<LogoCloudBlockProps> = ({
     speedOnHover = 20,
     gap = 112
 }) => {
-    if (!items || items.length === 0) {
-        return (
-            <section className="bg-background py-16 text-center border-dashed border-2 m-4 rounded-lg">
-                <p className="text-muted-foreground">Logo Cloud Block: No logos added. Please edit this block to add logos.</p>
-            </section>
-        );
-    }
+    const activeItems = items && items.length > 0 ? items : DEFAULT_LOGOS;
 
     return (
         <section className="bg-background overflow-hidden py-16">
@@ -44,7 +47,7 @@ const LogoCloudBlock: React.FC<LogoCloudBlockProps> = ({
                             gap={gap}
                             className="flex items-center w-full"
                         >
-                            {items.map((item, idx) => (
+                            {activeItems.map((item, idx) => (
                                 <div key={idx} className="flex px-8">
                                     <img
                                         className={cn("mx-auto h-8 w-auto opacity-70 hover:opacity-100 transition-opacity dark:brightness-0 dark:invert", item.className)}

@@ -8,9 +8,17 @@ import { SparklesCore } from "@/components/ui/sparkles";
 export const Cover = ({
   children,
   className,
+  beamDuration,
+  beamDelay,
+  sparkleCount = 500,
+  sparkleColor = "#FFFFFF",
 }: {
   children?: React.ReactNode;
   className?: string;
+  beamDuration?: number;
+  beamDelay?: number;
+  sparkleCount?: number;
+  sparkleColor?: string;
 }) => {
   const [hovered, setHovered] = useState(false);
 
@@ -70,17 +78,17 @@ export const Cover = ({
                 background="transparent"
                 minSize={0.4}
                 maxSize={1}
-                particleDensity={500}
+                particleDensity={sparkleCount}
                 className="w-full h-full"
-                particleColor="#FFFFFF"
+                particleColor={sparkleColor}
               />
               <SparklesCore
                 background="transparent"
                 minSize={0.4}
                 maxSize={1}
-                particleDensity={500}
+                particleDensity={sparkleCount}
                 className="w-full h-full"
-                particleColor="#FFFFFF"
+                particleColor={sparkleColor}
               />
             </motion.div>
           </motion.div>
@@ -90,8 +98,8 @@ export const Cover = ({
         <Beam
           key={index}
           hovered={hovered}
-          duration={Math.random() * 2 + 1}
-          delay={Math.random() * 2 + 1}
+          duration={beamDuration || Math.random() * 2 + 1}
+          delay={beamDelay || Math.random() * 2 + 1}
           width={containerWidth}
           style={{
             top: `${position}px`,

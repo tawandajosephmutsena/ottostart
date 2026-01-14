@@ -35,6 +35,7 @@ const CATEGORIES = [
         icon: <Layout className="h-4 w-4" />,
         blocks: [
             { type: 'hero', label: 'Classic Hero', icon: <Layout className="h-5 w-5" />, desc: 'Standard headline with image' },
+            { type: 'cover_demo', label: 'Cover Hero', icon: <Star className="h-5 w-5" />, desc: 'Animated text with light beams' },
             { type: 'animated_shader_hero', label: 'Shader Hero', icon: <Activity className="h-5 w-5" />, desc: 'Modern animated background' },
             { type: 'cinematic_hero', label: 'Cinematic', icon: <Video className="h-5 w-5" />, desc: 'Fullscreen immersive story' },
             { type: 'video_background_hero', label: 'Video Hero', icon: <Video className="h-5 w-5" />, desc: 'Hero with background video' },

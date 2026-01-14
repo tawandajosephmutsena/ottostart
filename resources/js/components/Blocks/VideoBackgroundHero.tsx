@@ -14,7 +14,19 @@ interface VideoBackgroundHeroProps {
     ctaText2?: string;
     ctaLink2?: string;
     videoUrl?: string;
+    logos?: Array<{ name: string; url: string }>;
 }
+
+const DEFAULT_LOGOS = [
+    { name: "Nvidia", url: "https://html.tailus.io/blocks/customers/nvidia.svg" },
+    { name: "Column", url: "https://html.tailus.io/blocks/customers/column.svg" },
+    { name: "GitHub", url: "https://html.tailus.io/blocks/customers/github.svg" },
+    { name: "Nike", url: "https://html.tailus.io/blocks/customers/nike.svg" },
+    { name: "LemonSqueezy", url: "https://html.tailus.io/blocks/customers/lemonsqueezy.svg" },
+    { name: "Laravel", url: "https://html.tailus.io/blocks/customers/laravel.svg" },
+    { name: "Lilly", url: "https://html.tailus.io/blocks/customers/lilly.svg" },
+    { name: "OpenAI", url: "https://html.tailus.io/blocks/customers/openai.svg" }
+];
 
 const getEmbedUrl = (url: string) => {
     if (url.includes("youtube.com") || url.includes("youtu.be")) {
@@ -47,8 +59,10 @@ export default function VideoBackgroundHero({
     ctaLink1 = "#",
     ctaText2 = "Request a demo",
     ctaLink2 = "#",
-    videoUrl = "https://videos.pexels.com/video-files/30333849/13003128_2560_1440_25fps.mp4"
+    videoUrl = "https://videos.pexels.com/video-files/30333849/13003128_2560_1440_25fps.mp4",
+    logos = []
 }: VideoBackgroundHeroProps) {
+    const activeLogos = logos && logos.length > 0 ? logos : DEFAULT_LOGOS;
     const videoRef = useRef<HTMLVideoElement>(null);
     const videoType = getVideoType(videoUrl);
     const embedUrl = getEmbedUrl(videoUrl);
@@ -135,19 +149,10 @@ export default function VideoBackgroundHero({
                     </div>
                     <div className="flex-grow overflow-hidden relative">
                         <InfiniteSlider duration={25} gap={100}>
-                            {[
-                                { name: "Nvidia", src: "https://html.tailus.io/blocks/customers/nvidia.svg" },
-                                { name: "Column", src: "https://html.tailus.io/blocks/customers/column.svg" },
-                                { name: "GitHub", src: "https://html.tailus.io/blocks/customers/github.svg" },
-                                { name: "Nike", src: "https://html.tailus.io/blocks/customers/nike.svg" },
-                                { name: "LemonSqueezy", src: "https://html.tailus.io/blocks/customers/lemonsqueezy.svg" },
-                                { name: "Laravel", src: "https://html.tailus.io/blocks/customers/laravel.svg" },
-                                { name: "Lilly", src: "https://html.tailus.io/blocks/customers/lilly.svg" },
-                                { name: "OpenAI", src: "https://html.tailus.io/blocks/customers/openai.svg" }
-                            ].map((logo) => (
+                            {activeLogos.map((logo, idx) => (
                                 <img
-                                    key={logo.name}
-                                    src={logo.src}
+                                    key={`${logo.name}-${idx}`}
+                                    src={logo.url}
                                     alt={logo.name}
                                     className="h-6 md:h-8 w-auto invert opacity-50 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-300"
                                 />

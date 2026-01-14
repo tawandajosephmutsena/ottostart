@@ -4,7 +4,7 @@ I want you to change how themes are setup in the settings page for these setting
 
 I would like the the current default theme to be the default theme for the website, it should be called Ottostart Default Theme. 
 
-I want to add a new theme called Basicc.
+I want to add the following new themes.
 Basicc Theme:
 :root {
   --background: oklch(1 0 0);
@@ -167,7 +167,6 @@ Basicc Theme:
   --shadow-2xl: var(--shadow-2xl);
 }
 
-I would like to add another theme called Amber Minimal:
 
 Amber Minimal Theme:
 :root {
@@ -331,7 +330,7 @@ Amber Minimal Theme:
   --shadow-2xl: var(--shadow-2xl);
 }
 
-I would like to add another theme called Amathyist Haze:
+
 
 Amathyist Haze Theme:
 :root {
@@ -495,7 +494,6 @@ Amathyist Haze Theme:
   --shadow-2xl: var(--shadow-2xl);
 }
 
-I would like to add another theme called Caffeine:
 
 Caffeine Theme:
 :root {
@@ -3122,3 +3120,7 @@ Tangarine:
 }
 
 make the presantation nice, simple and easy to navigate and understand with hints and direction. 
+
+the theme should apply imediately and user should see the results. The themes apply to the front end website only. make sure all components are styled and the theme is applied to all pages and sections of the website.
+
+Make sure to use oficial docs, highend code quality and best practices. 

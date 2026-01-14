@@ -249,7 +249,10 @@ const getDefaultContentForType = (type: BlockType) => {
             ]
         };
         case 'apple_cards_carousel': return {
-            title: 'Get to know your iSad.',
+            title: 'Featured Works',
+            feedSource: 'manual',
+            maxItems: 6,
+            sourceCategory: 'all',
             items: [
                  { category: 'Artificial Intelligence', title: 'You can do more with AI.', src: 'https://images.unsplash.com/photo-1593508512255-86ab42a8e620?q=80&w=3556&auto=format&fit=crop', content: '<p>Content goes here</p>', link: '' },
                  { category: 'Productivity', title: 'Enhance your productivity.', src: 'https://images.unsplash.com/photo-1531554694128-c4c6665f59c2?q=80&w=3387&auto=format&fit=crop', content: '<p>Content goes here</p>', link: '' },
@@ -263,7 +266,9 @@ const getDefaultContentForType = (type: BlockType) => {
             titleTwo: 'at',
             coverText: 'warp speed',
             fontSize: 'text-4xl md:text-4xl lg:text-6xl',
-            fontWeight: 'font-semibold'
+            fontWeight: 'font-semibold',
+            beamDuration: 10,
+            beamDelay: 2
         };
         case 'video_background_hero': return {
             title: 'Build 10x Faster with NS',
@@ -272,7 +277,8 @@ const getDefaultContentForType = (type: BlockType) => {
             ctaLink1: '#',
             ctaText2: 'Request a demo',
             ctaLink2: '#',
-            videoUrl: 'https://videos.pexels.com/video-files/30333849/13003128_2560_1440_25fps.mp4'
+            videoUrl: 'https://videos.pexels.com/video-files/30333849/13003128_2560_1440_25fps.mp4',
+            logos: []
         };
         default: return {};
     }
