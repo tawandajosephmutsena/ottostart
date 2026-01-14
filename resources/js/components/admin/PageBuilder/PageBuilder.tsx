@@ -6,7 +6,7 @@ import { Block, BlockType } from '@/pages/admin/pages/Edit';
 interface PageBuilderProps {
     blocks: Block[];
     setBlocks: (blocks: Block[] | ((prev: Block[]) => Block[])) => void;
-    onUpdateBlock: (id: string, content: Record<string, any>) => void;
+    onUpdateBlock: (id: string, content: Record<string, unknown>) => void;
     onAddBlock: (type: BlockType) => void;
     onRemoveBlock: (id: string) => void;
     onDuplicateBlock: (id: string) => void;
@@ -27,7 +27,6 @@ export default function PageBuilder({
     pageSlug
 }: PageBuilderProps) {
     const [activeBlockId, setActiveBlockId] = useState<string | null>(null);
-    const [sidebarWidth] = useState(400);
     const [isPreviewFullscreen, setIsPreviewFullscreen] = useState(false);
 
     // Handle block selection
@@ -40,8 +39,7 @@ export default function PageBuilder({
             {/* Sidebar: Block List & Editor */}
             {!isPreviewFullscreen && (
                 <div 
-                    style={{ width: `${sidebarWidth}px` }}
-                    className="flex-shrink-0 border-r bg-muted/10 flex flex-col overflow-hidden min-h-0"
+                    className="w-[400px] flex-shrink-0 border-r bg-muted/10 flex flex-col overflow-hidden min-h-0"
                 >
                     <BlockList 
                         blocks={blocks}

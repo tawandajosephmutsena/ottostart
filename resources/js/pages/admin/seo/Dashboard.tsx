@@ -6,13 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { 
-    Search, 
     TrendingUp, 
     AlertTriangle, 
-    CheckCircle, 
-    BarChart3,
-    FileText,
-    Eye,
     Lightbulb,
     RefreshCw,
     ExternalLink
@@ -52,11 +47,11 @@ interface SeoRecommendation {
 
 interface DashboardProps {
     stats: SeoStats;
-    recentAnalyses: any[];
+    recentAnalyses: unknown[];
     topIssues: SeoIssue[];
 }
 
-export default function SeoDashboard({ stats, recentAnalyses, topIssues }: DashboardProps) {
+export default function SeoDashboard({ stats, topIssues }: DashboardProps) {
     const [recommendations, setRecommendations] = useState<SeoRecommendation[]>([]);
     const [loadingRecommendations, setLoadingRecommendations] = useState(false);
     const [bulkAnalyzing, setBulkAnalyzing] = useState(false);
@@ -100,14 +95,7 @@ export default function SeoDashboard({ stats, recentAnalyses, topIssues }: Dashb
         }
     };
 
-    const getSeverityColor = (severity: string) => {
-        switch (severity) {
-            case 'high': return 'text-red-600 bg-red-50';
-            case 'medium': return 'text-yellow-600 bg-yellow-50';
-            case 'low': return 'text-blue-600 bg-blue-50';
-            default: return 'text-gray-600 bg-gray-50';
-        }
-    };
+
 
     const getPriorityBadge = (priority: string) => {
         switch (priority) {

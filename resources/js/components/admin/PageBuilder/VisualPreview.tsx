@@ -128,7 +128,7 @@ export default function VisualPreview({
                         <RefreshCw className={cn("h-4 w-4", isLoading && "animate-spin")} />
                     </Button>
                     <Button variant="ghost" size="icon" className="h-8 w-8" asChild title="Open in new tab">
-                        <a href={pageSlug === 'home' ? '/' : `/${pageSlug}`} target="_blank" rel="noreferrer">
+                        <a href={pageSlug === 'home' ? '/' : `/${pageSlug}`} target="_blank" rel="noreferrer" aria-label="Open page in new tab">
                             <ExternalLink className="h-4 w-4" />
                         </a>
                     </Button>

@@ -90,11 +90,11 @@ export default function SortableBlockItem({
         isDragging
     } = useSortable({ id: block.id });
 
-    const style = {
+    // dnd-kit requires inline styles for transform/transition - these are dynamically calculated
+    const style: React.CSSProperties = {
         transform: CSS.Translate.toString(transform),
         transition,
-        opacity: isDragging ? 0.3 : 1,
-        zIndex: isDragging ? 50 : 0
+        zIndex: isDragging ? 50 : undefined
     };
 
     return (
@@ -104,7 +104,8 @@ export default function SortableBlockItem({
             className={cn(
                 "group relative bg-card border rounded-lg transition-all duration-200 overflow-hidden",
                 isActive ? "border-agency-accent ring-1 ring-agency-accent shadow-md" : "hover:border-agency-accent/50",
-                !block.is_enabled && "opacity-60 bg-muted/40"
+                !block.is_enabled && "opacity-60 bg-muted/40",
+                isDragging && "opacity-30 z-50"
             )}
         >
             <div className="flex items-center h-12">
@@ -133,7 +134,7 @@ export default function SortableBlockItem({
                             {block.type.replace(/_/g, ' ')}
                         </span>
                         <span className="text-xs font-semibold truncate leading-none">
-                            {index + 1}. {block.content?.title || block.content?.headline?.line1 || 'Untitled section'}
+                            {index + 1}. {String(block.content?.title || (block.content?.headline as { line1?: string })?.line1 || 'Untitled section')}
                         </span>
                     </div>
                 </button>

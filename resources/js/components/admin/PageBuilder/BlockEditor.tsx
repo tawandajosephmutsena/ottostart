@@ -9,7 +9,6 @@ import MediaLibrary from '@/components/admin/MediaLibrary';
 import RichTextEditor from '@/components/admin/RichTextEditor';
 import { MediaAsset } from '@/types';
 import { Block } from '@/pages/admin/pages/Edit';
-import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface BlockEditorProps {
     block: Block;
@@ -69,7 +68,7 @@ export default function BlockEditor({ block, onUpdate }: BlockEditorProps) {
                     <div className="space-y-3">
                         <Label>Main Image</Label>
                         <div className="flex flex-col gap-3">
-                            {block.content.image && (
+                            {Boolean(block.content.image) && (
                                 <div className="aspect-video rounded-lg overflow-hidden border bg-muted">
                                     <img src={String(block.content.image)} className="w-full h-full object-cover" alt="Hero" />
                                 </div>
@@ -285,7 +284,7 @@ export default function BlockEditor({ block, onUpdate }: BlockEditorProps) {
                                     
                                     {col.type === 'image' && (
                                         <div className="space-y-3">
-                                            {(col.content as Record<string, unknown>).url && (
+                                            {Boolean((col.content as Record<string, unknown>).url) && (
                                                 <img src={String((col.content as Record<string, unknown>).url)} className="w-full h-32 object-cover rounded" alt="" />
                                             )}
                                             <MediaLibrary 
@@ -623,7 +622,13 @@ export default function BlockEditor({ block, onUpdate }: BlockEditorProps) {
                     </div>
                     {block.type === 'services' && (
                         <div className="flex items-center gap-3 pt-4 border-t">
-                            <input type="checkbox" id="useStackedCards" checked={Boolean(block.content.useStackedCards)} onChange={(e) => updateContent({ useStackedCards: e.target.checked })} />
+                            <input 
+                                type="checkbox" 
+                                id="useStackedCards" 
+                                aria-label="Use stacked card layout"
+                                checked={Boolean(block.content.useStackedCards)} 
+                                onChange={(e) => updateContent({ useStackedCards: e.target.checked })} 
+                            />
                             <Label htmlFor="useStackedCards" className="text-sm cursor-pointer">Use stacked card layout</Label>
                         </div>
                     )}
@@ -889,7 +894,7 @@ export default function BlockEditor({ block, onUpdate }: BlockEditorProps) {
                 <div className="space-y-6">
                     <div className="space-y-3">
                         <Label>Image</Label>
-                        {block.content.url && (
+                        {Boolean(block.content.url) && (
                             <img src={String(block.content.url)} className="w-full h-48 object-cover rounded-lg" alt="" />
                         )}
                         <MediaLibrary 

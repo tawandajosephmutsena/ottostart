@@ -9,7 +9,6 @@ import {
     Rocket,
     Search,
     FileText,
-    Users,
     Shield,
     Zap,
     ChevronRight,

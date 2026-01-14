@@ -74,7 +74,7 @@ class Service extends Model
         return $query->published()
             ->featured()
             ->ordered()
-            ->select(['id', 'title', 'slug', 'description', 'icon', 'featured_image', 'price_range', 'is_featured'])
+            ->select(['id', 'title', 'slug', 'description', 'icon', 'featured_image', 'price_range', 'is_featured', 'is_published'])
             ->limit(6);
     }
 

@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { MediaAsset } from '@/types';
-import { Link, router, Head } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import { 
     ArrowLeft, 
     Download, 

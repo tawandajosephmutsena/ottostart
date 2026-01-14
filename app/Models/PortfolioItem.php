@@ -80,7 +80,7 @@ class PortfolioItem extends Model
         return $query->published()
             ->featured()
             ->ordered()
-            ->select(['id', 'title', 'slug', 'description', 'featured_image', 'client', 'technologies', 'is_featured'])
+            ->select(['id', 'title', 'slug', 'description', 'featured_image', 'client', 'technologies', 'is_featured', 'is_published'])
             ->limit(6);
     }
 

@@ -56,7 +56,7 @@ if (import.meta.env.PROD) {
                 }
             );
         },
-        onSuccess: (registration) => {
+        onSuccess: (_registration) => {
             console.log('Service worker registered successfully');
         },
         onError: (error) => {

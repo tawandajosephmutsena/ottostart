@@ -1,10 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Link } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { InfiniteSlider } from '@/components/motion-primitives/infinite-slider';
 import { ProgressiveBlur } from '@/components/motion-primitives/progressive-blur';
 import { ChevronRight } from 'lucide-react';
-import { cn } from '@/lib/utils';
+
 
 interface VideoBackgroundHeroProps {
     title?: string;
@@ -79,9 +79,9 @@ export default function VideoBackgroundHero({
                     <div className="absolute top-1/2 left-1/2 w-[300%] h-[300%] -translate-x-1/2 -translate-y-1/2">
                         <iframe
                             src={embedUrl}
-                            className="w-full h-full pointer-events-none opacity-60"
+                            title="Background video"
+                            className="w-full h-full pointer-events-none opacity-60 border-none"
                             allow="autoplay; fullscreen; picture-in-picture"
-                            style={{ border: 'none' }}
                         />
                     </div>
                 )}

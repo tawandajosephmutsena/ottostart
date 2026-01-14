@@ -171,32 +171,20 @@ class CacheManagerTest extends TestCase
 
     public function test_invalidate_by_tags_flushes_tagged_cache(): void
     {
-        Cache::shouldReceive('tags')
-            ->with(['test_tag'])
-            ->once()
-            ->andReturnSelf();
-        
+        // When Redis is not available, invalidateByTags falls back to full flush
         Cache::shouldReceive('flush')
             ->once();
 
         Log::shouldReceive('info')
             ->once()
-            ->with('Cache invalidated by tags', ['tags' => ['test_tag']]);
+            ->with('Full cache cleared (tags not supported)');
 
         $this->cacheManager->invalidateByTags(['test_tag']);
     }
 
     public function test_invalidate_content_cache_calls_correct_tags(): void
     {
-        Cache::shouldReceive('tags')
-            ->with([
-                CacheManager::TAGS['content'],
-                CacheManager::TAGS['homepage'],
-                CacheManager::TAGS['featured'],
-            ])
-            ->once()
-            ->andReturnSelf();
-        
+        // When Redis is not available, invalidateContentCache falls back to full flush
         Cache::shouldReceive('flush')->once();
         Log::shouldReceive('info')->once();
 

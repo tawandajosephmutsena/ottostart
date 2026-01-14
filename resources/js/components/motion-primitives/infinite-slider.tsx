@@ -85,7 +85,7 @@ export function InfiniteSlider({
       <div
         ref={ref}
         className={cn('flex w-max', direction === 'vertical' && 'flex-col h-max')}
-        // eslint-disable-next-line
+         
         style={{ gap: gap }}
       >
         {children}

@@ -95,7 +95,7 @@ class Insight extends Model
         return $query->published()
             ->with(['author:id,name', 'category:id,name,slug'])
             ->orderBy('published_at', 'desc')
-            ->select(['id', 'title', 'slug', 'excerpt', 'featured_image', 'author_id', 'category_id', 'published_at', 'reading_time'])
+            ->select(['id', 'title', 'slug', 'excerpt', 'featured_image', 'author_id', 'category_id', 'published_at', 'reading_time', 'is_published'])
             ->limit(6);
     }
 
@@ -147,7 +147,7 @@ class Insight extends Model
     /**
      * Create a draft version.
      */
-    public function createDraft(array $data, string $changeNotes = null): ContentVersion
+    public function createDraft(array $data, ?string $changeNotes = null): ContentVersion
     {
         // Create a new version with the updated data
         $tempModel = $this->replicate();

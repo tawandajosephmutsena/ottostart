@@ -279,6 +279,7 @@ const getDefaultContentForType = (type: BlockType) => {
 };
 
 export default function Edit({ page }: Props) {
+    // @ts-expect-error - Inertia useForm has complex type inference with nested Block content
     const { data, setData, put, processing } = useForm({
         title: page.title,
         slug: page.slug,
@@ -421,7 +422,7 @@ export default function Edit({ page }: Props) {
                                         </div>
                                         <div className="space-y-2">
                                             <Label htmlFor="template">Page Template</Label>
-                                            <Select value={data.template} onValueChange={val => setData('template', val)}>
+                                            <Select value={data.template} onValueChange={val => setData('template', val as 'default' | 'home' | 'contact')}>
                                                 <SelectTrigger id="template">
                                                     <SelectValue />
                                                 </SelectTrigger>

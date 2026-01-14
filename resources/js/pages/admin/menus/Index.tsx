@@ -8,7 +8,7 @@ import {
     PointerSensor,
     useSensor,
     useSensors,
-    DragOverlay,
+    DragEndEvent,
 } from '@dnd-kit/core';
 import {
     arrayMove,
@@ -30,20 +30,16 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
     Trash2,
     GripVertical,
-    Plus,
-    Save,
-    ExternalLink,
     FileText,
     Link as LinkIcon,
-    Settings,
     RotateCcw,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { cn } from '@/lib/utils';
 
 interface Page {
     id: number;
@@ -87,14 +83,14 @@ interface Props {
 const SortableItem = ({ item, onRemove, onUpdate }: { item: MenuItem; onRemove: () => void; onUpdate: (item: MenuItem) => void }) => {
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: item.id as number });
 
-    const style = {
+    // dnd-kit requires inline styles for transform/transition - these are dynamically calculated
+    const style: React.CSSProperties = {
         transform: CSS.Transform.toString(transform),
         transition,
-        opacity: isDragging ? 0.5 : 1,
     };
 
     return (
-        <div ref={setNodeRef} style={style} className="flex items-center gap-3 bg-card border rounded-lg p-3 mb-2 shadow-sm group">
+        <div ref={setNodeRef} style={style} className={cn("flex items-center gap-3 bg-card border rounded-lg p-3 mb-2 shadow-sm group", isDragging && "opacity-50")}>
             <div {...attributes} {...listeners} className="cursor-grab text-muted-foreground hover:text-foreground">
                 <GripVertical className="w-5 h-5" />
             </div>
@@ -192,10 +188,10 @@ export default function MenuBuilder({ menus, pages, activeMenu: initialActiveMen
         }
     };
 
-    const handleDragEnd = (event: any) => {
+    const handleDragEnd = (event: DragEndEvent) => {
         const { active, over } = event;
 
-        if (active.id !== over.id && activeMenu) {
+        if (over && active.id !== over.id && activeMenu) {
             const oldIndex = activeMenu.items.findIndex((item) => item.id === active.id);
             const newIndex = activeMenu.items.findIndex((item) => item.id === over.id);
 
