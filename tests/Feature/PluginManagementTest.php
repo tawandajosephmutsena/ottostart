@@ -95,7 +95,7 @@ class PluginManagementTest extends TestCase
         $response = $this->get(route('admin.plugins.index'));
         $response->assertStatus(200);
         $response->assertInertia(fn ($page) => $page
-            ->component('Admin/Plugins/Index')
+            ->component('admin/plugins/Index')
             ->has('plugins')
         );
     }
