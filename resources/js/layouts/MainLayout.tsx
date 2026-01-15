@@ -99,25 +99,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
         }
     }, [scrollTo, stop, start]);
 
-    // Web Core Vitals: Preload critical resources
-    useEffect(() => {
-        // Preload critical fonts if not already preloaded
-        const preloadCriticalFonts = () => {
-            const fontLinks = document.querySelectorAll('link[rel="preload"][as="font"]');
-            if (fontLinks.length === 0) {
-                // Create preload link for critical font
-                const link = document.createElement('link');
-                link.rel = 'preload';
-                link.as = 'font';
-                link.type = 'font/woff2';
-                link.crossOrigin = 'anonymous';
-                link.href = 'https://fonts.bunny.net/inter/files/inter-latin-400-normal.woff2';
-                document.head.appendChild(link);
-            }
-        };
 
-        preloadCriticalFonts();
-    }, []);
 
     // Determine which breadcrumbs to show
     const breadcrumbsToShow = customBreadcrumbs || breadcrumbs;
@@ -126,6 +108,9 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
     return (
         <>
             <Head title={title}>
+                {/* Preload critical font */}
+                <link rel="preload" href="https://fonts.bunny.net/inter/files/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+
                 {/* AI Optimization Meta Tags */}
                 {/* Robots directive for AI crawlers - allow full snippets and image previews */}
                 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />

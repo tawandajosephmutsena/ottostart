@@ -6,38 +6,36 @@ use Laravel\Fortify\Features;
 use App\Http\Controllers\HomeController;
 
 // Frontend routes with caching
-Route::middleware(['cache.headers:public'])->group(function () {
-    Route::get('/', [HomeController::class, 'index'])->name('home');
+// Frontend routes
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
-    Route::get('/services', [App\Http\Controllers\ServiceController::class, 'index'])->name('services');
-    Route::get('/services/{slug}', [App\Http\Controllers\ServiceController::class, 'show'])->name('services.show');
+Route::get('/services', [App\Http\Controllers\ServiceController::class, 'index'])->name('services');
+Route::get('/services/{slug}', [App\Http\Controllers\ServiceController::class, 'show'])->name('services.show');
 
-    Route::get('/portfolio', [App\Http\Controllers\PortfolioController::class, 'index'])->name('portfolio');
-    Route::get('/portfolio/{slug}', [App\Http\Controllers\PortfolioController::class, 'show'])->name('portfolio.show');
+Route::get('/portfolio', [App\Http\Controllers\PortfolioController::class, 'index'])->name('portfolio');
+Route::get('/portfolio/{slug}', [App\Http\Controllers\PortfolioController::class, 'show'])->name('portfolio.show');
 
-    Route::get('/team', [App\Http\Controllers\TeamController::class, 'index'])->name('team');
+Route::get('/team', [App\Http\Controllers\TeamController::class, 'index'])->name('team');
 
-    Route::get('/blog', [App\Http\Controllers\BlogController::class, 'index'])->name('blog');
-    Route::get('/blog/{slug}', [App\Http\Controllers\BlogController::class, 'show'])->name('blog.show');
+Route::get('/blog', [App\Http\Controllers\BlogController::class, 'index'])->name('blog');
+Route::get('/blog/{slug}', [App\Http\Controllers\BlogController::class, 'show'])->name('blog.show');
 
-    Route::get('/documentation', function () {
-        return Inertia::render('Documentation');
-    })->name('documentation');
+Route::get('/documentation', function () {
+    return Inertia::render('Documentation');
+})->name('documentation');
 
-    Route::get('/contact', function () {
-        return Inertia::render('Contact');
-    })->name('contact');
+Route::get('/contact', function () {
+    return Inertia::render('Contact');
+})->name('contact');
 
-    // Demo Routes
-    Route::get('/demo/animated-shader-hero', function () {
-        return Inertia::render('demo/AnimatedShaderHeroDemo');
-    })->name('demo.animated-shader-hero');
+// Demo Routes
+Route::get('/demo/animated-shader-hero', function () {
+    return Inertia::render('demo/AnimatedShaderHeroDemo');
+})->name('demo.animated-shader-hero');
 
-    Route::get('/demo/testimonial-v2', function () {
-        return Inertia::render('demo-one');
-    })->name('demo.testimonial-v2');
-
-});
+Route::get('/demo/testimonial-v2', function () {
+    return Inertia::render('demo-one');
+})->name('demo.testimonial-v2');
 
 // Contact form (no caching for POST)
 Route::post('/contact', [App\Http\Controllers\ContactController::class, 'store'])
@@ -54,7 +52,7 @@ Route::get('/llms.txt', [App\Http\Controllers\LlmsController::class, 'index'])->
 Route::get('/robots.txt', function () {
     $sitemapUrl = url('/sitemap.xml');
     $llmsUrl = url('/llms.txt');
-    
+
     $robotsTxt = <<<ROBOTS
 # Robots.txt for all crawlers
 User-agent: *
@@ -116,7 +114,7 @@ Llms-txt: {$llmsUrl}
 # Sitemap location
 Sitemap: {$sitemapUrl}
 ROBOTS;
-    
+
     return response($robotsTxt, 200, ['Content-Type' => 'text/plain']);
 })->name('robots');
 
@@ -127,7 +125,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
         /** @var \App\Models\User $user */
         $user = auth()->user();
-        
+
         if ($user->isAdmin()) {
             return redirect()->route('admin.dashboard');
         } elseif ($user->isEditor()) {
@@ -144,11 +142,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::middleware(['auth', 'verified', 'cache.headers:no-cache'])->prefix('cms')->name('cms.')->group(function () {
     Route::get('/', function () {
         $user = auth()->user();
-        
+
         if (!$user->isEditor()) {
             abort(403, 'Unauthorized. Editor access required.');
         }
-        
+
         return Inertia::render('cms/Dashboard');
     })->name('dashboard');
 });
@@ -157,11 +155,11 @@ Route::middleware(['auth', 'verified', 'cache.headers:no-cache'])->prefix('cms')
 Route::middleware(['auth', 'verified', 'admin', 'cache.headers:no-cache'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [App\Http\Controllers\Admin\AdminController::class, 'dashboard'])->name('dashboard');
     Route::get('/quick-actions', [App\Http\Controllers\Admin\AdminController::class, 'quickActions'])->name('quick-actions');
-    
+
     Route::get('/users', function () {
         return Inertia::render('admin/users');
     })->name('users');
-    
+
     // Settings
     Route::get('/settings', [App\Http\Controllers\Admin\SettingsController::class, 'index'])->name('settings');
     Route::post('/settings', [App\Http\Controllers\Admin\SettingsController::class, 'update'])->name('settings.update');
@@ -278,4 +276,4 @@ Route::get('/{slug}', [App\Http\Controllers\PageController::class, 'show'])
     ->where('slug', '^[a-zA-Z0-9-_]+$')
     ->name('pages.show');
 
-require __DIR__.'/settings.php';
+require __DIR__ . '/settings.php';

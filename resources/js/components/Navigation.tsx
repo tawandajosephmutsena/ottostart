@@ -1,22 +1,27 @@
-
+import AppLogo from '@/components/app-logo';
 import { useMagneticEffect } from '@/hooks/useAnimations';
 import { cn } from '@/lib/utils';
 import { SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { UserPlus, LayoutDashboard, LogIn } from 'lucide-react';
+import { LayoutDashboard, LogIn, UserPlus } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react';
-import AppLogo from '@/components/app-logo';
 
 interface NavigationProps {
     className?: string;
 }
 
 // Extracted NavLink component for magnetic effect on individual items
-const NavLink = ({ item, isActive }: { item: { name: string; href: string }; isActive: boolean }) => {
+const NavLink = ({
+    item,
+    isActive,
+}: {
+    item: { name: string; href: string };
+    isActive: boolean;
+}) => {
     const linkRef = useRef<HTMLAnchorElement>(null);
-    
+
     useMagneticEffect(linkRef as React.RefObject<HTMLElement>, {
         strength: 0.3,
         speed: 0.3,
@@ -27,10 +32,10 @@ const NavLink = ({ item, isActive }: { item: { name: string; href: string }; isA
             ref={linkRef}
             href={item.href}
             className={cn(
-                'px-4 py-2 text-[11px] font-bold uppercase tracking-widest transition-all duration-500 rounded-full relative overflow-hidden',
+                'relative overflow-hidden rounded-full px-4 py-2 text-[11px] font-bold tracking-widest uppercase transition-all duration-500',
                 isActive
                     ? 'bg-agency-accent text-agency-primary shadow-lg shadow-agency-accent/20'
-                    : 'text-agency-primary/60 dark:text-white/60 hover:text-agency-accent hover:bg-agency-accent/5',
+                    : 'text-agency-primary/60 hover:bg-agency-accent/5 hover:text-agency-accent dark:text-white/60',
             )}
         >
             <span className="relative z-10">{item.name}</span>
@@ -39,7 +44,6 @@ const NavLink = ({ item, isActive }: { item: { name: string; href: string }; isA
 };
 
 export const Navigation: React.FC<NavigationProps> = ({ className }) => {
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
     const { url, props } = usePage<SharedData>();
     const { auth, menus } = props;
@@ -47,14 +51,17 @@ export const Navigation: React.FC<NavigationProps> = ({ className }) => {
     const logoRef = useRef<HTMLDivElement>(null);
 
     // Fallback if no menu data
-    const menuItems = (menus?.main && menus.main.length > 0) ? menus.main : [
-        { name: 'Home', href: '/', target: '_self' },
-        { name: 'Services', href: '/services', target: '_self' },
-        { name: 'Portfolio', href: '/portfolio', target: '_self' },
-        { name: 'Team', href: '/team', target: '_self' },
-        { name: 'Blog', href: '/blog', target: '_self' },
-        { name: 'Contact', href: '/contact', target: '_self' },
-    ];
+    const menuItems =
+        menus?.main && menus.main.length > 0
+            ? menus.main
+            : [
+                  { name: 'Home', href: '/', target: '_self' },
+                  { name: 'Services', href: '/services', target: '_self' },
+                  { name: 'Portfolio', href: '/portfolio', target: '_self' },
+                  { name: 'Team', href: '/team', target: '_self' },
+                  { name: 'Blog', href: '/blog', target: '_self' },
+                  { name: 'Contact', href: '/contact', target: '_self' },
+              ];
 
     // Add magnetic effect to logo
     useMagneticEffect(logoRef as React.RefObject<HTMLElement>, {
@@ -66,12 +73,16 @@ export const Navigation: React.FC<NavigationProps> = ({ className }) => {
     useEffect(() => {
         if (typeof window === 'undefined') return;
 
-        const handleScroll = () => {
-            const scrollY = window.scrollY;
-            setIsScrolled(scrollY > 50);
-        };
+        // Use ScrollTrigger to detect scroll for the glassy transition
+        const scrollTrigger = ScrollTrigger.create({
+            start: 'top -20',
+            onUpdate: (self) => {
+                const scrolled = self.scroll() > 20;
+                setIsScrolled(scrolled);
+            },
+        });
 
-        // Create scroll trigger for navigation hide/show
+        // Create scroll trigger for navigation hide/show (smart sticky)
         const showAnim = gsap.fromTo(
             navRef.current,
             { yPercent: -120 },
@@ -99,54 +110,15 @@ export const Navigation: React.FC<NavigationProps> = ({ className }) => {
             },
         });
 
-        window.addEventListener('scroll', handleScroll);
-        handleScroll();
-
         return () => {
-            window.removeEventListener('scroll', handleScroll);
+            scrollTrigger.kill();
             mainTrigger.kill();
             showAnim.kill();
             hideAnim.kill();
         };
     }, []);
 
-    // Close menu on route change without triggering cascading render lint
-    const [lastUrl, setLastUrl] = useState(url);
-    if (url !== lastUrl) {
-        setLastUrl(url);
-        if (isMenuOpen) setIsMenuOpen(false);
-    }
-    
-    // const toggleMenu = () => setIsMenuOpen(!isMenuOpen); // Unused
 
-    // Enhanced menu overlay animations
-    useEffect(() => {
-        const overlay = document.getElementById('menu-overlay');
-        const menuItems = document.querySelectorAll('.menu-item');
-        const menuBg = document.querySelector('.menu-bg');
-        const closeButton = document.querySelector('.menu-close');
-        const contactInfo = document.querySelector('.menu-contact');
-
-        if (isMenuOpen && overlay) {
-            gsap.set(overlay, { display: 'flex' });
-            gsap.fromTo(menuBg, { scaleY: 0, transformOrigin: 'top' }, { scaleY: 1, duration: 0.8, ease: 'expo.out' });
-            gsap.fromTo(overlay, { opacity: 0 }, { opacity: 1, duration: 0.4 });
-            gsap.fromTo(closeButton, { opacity: 0, rotation: -90, scale: 0.5 }, { opacity: 1, rotation: 0, scale: 1, duration: 0.5, delay: 0.4, ease: 'back.out(2)' });
-            gsap.fromTo(menuItems, { y: 120, opacity: 0, skewY: 10 }, { y: 0, opacity: 1, skewY: 0, duration: 1, stagger: 0.1, delay: 0.3, ease: 'expo.out' });
-            gsap.fromTo(contactInfo, { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, delay: 0.8, ease: 'power3.out' });
-        } else if (!isMenuOpen && overlay) {
-            const tl = gsap.timeline({ 
-                onComplete: () => { 
-                    gsap.set(overlay, { display: 'none' }); 
-                } 
-            });
-            tl.to(contactInfo, { y: 40, opacity: 0, duration: 0.3 })
-              .to(menuItems, { y: -100, opacity: 0, skewY: -5, duration: 0.5, stagger: 0.05, ease: 'expo.in' }, '-=0.2')
-              .to(closeButton, { opacity: 0, scale: 0.5, duration: 0.3 }, '-=0.4')
-              .to(overlay, { opacity: 0, duration: 0.4 }, '-=0.3')
-              .to(menuBg, { scaleY: 0, duration: 0.6, ease: 'expo.inOut' }, '-=0.3');
-        }
-    }, [isMenuOpen]);
 
     return (
         <>
@@ -154,57 +126,67 @@ export const Navigation: React.FC<NavigationProps> = ({ className }) => {
             <nav
                 ref={navRef}
                 className={cn(
-                    'fixed z-[100] left-0 right-0 transition-all duration-500 will-change-transform',
-                    isScrolled ? 'top-0 px-0' : 'top-0 px-4 md:px-8 pt-6',
+                    'fixed right-0 left-0 z-[100] transition-all duration-500 will-change-transform',
+                    isScrolled ? 'top-0 px-0' : 'top-0 px-4 pt-6 md:px-8',
                     className,
                 )}
             >
-                <div className={cn(
-                    'mx-auto flex h-16 items-center justify-between px-6 transition-all duration-500 relative',
-                    isScrolled 
-                        ? 'max-w-full bg-white/70 dark:bg-black/70 backdrop-blur-xl border-b border-white/10 dark:border-white/5 shadow-lg' 
-                        : 'max-w-7xl rounded-full bg-white/80 dark:bg-black/80 backdrop-blur-2xl shadow-2xl border border-white/20 dark:border-white/5',
-                )}>
+                <div
+                    className={cn(
+                        'relative mx-auto flex h-16 items-center justify-between px-6 transition-all duration-500',
+                        isScrolled
+                            ? 'max-w-full rounded-none border-b border-white/20 bg-white/40 shadow-sm backdrop-blur-md dark:border-white/10 dark:bg-black/40'
+                            : 'max-w-7xl rounded-full border border-white/20 bg-white/80 shadow-2xl backdrop-blur-2xl dark:border-white/5 dark:bg-black/80',
+                    )}
+                >
                     {/* Logo */}
-                    <Link href="/" className="flex items-center font-display relative z-10 group overflow-visible">
-                        <AppLogo 
+                    <Link
+                        href="/"
+                        className="group relative z-10 flex items-center overflow-visible font-display"
+                    >
+                        <AppLogo
                             ref={logoRef as React.RefObject<HTMLDivElement>}
-                            className="transition-transform duration-500 group-hover:rotate-[5deg] group-hover:scale-110" 
+                            className="transition-transform duration-500 group-hover:scale-110 group-hover:rotate-[5deg]"
                         />
                     </Link>
 
                     {/* Desktop Navigation */}
-                    <div className="hidden lg:flex items-center gap-1">
+                    <div className="hidden items-center gap-1 lg:flex">
                         {menuItems.map((item) => (
-                            <NavLink 
-                                key={item.name} 
-                                item={item} 
-                                isActive={url === item.href || (item.href !== '/' && url.startsWith(item.href))} 
+                            <NavLink
+                                key={item.name}
+                                item={item}
+                                isActive={
+                                    url === item.href ||
+                                    (item.href !== '/' &&
+                                        url.startsWith(item.href))
+                                }
                             />
                         ))}
                     </div>
 
                     {/* Auth & Menu */}
                     <div className="flex items-center gap-3">
-                        <div className="hidden md:flex items-center gap-2 mr-2">
+                        <div className="mr-2 hidden items-center gap-2 md:flex">
                             {auth?.user ? (
                                 <Link
                                     href="/admin"
-                                    className="h-10 px-5 inline-flex items-center gap-2 rounded-full bg-agency-accent/10 border border-agency-accent/20 text-agency-accent font-bold text-[10px] uppercase tracking-widest hover:bg-agency-accent hover:text-agency-primary transition-all"
+                                    className="inline-flex h-10 items-center gap-2 rounded-full border border-agency-accent/20 bg-agency-accent/10 px-5 text-[10px] font-bold tracking-widest text-agency-accent uppercase transition-all hover:bg-agency-accent hover:text-agency-primary"
                                 >
-                                    <LayoutDashboard className="size-3" /> Dashboard
+                                    <LayoutDashboard className="size-3" />{' '}
+                                    Dashboard
                                 </Link>
                             ) : (
                                 <>
                                     <Link
                                         href="/login"
-                                        className="h-10 px-5 inline-flex items-center gap-2 rounded-full text-agency-primary/60 dark:text-white/60 font-bold text-[10px] uppercase tracking-widest hover:text-agency-accent transition-all"
+                                        className="inline-flex h-10 items-center gap-2 rounded-full px-5 text-[10px] font-bold tracking-widest text-agency-primary/60 uppercase transition-all hover:text-agency-accent dark:text-white/60"
                                     >
                                         <LogIn className="size-3" /> Sign In
                                     </Link>
                                     <Link
                                         href="/register"
-                                        className="h-10 px-5 inline-flex items-center gap-2 rounded-full bg-agency-primary dark:bg-white text-white dark:text-agency-neutral font-bold text-[10px] uppercase tracking-widest hover:scale-105 transition-all shadow-lg"
+                                        className="inline-flex h-10 items-center gap-2 rounded-full bg-agency-primary px-5 text-[10px] font-bold tracking-widest text-white uppercase shadow-lg transition-all hover:scale-105 dark:bg-white dark:text-agency-neutral"
                                     >
                                         <UserPlus className="size-3" /> Sign Up
                                     </Link>
@@ -220,7 +202,5 @@ export const Navigation: React.FC<NavigationProps> = ({ className }) => {
         </>
     );
 };
-
-
 
 export default Navigation;
