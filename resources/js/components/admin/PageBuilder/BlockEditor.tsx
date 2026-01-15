@@ -770,8 +770,34 @@ export default function BlockEditor({ block, onUpdate }: BlockEditorProps) {
                         <Textarea className="h-16" value={String(block.content.subtitle || '')} onChange={(e) => updateContent({ subtitle: e.target.value })} />
                     </div>
                     <div className="space-y-2">
-                        <Label>Video URL</Label>
-                        <Input value={String(block.content.videoUrl || '')} onChange={(e) => updateContent({ videoUrl: e.target.value })} placeholder="https://..." />
+                        <Label>Video / Background Media</Label>
+                        <div className="flex flex-col gap-3">
+                            {Boolean(block.content.videoUrl) && (
+                                <div className="aspect-video rounded-lg overflow-hidden border bg-muted max-h-32">
+                                    {String(block.content.videoUrl).match(/\.(mp4|webm|ogg)$/i) ? (
+                                        <video src={String(block.content.videoUrl)} className="w-full h-full object-cover" muted />
+                                    ) : (
+                                        <img src={String(block.content.videoUrl)} className="w-full h-full object-cover" alt="Background" />
+                                    )}
+                                </div>
+                            )}
+                            <div className="flex gap-2">
+                                <MediaLibrary 
+                                    onSelect={(asset: MediaAsset) => updateContent({ videoUrl: asset.url })}
+                                    trigger={
+                                        <Button type="button" variant="outline" size="sm" className="h-9">
+                                            <ImageIcon className="h-4 w-4 mr-2" /> {block.content.videoUrl ? 'Change' : 'Upload'}
+                                        </Button>
+                                    }
+                                />
+                                <Input 
+                                    className="h-9 text-xs"
+                                    value={String(block.content.videoUrl || '')} 
+                                    onChange={(e) => updateContent({ videoUrl: e.target.value })}
+                                    placeholder="Or paste video/image URL..."
+                                />
+                            </div>
+                        </div>
                     </div>
                     <div className="grid grid-cols-2 gap-3 pt-4 border-t">
                         <div className="space-y-1">

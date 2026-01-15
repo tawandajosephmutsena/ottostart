@@ -154,15 +154,16 @@ export const Navigation: React.FC<NavigationProps> = ({ className }) => {
             <nav
                 ref={navRef}
                 className={cn(
-                    'fixed z-[100] transition-all duration-700 left-0 right-0 px-4 md:px-8',
-                    isScrolled ? 'top-4' : 'top-8',
+                    'fixed z-[100] left-0 right-0 transition-all duration-500 will-change-transform',
+                    isScrolled ? 'top-0 px-0' : 'top-0 px-4 md:px-8 pt-6',
                     className,
                 )}
             >
                 <div className={cn(
-                    'mx-auto max-w-7xl flex h-16 items-center justify-between px-6 rounded-full border transition-all duration-500',
-                    'bg-white/80 dark:bg-black/80 backdrop-blur-2xl shadow-2xl border-white/20 dark:border-white/5',
-                    isScrolled ? 'py-2' : 'py-4'
+                    'mx-auto flex h-16 items-center justify-between px-6 transition-all duration-500 relative',
+                    isScrolled 
+                        ? 'max-w-full bg-white/70 dark:bg-black/70 backdrop-blur-xl border-b border-white/10 dark:border-white/5 shadow-lg' 
+                        : 'max-w-7xl rounded-full bg-white/80 dark:bg-black/80 backdrop-blur-2xl shadow-2xl border border-white/20 dark:border-white/5',
                 )}>
                     {/* Logo */}
                     <Link href="/" className="flex items-center font-display relative z-10 group overflow-visible">

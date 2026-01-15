@@ -96,17 +96,8 @@ class MediaController extends Controller
 
         foreach ($request->file('files') as $file) {
             try {
-                // Determine file category
-                $mimeType = $file->getMimeType();
-                $category = 'document'; // Default
-                
-                if (str_starts_with($mimeType, 'image/')) {
-                    $category = 'image';
-                } elseif (str_starts_with($mimeType, 'video/')) {
-                    $category = 'video';
-                } elseif (str_starts_with($mimeType, 'audio/')) {
-                    $category = 'audio';
-                }
+                // Determine file category securely
+                $category = $uploadService->getCategoryByFile($file);
 
                 // Upload file securely
                 $uploadResult = $uploadService->upload(

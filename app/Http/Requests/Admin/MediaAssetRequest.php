@@ -31,11 +31,12 @@ class MediaAssetRequest extends SecureFormRequest
         // Add file upload rules for store requests
         if ($this->isMethod('POST') && $this->routeIs('admin.media.store')) {
             $rules['files'] = 'required|array|min:1|max:10';
-            $rules['files.*'] = $this->getFileRules(
-                ['jpeg', 'jpg', 'png', 'gif', 'webp', 'svg', 'pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'mp4', 'mov', 'avi', 'wmv', 'flv', 'webm', 'mp3', 'wav', 'ogg'],
-                204800, // 200MB
-                true
-            );
+            $rules['files.*'] = [
+                'required',
+                'file',
+                new \App\Rules\SecureFileUpload('all'), // Allow all categories, the service will detect it
+                'max:204800', // 200MB
+            ];
         }
 
         return $rules;

@@ -58,34 +58,56 @@ export default function MediaUpload({
 
     const validateFile = useCallback((file: File): string | null => {
         // Check file size
-        console.log(`Validating file: ${file.name}, Size: ${file.size}, Max: ${maxFileSize}`);
+        console.log(`Validating file: ${file.name}, Size: ${file.size}, Max: ${maxFileSize}, MIME: ${file.type}`);
         if (file.size > maxFileSize * 1024 * 1024) {
             return `File size exceeds ${maxFileSize}MB limit`;
         }
 
-        // Check file type
+        // Define allowed extensions for each category
+        const videoExtensions = ['mp4', 'mov', 'webm', 'avi', 'mkv', 'wmv', 'flv', 'm4v', '3gp', 'mpeg', 'mpg', 'ogv', 'm4a'];
+        const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'ico', 'avif', 'heic', 'heif'];
+        const docExtensions = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt'];
+        
+        // Get file extension
+        const ext = file.name.split('.').pop()?.toLowerCase() || '';
+        console.log(`File extension: .${ext}`);
+        
+        // Check which types are accepted
+        const videoAccepted = acceptedTypes.some(t => t.includes('video'));
+        const imageAccepted = acceptedTypes.some(t => t.includes('image'));
+        const docAccepted = acceptedTypes.some(t => t.includes('pdf') || t.includes('application'));
+        
+        // Primary validation: Check by file extension (most reliable)
+        if (videoAccepted && videoExtensions.includes(ext)) {
+            console.log(`Validated by video extension: .${ext}`);
+            return null;
+        }
+        
+        if (imageAccepted && imageExtensions.includes(ext)) {
+            console.log(`Validated by image extension: .${ext}`);
+            return null;
+        }
+        
+        if (docAccepted && docExtensions.includes(ext)) {
+            console.log(`Validated by document extension: .${ext}`);
+            return null;
+        }
+        
+        // Fallback validation: Check by MIME type
         const isValidType = acceptedTypes.some(type => {
             if (type.endsWith('/*')) {
                 return file.type.startsWith(type.slice(0, -1));
             }
             return file.type === type;
         });
-
-        if (!isValidType) {
-            // Fallback: Check extension for common video files if video/* is accepted
-            const ext = file.name.split('.').pop()?.toLowerCase();
-            const videoAccepted = acceptedTypes.some(t => t.startsWith('video/'));
-            
-            if (videoAccepted && (ext === 'mp4' || ext === 'mov' || ext === 'webm')) {
-                console.log(`MIME check failed (${file.type}) but extension .${ext} is allowed.`);
-                return null;
-            }
-
-            console.error(`File type validation failed. File: ${file.name}, Type: ${file.type}, Accepted: ${acceptedTypes.join(', ')}`);
-            return `File type ${file.type} is not supported`;
+        
+        if (isValidType) {
+            console.log(`Validated by MIME type: ${file.type}`);
+            return null;
         }
 
-        return null;
+        console.error(`File type validation failed. File: ${file.name}, Type: ${file.type}, Extension: .${ext}, Accepted: ${acceptedTypes.join(', ')}`);
+        return `File type not allowed`;
     }, [maxFileSize, acceptedTypes]);
 
     const processFiles = useCallback((fileList: FileList | File[]) => {

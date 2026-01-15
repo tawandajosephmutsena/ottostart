@@ -10,6 +10,32 @@ use Illuminate\Support\Str;
 class SecureFileUploadService
 {
     /**
+     * Determine file category based on MIME type and extension
+     */
+    public function getCategoryByFile(UploadedFile $file): string
+    {
+        $mimeType = $file->getMimeType();
+        $extension = strtolower($file->getClientOriginalExtension());
+
+        // Check for image
+        if (str_starts_with($mimeType, 'image/') || in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'avif', 'heic', 'heif', 'bmp'])) {
+            return 'image';
+        }
+
+        // Check for video
+        if (str_starts_with($mimeType, 'video/') || in_array($extension, ['mp4', 'mov', 'webm', 'avi', 'mkv', 'wmv', 'flv', 'm4v', '3gp', 'mpeg', 'mpg', 'ogv', 'm4a'])) {
+            return 'video';
+        }
+
+        // Check for audio
+        if (str_starts_with($mimeType, 'audio/') || in_array($extension, ['mp3', 'wav', 'ogg', 'aac', 'flac'])) {
+            return 'audio';
+        }
+
+        return 'document'; // Default
+    }
+
+    /**
      * Allowed MIME types for different file categories
      */
     private array $allowedMimeTypes = [
@@ -20,6 +46,11 @@ class SecureFileUploadService
             'image/gif',
             'image/webp',
             'image/svg+xml',
+            'image/avif',
+            'image/heic',
+            'image/heif',
+            'image/bmp',
+            'image/x-icon',
         ],
         'document' => [
             'application/pdf',
@@ -34,17 +65,29 @@ class SecureFileUploadService
         ],
         'video' => [
             'video/mp4',
+            'video/mpeg',
             'video/quicktime',
             'video/x-msvideo',
             'video/x-ms-wmv',
             'video/x-flv',
             'video/webm',
+            'video/ogg',
+            'video/3gpp',
+            'video/3gpp2',
+            'video/x-matroska',
+            'video/x-m4v',
+            'video/MP2T',
+            'application/octet-stream', // Some video files report as this
         ],
         'audio' => [
             'audio/mpeg',
             'audio/wav',
             'audio/ogg',
             'audio/mp4',
+            'audio/x-m4a',
+            'audio/aac',
+            'audio/flac',
+            'audio/webm',
         ],
     ];
 
@@ -123,29 +166,59 @@ class SecureFileUploadService
      */
     public function validateFile(UploadedFile $file, string $category): array
     {
+        // If category is 'all', detect it automatically
+        if ($category === 'all') {
+            $category = $this->getCategoryByFile($file);
+        }
+
         // Check if file is valid
         if (!$file->isValid()) {
             return ['valid' => false, 'error' => 'Invalid file upload'];
         }
 
         // Check file size
-        if (!isset($this->maxFileSizes[$category])) {
-            return ['valid' => false, 'error' => 'Invalid file category'];
-        }
+        $maxSizes = $this->maxFileSizes;
+        $maxSize = $maxSizes[$category] ?? 209715200; // Default to 200MB if unknown
 
-        if ($file->getSize() > $this->maxFileSizes[$category]) {
-            $maxSizeMB = $this->maxFileSizes[$category] / 1048576;
+        if ($file->getSize() > $maxSize) {
+            $maxSizeMB = $maxSize / 1048576;
             return ['valid' => false, 'error' => "File size exceeds {$maxSizeMB}MB limit"];
         }
 
         // Check MIME type
         $mimeType = $file->getMimeType();
-        if (!in_array($mimeType, $this->allowedMimeTypes[$category])) {
-            return ['valid' => false, 'error' => 'File type not allowed'];
+        $extension = strtolower($file->getClientOriginalExtension());
+        
+        // Define allowed extensions for extension-based fallback
+        $allowedExtensions = [
+            'video' => ['mp4', 'mov', 'webm', 'avi', 'mkv', 'wmv', 'flv', 'm4v', '3gp', 'mpeg', 'mpg', 'ogv'],
+            'image' => ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'ico', 'avif', 'heic', 'heif'],
+            'audio' => ['mp3', 'wav', 'ogg', 'm4a', 'aac', 'flac', 'webm'],
+            'document' => ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt', 'csv'],
+        ];
+        
+        // Try MIME type validation first
+        $isMimeValid = in_array($mimeType, $this->allowedMimeTypes[$category]);
+        
+        // If MIME validation fails, try extension-based validation as fallback
+        if (!$isMimeValid) {
+            $isExtensionValid = isset($allowedExtensions[$category]) && 
+                                in_array($extension, $allowedExtensions[$category]);
+            
+            if (!$isExtensionValid) {
+                return ['valid' => false, 'error' => 'File type not allowed'];
+            }
+            
+            // Log the fallback for debugging
+            Log::info('File validated by extension fallback', [
+                'file' => $file->getClientOriginalName(),
+                'mime' => $mimeType,
+                'extension' => $extension,
+                'category' => $category,
+            ]);
         }
 
-        // Check file extension
-        $extension = strtolower($file->getClientOriginalExtension());
+        // Check file extension for dangerous extensions
         if (in_array($extension, $this->dangerousExtensions)) {
             return ['valid' => false, 'error' => 'File extension not allowed for security reasons'];
         }
