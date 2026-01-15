@@ -54,7 +54,9 @@ interface PageProps {
     theme?: ThemeData;
     themePresets?: ThemePresetsConfig;
     settings?: Record<string, Array<{ key: string; value: string | string[] | null }>>;
+    [key: string]: unknown; // Index signature for Inertia PageProps compatibility
 }
+
 
 export default function ThemeStyles() {
     const props = usePage<PageProps>().props;
@@ -77,6 +79,28 @@ export default function ThemeStyles() {
 
     if (!preset) return null;
 
+    // Generate font loading URL for Bunny Fonts (privacy-friendly Google Fonts replacement)
+    const generateFontUrl = () => {
+        const fontFamilies = new Set<string>();
+        if (preset.fonts.sans) fontFamilies.add(preset.fonts.sans);
+        if (preset.fonts.serif) fontFamilies.add(preset.fonts.serif);
+        if (preset.fonts.mono) fontFamilies.add(preset.fonts.mono);
+
+        const systemFonts = ['serif', 'sans-serif', 'monospace', 'system-ui', 'Georgia', 'Arial', 'Times New Roman'];
+        const fontsToLoad = Array.from(fontFamilies).filter(font => !systemFonts.includes(font));
+
+        if (fontsToLoad.length === 0) return null;
+
+        const formattedFonts = fontsToLoad.map(font => {
+            const normalized = font.toLowerCase().replace(/\s+/g, '-');
+            return `${normalized}:400,500,600,700`;
+        }).join('|');
+
+        return `https://fonts.bunny.net/css?family=${formattedFonts}&display=swap`;
+    };
+
+    const fontUrl = generateFontUrl();
+
     const generateCssVariables = (colors: ThemeColors, indent: string = '    '): string => {
         return Object.entries(colors)
             .filter(([, value]) => value !== undefined)
@@ -85,34 +109,46 @@ export default function ThemeStyles() {
     };
 
     return (
-        <style dangerouslySetInnerHTML={{
-            __html: `
-                :root {
-${generateCssVariables(preset.light, '                    ')}
-                    --radius: ${preset.radius};
-                    --font-sans: ${preset.fonts.sans}, sans-serif;
-                    --font-serif: ${preset.fonts.serif}, serif;
-                    --font-mono: ${preset.fonts.mono}, monospace;
+        <>
+            {fontUrl && <link rel="stylesheet" href={fontUrl} />}
+            <style dangerouslySetInnerHTML={{
+                __html: `
+                    :root {
+    ${generateCssVariables(preset.light, '                    ')}
+                        --radius: ${preset.radius};
+                        --font-sans: "${preset.fonts.sans}", ui-sans-serif, system-ui, sans-serif;
+                        --font-serif: "${preset.fonts.serif}", ui-serif, Georgia, serif;
+                        --font-mono: "${preset.fonts.mono}", ui-monospace, SFMono-Regular, monospace;
+                        
+                        /* Agency color mappings */
+                        --agency-primary: var(--foreground);
+                        --agency-secondary: var(--background);
+                        --agency-accent: var(--primary);
+                        --agency-accent-soft: var(--secondary);
+                        --agency-neutral: var(--background);
+                        --agency-dark: var(--foreground);
+                    }
                     
-                    /* Agency color mappings */
-                    --agency-primary: var(--foreground);
-                    --agency-secondary: var(--background);
-                    --agency-accent: var(--primary);
-                    --agency-accent-soft: var(--secondary);
-                    --agency-neutral: var(--background);
-                    --agency-dark: var(--foreground);
-                }
-                
-                .dark {
-${generateCssVariables(preset.dark, '                    ')}
-                    --agency-primary: var(--foreground);
-                    --agency-secondary: var(--background);
-                    --agency-accent: var(--primary);
-                    --agency-accent-soft: var(--secondary);
-                    --agency-neutral: var(--muted);
-                    --agency-dark: var(--background);
-                }
-            `
-        }} />
+                    .dark {
+    ${generateCssVariables(preset.dark, '                    ')}
+                        --agency-primary: var(--foreground);
+                        --agency-secondary: var(--background);
+                        --agency-accent: var(--primary);
+                        --agency-accent-soft: var(--secondary);
+                        --agency-neutral: var(--muted);
+                        --agency-dark: var(--background);
+                    }
+
+                    /* Global Font Applications */
+                    body {
+                        font-family: var(--font-sans);
+                    }
+
+                    h1, h2, h3, h4, h5, h6, .font-display {
+                        font-family: var(--font-sans); /* Use sans for headings by default, can be overridden */
+                    }
+                `
+            }} />
+        </>
     );
 }

@@ -125,6 +125,7 @@ const SETTINGS_STRUCT: Record<string, StructItem[]> = {
         },
         { key: 'font_display', label: 'Display Font', type: 'text', placeholder: 'Inter', description: 'Used for headings and titles.' },
         { key: 'font_body', label: 'Body Font', type: 'text', placeholder: 'Inter', description: 'Used for body text and paragraphs.' },
+        { key: 'theme_preset', label: 'Active Theme Preset', type: 'text', placeholder: 'ottostart_default' },
     ]
 };
 
@@ -157,27 +158,39 @@ export default function SettingsIndex({ settings, themePresets }: Props) {
     const [processing, setProcessing] = useState(false);
     const [selectedPreset, setSelectedPreset] = useState<string>(initialData['theme_preset']);
 
-    // Apply theme preview when preset changes
+    // Apply theme preview when preset changes - respects current dark/light mode
     useEffect(() => {
         if (!themePresets?.themes[selectedPreset]) return;
         
         const preset = themePresets.themes[selectedPreset];
         const root = document.documentElement;
+        const isDarkMode = root.classList.contains('dark');
         
-        // Apply light mode colors as preview
-        Object.entries(preset.light).forEach(([key, value]) => {
-            if (value) root.style.setProperty(`--${key}`, value);
+        // Choose colors based on current theme mode
+        const colors = isDarkMode ? preset.dark : preset.light;
+        
+        // Store which keys we set so we can clean them up
+        const setKeys: string[] = [];
+        
+        Object.entries(colors).forEach(([key, value]) => {
+            if (value) {
+                root.style.setProperty(`--${key}`, value);
+                setKeys.push(key);
+            }
         });
         root.style.setProperty('--radius', preset.radius);
         root.style.setProperty('--font-sans', `${preset.fonts.sans}, sans-serif`);
         
         return () => {
-            // Reset inline styles on cleanup
-            Object.keys(preset.light).forEach(key => {
+            // Reset inline styles on cleanup - removes ALL inline styles we set
+            setKeys.forEach(key => {
                 root.style.removeProperty(`--${key}`);
             });
+            root.style.removeProperty('--radius');
+            root.style.removeProperty('--font-sans');
         };
     }, [selectedPreset, themePresets]);
+
 
     const handlePresetSelect = (presetKey: string) => {
         setSelectedPreset(presetKey);
@@ -349,7 +362,7 @@ export default function SettingsIndex({ settings, themePresets }: Props) {
                                         
                                         {/* Individual Settings Fields */}
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        {items.map((item) => (
+                                        {items.filter(i => i.key !== 'theme_preset').map((item) => (
                                             <div key={item.key} className={`grid gap-2 ${(item.type === 'textarea' || item.type === 'image') ? 'md:col-span-2' : ''}`}>
                                                 <Label htmlFor={item.key} className="text-agency-accent font-medium">{item.label}</Label>
                                                 {item.type === 'textarea' ? (

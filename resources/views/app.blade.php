@@ -128,12 +128,7 @@
         <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
         {{-- Web Core Vitals: Font loading optimization --}}
-        <link rel="stylesheet" href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600&display=swap" media="print" id="font-bunny-style">
-        <script nonce="{{ Vite::cspNonce() }}">
-            document.getElementById('font-bunny-style').media = 'all';
-        </script>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-        <noscript><link rel="stylesheet" href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600&display=swap"></noscript>
 
         @viteReactRefresh
         @vite(['resources/js/app.tsx', "resources/js/pages/{$page['component']}.tsx"])

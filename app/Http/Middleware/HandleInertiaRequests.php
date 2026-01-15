@@ -36,20 +36,41 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        [$message, $author] = str(Inspiring::quotes()->random())->explode('-');
-
-        // Fetch settings from cache or database
-        $settings = \Illuminate\Support\Facades\Cache::remember('site_settings', 60 * 60, function () {
-            return \App\Models\Setting::all()->pluck('value', 'key')->map(function ($value, $key) {
-                // Settings are cast as arrays in the model
+        // Fetch all settings and theme presets from cache (processed together for performance)
+        $cachedData = \Illuminate\Support\Facades\Cache::remember('site_settings_all', 60 * 60, function () {
+            $allSettings = \App\Models\Setting::all();
+            
+            // Flat format for easy access
+            $flatSettings = $allSettings->pluck('value', 'key')->map(function ($value) {
                 return is_array($value) ? $value[0] ?? null : $value;
             })->toArray();
+
+            // Grouped format for ThemeStyles component
+            $groupedSettings = $allSettings->groupBy('group_name')->map(function ($items) {
+                return $items->map(function ($item) {
+                    return [
+                        'key' => $item->key,
+                        'value' => $item->value,
+                    ];
+                })->values();
+            })->toArray();
+
+            return [
+                'flat' => $flatSettings,
+                'grouped' => $groupedSettings,
+                'themePresets' => config('theme-presets'),
+            ];
         });
+
+        $settings = $cachedData['flat'];
+        $groupedSettings = $cachedData['grouped'];
+        $themePresets = $cachedData['themePresets'];
+
 
         return [
             ...parent::share($request),
             'name' => config('app.name'),
-            'quote' => ['message' => trim($message), 'author' => trim($author)],
+
             'auth' => [
                 'user' => $request->user(),
             ],
@@ -74,6 +95,7 @@ class HandleInertiaRequests extends Middleware
                 ],
             ],
             'theme' => [
+                'preset' => $settings['theme_preset'] ?? config('theme-presets.default'),
                 'colors' => [
                     'primary' => $settings['brand_primary'] ?? '#1a1a1a',
                     'secondary' => $settings['brand_secondary'] ?? '#666666',
@@ -92,7 +114,10 @@ class HandleInertiaRequests extends Middleware
                 'llmsTxtUrl' => url('/llms.txt'),
             ],
             'nonce' => \Illuminate\Support\Facades\Vite::cspNonce(),
+            'themePresets' => $themePresets,
+            'settings' => $groupedSettings,
             'menus' => \Illuminate\Support\Facades\Cache::remember('navigation_menus', 60 * 60, function () {
+
                 $mainMenu = \App\Models\NavigationMenu::where('slug', 'main-menu')
                     ->where('is_active', true)
                     ->with(['items' => function ($query) {

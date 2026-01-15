@@ -49,9 +49,10 @@ class SettingsController extends Controller
             );
         }
 
-        // Clear settings cache if you implement caching later
-        Cache::forget('site_settings');
+        // Clear settings cache to propagate changes to all pages
+        Cache::forget('site_settings_all');
 
         return back()->with('success', 'Settings updated successfully.');
+
     }
 }

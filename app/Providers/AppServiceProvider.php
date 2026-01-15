@@ -32,5 +32,27 @@ class AppServiceProvider extends ServiceProvider
 
         // Enable CSP nonce for Vite
         \Illuminate\Support\Facades\Vite::useCspNonce();
+
+        // Performance: Prevent lazy loading in development to catch N+1 queries
+        if ($this->app->environment('local')) {
+            \Illuminate\Database\Eloquent\Model::preventLazyLoading();
+        }
+
+        // Performance: Log slow queries in development
+        if ($this->app->environment('local') && config('app.debug')) {
+            \Illuminate\Support\Facades\DB::listen(function ($query) {
+                if ($query->time > 100) { // Log queries over 100ms
+                    \Illuminate\Support\Facades\Log::warning('Slow Query', [
+                        'sql' => $query->sql,
+                        'bindings' => $query->bindings,
+                        'time' => $query->time . 'ms',
+                    ]);
+                }
+            });
+        }
+
+        // Performance: Use strict mode for models (better data integrity)
+        \Illuminate\Database\Eloquent\Model::shouldBeStrict(!$this->app->isProduction());
     }
+
 }

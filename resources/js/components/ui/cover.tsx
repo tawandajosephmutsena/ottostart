@@ -21,32 +21,46 @@ export const Cover = ({
   sparkleColor?: string;
 }) => {
   const [hovered, setHovered] = useState(false);
-
   const ref = useRef<HTMLDivElement>(null);
-
   const [containerWidth, setContainerWidth] = useState(0);
   const [beamPositions, setBeamPositions] = useState<number[]>([]);
+  const [beamData, setBeamData] = useState<Array<{ duration: number; delay: number }>>([]);
 
   useEffect(() => {
-    if (ref.current) {
-      setContainerWidth(ref.current?.clientWidth ?? 0);
+    const el = ref.current;
+    if (!el) return;
 
-      const height = ref.current?.clientHeight ?? 0;
-      const numberOfBeams = Math.floor(height / 10); // Adjust the divisor to control the spacing
+    const updateDimensions = () => {
+      const width = el.clientWidth ?? 0;
+      const height = el.clientHeight ?? 0;
+      setContainerWidth(width);
+
+      const numberOfBeams = Math.floor(height / 10);
       const positions = Array.from(
         { length: numberOfBeams },
         (_, i) => (i + 1) * (height / (numberOfBeams + 1))
       );
       setBeamPositions(positions);
-    }
-  }, [ref.current]);
+
+      setBeamData(positions.map(() => ({
+        duration: beamDuration || Math.random() * 2 + 1,
+        delay: beamDelay || Math.random() * 2 + 1,
+      })));
+    };
+
+    const observer = new ResizeObserver(updateDimensions);
+    observer.observe(el);
+    updateDimensions();
+
+    return () => observer.disconnect();
+  }, [beamDuration, beamDelay]);
 
   return (
     <div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       ref={ref}
-      className="relative hover:bg-neutral-900  group/cover inline-block dark:bg-neutral-900 bg-neutral-100 px-2 py-2  transition duration-200 rounded-sm"
+      className="relative hover:bg-primary/10  group/cover inline-block bg-accent/20 px-2 py-2  transition duration-200 rounded-sm"
     >
       <AnimatePresence>
         {hovered && (
@@ -98,8 +112,8 @@ export const Cover = ({
         <Beam
           key={index}
           hovered={hovered}
-          duration={beamDuration || Math.random() * 2 + 1}
-          delay={beamDelay || Math.random() * 2 + 1}
+          duration={beamData[index]?.duration}
+          delay={beamData[index]?.delay}
           width={containerWidth}
           style={{
             top: `${position}px`,
@@ -139,16 +153,16 @@ export const Cover = ({
           },
         }}
         className={cn(
-          "dark:text-white inline-block text-neutral-900 relative z-20 group-hover/cover:text-white transition duration-200",
+          "text-foreground inline-block relative z-20 group-hover/cover:text-primary transition duration-200",
           className
         )}
       >
         {children}
       </motion.span>
-      <CircleIcon className="absolute -right-[2px] -top-[2px]" />
-      <CircleIcon className="absolute -bottom-[2px] -right-[2px]" delay={0.4} />
-      <CircleIcon className="absolute -left-[2px] -top-[2px]" delay={0.8} />
-      <CircleIcon className="absolute -bottom-[2px] -left-[2px]" delay={1.6} />
+      <CircleIcon className="absolute -right-[2px] -top-[2px] bg-primary" />
+      <CircleIcon className="absolute -bottom-[2px] -right-[2px] bg-primary" />
+      <CircleIcon className="absolute -left-[2px] -top-[2px] bg-primary" />
+      <CircleIcon className="absolute -bottom-[2px] -left-[2px] bg-primary" />
     </div>
   );
 };
@@ -168,6 +182,10 @@ export const Beam = ({
   width?: number;
 } & React.ComponentProps<typeof motion.svg>) => {
   const id = useId();
+  const [randomValues] = useState(() => ({
+    delay: Math.random() * (1 - 0.2) + 0.2,
+    repeatDelay: Math.random() * (2 - 1) + 1,
+  }));
 
   return (
     <motion.svg
@@ -205,13 +223,13 @@ export const Beam = ({
             duration: hovered ? 0.5 : duration ?? 2,
             ease: "linear",
             repeat: Infinity,
-            delay: hovered ? Math.random() * (1 - 0.2) + 0.2 : 0,
-            repeatDelay: hovered ? Math.random() * (2 - 1) + 1 : delay ?? 1,
+            delay: hovered ? randomValues.delay : 0,
+            repeatDelay: hovered ? randomValues.repeatDelay : delay ?? 1,
           }}
         >
-          <stop stopColor="#2EB9DF" stopOpacity="0" />
-          <stop stopColor="#3b82f6" />
-          <stop offset="1" stopColor="#3b82f6" stopOpacity="0" />
+          <stop stopColor="var(--primary)" stopOpacity="0" />
+          <stop stopColor="var(--primary)" />
+          <stop offset="1" stopColor="var(--primary)" stopOpacity="0" />
         </motion.linearGradient>
       </defs>
     </motion.svg>
@@ -220,15 +238,13 @@ export const Beam = ({
 
 export const CircleIcon = ({
   className,
-  delay,
 }: {
   className?: string;
-  delay?: number;
 }) => {
   return (
     <div
       className={cn(
-        `pointer-events-none animate-pulse group-hover/cover:hidden group-hover/cover:opacity-100 group h-2 w-2 rounded-full bg-neutral-600 dark:bg-white opacity-20 group-hover/cover:bg-white`,
+        `pointer-events-none animate-pulse group-hover/cover:hidden group-hover/cover:opacity-100 group h-2 w-2 rounded-full opacity-20 group-hover/cover:bg-primary`,
         className
       )}
     ></div>

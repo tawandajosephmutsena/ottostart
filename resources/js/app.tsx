@@ -67,11 +67,18 @@ if (import.meta.env.PROD) {
 
 createInertiaApp({
     title: (title) => (title ? `${title} - ${appName}` : appName),
-    resolve: (name) =>
-        resolvePageComponent(
-            `./pages/${name}.tsx`,
-            import.meta.glob('./pages/**/*.tsx'),
-        ),
+    resolve: (name) => {
+        // Lazy load page components for better code splitting
+        const pages = import.meta.glob('./pages/**/*.tsx');
+        const page = pages[`./pages/${name}.tsx`];
+        
+        if (!page) {
+            throw new Error(`Page not found: ${name}`);
+        }
+        
+        return page().then((module: any) => module.default);
+    },
+
     setup({ el, App, props }) {
         const root = createRoot(el);
 

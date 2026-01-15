@@ -8,6 +8,8 @@ import { Head } from '@inertiajs/react';
 import React from 'react';
 import { BreadcrumbItem } from '@/types';
 import { Home } from 'lucide-react';
+import ThemeStyles from '@/components/ThemeStyles';
+
 
 interface AdminLayoutProps {
     children: React.ReactNode;
@@ -29,7 +31,9 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
     return (
         <>
             <Head title={title ? `${title} - Admin` : 'Admin'} />
+            <ThemeStyles />
             <AppShell variant="sidebar">
+
                 <AdminSidebar />
                 <SidebarInset>
                     {/* Header with trigger and breadcrumbs */}
