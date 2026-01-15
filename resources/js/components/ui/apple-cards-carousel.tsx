@@ -168,7 +168,7 @@ export const Card = ({
 }) => {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const { onCardClose, currentIndex } = useContext(CarouselContext);
+  const { onCardClose } = useContext(CarouselContext);
 
   const handleClose = useCallback(() => {
     setOpen(false);
@@ -223,29 +223,41 @@ export const Card = ({
               exit={{ opacity: 0 }}
               ref={containerRef}
               layoutId={layout ? `card-${card.title}` : undefined}
-              className="relative z-[60] mx-auto my-10 h-fit max-w-5xl rounded-3xl bg-white p-4 font-sans md:p-10 dark:bg-neutral-900"
+              className="relative z-[60] mx-auto my-10 h-fit max-w-5xl rounded-3xl bg-white font-sans dark:bg-neutral-900 overflow-hidden"
             >
               <button
-                className="sticky top-4 right-0 ml-auto flex h-8 w-8 items-center justify-center rounded-full bg-black dark:bg-white"
+                className="absolute top-4 right-4 z-70 flex h-8 w-8 items-center justify-center rounded-full bg-black dark:bg-white"
                 onClick={handleClose}
                 aria-label="Close"
                 type="button"
               >
                 <IconX className="h-6 w-6 text-neutral-100 dark:text-neutral-900" />
               </button>
-              <motion.p
-                layoutId={layout ? `category-${card.title}` : undefined}
-                className="text-base font-medium text-black dark:text-white"
+              <motion.div 
+                layoutId={layout ? `image-${card.title}` : undefined}
+                className="w-full h-80 md:h-96 relative"
               >
-                {card.category}
-              </motion.p>
-              <motion.p
-                layoutId={layout ? `title-${card.title}` : undefined}
-                className="mt-4 text-2xl font-semibold text-neutral-700 md:text-5xl dark:text-white"
-              >
-                {card.title}
-              </motion.p>
-              <div className="py-10">{card.content}</div>
+                <img 
+                  src={card.src} 
+                  alt={card.title} 
+                  className="w-full h-full object-cover"
+                />
+              </motion.div>
+              <div className="p-6 md:p-10">
+                <motion.p
+                  layoutId={layout ? `category-${card.title}` : undefined}
+                  className="text-base font-medium text-black dark:text-white"
+                >
+                  {card.category}
+                </motion.p>
+                <motion.p
+                  layoutId={layout ? `title-${card.title}` : undefined}
+                  className="mt-4 text-2xl font-semibold text-neutral-700 md:text-5xl dark:text-white"
+                >
+                  {card.title}
+                </motion.p>
+                <div className="py-10">{card.content}</div>
+              </div>
             </motion.div>
           </div>
         )}
@@ -253,13 +265,13 @@ export const Card = ({
       <motion.button
         layoutId={layout ? `card-${card.title}` : undefined}
         onClick={handleClick}
-        className="relative z-10 flex h-80 w-56 flex-col items-start justify-start overflow-hidden rounded-3xl bg-gray-100 md:h-[40rem] md:w-96 dark:bg-neutral-900"
+        className="relative z-10 flex h-80 w-56 flex-col items-start justify-start overflow-hidden rounded-3xl bg-gray-100 md:h-[40rem] md:w-96 dark:bg-neutral-900 group"
         type="button"
       >
         <div className="pointer-events-none absolute inset-x-0 top-0 z-30 h-full bg-gradient-to-b from-black/50 via-transparent to-transparent" />
         <div className="relative z-40 p-8">
           <motion.p
-            layoutId={layout ? `category-${card.category}` : undefined}
+            layoutId={layout ? `category-${card.title}` : undefined}
             className="text-left font-sans text-sm font-medium text-white md:text-base"
           >
             {card.category}
@@ -274,7 +286,8 @@ export const Card = ({
         <BlurImage
           src={card.src}
           alt={card.title}
-          className="absolute inset-0 z-10 object-cover"
+          layoutId={layout ? `image-${card.title}` : undefined}
+          className="absolute inset-0 w-full h-full z-10 object-cover transition-transform duration-500 group-hover:scale-105"
         />
       </motion.button>
     </>
@@ -287,11 +300,19 @@ export const BlurImage = ({
   src,
   className,
   alt,
+  layoutId,
   ...rest
-}: React.ImgHTMLAttributes<HTMLImageElement>) => {
+}: React.ImgHTMLAttributes<HTMLImageElement> & { layoutId?: string }) => {
   const [isLoading, setLoading] = useState(true);
+  // Separate motion props from standard img props if needed, but for now we just spread rest
+  // and hope for the best, or we can be explicit. 
+  // Standard ImgHTMLAttributes includes onDrag which conflicts with motion's onDrag.
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { onDrag: _onDrag, ...imgProps } = rest as Record<string, unknown>;
+
   return (
-    <img
+    <motion.img
+      layoutId={layoutId}
       className={cn(
         "h-full w-full transition duration-300",
         isLoading ? "blur-sm" : "blur-0",
@@ -304,7 +325,7 @@ export const BlurImage = ({
       loading="lazy"
       decoding="async"
       alt={alt || "Image"}
-      {...rest}
+      {...imgProps}
     />
   );
 };

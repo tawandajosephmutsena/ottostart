@@ -17,15 +17,17 @@ const StoryBlock: React.FC<StoryBlockProps> = ({ title, subtitle, body, items })
             <div className="max-w-7xl mx-auto">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
                     <AnimatedSection animation="fade-right">
-                        <span className="text-agency-accent font-bold uppercase tracking-[0.4em] text-xs mb-8 block">{subtitle}</span>
-                        <h2 className="text-5xl md:text-7xl font-black uppercase tracking-tighter text-agency-primary dark:text-white leading-none mb-10">
+                        <span className="inline-block px-4 py-1.5 mb-8 text-xs font-bold uppercase tracking-[0.3em] text-primary bg-primary/10 rounded-full border border-primary/20">
+                            {subtitle}
+                        </span>
+                        <h2 className="text-5xl md:text-7xl font-black uppercase tracking-tighter text-foreground leading-none mb-10">
                             {title}
                         </h2>
                         <div className="grid grid-cols-2 gap-12">
                             {(items || []).map((item, i) => (
                                 <div key={i}>
-                                    <div className="text-4xl md:text-5xl font-black text-agency-primary dark:text-white mb-2">{item.value}</div>
-                                    <p className="text-sm uppercase tracking-widest text-agency-primary/60 dark:text-white/60 font-bold">{item.label}</p>
+                                    <div className="text-4xl md:text-5xl font-black text-foreground mb-2">{item.value}</div>
+                                    <p className="text-sm uppercase tracking-widest text-muted-foreground font-bold">{item.label}</p>
                                 </div>
                             ))}
                         </div>

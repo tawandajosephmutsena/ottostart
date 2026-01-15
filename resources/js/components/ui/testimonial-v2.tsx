@@ -161,7 +161,7 @@ const TestimonialsSection = ({
       >
         <div className="flex flex-col items-center justify-center max-w-[540px] mx-auto mb-16">
           <div className="flex justify-center">
-            <div className="border border-neutral-300 dark:border-neutral-700 py-1 px-4 rounded-full text-xs font-semibold tracking-wide uppercase text-neutral-600 dark:text-neutral-400 bg-neutral-100/50 dark:bg-neutral-800/50 transition-colors">
+            <div className="inline-block px-4 py-1.5 mb-6 text-xs font-bold uppercase tracking-[0.3em] text-primary bg-primary/10 rounded-full border border-primary/20">
               {label}
             </div>
           </div>

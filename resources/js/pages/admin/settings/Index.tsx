@@ -361,75 +361,94 @@ export default function SettingsIndex({ settings, themePresets }: Props) {
                                         )}
                                         
                                         {/* Individual Settings Fields */}
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        {items.filter(i => i.key !== 'theme_preset').map((item) => (
-                                            <div key={item.key} className={`grid gap-2 ${(item.type === 'textarea' || item.type === 'image') ? 'md:col-span-2' : ''}`}>
-                                                <Label htmlFor={item.key} className="text-agency-accent font-medium">{item.label}</Label>
-                                                {item.type === 'textarea' ? (
-                                                    <Textarea
-                                                        id={item.key}
-                                                        value={data[item.key]}
-                                                        onChange={(e) => setData(item.key, e.target.value)}
-                                                        placeholder={item.placeholder}
-                                                        className="min-h-[100px]"
-                                                    />
-                                                ) : item.type === 'image' ? (
-                                                    <div className="flex items-center gap-4 p-4 rounded-lg border bg-muted/20">
-                                                        <MediaLibrary 
-                                                            type="image"
-                                                            onSelect={(asset: MediaAsset) => setData(item.key, asset.url)}
-                                                            trigger={
-                                                                <div className="w-24 h-24 rounded-lg border-2 border-dashed flex items-center justify-center cursor-pointer hover:bg-muted transition-colors relative overflow-hidden bg-background">
-                                                                    {data[item.key] ? (
-                                                                        <img src={data[item.key]} alt="Logo" className="w-full h-full object-contain p-2" />
-                                                                    ) : (
-                                                                        <ImagePlus className="w-8 h-8 text-muted-foreground" />
-                                                                    )}
-                                                                </div>
-                                                            }
-                                                        />
-                                                        <div className="flex-1 space-y-2">
-                                                            <Input 
-                                                                value={data[item.key]} 
-                                                                onChange={(e) => setData(item.key, e.target.value)}
-                                                                placeholder="/logo.svg"
-                                                            />
-                                                            <p className="text-[10px] text-muted-foreground">Select from library or enter URL</p>
-                                                        </div>
-                                                        {data[item.key] && (
-                                                            <Button type="button" variant="ghost" size="icon" onClick={() => setData(item.key, '')}>
-                                                                <X className="w-4 h-4" />
-                                                            </Button>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4">
+                                        {items.filter(i => i.key !== 'theme_preset').map((item) => {
+                                            const isColor = item.type === 'color';
+                                            const isFullWidth = item.type === 'textarea' || item.type === 'image';
+                                            
+                                            return (
+                                                <div 
+                                                    key={item.key} 
+                                                    className={cn(
+                                                        "grid gap-1.5",
+                                                        isFullWidth ? "md:col-span-2 lg:col-span-3" : "",
+                                                        isColor ? "bg-muted/30 p-2 rounded-md border border-border/50" : ""
+                                                    )}
+                                                >
+                                                    <div className="flex items-center justify-between">
+                                                        <Label htmlFor={item.key} className="text-[13px] font-semibold text-foreground/80">{item.label}</Label>
+                                                        {isColor && (
+                                                            <span className="text-[10px] font-mono uppercase text-muted-foreground mr-1">{data[item.key]}</span>
                                                         )}
                                                     </div>
-                                                ) : (
-                                                    <div className="flex gap-2">
-                                                        <Input
+                                                    
+                                                    {item.type === 'textarea' ? (
+                                                        <Textarea
                                                             id={item.key}
-                                                            type={item.type === 'email' ? 'email' : item.type === 'color' ? 'color' : 'text'}
-                                                            className={item.type === 'color' ? 'w-14 h-11 p-1 px-1 shrink-0' : ''}
                                                             value={data[item.key]}
                                                             onChange={(e) => setData(item.key, e.target.value)}
                                                             placeholder={item.placeholder}
+                                                            className="min-h-[80px] text-sm"
                                                         />
-                                                        {item.type === 'color' && (
-                                                            <Input 
-                                                                type="text" 
-                                                                value={data[item.key]} 
+                                                    ) : item.type === 'image' ? (
+                                                        <div className="flex items-center gap-4 p-3 rounded-lg border bg-muted/20">
+                                                            <MediaLibrary 
+                                                                type="image"
+                                                                onSelect={(asset: MediaAsset) => setData(item.key, asset.url)}
+                                                                trigger={
+                                                                    <div className="w-16 h-16 rounded-lg border-2 border-dashed flex items-center justify-center cursor-pointer hover:bg-muted transition-colors relative overflow-hidden bg-background shrink-0">
+                                                                        {data[item.key] ? (
+                                                                            <img src={data[item.key]} alt="Logo" className="w-full h-full object-contain p-1" />
+                                                                        ) : (
+                                                                            <ImagePlus className="w-6 h-6 text-muted-foreground" />
+                                                                        )}
+                                                                    </div>
+                                                                }
+                                                            />
+                                                            <div className="flex-1 space-y-1">
+                                                                <Input 
+                                                                    value={data[item.key]} 
+                                                                    onChange={(e) => setData(item.key, e.target.value)}
+                                                                    placeholder="/logo.svg"
+                                                                    className="h-8 text-xs"
+                                                                />
+                                                                <p className="text-[10px] text-muted-foreground">Select from library or enter URL</p>
+                                                            </div>
+                                                            {data[item.key] && (
+                                                                <Button type="button" variant="ghost" size="icon" className="h-8 w-8" onClick={() => setData(item.key, '')}>
+                                                                    <X className="w-3 h-3" />
+                                                                </Button>
+                                                            )}
+                                                        </div>
+                                                    ) : (
+                                                        <div className="flex items-center gap-2">
+                                                            {isColor && (
+                                                                <Input
+                                                                    id={item.key}
+                                                                    type="color"
+                                                                    className="w-10 h-8 p-0.5 border-none bg-transparent cursor-pointer shrink-0"
+                                                                    value={data[item.key]}
+                                                                    onChange={(e) => setData(item.key, e.target.value)}
+                                                                />
+                                                            )}
+                                                            <Input
+                                                                id={isColor ? undefined : item.key}
+                                                                type={item.type === 'email' ? 'email' : 'text'}
+                                                                className={cn("h-8 text-sm", isColor ? "flex-1 font-mono text-[11px]" : "")}
+                                                                value={data[item.key]}
                                                                 onChange={(e) => setData(item.key, e.target.value)}
-                                                                className="flex-1 font-mono uppercase"
                                                                 placeholder={item.placeholder}
                                                             />
-                                                        )}
-                                                    </div>
-                                                )}
-                                                {item.description && (
-                                                    <p className="text-xs text-muted-foreground leading-relaxed mt-1">
-                                                        {item.description}
-                                                    </p>
-                                                )}
-                                            </div>
-                                        ))}
+                                                        </div>
+                                                    )}
+                                                    {item.description && (
+                                                        <p className="text-[10px] text-muted-foreground leading-snug mt-1">
+                                                            {item.description}
+                                                        </p>
+                                                    )}
+                                                </div>
+                                            );
+                                        })}
                                         </div>
                                     </CardContent>
                                 </Card>
