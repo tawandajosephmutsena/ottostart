@@ -314,10 +314,11 @@ export const BlurImage = ({
     <motion.img
       layoutId={layoutId}
       className={cn(
-        "h-full w-full transition duration-300",
+        "transition duration-300",
         isLoading ? "blur-sm" : "blur-0",
         className,
       )}
+      style={{ objectFit: 'cover', width: '100%', height: '100%' }}
       onLoad={() => setLoading(false)}
       src={src as string}
       width={width}
