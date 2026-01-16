@@ -128,22 +128,29 @@ class DatabaseSecurityService
             'timestamp' => now(),
         ]);
 
-        // Also log to security events if the model exists
+        // Also log to security events if the model exists and table exists
         if (class_exists(\App\Models\SecurityEvent::class)) {
-            \App\Models\SecurityEvent::create([
-                'type' => 'suspicious_query',
-                'severity' => 'high',
-                'description' => 'Suspicious database query pattern detected',
-                'ip_address' => request()->ip(),
-                'user_agent' => request()->userAgent(),
-                'user_id' => auth()->id(),
-                'metadata' => [
-                    'sql' => $sql,
-                    'bindings' => $bindings,
-                    'execution_time' => $time,
-                    'url' => request()->fullUrl(),
-                ],
-            ]);
+            try {
+                // Only log if the table exists (prevents migration failures)
+                if (\Illuminate\Support\Facades\Schema::hasTable('security_events')) {
+                    \App\Models\SecurityEvent::create([
+                        'type' => 'suspicious_query',
+                        'severity' => 'high',
+                        'description' => 'Suspicious database query pattern detected',
+                        'ip_address' => request()->ip(),
+                        'user_agent' => request()->userAgent(),
+                        'user_id' => auth()->id(),
+                        'metadata' => [
+                            'sql' => $sql,
+                            'bindings' => $bindings,
+                            'execution_time' => $time,
+                            'url' => request()->fullUrl(),
+                        ],
+                    ]);
+                }
+            } catch (\Throwable $e) {
+                // Silently fail if table doesn't exist during migrations
+            }
         }
     }
 
