@@ -104,6 +104,8 @@
             "pestphp/pest-plugin": true,
             "php-http/discovery": true,
             "wikimedia/composer-merge-plugin": true
+        },
+        "platform": {
         }
     },
     "minimum-stability": "stable",

@@ -38,8 +38,9 @@ interface ServiceFormData {
     is_featured: boolean;
     sort_order: number;
     content: {
-        body?: string;
-        [key: string]: unknown;
+        body: string;
+        scope: string;
+        [key: string]: string | undefined;
     };
 }
 
@@ -55,7 +56,7 @@ const ICONS = [
 ];
 
 export default function ServiceForm({ service }: Props) {
-    const { data, setData: _setData, post, put, processing, errors } = useForm({
+    const { data, setData, post, put, processing, errors } = useForm<ServiceFormData>({
         title: service?.title || '',
         slug: service?.slug || '',
         description: service?.description || '',
@@ -66,11 +67,10 @@ export default function ServiceForm({ service }: Props) {
         is_featured: service?.is_featured ?? false,
         sort_order: service?.sort_order ?? 0,
         content: {
-            body: (service?.content as any)?.body || '',
+            body: (service?.content as Record<string, string>)?.body || '',
+            scope: (service?.content as Record<string, string>)?.scope || '',
         },
-    } as any);
-
-    const setData = _setData as any;
+    });
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -145,14 +145,26 @@ export default function ServiceForm({ service }: Props) {
                         <CardHeader>
                             <CardTitle>Scope & Content</CardTitle>
                         </CardHeader>
-                        <CardContent className="space-y-4">
+                        <CardContent className="space-y-6">
                             <div className="grid gap-2">
-                                <Label>Detailed Scope (Markdown)</Label>
+                                <Label htmlFor="scope">Detailed Scope (Markdown)</Label>
                                 <Textarea
+                                    id="scope"
+                                    value={data.content?.scope || ''}
+                                    onChange={(e) => setData('content', { ...data.content, scope: e.target.value })}
+                                    rows={6}
+                                    placeholder="Outline the scope of work here..."
+                                />
+                            </div>
+
+                            <div className="grid gap-2">
+                                <Label htmlFor="body">Main Content (Markdown)</Label>
+                                <Textarea
+                                    id="body"
                                     value={data.content?.body || ''}
                                     onChange={(e) => setData('content', { ...data.content, body: e.target.value })}
-                                    rows={10}
-                                    placeholder="Detailed description of what's included..."
+                                    rows={12}
+                                    placeholder="Detailed description of the service and its benefits..."
                                 />
                             </div>
                         </CardContent>

@@ -30,6 +30,8 @@ class ServiceRequest extends SecureFormRequest
             'description' => 'required|string|max:1000',
             'content' => 'nullable|array',
             'content.overview' => 'nullable|string',
+            'content.scope' => 'nullable|string',
+            'content.body' => 'nullable|string',
             'content.features' => 'nullable|array',
             'content.features.*' => 'string|max:500',
             'content.process' => 'nullable|string',

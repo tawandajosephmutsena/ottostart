@@ -111,7 +111,7 @@ export default function Portfolio({ portfolioItems, page }: Props) {
                                                     ) : (
                                                         <div className="absolute inset-0 bg-gradient-to-br from-agency-accent/20 to-agency-primary/20 group-hover:scale-110 transition-transform duration-700 ease-out"></div>
                                                     )}
-                                                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 backdrop-blur-md bg-agency-primary/20">
+                                                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-agency-primary/20">
                                                         <div className="size-24 rounded-full bg-agency-accent flex items-center justify-center text-agency-primary font-black text-xs uppercase tracking-tighter scale-50 group-hover:scale-100 transition-transform duration-500">
                                                             VIEW WORK
                                                         </div>

@@ -81,7 +81,11 @@ class HandleInertiaRequests extends Middleware
                 'tagline' => $settings['site_tagline'] ?? 'Digital Innovation Redefined',
                 'description' => $settings['site_description'] ?? 'We create avant-garde digital experiences that push boundaries and inspire innovation through cutting-edge design and technology.',
                 'url' => config('app.url'),
-                'logo' => $settings['site_logo'] ?? '/logo.svg',
+                'logo' => ($settings['site_logo'] ?? null) 
+                    ? (str_starts_with($settings['site_logo'], 'http') || str_starts_with($settings['site_logo'], '/') 
+                        ? $settings['site_logo'] 
+                        : '/' . $settings['site_logo']) 
+                    : asset('logo.svg'),
                 'social' => [
                     'twitter' => $settings['twitter_url'] ?? 'https://twitter.com/avantgarde',
                     'linkedin' => $settings['linkedin_url'] ?? 'https://linkedin.com/company/avantgarde',

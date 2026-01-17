@@ -50,7 +50,7 @@ export const Footer: React.FC<FooterProps> = ({ className }) => {
     ].filter(link => link.href);
 
     return (
-        <footer className={cn('bg-agency-primary text-white dark:bg-black pt-32 pb-12 overflow-hidden border-t border-white/5', className)}>
+        <footer className={cn('bg-agency-dark text-white dark:bg-black pt-32 pb-12 overflow-hidden border-t border-white/5', className)}>
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-8 mb-32">
                     {/* Massive Brand Side */}

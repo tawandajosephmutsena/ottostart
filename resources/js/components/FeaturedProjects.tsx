@@ -112,7 +112,7 @@ export const FeaturedProjects: React.FC<FeaturedProjectsProps> = ({
                                         🚀
                                     </div>
                                 )}
-                                <div className="absolute inset-0 bg-agency-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center backdrop-blur-sm">
+                                <div className="absolute inset-0 bg-agency-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
                                     <div className="size-32 rounded-full bg-agency-accent flex items-center justify-center font-black text-agency-primary text-sm tracking-widest scale-75 group-hover:scale-100 transition-transform duration-500 shadow-2xl">
                                         VIEW PROJECT
                                     </div>

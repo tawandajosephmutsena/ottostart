@@ -64,9 +64,9 @@ export default function Services({ services, page }: Props) {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-agency-primary/5 dark:bg-white/5 border border-agency-primary/5 dark:border-white/5 overflow-hidden rounded-[40px]">
                                 {services.map((service, i) => (
                                     <div key={service.id} className="group relative bg-white dark:bg-agency-dark p-12 md:p-20 overflow-hidden min-h-[500px] flex flex-col justify-between transition-all duration-700 hover:bg-agency-primary dark:hover:bg-agency-accent">
-                                        {/* Image Reveal on Hover */}
+                                        {/* Image Display */}
                                         {service.featured_image && (
-                                            <div className="absolute inset-x-0 bottom-0 top-0 opacity-0 group-hover:opacity-20 transition-all duration-700 scale-110 group-hover:scale-100 pointer-events-none">
+                                            <div className="absolute inset-x-0 bottom-0 top-0 opacity-10 group-hover:opacity-30 transition-all duration-700 scale-100 group-hover:scale-105 pointer-events-none">
                                                 <img src={service.featured_image} alt={service.title} className="w-full h-full object-cover filter grayscale" />
                                             </div>
                                         )}

@@ -65,7 +65,9 @@ export default defineConfig({
         chunkSizeWarningLimit: 500, // Reduced from 1000 to encourage smaller chunks
     },
     server: {
+        host: '127.0.0.1',
         hmr: {
+            host: '127.0.0.1',
             overlay: false,
         },
     },

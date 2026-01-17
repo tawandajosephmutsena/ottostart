@@ -51,34 +51,39 @@ export function initializeTheme() {
 }
 
 export function useAppearance() {
-    const [appearance, setAppearance] = useState<Appearance>('system');
+    const [appearance, setAppearance] = useState<Appearance>(() => {
+        if (typeof window !== 'undefined') {
+            return (localStorage.getItem('appearance') as Appearance) || 'system';
+        }
+        return 'system';
+    });
 
     const updateAppearance = useCallback((mode: Appearance) => {
         setAppearance(mode);
 
-        // Store in localStorage for client-side persistence...
+        // Store in localStorage for client-side persistence
         localStorage.setItem('appearance', mode);
 
-        // Store in cookie for SSR...
+        // Store in cookie for SSR
         setCookie('appearance', mode);
 
         applyTheme(mode);
     }, []);
 
     useEffect(() => {
-        const savedAppearance = localStorage.getItem(
-            'appearance',
-        ) as Appearance | null;
+        // Apply theme on mount and when appearance changes
+        applyTheme(appearance);
 
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        updateAppearance(savedAppearance || 'system');
+        const handleMediaQueryChange = () => {
+            const current = localStorage.getItem('appearance') as Appearance | null;
+            applyTheme(current || 'system');
+        };
 
-        return () =>
-            mediaQuery()?.removeEventListener(
-                'change',
-                handleSystemThemeChange,
-            );
-    }, [updateAppearance]);
+        const mq = mediaQuery();
+        mq?.addEventListener('change', handleMediaQueryChange);
+
+        return () => mq?.removeEventListener('change', handleMediaQueryChange);
+    }, [appearance]);
 
     return { appearance, updateAppearance } as const;
 }

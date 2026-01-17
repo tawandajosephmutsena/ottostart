@@ -121,6 +121,9 @@ class SecurityHeaders
             // We MUST allow 'unsafe-inline' and 'unsafe-eval' for Vite to work properly without strict-dynamic blocking it
             $policies[] = "script-src 'self' 'unsafe-inline' 'unsafe-eval' http://127.0.0.1:5173 http://localhost:5173";
             
+            // Explicit script-src-elem for browsers that check this directive for <script> elements
+            $policies[] = "script-src-elem 'self' 'unsafe-inline' http://127.0.0.1:5173 http://localhost:5173";
+            
             // Allow Vite dev server connections
             $policies[] = "connect-src 'self' ws: wss: http://127.0.0.1:5173 ws://127.0.0.1:5173 http://localhost:5173 ws://localhost:5173";
         } else {
