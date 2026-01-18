@@ -39,6 +39,10 @@ if (typeof window !== 'undefined') {
     initPrefetching();
     // Prefetch critical routes that users commonly visit
     prefetchCriticalRoutes(['/portfolio', '/services', '/contact', '/blog']);
+    // Initialize behavioral analytics
+    import('./lib/analytics').then(({ analytics }) => {
+        analytics.init();
+    });
 }
 
 const appName = import.meta.env.VITE_APP_NAME || 'Avant-Garde CMS';

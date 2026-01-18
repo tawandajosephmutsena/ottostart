@@ -40,9 +40,14 @@ Route::get('/demo/testimonial-v2', function () {
 // Search route
 Route::get('/api/search', [App\Http\Controllers\SearchController::class, 'index'])->name('api.search');
 
+// Interactions tracking
+Route::post('/interactions', [App\Http\Controllers\InteractionController::class, 'store'])
+    ->middleware('throttle:60,1')
+    ->name('interactions.store');
+
 // Contact form (no caching for POST)
 Route::post('/contact', [App\Http\Controllers\ContactController::class, 'store'])
-    ->middleware('throttle:5,1') // 5 requests per minute
+    ->middleware('throttle:10,1') // Increased from 5 to 10
     ->name('contact.store');
 
 // SEO and Sitemap routes
@@ -157,6 +162,7 @@ Route::middleware(['auth', 'verified', 'cache.headers:no-cache'])->prefix('cms')
 // Admin routes - require admin role (no caching)
 Route::middleware(['auth', 'verified', 'admin', 'cache.headers:no-cache'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [App\Http\Controllers\Admin\AdminController::class, 'dashboard'])->name('dashboard');
+    Route::get('/analytics', [App\Http\Controllers\Admin\AnalyticsController::class, 'index'])->name('analytics');
     Route::get('/quick-actions', [App\Http\Controllers\Admin\AdminController::class, 'quickActions'])->name('quick-actions');
 
     Route::get('/users', function () {

@@ -25,6 +25,7 @@ import {
     MessageSquare,
     BookOpen,
     List,
+    TrendingUp,
 } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 
@@ -33,6 +34,11 @@ const mainNavItems = [
         title: 'Dashboard',
         href: '/admin',
         icon: LayoutDashboard,
+    },
+    {
+        title: 'Analytics',
+        href: '/admin/analytics',
+        icon: TrendingUp,
     },
 ];
 
