@@ -368,6 +368,9 @@ export default function BlockRenderer({
                                 ctaHref={block.content.ctaHref as string}
                                 marqueeText={block.content.marqueeText as string}
                                 backgroundImages={block.content.backgroundImages as string[]}
+                                showFloatingImages={block.content.showFloatingImages !== false}
+                                secondaryCtaText={block.content.secondaryCtaText as string}
+                                secondaryCtaHref={block.content.secondaryCtaHref as string}
                             />
                         );
                     case 'text':

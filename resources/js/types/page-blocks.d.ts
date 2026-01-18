@@ -21,6 +21,9 @@ export interface HeroBlock extends BaseBlock {
         ctaHref: string;
         marqueeText?: string;
         backgroundImages?: string[];
+        showFloatingImages?: boolean;
+        secondaryCtaText?: string;
+        secondaryCtaHref?: string;
     };
 }
 

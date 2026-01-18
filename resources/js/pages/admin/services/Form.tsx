@@ -15,6 +15,7 @@ import React from 'react';
 import { Save, ArrowLeft, ImagePlus, Palette, Layout, Code, Cpu, Shield, Rocket, Globe, Zap } from 'lucide-react';
 import { Link } from '@inertiajs/react';
 import MediaLibrary from '@/components/admin/MediaLibrary';
+import RichTextEditor from '@/components/admin/RichTextEditor';
 import {
     Select,
     SelectContent,
@@ -40,7 +41,8 @@ interface ServiceFormData {
     content: {
         body: string;
         scope: string;
-        [key: string]: string | undefined;
+        features?: string[];
+        [key: string]: any;
     };
 }
 
@@ -69,6 +71,7 @@ export default function ServiceForm({ service }: Props) {
         content: {
             body: (service?.content as Record<string, string>)?.body || '',
             scope: (service?.content as Record<string, string>)?.scope || '',
+            features: (service?.content as any)?.features || [],
         },
     });
 
@@ -147,26 +150,26 @@ export default function ServiceForm({ service }: Props) {
                         </CardHeader>
                         <CardContent className="space-y-6">
                             <div className="grid gap-2">
-                                <Label htmlFor="scope">Detailed Scope (Markdown)</Label>
-                                <Textarea
-                                    id="scope"
-                                    value={data.content?.scope || ''}
-                                    onChange={(e) => setData('content', { ...data.content, scope: e.target.value })}
-                                    rows={6}
+                                <Label>Detailed Scope</Label>
+                                <RichTextEditor
+                                    content={data.content?.scope || ''}
+                                    onChange={(content) => setData('content', { ...data.content, scope: content })}
                                     placeholder="Outline the scope of work here..."
+                                    className="min-h-[200px]"
                                 />
                             </div>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="body">Main Content (Markdown)</Label>
-                                <Textarea
-                                    id="body"
-                                    value={data.content?.body || ''}
-                                    onChange={(e) => setData('content', { ...data.content, body: e.target.value })}
-                                    rows={12}
+                                <Label>Main Content</Label>
+                                <RichTextEditor
+                                    content={data.content?.body || ''}
+                                    onChange={(content) => setData('content', { ...data.content, body: content })}
                                     placeholder="Detailed description of the service and its benefits..."
+                                    className="min-h-[350px]"
                                 />
                             </div>
+
+
                         </CardContent>
                     </Card>
                 </div>
@@ -199,6 +202,53 @@ export default function ServiceForm({ service }: Props) {
                                     value={data.sort_order}
                                     onChange={(e) => setData('sort_order', parseInt(e.target.value))}
                                 />
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Features ("What's Included")</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="space-y-3">
+                                {(data.content?.features || []).map((feature, index) => (
+                                    <div key={index} className="flex gap-2">
+                                        <Input
+                                            value={feature}
+                                            onChange={(e) => {
+                                                const newFeatures = [...(data.content.features || [])];
+                                                newFeatures[index] = e.target.value;
+                                                setData('content', { ...data.content, features: newFeatures });
+                                            }}
+                                            placeholder="e.g. Deep Strategic Analysis"
+                                        />
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            size="icon"
+                                            onClick={() => {
+                                                const newFeatures = (data.content.features || []).filter((_, i) => i !== index);
+                                                setData('content', { ...data.content, features: newFeatures });
+                                            }}
+                                        >
+                                            <span className="sr-only">Remove</span>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                                        </Button>
+                                    </div>
+                                ))}
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => {
+                                        const newFeatures = [...(data.content.features || []), ''];
+                                        setData('content', { ...data.content, features: newFeatures });
+                                    }}
+                                    className="w-full"
+                                >
+                                    + Add Feature
+                                </Button>
                             </div>
                         </CardContent>
                     </Card>

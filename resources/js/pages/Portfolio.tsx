@@ -101,18 +101,18 @@ export default function Portfolio({ portfolioItems, page }: Props) {
                                             className="group cursor-pointer"
                                         >
                                             <Link href={`/portfolio/${project.slug}`} className="block">
-                                                <div className="relative aspect-video rounded-[40px] overflow-hidden bg-agency-primary/5 dark:bg-white/5 mb-8">
+                                                <div className="relative aspect-video rounded-[40px] overflow-hidden mb-8">
                                                     {project.featured_image ? (
                                                         <img 
                                                             src={project.featured_image} 
                                                             alt={project.title} 
-                                                            className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                                                            className="absolute inset-0 !w-full !h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                                                         />
                                                     ) : (
-                                                        <div className="absolute inset-0 bg-gradient-to-br from-agency-accent/20 to-agency-primary/20 group-hover:scale-110 transition-transform duration-700 ease-out"></div>
+                                                        <div className="absolute inset-0 bg-agency-accent/5 group-hover:scale-110 transition-transform duration-700 ease-out"></div>
                                                     )}
-                                                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-agency-primary/20">
-                                                        <div className="size-24 rounded-full bg-agency-accent flex items-center justify-center text-agency-primary font-black text-xs uppercase tracking-tighter scale-50 group-hover:scale-100 transition-transform duration-500">
+                                                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                                        <div className="size-24 rounded-full bg-agency-accent flex items-center justify-center text-agency-primary font-black text-xs uppercase tracking-tighter scale-50 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all duration-500">
                                                             VIEW WORK
                                                         </div>
                                                     </div>

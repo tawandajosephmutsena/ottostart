@@ -4,7 +4,7 @@ import { Service } from '@/types';
 import { Head, Link } from '@inertiajs/react';
 import { ArrowLeft, CheckCircle2, ArrowRight } from 'lucide-react';
 import React from 'react';
-import ReactMarkdown from 'react-markdown';
+import DOMPurify from 'dompurify';
 
 interface Props {
     service: Service;
@@ -39,18 +39,32 @@ export default function ServiceShow({ service }: Props) {
                 </script>
             </Head>
 
-            {/* Service Hero - Clean Version */}
-            <section className="relative pt-48 pb-20 overflow-hidden bg-agency-primary text-white">
+            {/* Service Hero - Theme Consistent */}
+            <section className="relative pt-48 pb-32 overflow-hidden bg-background">
+                {/* Animated Grid Pattern */}
+                <div className="absolute inset-0 opacity-[0.15]"
+                    style={{
+                        backgroundImage: `linear-gradient(currentColor 1px, transparent 1px), linear-gradient(90deg, currentColor 1px, transparent 1px)`,
+                        backgroundSize: '40px 40px',
+                        maskImage: 'radial-gradient(circle at center, black 60%, transparent 100%)',
+                        color: 'var(--foreground)'
+                    }}
+                />
+                
+                {/* Floating Elements for depth */}
+                <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-[100px] animate-pulse mix-blend-multiply dark:mix-blend-screen" />
+                <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-accent/20 rounded-full blur-[80px] animate-pulse delay-1000 mix-blend-multiply dark:mix-blend-screen" />
+
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-                    <Link href="/services" className="inline-flex items-center gap-2 text-agency-accent font-bold uppercase tracking-widest text-xs mb-12 hover:gap-4 transition-all">
+                    <Link href="/services" className="inline-flex items-center gap-2 text-muted-foreground font-bold uppercase tracking-widest text-xs mb-12 hover:text-primary hover:gap-4 transition-all">
                         <ArrowLeft className="h-4 w-4" /> Back to Services
                     </Link>
                     
                     <AnimatedSection animation="slide-up">
-                        <h1 className="text-6xl md:text-9xl font-black uppercase tracking-tighter leading-[0.85] mb-8">
+                        <h1 className="text-6xl md:text-9xl font-display font-black uppercase tracking-tighter leading-[0.85] mb-8 text-foreground">
                             {service.title}
                         </h1>
-                        <p className="text-2xl md:text-3xl text-white/60 font-light leading-relaxed max-w-3xl mx-auto">
+                        <p className="text-2xl md:text-3xl text-muted-foreground font-light leading-relaxed max-w-3xl mx-auto">
                             {service.description}
                         </p>
                     </AnimatedSection>
@@ -78,27 +92,24 @@ export default function ServiceShow({ service }: Props) {
                                 <h2 className="text-4xl md:text-6xl font-black uppercase tracking-tighter">The Scope.</h2>
                                 <div className="prose prose-xl prose-agency dark:prose-invert max-w-none">
                                     {scope ? (
-                                        <div className="text-agency-primary/80 dark:text-white/80">
-                                            <ReactMarkdown>
-                                                {scope}
-                                            </ReactMarkdown>
-                                        </div>
+                                        <div 
+                                            className="text-agency-primary/80 dark:text-white/80"
+                                            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(scope) }}
+                                        />
                                     ) : (
                                         <p className="text-agency-primary/60 dark:text-white/60 italic">Detailed scope details coming soon...</p>
                                     )}
                                 </div>
                             </div>
 
-                            {/* Main Content Section */}
                             {body && (
                                 <div className="space-y-12">
                                     <h2 className="text-4xl md:text-6xl font-black uppercase tracking-tighter">Details.</h2>
                                     <div className="prose prose-xl prose-agency dark:prose-invert max-w-none">
-                                        <div className="text-agency-primary/80 dark:text-white/80">
-                                            <ReactMarkdown>
-                                                {body}
-                                            </ReactMarkdown>
-                                        </div>
+                                        <div 
+                                            className="text-agency-primary/80 dark:text-white/80"
+                                            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(body) }}
+                                        />
                                     </div>
                                 </div>
                             )}
@@ -109,7 +120,7 @@ export default function ServiceShow({ service }: Props) {
                             <div className="p-10 rounded-[40px] bg-agency-secondary dark:bg-white/5 border border-agency-primary/5 dark:border-white/5 sticky top-32">
                                 <h3 className="text-3xl font-black uppercase tracking-tighter mb-8">What's Included</h3>
                                 <ul className="space-y-6">
-                                    {(content.features as string[] || [
+                                    {(content.features as string[] || service.content?.features || [
                                         'Deep Strategic Analysis',
                                         'Custom Design Concepts',
                                         'Technical Implementation',
@@ -128,7 +139,7 @@ export default function ServiceShow({ service }: Props) {
                                     <p className="text-5xl font-black mb-8 dark:text-white">{service.price_range || 'Custom Quote'}</p>
                                     <Link 
                                         href="/contact" 
-                                        className="flex h-16 w-full items-center justify-center rounded-full bg-agency-primary dark:bg-agency-accent text-white dark:text-agency-primary font-black uppercase tracking-widest text-sm hover:scale-[1.02] transition-all shadow-xl"
+                                        className="flex h-16 w-full items-center justify-center rounded-full bg-black dark:bg-white text-white dark:text-black font-black uppercase tracking-widest text-sm hover:scale-[1.02] transition-all shadow-xl"
                                     >
                                         Inquire Now
                                     </Link>

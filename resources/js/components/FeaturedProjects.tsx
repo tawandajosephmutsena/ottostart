@@ -90,7 +90,7 @@ export const FeaturedProjects: React.FC<FeaturedProjectsProps> = ({
                 )}
             </aside>
 
-            <main className="lg:w-[60%] p-6 lg:p-20 lg:pt-40 flex flex-col gap-32 lg:gap-64 border-l border-agency-primary/5 dark:border-white/5">
+            <main className="lg:w-[60%] p-6 lg:p-20 lg:pt-40 flex flex-col gap-12 lg:gap-20 border-l border-agency-primary/5 dark:border-white/5">
                 {projects.map((project, index) => (
                     <AnimatedSection
                         key={project.id}
@@ -105,15 +105,15 @@ export const FeaturedProjects: React.FC<FeaturedProjectsProps> = ({
                                         src={project.featured_image} 
                                         alt={project.title}
                                         loading="lazy"
-                                        className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                                        className="absolute inset-0 !w-full !h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                                     />
                                 ) : (
-                                    <div className="w-full h-full bg-gradient-to-br from-agency-accent/20 to-agency-accent/5 flex items-center justify-center text-8xl">
+                                    <div className="w-full h-full bg-agency-accent/5 flex items-center justify-center text-8xl">
                                         🚀
                                     </div>
                                 )}
-                                <div className="absolute inset-0 bg-agency-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
-                                    <div className="size-32 rounded-full bg-agency-accent flex items-center justify-center font-black text-agency-primary text-sm tracking-widest scale-75 group-hover:scale-100 transition-transform duration-500 shadow-2xl">
+                                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                    <div className="size-32 rounded-full bg-agency-accent flex items-center justify-center font-black text-agency-primary text-sm tracking-widest scale-50 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all duration-500 shadow-2xl">
                                         VIEW PROJECT
                                     </div>
                                 </div>

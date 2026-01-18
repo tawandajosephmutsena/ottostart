@@ -92,10 +92,10 @@ export default function BlockEditor({ block, onUpdate }: BlockEditorProps) {
                         </div>
                     </div>
                     <div className="space-y-4 pt-4 border-t">
-                        <Label className="text-xs font-bold uppercase tracking-wider">CTA Button</Label>
+                        <Label className="text-xs font-bold uppercase tracking-wider">CTA Buttons</Label>
                         <div className="grid grid-cols-2 gap-3">
                             <div className="space-y-1">
-                                <Label className="text-[10px]">Button Text</Label>
+                                <Label className="text-[10px]">Primary Text</Label>
                                 <Input 
                                     className="h-8 text-xs"
                                     value={String(block.content.ctaText || '')} 
@@ -103,11 +103,29 @@ export default function BlockEditor({ block, onUpdate }: BlockEditorProps) {
                                 />
                             </div>
                             <div className="space-y-1">
-                                <Label className="text-[10px]">Link (URL)</Label>
+                                <Label className="text-[10px]">Primary Link</Label>
                                 <Input 
                                     className="h-8 text-xs"
                                     value={String(block.content.ctaHref || '')} 
                                     onChange={(e) => updateContent({ ctaHref: e.target.value })}
+                                />
+                            </div>
+                            <div className="space-y-1">
+                                <Label className="text-[10px]">Secondary Text</Label>
+                                <Input 
+                                    className="h-8 text-xs"
+                                    value={String(block.content.secondaryCtaText || '')} 
+                                    onChange={(e) => updateContent({ secondaryCtaText: e.target.value })}
+                                    placeholder="Optional"
+                                />
+                            </div>
+                            <div className="space-y-1">
+                                <Label className="text-[10px]">Secondary Link</Label>
+                                <Input 
+                                    className="h-8 text-xs"
+                                    value={String(block.content.secondaryCtaHref || '')} 
+                                    onChange={(e) => updateContent({ secondaryCtaHref: e.target.value })}
+                                    placeholder="Optional"
                                 />
                             </div>
                         </div>
@@ -121,6 +139,17 @@ export default function BlockEditor({ block, onUpdate }: BlockEditorProps) {
                         />
                     </div>
                     <div className="space-y-4 pt-4 border-t">
+                        <div className="flex items-center gap-3 mb-4">
+                            <input 
+                                type="checkbox" 
+                                id="showFloatingImages" 
+                                checked={block.content.showFloatingImages !== false} 
+                                onChange={(e) => updateContent({ showFloatingImages: e.target.checked })}
+                                className="h-4 w-4 rounded border-gray-300 text-agency-accent focus:ring-agency-accent"
+                            />
+                            <Label htmlFor="showFloatingImages" className="text-sm cursor-pointer font-bold">Show Floating Images</Label>
+                        </div>
+
                         <Label className="text-xs font-bold uppercase tracking-wider">Background Images (Floating Grid)</Label>
                         <p className="text-[10px] text-muted-foreground">These images appear in the collage/floating grid behind the hero content.</p>
                         <div className="space-y-3">

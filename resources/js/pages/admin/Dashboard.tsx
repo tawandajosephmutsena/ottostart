@@ -309,7 +309,7 @@ export default function Dashboard({ stats, recent_activity, system_activity, seo
                                 <div key={i} className="flex-1 flex flex-col items-center gap-2 group">
                                     <div 
                                         className="w-full bg-agency-accent/20 hover:bg-agency-accent transition-all duration-500 rounded-t-sm relative"
-                                        style={{ height: `${(val / maxVal) * 100}%` }}
+                                        style={{ height: `${val > 0 ? Math.max((val / maxVal) * 100, 8) : 4}%` }}
                                     >
                                         <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-black text-white text-[10px] px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
                                             {val} views

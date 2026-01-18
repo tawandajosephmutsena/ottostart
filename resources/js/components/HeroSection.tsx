@@ -13,6 +13,9 @@ interface HeroSectionProps {
     ctaHref?: string;
     backgroundImages?: string[];
     marqueeText?: string;
+    showFloatingImages?: boolean;
+    secondaryCtaText?: string;
+    secondaryCtaHref?: string;
     className?: string;
 }
 
@@ -28,6 +31,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     ctaHref = '/contact',
     backgroundImages = [],
     marqueeText = 'Innovate Create Elevate Innovate Create Elevate',
+    showFloatingImages = true,
+    secondaryCtaText,
+    secondaryCtaHref,
     className,
 }) => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -81,55 +87,58 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             </div>
 
             {/* Floating Image Cards with Parallax */}
-            <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden">
-                {/* Image 1: Top Left */}
-                <div 
-                    ref={image1Ref}
-                    className="absolute top-[18%] left-[5%] md:left-[10%] hidden md:block"
-                >
-                    <div className="w-40 md:w-56 aspect-[3/4] bg-gray-200 rounded-brand overflow-hidden shadow-2xl transition-transform duration-500 ease-out hover:scale-105 pointer-events-auto -rotate-6">
-                        <img 
-                            src={backgroundImages[0] || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop'} 
-                            alt=""
-                            className="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
-                        />
+            {/* Conditional rendering based on showFloatingImages prop */}
+            {showFloatingImages && (
+                <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden">
+                    {/* Image 1: Top Left */}
+                    <div 
+                        ref={image1Ref}
+                        className="absolute top-[18%] left-[5%] md:left-[10%] hidden md:block"
+                    >
+                        <div className="relative w-40 md:w-56 aspect-[3/4] rounded-brand overflow-hidden shadow-2xl transition-transform duration-500 ease-out hover:scale-105 pointer-events-auto -rotate-6">
+                            <img 
+                                src={backgroundImages[0] || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop'} 
+                                alt=""
+                                className="absolute inset-0 !w-full !h-full object-cover transition-transform duration-700 hover:scale-110"
+                            />
+                        </div>
                     </div>
-                </div>
 
-                {/* Image 2: Middle Right */}
-                <div 
-                    ref={image2Ref}
-                    className="absolute top-[35%] right-[5%] md:right-[12%] hidden md:block"
-                >
-                    <div className="w-48 md:w-64 aspect-square bg-gray-200 rounded-brand overflow-hidden shadow-2xl transition-transform duration-500 ease-out hover:scale-105 pointer-events-auto rotate-3">
-                        <img 
-                            src={backgroundImages[1] || 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?q=80&w=2670&auto=format&fit=crop'} 
-                            alt=""
-                            className="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
-                        />
+                    {/* Image 2: Middle Right */}
+                    <div 
+                        ref={image2Ref}
+                        className="absolute top-[35%] right-[5%] md:right-[12%] hidden md:block"
+                    >
+                        <div className="relative w-48 md:w-64 aspect-square rounded-brand overflow-hidden shadow-2xl transition-transform duration-500 ease-out hover:scale-105 pointer-events-auto rotate-3">
+                            <img 
+                                src={backgroundImages[1] || 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?q=80&w=2670&auto=format&fit=crop'} 
+                                alt=""
+                                className="absolute inset-0 !w-full !h-full object-cover transition-transform duration-700 hover:scale-110"
+                            />
+                        </div>
                     </div>
-                </div>
 
-                {/* Image 3: Bottom Left */}
-                <div 
-                    ref={image3Ref}
-                    className="absolute bottom-[10%] left-[15%] md:left-[20%] hidden lg:block"
-                >
-                    <div className="w-36 md:w-48 aspect-[4/3] bg-gray-200 rounded-brand overflow-hidden shadow-2xl transition-transform duration-500 ease-out hover:scale-105 pointer-events-auto rotate-6">
-                        <img 
-                            src={backgroundImages[2] || 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2670&auto=format&fit=crop'} 
-                            alt=""
-                            loading="lazy"
-                            fetchPriority="auto"
-                            width="224"
-                            height="168"
-                            role="presentation"
-                            aria-hidden="true"
-                            className="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
-                        />
+                    {/* Image 3: Bottom Left */}
+                    <div 
+                        ref={image3Ref}
+                        className="absolute bottom-[10%] left-[15%] md:left-[20%] hidden lg:block"
+                    >
+                        <div className="relative w-36 md:w-48 aspect-[4/3] rounded-brand overflow-hidden shadow-2xl transition-transform duration-500 ease-out hover:scale-105 pointer-events-auto rotate-6">
+                            <img 
+                                src={backgroundImages[2] || 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2670&auto=format&fit=crop'} 
+                                alt=""
+                                loading="lazy"
+                                fetchPriority="auto"
+                                width="224"
+                                height="168"
+                                role="presentation"
+                                aria-hidden="true"
+                                className="absolute inset-0 !w-full !h-full object-cover transition-transform duration-700 hover:scale-110"
+                            />
+                        </div>
                     </div>
                 </div>
-            </div>
+            )}
 
             {/* Content Container */}
             <div className="relative z-20 max-w-[90vw] md:max-w-5xl px-4 flex flex-col items-center text-center">
@@ -171,12 +180,17 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                         </a>
                     </Button>
                     
-                    <button className="group relative flex items-center gap-2 h-14 px-8 rounded-full border border-current/20 font-bold hover:bg-current/5 transition-all dark:text-white">
-                        <span>Our Showreel</span>
-                        <div className="size-8 rounded-full bg-agency-accent-soft/20 flex items-center justify-center group-hover:scale-110 transition-transform">
-                            <ArrowRight className="h-4 w-4" />
-                        </div>
-                    </button>
+                    {secondaryCtaText && (
+                        <button 
+                            onClick={() => secondaryCtaHref && (window.location.href = secondaryCtaHref)}
+                            className="group relative flex items-center gap-2 h-14 px-8 rounded-full border border-current/20 font-bold hover:bg-current/5 transition-all dark:text-white"
+                        >
+                            <span>{secondaryCtaText}</span>
+                            <div className="size-8 rounded-full bg-agency-accent-soft/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <ArrowRight className="h-4 w-4" />
+                            </div>
+                        </button>
+                    )}
                 </div>
             </div>
 
