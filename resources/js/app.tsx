@@ -1,7 +1,6 @@
 import '../css/app.css';
 
 import { createInertiaApp } from '@inertiajs/react';
-import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { initializeTheme } from './hooks/use-appearance';
@@ -13,6 +12,9 @@ import { ErrorBoundary } from '@/components/ErrorBoundary';
 // Initialize GSAP and animation system
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+// Initialize link prefetching for near-instant navigation
+import { initPrefetching, prefetchCriticalRoutes } from './lib/prefetchLinks';
 
 // Register GSAP plugins
 if (typeof window !== 'undefined') {
@@ -32,6 +34,11 @@ if (typeof window !== 'undefined') {
 
     // Set up CSRF protection for all requests
     setupCsrfProtection();
+    
+    // Initialize link prefetching
+    initPrefetching();
+    // Prefetch critical routes that users commonly visit
+    prefetchCriticalRoutes(['/portfolio', '/services', '/contact', '/blog']);
 }
 
 const appName = import.meta.env.VITE_APP_NAME || 'Avant-Garde CMS';
@@ -56,7 +63,7 @@ if (import.meta.env.PROD) {
                 }
             );
         },
-        onSuccess: (_registration) => {
+        onSuccess: () => {
             console.log('Service worker registered successfully');
         },
         onError: (error) => {
@@ -76,7 +83,7 @@ createInertiaApp({
             throw new Error(`Page not found: ${name}`);
         }
         
-        return page().then((module: any) => module.default);
+        return page().then((module: unknown) => (module as { default: React.ComponentType }).default);
     },
 
     setup({ el, App, props }) {
@@ -117,3 +124,4 @@ createInertiaApp({
 
 // Initialize theme system
 initializeTheme();
+

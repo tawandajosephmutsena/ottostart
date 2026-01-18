@@ -6,10 +6,12 @@ import { usePerformanceMonitoring } from '@/lib/performanceMonitor';
 import { cn } from '@/lib/utils';
 import { Head, usePage } from '@inertiajs/react';
 import { SharedData } from '@/types';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import ThemeStyles from '@/components/ThemeStyles';
+import { PageTransition, ScrollProgressIndicator, PageLoadingIndicator } from '@/components/PageTransition';
+import { router } from '@inertiajs/react';
 
-declare const gtag: (...args: any[]) => void;
+declare const gtag: (command: string, action: string, params?: Record<string, unknown>) => void;
 
 
 interface MainLayoutProps {
@@ -105,6 +107,19 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
     const breadcrumbsToShow = customBreadcrumbs || breadcrumbs;
     const shouldShowBreadcrumbs = showBreadcrumbs && breadcrumbsToShow && breadcrumbsToShow.length > 1;
 
+    // Track loading state for transitions
+    const [isNavigating, setIsNavigating] = useState(false);
+
+    // Track navigation events for visual feedback
+    useEffect(() => {
+        const unbindStart = router.on('start', () => setIsNavigating(true));
+        const unbindFinish = router.on('finish', () => setIsNavigating(false));
+        return () => {
+            unbindStart();
+            unbindFinish();
+        };
+    }, []);
+
     return (
         <>
             <Head title={title}>
@@ -112,36 +127,28 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
                 <link rel="preload" href="https://fonts.bunny.net/inter/files/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
 
                 {/* AI Optimization Meta Tags */}
-                {/* Robots directive for AI crawlers - allow full snippets and image previews */}
                 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
-                
-                {/* AI-specific meta tags for citation and content rating */}
                 <meta name="ai:content:rating" content={ai?.contentRating ?? 'safe'} />
                 <meta name="ai:citation:preference" content={ai?.citationPreference ?? 'with-attribution'} />
-                
-                {/* Link to llms.txt for AI content discovery */}
                 {ai?.llmsTxtUrl && <link rel="alternate" type="text/markdown" href={ai.llmsTxtUrl} title="LLM Content Guide" />}
-                
-                {/* Publisher information for AI attribution */}
                 <meta name="publisher" content={site?.name ?? 'Website'} />
-                
-                {/* Indicate content is suitable for AI consumption */}
                 <meta name="ai:accessible" content="true" />
             </Head>
+            
             <ThemeStyles />
+            <ScrollProgressIndicator />
+            <PageLoadingIndicator isLoading={isNavigating} />
+
             <div
                 className={cn(
                     'min-h-screen bg-background font-sans text-foreground',
                     'antialiased selection:bg-agency-accent/20',
-                    // Web Core Vitals: Optimize rendering performance
                     'contain-layout',
                     className,
                 )}
             >
-                {/* Navigation is fixed position, no wrapper needed */}
                 {showNavigation && <Navigation />}
 
-                {/* Web Core Vitals: Breadcrumbs with proper spacing to prevent CLS */}
                 {shouldShowBreadcrumbs && (
                     <div className="bg-gray-50 dark:bg-gray-900/50 border-b border-gray-200 dark:border-gray-800">
                         <div className="max-w-7xl mx-auto px-4 py-3">
@@ -153,31 +160,21 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
                     </div>
                 )}
 
-                {/* Web Core Vitals: Main content with optimized rendering */}
                 <main
                     className={cn(
                         'relative',
-                        // Web Core Vitals: Ensure proper spacing without layout shift
                         !showNavigation && 'pt-0',
-                        // Web Core Vitals: Optimize paint containment
                         'contain-paint',
                     )}
                     style={{
-                        // Web Core Vitals: Prevent layout shift with min-height
                         minHeight: showNavigation ? 'calc(100vh - 4rem)' : '100vh',
                     }}
                 >
-                    {/* Web Core Vitals: Loading indicator for dynamic content */}
-                    <div 
-                        id="main-content-loader" 
-                        className="hidden skeleton w-full h-4 mb-4"
-                        aria-hidden="true"
-                    />
-                    
-                    {children}
+                    <PageTransition mode="slideUp">
+                        {children}
+                    </PageTransition>
                 </main>
 
-                {/* Web Core Vitals: Footer with proper spacing */}
                 {showFooter && (
                     <div className="mt-auto">
                         <Footer />
