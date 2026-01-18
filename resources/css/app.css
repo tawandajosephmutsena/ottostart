@@ -108,6 +108,13 @@
     --animate-bloom: bloom 1s ease-out both;
     --animate-float: float 6s ease-in-out infinite;
     --animate-smoke: smoke-reveal 1s ease-out both;
+    --animate-shimmer: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    100% {
+        transform: translateX(100%);
+    }
 }
 
 @keyframes marquee {

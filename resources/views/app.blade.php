@@ -13,12 +13,12 @@
         <style>
             /* Critical CSS for LCP optimization */
             html {
-                background-color: oklch(1 0 0);
+                background-color: oklch(0.9818 0.0054 95.0986);
                 font-family: 'Instrument Sans', 'Inter', ui-sans-serif, system-ui, sans-serif;
             }
 
             html.dark {
-                background-color: oklch(0.145 0 0);
+                background-color: oklch(0.2679 0.0036 106.6427);
             }
 
             body {
@@ -40,31 +40,30 @@
                 height: 64px; /* Fixed height to prevent layout shift */
             }
 
-            /* Loading skeleton to prevent CLS */
+            /* Loading shimmer matching the app components */
             .loading-skeleton {
-                background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-                background-size: 200% 100%;
-                animation: loading 1.5s infinite;
+                position: relative;
+                overflow: hidden;
+                background-color: oklch(0.9341 0.0153 90.239 / 0.5);
             }
 
-            @keyframes loading {
-                0% { background-position: 200% 0; }
-                100% { background-position: -200% 0; }
+            .loading-skeleton::after {
+                position: absolute;
+                inset: 0;
+                transform: translateX(-100%);
+                background-image: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+                animation: shimmer 2s infinite;
+                content: '';
+            }
+
+            @keyframes shimmer {
+                100% { transform: translateX(100%); }
             }
 
             /* Prevent layout shift for images */
             img {
                 max-width: 100%;
                 height: auto;
-            }
-
-            /* Hardware acceleration for animations */
-            .will-change-transform {
-                will-change: transform;
-            }
-
-            .transform-gpu {
-                transform: translateZ(0);
             }
         </style>
 

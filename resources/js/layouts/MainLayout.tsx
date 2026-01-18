@@ -143,7 +143,6 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
                 className={cn(
                     'min-h-screen bg-background font-sans text-foreground',
                     'antialiased selection:bg-agency-accent/20',
-                    'contain-layout',
                     className,
                 )}
             >
@@ -164,7 +163,6 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
                     className={cn(
                         'relative',
                         !showNavigation && 'pt-0',
-                        'contain-paint',
                     )}
                     style={{
                         minHeight: showNavigation ? 'calc(100vh - 4rem)' : '100vh',

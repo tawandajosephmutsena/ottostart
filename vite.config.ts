@@ -40,46 +40,8 @@ export default defineConfig({
         // Web Core Vitals: Optimize chunk sizes for better LCP
         rollupOptions: {
             output: {
-                // Strategic code splitting for optimal caching and performance
-                manualChunks: (id) => {
-                    // Core React in its own chunk (cached indefinitely)
-                    if (id.includes('node_modules/react/') || id.includes('node_modules/react-dom/')) {
-                        return 'react-vendor';
-                    }
-                    // Scheduler is a React dependency that should stay with React
-                    if (id.includes('node_modules/scheduler/')) {
-                        return 'react-vendor';
-                    }
-                    // Animation libraries grouped together (loaded on demand)
-                    if (id.includes('node_modules/gsap/') || 
-                        id.includes('node_modules/framer-motion/') || 
-                        id.includes('node_modules/motion/') ||
-                        id.includes('node_modules/lenis/')) {
-                        return 'animation-vendor';
-                    }
-                    // UI component libraries (commonly used across pages)
-                    if (id.includes('node_modules/@radix-ui/') || 
-                        id.includes('node_modules/@headlessui/')) {
-                        return 'ui-vendor';
-                    }
-                    // TipTap editor (only loaded in admin pages)
-                    if (id.includes('node_modules/@tiptap/')) {
-                        return 'editor-vendor';
-                    }
-                    // Icon libraries
-                    if (id.includes('node_modules/lucide-react/') ||
-                        id.includes('node_modules/@tabler/icons-react/')) {
-                        return 'icons-vendor';
-                    }
-                    // Utility libraries
-                    if (id.includes('node_modules/clsx/') ||
-                        id.includes('node_modules/tailwind-merge/') ||
-                        id.includes('node_modules/class-variance-authority/')) {
-                        return 'utils-vendor';
-                    }
-                    // Let Vite handle the rest automatically
-                    return undefined;
-                },
+                // Let Vite handle chunking automatically to avoid circular dependencies
+                manualChunks: undefined,
                 // Optimize chunk file names for caching
                 chunkFileNames: 'js/[name]-[hash].js',
                 entryFileNames: 'js/[name]-[hash].js',
