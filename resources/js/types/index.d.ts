@@ -72,6 +72,12 @@ export interface SharedData {
         contentRating: string;
         llmsTxtUrl: string;
     };
+    flash: {
+        success: string | null;
+        error: string | null;
+        warning: string | null;
+        info: string | null;
+    };
     [key: string]: unknown;
 }
 

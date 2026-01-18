@@ -244,7 +244,9 @@ export type PageBlock =
     | LogoCloudBlock
     | CoverDemoBlock
     | AppleCardsCarouselBlock
-    | VideoBackgroundHeroBlock;
+    | VideoBackgroundHeroBlock
+    | ParallaxFeaturesBlock
+    | GSAPHorizontalScrollBlock;
 
 export interface TestimonialBlock extends BaseBlock {
     type: 'testimonials';
@@ -312,4 +314,34 @@ export interface VideoBackgroundHeroBlock extends BaseBlock {
 
 export interface PageContent {
     blocks: PageBlock[];
+}
+
+export interface ParallaxFeaturesBlock extends BaseBlock {
+    type: 'parallax_features';
+    content: {
+        title?: string;
+        subtitle?: string;
+        items?: Array<{
+            title: string;
+            description: string;
+            image?: string;
+            icon?: string;
+        }>;
+    };
+}
+
+export interface GSAPHorizontalScrollBlock extends BaseBlock {
+    type: 'gsap_horizontal_scroll';
+    content: {
+        title?: string;
+        subtitle?: string;
+        items?: Array<{
+            title: string;
+            description: string;
+            image?: string;
+            tag?: string;
+            link?: string;
+        }>;
+        backgroundColor?: string;
+    };
 }

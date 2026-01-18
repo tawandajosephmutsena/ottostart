@@ -3,7 +3,30 @@ import DOMPurify from 'dompurify';
 import AnimatedSection from '@/components/AnimatedSection';
 import CinematicHero from './CinematicHero';
 import VideoPlayer from '@/components/ui/video-player';
-import { PageBlock, VideoBlock as VideoBlockType, TextBlock as TextBlockType, ImageBlock as ImageBlockType, FeaturesBlock as FeaturesBlockType } from '@/types/page-blocks';
+import { 
+    PageBlock, 
+    VideoBlock as VideoBlockType, 
+    TextBlock as TextBlockType, 
+    ImageBlock as ImageBlockType, 
+    FeaturesBlock as FeaturesBlockType,
+    AnimatedShaderHeroBlock,
+    HeroBlock,
+    StatsBlock,
+    CinematicHeroBlock as CinematicHeroBlockType,
+    FormBlock,
+    StoryBlock as StoryBlockType,
+    ManifestoBlock as ManifestoBlockType,
+    ProcessBlock as ProcessBlockType,
+    ContactInfoBlock as ContactInfoBlockType,
+    FaqBlock as FaqBlockType,
+    TestimonialBlock as TestimonialBlockType,
+    LogoCloudBlock as LogoCloudBlockType,
+    AppleCardsCarouselBlock as AppleCardsCarouselBlockType,
+    CoverDemoBlock as CoverDemoBlockType,
+    VideoBackgroundHeroBlock as VideoBackgroundHeroBlockType,
+    ParallaxFeaturesBlock as ParallaxFeaturesBlockType,
+    GSAPHorizontalScrollBlock as GSAPHorizontalScrollBlockType
+} from '@/types/page-blocks';
 import { cn } from '@/lib/utils';
 
 import AnimatedShaderHero from '@/components/ui/animated-shader-hero';
@@ -26,6 +49,8 @@ import LogoCloudBlock from './LogoCloudBlock';
 import AppleCardsCarouselBlock from './AppleCardsCarouselBlock';
 import CoverDemoBlock from './CoverDemoBlock';
 import VideoBackgroundHero from './VideoBackgroundHero';
+import ParallaxFeaturesBlock from './ParallaxFeaturesBlock';
+import GSAPHorizontalScrollBlock from './GSAPHorizontalScrollBlock';
 
 // Type definitions for external data
 interface ServiceItem {
@@ -263,9 +288,9 @@ const TextBlock = ({ content }: { content: TextBlockType['content'] }) => {
                     </AnimatedSection>
                 )}
                 <div className={gridClass}>
-                    {columns.map((col: unknown, idx: number) => (
-                        <AnimatedSection key={(col as any).id || idx} animation="fade-up" delay={idx * 100}>
-                            <ColumnRenderer column={col as any} />
+                    {columns.map((col, idx) => (
+                        <AnimatedSection key={col.id || idx} animation="fade-up" delay={idx * 100}>
+                            <ColumnRenderer column={col} />
                         </AnimatedSection>
                     ))}
                 </div>
@@ -337,114 +362,128 @@ export default function BlockRenderer({
                 if (block.is_enabled === false) return null;
 
                 switch (block.type) {
-                    case 'animated_shader_hero':
+                    case 'animated_shader_hero': {
+                        const content = block.content as AnimatedShaderHeroBlock['content'];
                         return (
                             <div key={block.id} className="relative z-0">
                                 <AnimatedShaderHero
-                                    trustBadge={block.content.trustBadge as any}
-                                    headline={block.content.headline as any}
-                                    subtitle={block.content.subtitle as string}
+                                    trustBadge={content.trustBadge}
+                                    headline={content.headline}
+                                    subtitle={content.subtitle}
                                     buttons={{
                                         primary: { 
-                                            text: (block.content.buttons as any)?.primary?.text || '', 
-                                            onClick: () => window.location.href = (block.content.buttons as any)?.primary?.url || '#' 
+                                            text: content.buttons?.primary?.text || '', 
+                                            onClick: () => {
+                                                if (typeof window !== 'undefined') {
+                                                    window.location.href = content.buttons?.primary?.url || '#';
+                                                }
+                                            }
                                         },
                                         secondary: { 
-                                            text: (block.content.buttons as any)?.secondary?.text || '', 
-                                            onClick: () => window.location.href = (block.content.buttons as any)?.secondary?.url || '#' 
+                                            text: content.buttons?.secondary?.text || '', 
+                                            onClick: () => {
+                                                if (typeof window !== 'undefined') {
+                                                    window.location.href = content.buttons?.secondary?.url || '#';
+                                                }
+                                            }
                                         }
                                     }}
                                 />
                             </div>
                         );
+                    }
                     case 'hero':
                         return (
                             <HeroSection
                                 key={block.id}
-                                title={block.content.title as string}
-                                subtitle={block.content.subtitle as string}
-                                description={block.content.description as string}
-                                ctaText={block.content.ctaText as string}
-                                ctaHref={block.content.ctaHref as string}
-                                marqueeText={block.content.marqueeText as string}
-                                backgroundImages={block.content.backgroundImages as string[]}
+                                title={block.content.title}
+                                subtitle={block.content.subtitle}
+                                description={block.content.description}
+                                ctaText={block.content.ctaText}
+                                ctaHref={block.content.ctaHref}
+                                marqueeText={block.content.marqueeText}
+                                backgroundImages={block.content.backgroundImages}
                                 showFloatingImages={block.content.showFloatingImages !== false}
-                                secondaryCtaText={block.content.secondaryCtaText as string}
-                                secondaryCtaHref={block.content.secondaryCtaHref as string}
+                                secondaryCtaText={block.content.secondaryCtaText}
+                                secondaryCtaHref={block.content.secondaryCtaHref}
                             />
                         );
                     case 'text':
-                        return <TextBlock key={block.id} content={block.content as any} />;
+                        return <TextBlock key={block.id} content={block.content as TextBlockType['content']} />;
                     case 'image':
-                        return <ImageBlock key={block.id} content={block.content as any} />;
+                        return <ImageBlock key={block.id} content={block.content as ImageBlockType['content']} />;
                     case 'features':
-                        return <FeaturesBlock key={block.id} content={block.content as any} />;
+                        return <FeaturesBlock key={block.id} content={block.content as FeaturesBlockType['content']} />;
                     case 'stats':
-                        return <StatsSection key={block.id} stats={block.content.items as any} />;
+                        return <StatsSection key={block.id} stats={block.content.items} />;
                     case 'services':
-                        return <ServicesSection key={block.id} title={block.content.title as string} services={featuredServices?.slice(0, Number(block.content.limit) || 3)} useStackedCards={block.content.useStackedCards as boolean} />;
+                        return <ServicesSection key={block.id} title={block.content.title} services={featuredServices?.slice(0, Number(block.content.limit) || 3)} useStackedCards={block.content.useStackedCards} />;
                     case 'portfolio':
-                        return <FeaturedProjects key={block.id} title={block.content.title as string} projects={featuredProjects?.slice(0, Number(block.content.limit) || 3)} />;
+                        return <FeaturedProjects key={block.id} title={block.content.title} projects={featuredProjects?.slice(0, Number(block.content.limit) || 3)} />;
                     case 'insights':
-                        return <RecentInsights key={block.id} title={block.content.title as string} insights={recentInsights?.slice(0, Number(block.content.limit) || 3)} />;
+                        return <RecentInsights key={block.id} title={block.content.title} insights={recentInsights?.slice(0, Number(block.content.limit) || 3)} />;
                     case 'cta':
                         return (
                             <CtaBlock 
                                 key={block.id}
-                                title={block.content.title as string}
-                                subtitle={block.content.subtitle as string}
-                                ctaText={block.content.ctaText as string}
-                                ctaHref={block.content.ctaHref as string}
-                                email={block.content.email as string}
+                                title={block.content.title}
+                                subtitle={block.content.subtitle}
+                                ctaText={block.content.ctaText}
+                                ctaHref={block.content.ctaHref}
+                                email={block.content.email}
                             />
                         );
                     case 'cinematic_hero':
-                        return <CinematicHero key={block.id} slides={block.content.slides as any[] || []} />;
+                        return <CinematicHero key={block.id} slides={block.content.slides || []} />;
                     case 'video':
-                        return <VideoBlock key={block.id} content={block.content as any} />;
+                        return <VideoBlock key={block.id} content={block.content as VideoBlockType['content']} />;
                     case 'form':
                         return (
                             <FormSection 
                                 key={block.id}
-                                title={block.content.title as string}
-                                description={block.content.description as string}
-                                steps={(block.content.steps as any[] || []).map((step: any) => ({
+                                title={block.content.title}
+                                description={block.content.description}
+                                steps={(block.content.steps || []).map((step) => ({
                                     ...step,
-                                    id: step.id || Math.random().toString(36).substr(2, 9),
+                                    id: step.id || Math.random().toString(36).substring(2, 9),
                                     title: step.title || '',
                                     fields: step.fields || [],
                                 }))}
-                                submitText={block.content.submitText as string}
+                                submitText={block.content.submitText}
                             />
                         );
                     case 'story':
-                        return <StoryBlock key={block.id} {...block.content} />;
+                        return <StoryBlock key={block.id} {...(block.content as StoryBlockType['content'])} />;
                     case 'manifesto':
-                        return <ManifestoBlock key={block.id} {...block.content} />;
+                        return <ManifestoBlock key={block.id} {...(block.content as ManifestoBlockType['content'])} />;
                     case 'process':
-                        return <ProcessBlock key={block.id} {...block.content} />;
+                        return <ProcessBlock key={block.id} {...(block.content as ProcessBlockType['content'])} />;
                     case 'contact_info':
-                        return <ContactInfoBlock key={block.id} {...block.content} />;
+                        return <ContactInfoBlock key={block.id} {...(block.content as ContactInfoBlockType['content'])} />;
                     case 'faq':
-                        return <FAQBlock key={block.id} {...block.content} />;
+                        return <FAQBlock key={block.id} {...(block.content as FaqBlockType['content'])} />;
                     case 'testimonials':
-                        return <TestimonialBlock key={block.id} {...block.content} />;
+                        return <TestimonialBlock key={block.id} {...(block.content as TestimonialBlockType['content'])} />;
                     case 'logo_cloud':
-                        return <LogoCloudBlock key={block.id} {...block.content} />;
+                        return <LogoCloudBlock key={block.id} {...(block.content as LogoCloudBlockType['content'])} />;
                     case 'apple_cards_carousel':
                         return (
                             <AppleCardsCarouselBlock 
                                 key={block.id} 
-                                {...block.content} 
+                                {...(block.content as AppleCardsCarouselBlockType['content'])} 
                                 services={featuredServices}
                                 portfolio={featuredProjects}
                                 insights={recentInsights}
                             />
                         );
                     case 'cover_demo':
-                        return <CoverDemoBlock key={block.id} {...block.content} />;
+                        return <CoverDemoBlock key={block.id} {...(block.content as CoverDemoBlockType['content'])} />;
                     case 'video_background_hero':
-                        return <VideoBackgroundHero key={block.id} {...block.content} />;
+                        return <VideoBackgroundHero key={block.id} {...(block.content as VideoBackgroundHeroBlockType['content'])} />;
+                    case 'parallax_features':
+                        return <ParallaxFeaturesBlock key={block.id} {...(block.content as ParallaxFeaturesBlockType['content'])} />;
+                    case 'gsap_horizontal_scroll':
+                        return <GSAPHorizontalScrollBlock key={block.id} {...(block.content as GSAPHorizontalScrollBlockType['content'])} />;
                     default:
                         return null;
                 }

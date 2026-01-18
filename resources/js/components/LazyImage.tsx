@@ -43,6 +43,14 @@ export const LazyImage: React.FC<LazyImageProps> = ({
     // In a real app, this might involve a CDN or secondary source
     const webpSrc = src && !src.startsWith('data:') ? src.replace(/\.(jpg|jpeg|png)$/i, '.webp') : null;
 
+    const placeholderRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (placeholderRef.current && blurDataUrl) {
+            placeholderRef.current.style.backgroundImage = `url(${blurDataUrl})`;
+        }
+    }, [blurDataUrl, isLoaded]);
+
     useEffect(() => {
         // If image is already in cache, it might load before hydration
         if (imgRef.current?.complete) {
@@ -62,10 +70,8 @@ export const LazyImage: React.FC<LazyImageProps> = ({
             {/* Blur Placeholder */}
             {blurDataUrl && !isLoaded && (
                 <div 
+                    ref={placeholderRef}
                     className="absolute inset-0 z-0 scale-110 blur-2xl transition-opacity duration-1000 bg-cover bg-center"
-                    style={{ 
-                        backgroundImage: `url(${blurDataUrl})`,
-                    }}
                 />
             )}
 

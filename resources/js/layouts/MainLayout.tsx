@@ -10,6 +10,8 @@ import React, { useEffect, useState } from 'react';
 import ThemeStyles from '@/components/ThemeStyles';
 import { PageTransition, ScrollProgressIndicator, PageLoadingIndicator } from '@/components/PageTransition';
 import { router } from '@inertiajs/react';
+import { CommandPalette } from '@/components/CommandPalette';
+import { ToastContainer } from '@/components/ToastContainer';
 
 declare const gtag: (command: string, action: string, params?: Record<string, unknown>) => void;
 
@@ -50,7 +52,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
     customBreadcrumbs,
 }) => {
     // Get shared props including AI optimization settings
-    const { breadcrumbs, nonce, ai, site } = usePage<SharedData>().props;
+    const { breadcrumbs, breadcrumbStructuredData, nonce, ai, site } = usePage<SharedData>().props;
     
     // Initialize smooth scrolling with enhanced controls
     const { scrollTo, stop, start } = useSmoothScroll();
@@ -133,9 +135,16 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
                 {ai?.llmsTxtUrl && <link rel="alternate" type="text/markdown" href={ai.llmsTxtUrl} title="LLM Content Guide" />}
                 <meta name="publisher" content={site?.name ?? 'Website'} />
                 <meta name="ai:accessible" content="true" />
+                {breadcrumbStructuredData && (
+                    <script type="application/ld+json">
+                        {JSON.stringify(breadcrumbStructuredData)}
+                    </script>
+                )}
             </Head>
             
             <ThemeStyles />
+            <CommandPalette />
+            <ToastContainer />
             <ScrollProgressIndicator />
             <PageLoadingIndicator isLoading={isNavigating} />
 

@@ -37,6 +37,9 @@ Route::get('/demo/testimonial-v2', function () {
     return Inertia::render('demo-one');
 })->name('demo.testimonial-v2');
 
+// Search route
+Route::get('/api/search', [App\Http\Controllers\SearchController::class, 'index'])->name('api.search');
+
 // Contact form (no caching for POST)
 Route::post('/contact', [App\Http\Controllers\ContactController::class, 'store'])
     ->middleware('throttle:5,1') // 5 requests per minute
