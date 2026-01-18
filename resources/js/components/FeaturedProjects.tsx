@@ -99,7 +99,7 @@ export const FeaturedProjects: React.FC<FeaturedProjectsProps> = ({
                         className="group cursor-pointer"
                     >
                         <Link href={`/portfolio/${project.slug}`} className="block">
-                            <div className="aspect-[4/5] rounded-[40px] overflow-hidden mb-8 relative shadow-2xl">
+                            <div className="aspect-[4/5] rounded-[40px] overflow-hidden mb-8 relative shadow-2xl card-3d-hover">
                                 {project.featured_image ? (
                                     <img 
                                         src={project.featured_image} 

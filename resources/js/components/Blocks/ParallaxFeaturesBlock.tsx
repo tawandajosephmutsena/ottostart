@@ -28,12 +28,13 @@ export const ParallaxFeaturesBlock: React.FC<ParallaxFeaturesBlockProps> = ({
     const sectionRef = useRef<HTMLElement>(null);
 
     useEffect(() => {
-        if (!sectionRef.current || items.length === 0) return;
+        const currentSection = sectionRef.current;
+        if (!currentSection || items.length === 0) return;
 
         const ctx = gsap.context(() => {
             // Parallax effect for images
-            const images = sectionRef.current?.querySelectorAll('.parallax-image');
-            images?.forEach((img) => {
+            const parallaxImages = currentSection.querySelectorAll('.parallax-image');
+            parallaxImages.forEach((img) => {
                 gsap.fromTo(img, 
                     { y: -30 },
                     { 
@@ -50,8 +51,8 @@ export const ParallaxFeaturesBlock: React.FC<ParallaxFeaturesBlockProps> = ({
             });
 
             // Text reveal animation
-            const textBlocks = sectionRef.current?.querySelectorAll('.text-reveal');
-            textBlocks?.forEach((block) => {
+            const textBlocks = currentSection.querySelectorAll('.text-reveal');
+            textBlocks.forEach((block) => {
                 gsap.from(block, {
                     opacity: 0,
                     y: 50,
@@ -64,9 +65,31 @@ export const ParallaxFeaturesBlock: React.FC<ParallaxFeaturesBlockProps> = ({
                     }
                 });
             });
+
+            // Refresh ScrollTrigger when images load to ensure correct positions
+            const imagesToLoad = currentSection.querySelectorAll('img');
+            let loadedCount = 0;
+            const handleImageLoad = () => {
+                loadedCount++;
+                if (loadedCount === imagesToLoad.length) {
+                    ScrollTrigger.refresh();
+                }
+            };
+
+            imagesToLoad.forEach(img => {
+                if (img.complete) {
+                    handleImageLoad();
+                } else {
+                    img.addEventListener('load', handleImageLoad);
+                }
+            });
         }, sectionRef);
 
-        return () => ctx.revert();
+        return () => {
+            ctx.revert();
+            const imagesToLoad = currentSection.querySelectorAll('img');
+            imagesToLoad.forEach(img => img.removeEventListener('load', () => {}));
+        };
     }, [items]);
 
     return (
@@ -106,7 +129,7 @@ export const ParallaxFeaturesBlock: React.FC<ParallaxFeaturesBlockProps> = ({
                                         <img 
                                             src={item.image} 
                                             alt={item.title}
-                                            className="parallax-image absolute inset-0 w-full h-[120%] object-cover"
+                                            className="parallax-image absolute inset-0 !w-full !h-[120%] object-cover"
                                         />
                                     ) : (
                                         <div className="w-full h-full flex items-center justify-center text-muted-foreground/20">

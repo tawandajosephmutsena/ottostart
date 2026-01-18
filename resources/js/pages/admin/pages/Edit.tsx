@@ -19,7 +19,7 @@ interface Props {
 }
 
 // Define the structure of our blocks
-export type BlockType = 'hero' | 'text' | 'image' | 'features' | 'stats' | 'services' | 'portfolio' | 'insights' | 'cta' | 'cinematic_hero' | 'form' | 'video' | 'story' | 'manifesto' | 'process' | 'contact_info' | 'faq' | 'animated_shader_hero' | 'testimonials' | 'logo_cloud' | 'apple_cards_carousel' | 'cover_demo' | 'video_background_hero';
+export type BlockType = 'hero' | 'text' | 'image' | 'features' | 'stats' | 'services' | 'portfolio' | 'insights' | 'cta' | 'cinematic_hero' | 'form' | 'video' | 'story' | 'manifesto' | 'process' | 'contact_info' | 'faq' | 'animated_shader_hero' | 'testimonials' | 'logo_cloud' | 'apple_cards_carousel' | 'cover_demo' | 'video_background_hero' | 'parallax_features' | 'gsap_horizontal_scroll';
 
 export interface Block {
     id: string;
@@ -279,6 +279,25 @@ const getDefaultContentForType = (type: BlockType) => {
             ctaLink2: '#',
             videoUrl: 'https://videos.pexels.com/video-files/30333849/13003128_2560_1440_25fps.mp4',
             logos: []
+        };
+        case 'parallax_features': return {
+            title: 'Crafting Digital Excellence',
+            subtitle: 'Our Expertise',
+            items: [
+                { title: 'Brand Identity', description: 'We create memorable brands that resonate with your audience.', image: 'https://images.unsplash.com/photo-1626785774573-4b799315345d?q=80&w=2671&auto=format&fit=crop' },
+                { title: 'Digital Strategy', description: 'Data-driven approaches to scale your business exponentially.', image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2426&auto=format&fit=crop' },
+                { title: 'Technical Mastery', description: 'Cutting-edge development with a focus on performance and speed.', image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=2670&auto=format&fit=crop' }
+            ]
+        };
+        case 'gsap_horizontal_scroll': return {
+            title: 'Selected Works',
+            subtitle: 'Portfolio',
+            backgroundColor: '#0a0a0a',
+            items: [
+                { title: 'The Obsidian Project', description: 'A minimal design system for a luxury watch brand.', tag: 'Design', image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=2599&auto=format&fit=crop' },
+                { title: 'Lumina Dashboard', description: 'Next-gen analytics for energy management.', tag: 'Development', image: 'https://images.unsplash.com/photo-1551288049-bbbda536339a?q=80&w=2670&auto=format&fit=crop' },
+                { title: 'Aura Skincare', description: 'High-end e-commerce experience with interactive features.', tag: 'E-commerce', image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?q=80&w=2574&auto=format&fit=crop' }
+            ]
         };
         default: return {};
     }

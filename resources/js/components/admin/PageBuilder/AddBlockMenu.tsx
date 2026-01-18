@@ -50,6 +50,7 @@ const CATEGORIES = [
             { type: 'video', label: 'Video', icon: <Video className="h-5 w-5" />, desc: 'Embedded video player' },
             { type: 'stats', label: 'Statistics', icon: <Activity className="h-5 w-5" />, desc: 'Animated counter grid' },
             { type: 'features', label: 'Features', icon: <Layers className="h-5 w-5" />, desc: 'Feature grid with icons' },
+            { type: 'parallax_features', label: 'Parallax Features', icon: <Activity className="h-5 w-5" />, desc: 'High-end scroll animated features' },
         ]
     },
     {
@@ -62,6 +63,7 @@ const CATEGORIES = [
             { type: 'testimonials', label: 'Reviews', icon: <Users className="h-5 w-5" />, desc: 'Client testimonials' },
             { type: 'logo_cloud', label: 'Logos', icon: <Layout className="h-5 w-5" />, desc: 'Client logo strip' },
             { type: 'apple_cards_carousel', label: 'Cards Carousel', icon: <Layers className="h-5 w-5" />, desc: 'Apple-style slider' },
+            { type: 'gsap_horizontal_scroll', label: 'Premium Showcase', icon: <Activity className="h-5 w-5" />, desc: 'Horizontal scroll project showcase' },
         ]
     },
     {

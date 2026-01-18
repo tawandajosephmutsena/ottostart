@@ -39,26 +39,32 @@ export const GSAPHorizontalScrollBlock: React.FC<GSAPHorizontalScrollBlockProps>
     }, [backgroundColor]);
 
     useEffect(() => {
-        if (!pinRef.current || !triggerRef.current || items.length === 0) return;
-
-        const pin = pinRef.current;
         const trigger = triggerRef.current;
+        const pin = pinRef.current;
+        if (!pin || !trigger || items.length === 0) return;
         
-        const totalWidth = pin.scrollWidth;
-        const viewportWidth = window.innerWidth;
-        const xTranslate = -(totalWidth - viewportWidth);
-
         const ctx = gsap.context(() => {
             gsap.to(pin, {
-                x: xTranslate,
+                x: () => -(pin.scrollWidth - window.innerWidth),
                 ease: 'none',
                 scrollTrigger: {
                     trigger: trigger,
                     pin: true,
+                    pinSpacing: true, // Explicitly reserve space
                     scrub: 1,
                     start: 'top top',
-                    end: () => `+=${totalWidth}`,
+                    end: () => `+=${pin.scrollWidth}`,
                     invalidateOnRefresh: true,
+                    anticipatePin: 1,
+                    refreshPriority: 1, // Calculate this before elements below it
+                    onUpdate: (self) => {
+                        // Ensure high z-index when active to prevent overlapping
+                        if (self.isActive) {
+                            trigger.style.zIndex = '50';
+                        } else {
+                            trigger.style.zIndex = 'auto';
+                        }
+                    }
                 }
             });
 
@@ -72,9 +78,35 @@ export const GSAPHorizontalScrollBlock: React.FC<GSAPHorizontalScrollBlockProps>
                     start: 'top 80%',
                 }
             });
+
+            // Refresh ScrollTrigger when images load to ensure correct width calculations
+            const images = pin.querySelectorAll('img');
+            let loadedCount = 0;
+            const handleImageLoad = () => {
+                loadedCount++;
+                if (loadedCount === images.length) {
+                    ScrollTrigger.refresh();
+                }
+            };
+
+            images.forEach(img => {
+                if (img.complete) {
+                    handleImageLoad();
+                } else {
+                    img.addEventListener('load', handleImageLoad, { once: true });
+                }
+            });
+
+            // Final refresh after a short delay to catch any late layout shifts
+            const timer = setTimeout(() => ScrollTrigger.refresh(), 1000);
+            return () => clearTimeout(timer);
         }, triggerRef);
 
-        return () => ctx.revert();
+        return () => {
+            ctx.revert();
+            const images = pin.querySelectorAll('img');
+            images.forEach(img => img.removeEventListener('load', () => {}));
+        };
     }, [items]);
 
     return (

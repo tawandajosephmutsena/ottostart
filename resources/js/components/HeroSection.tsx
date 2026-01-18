@@ -3,7 +3,7 @@ import { useHeroParallax, useTextReveal } from '@/hooks/useAnimations';
 import { cn } from '@/lib/utils';
 import { accessibilityManager } from '@/lib/accessibilityManager';
 import { ArrowRight } from 'lucide-react';
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 
 interface HeroSectionProps {
     title?: string;
@@ -40,6 +40,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     const image1Ref = useRef<HTMLDivElement>(null);
     const image2Ref = useRef<HTMLDivElement>(null);
     const image3Ref = useRef<HTMLDivElement>(null);
+    const marqueeRef = useRef<HTMLDivElement>(null);
 
     // Check for reduced motion preference
     const reducedMotion = accessibilityManager.prefersReducedMotion();
@@ -65,6 +66,26 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         stagger: reducedMotion ? 0 : 0.08,
     });
 
+    // Robust GSAP Marquee for Hero Background
+    useEffect(() => {
+        if (!marqueeRef.current || reducedMotion) return;
+        
+        const el = marqueeRef.current;
+        const width = el.offsetWidth / 2;
+        
+        const tween = gsap.to(el, {
+            x: -width,
+            duration: 40,
+            ease: 'none',
+            repeat: -1,
+            overwrite: 'auto'
+        });
+
+        return () => {
+            tween.kill();
+        };
+    }, [reducedMotion, marqueeText]);
+
     return (
         <section
             ref={containerRef}
@@ -76,11 +97,20 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         >
             {/* Infinite Background Marquee */}
             <div className="absolute inset-0 z-0 flex items-center justify-start opacity-[0.03] dark:opacity-[0.08] pointer-events-none select-none overflow-hidden">
-                <div className="whitespace-nowrap flex animate-marquee flex-none">
+                <div 
+                    ref={marqueeRef}
+                    className="whitespace-nowrap flex flex-none will-change-transform"
+                >
                     <span className="text-[20vw] font-black uppercase leading-none px-4 font-display">
                         {marqueeText}
                     </span>
-                    <span className="text-[18vw] font-black uppercase leading-none px-4 font-display">
+                    <span className="text-[20vw] font-black uppercase leading-none px-4 font-display">
+                        {marqueeText}
+                    </span>
+                    <span className="text-[20vw] font-black uppercase leading-none px-4 font-display">
+                        {marqueeText}
+                    </span>
+                    <span className="text-[20vw] font-black uppercase leading-none px-4 font-display">
                         {marqueeText}
                     </span>
                 </div>
@@ -172,7 +202,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     <Button
                         asChild
                         size="lg"
-                        className="group h-14 px-10 rounded-full bg-agency-accent text-agency-primary font-bold text-lg hover:scale-105 transition-all shadow-xl shadow-agency-accent/20 border-none"
+                        className="group h-14 px-10 rounded-full bg-agency-accent text-agency-primary font-bold text-lg hover:scale-105 transition-all shadow-xl shadow-agency-accent/20 border-none btn-magnetic"
                     >
                         <a href={ctaHref}>
                             {ctaText}
@@ -183,7 +213,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     {secondaryCtaText && (
                         <button 
                             onClick={() => secondaryCtaHref && (window.location.href = secondaryCtaHref)}
-                            className="group relative flex items-center gap-2 h-14 px-8 rounded-full border border-current/20 font-bold hover:bg-current/5 transition-all dark:text-white"
+                            className="group relative flex items-center gap-2 h-14 px-8 rounded-full border border-current/20 font-bold hover:bg-current/5 transition-all dark:text-white btn-magnetic"
                         >
                             <span>{secondaryCtaText}</span>
                             <div className="size-8 rounded-full bg-agency-accent-soft/20 flex items-center justify-center group-hover:scale-110 transition-transform">

@@ -26,6 +26,8 @@ interface TestimonialItem { text: string; name: string; role: string; image?: st
 interface LogoItem { name: string; url: string; }
 interface AppleCardItem { category: string; title: string; src: string; content: string; link: string; }
 interface CinematicSlide { title: string; subtitle?: string; tagline?: string; image?: string; }
+interface ParallaxItem { title: string; description: string; image: string; }
+interface HorizontalScrollItem { title: string; description: string; tag: string; image: string; }
 
 interface Column {
     id: string;
@@ -1119,6 +1121,109 @@ export default function BlockEditor({ block, onUpdate }: BlockEditorProps) {
                                     </button>
                                     <Input className="h-8 text-xs font-semibold" value={item.title} onChange={(e) => { const n = [...items]; n[i] = { ...item, title: e.target.value }; updateContent({ items: n }); }} placeholder="Feature Title" />
                                     <Textarea className="h-16 text-xs" value={item.desc} onChange={(e) => { const n = [...items]; n[i] = { ...item, desc: e.target.value }; updateContent({ items: n }); }} placeholder="Description..." />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        case 'parallax_features': {
+            const items = (block.content.items as ParallaxItem[]) || [];
+            return (
+                <div className="space-y-6">
+                    <div className="space-y-2">
+                        <Label>Subtitle</Label>
+                        <Input value={String(block.content.subtitle || '')} onChange={(e) => updateContent({ subtitle: e.target.value })} />
+                    </div>
+                    <div className="space-y-2">
+                        <Label>Title</Label>
+                        <Input value={String(block.content.title || '')} onChange={(e) => updateContent({ title: e.target.value })} />
+                    </div>
+                    <div className="space-y-4 pt-4 border-t">
+                        <div className="flex items-center justify-between">
+                            <Label className="text-xs font-bold uppercase tracking-wider">Feature Items</Label>
+                            <Button variant="outline" size="sm" onClick={() => updateContent({ items: [...items, { title: 'New Feature', description: '', image: '' }] })}>
+                                <Plus className="h-3 w-3 mr-1" /> Add
+                            </Button>
+                        </div>
+                        <div className="space-y-4">
+                            {items.map((item, i) => (
+                                <div key={i} className="group relative p-4 border rounded-xl bg-muted/10 space-y-3">
+                                    <button type="button" title="Remove" className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-destructive text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => updateContent({ items: items.filter((_, idx) => idx !== i) })}>
+                                        <Trash className="h-3 w-3" />
+                                    </button>
+                                    <Input className="h-8 text-xs font-bold" value={item.title} onChange={(e) => { const n = [...items]; n[i] = { ...item, title: e.target.value }; updateContent({ items: n }); }} placeholder="Title" />
+                                    <Textarea className="h-16 text-xs" value={item.description} onChange={(e) => { const n = [...items]; n[i] = { ...item, description: e.target.value }; updateContent({ items: n }); }} placeholder="Description..." />
+                                    <div className="space-y-2">
+                                        <Label className="text-[10px]">Parallax Image</Label>
+                                        <div className="flex gap-2">
+                                            <MediaLibrary 
+                                                onSelect={(asset: MediaAsset) => { const n = [...items]; n[i] = { ...item, image: asset.url }; updateContent({ items: n }); }}
+                                                trigger={<Button type="button" variant="outline" size="sm" className="h-8 text-xs"><ImageIcon className="h-3 w-3 mr-1" /> Choose</Button>}
+                                            />
+                                            <Input className="h-8 text-xs flex-1" value={item.image} onChange={(e) => { const n = [...items]; n[i] = { ...item, image: e.target.value }; updateContent({ items: n }); }} placeholder="Image URL..." />
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        case 'gsap_horizontal_scroll': {
+            const items = (block.content.items as HorizontalScrollItem[]) || [];
+            return (
+                <div className="space-y-6">
+                    <div className="space-y-2">
+                        <Label>Subtitle</Label>
+                        <Input value={String(block.content.subtitle || '')} onChange={(e) => updateContent({ subtitle: e.target.value })} />
+                    </div>
+                    <div className="space-y-2">
+                        <Label>Title</Label>
+                        <Input value={String(block.content.title || '')} onChange={(e) => updateContent({ title: e.target.value })} />
+                    </div>
+                    <div className="space-y-2">
+                        <Label>Background Color</Label>
+                        <div className="flex gap-2">
+                            <Input className="h-9 font-mono" value={String(block.content.backgroundColor || '#0a0a0a')} onChange={(e) => updateContent({ backgroundColor: e.target.value })} placeholder="#000000" />
+                            <div 
+                                className="h-9 w-9 rounded border shadow-sm" 
+                                style={{ backgroundColor: String(block.content.backgroundColor || '#0a0a0a') }}
+                            />
+                        </div>
+                    </div>
+                    <div className="space-y-4 pt-4 border-t">
+                        <div className="flex items-center justify-between">
+                            <Label className="text-xs font-bold uppercase tracking-wider">Showcase Items</Label>
+                            <Button variant="outline" size="sm" onClick={() => updateContent({ items: [...items, { title: 'New Item', description: '', tag: 'Project', image: '' }] })}>
+                                <Plus className="h-3 w-3 mr-1" /> Add
+                            </Button>
+                        </div>
+                        <div className="space-y-4">
+                            {items.map((item, i) => (
+                                <div key={i} className="group relative p-4 border rounded-xl bg-muted/10 space-y-3">
+                                    <button type="button" title="Remove" className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-destructive text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => updateContent({ items: items.filter((_, idx) => idx !== i) })}>
+                                        <Trash className="h-3 w-3" />
+                                    </button>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        <Input className="h-8 text-xs font-bold" value={item.title} onChange={(e) => { const n = [...items]; n[i] = { ...item, title: e.target.value }; updateContent({ items: n }); }} placeholder="Title" />
+                                        <Input className="h-8 text-xs" value={item.tag} onChange={(e) => { const n = [...items]; n[i] = { ...item, tag: e.target.value }; updateContent({ items: n }); }} placeholder="Tag (e.g. Design)" />
+                                    </div>
+                                    <Textarea className="h-16 text-xs" value={item.description} onChange={(e) => { const n = [...items]; n[i] = { ...item, description: e.target.value }; updateContent({ items: n }); }} placeholder="Description..." />
+                                    <div className="space-y-2">
+                                        <Label className="text-[10px]">Showcase Image</Label>
+                                        <div className="flex gap-2">
+                                            <MediaLibrary 
+                                                onSelect={(asset: MediaAsset) => { const n = [...items]; n[i] = { ...item, image: asset.url }; updateContent({ items: n }); }}
+                                                trigger={<Button type="button" variant="outline" size="sm" className="h-8 text-xs"><ImageIcon className="h-3 w-3 mr-1" /> Choose</Button>}
+                                            />
+                                            <Input className="h-8 text-xs flex-1" value={item.image} onChange={(e) => { const n = [...items]; n[i] = { ...item, image: e.target.value }; updateContent({ items: n }); }} placeholder="Image URL..." />
+                                        </div>
+                                    </div>
                                 </div>
                             ))}
                         </div>

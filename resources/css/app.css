@@ -104,26 +104,24 @@
     --tracking-widest: calc(var(--tracking-normal) + 0.1em);
 
     /* Animations */
-    --animate-marquee: marquee 30s linear infinite;
     --animate-bloom: bloom 1s ease-out both;
     --animate-float: float 6s ease-in-out infinite;
     --animate-smoke: smoke-reveal 1s ease-out both;
     --animate-shimmer: shimmer 2s infinite;
 }
 
-@keyframes shimmer {
-    100% {
-        transform: translateX(100%);
-    }
+/* Fail-safe Marquee Class */
+.animate-marquee-slow {
+    animation: marquee 60s linear infinite;
+    display: flex;
+    width: max-content;
+    will-change: transform;
 }
 
+/* Standard Keyframes - Root level for maximum compatibility */
 @keyframes marquee {
-    0% {
-        transform: translate3d(0%, 0, 0);
-    }
-    100% {
-        transform: translate3d(-50%, 0, 0);
-    }
+    0% { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(-50%, 0, 0); }
 }
 
 @keyframes bloom {
@@ -137,6 +135,15 @@
         filter: blur(0);
         transform: translate3d(0, 0, 0);
     }
+}
+
+@keyframes float {
+    0%, 100% { transform: translate3d(0, 0, 0) rotate(-6deg); }
+    50% { transform: translate3d(0, -20px, 0) rotate(-3deg); }
+}
+
+@keyframes shimmer {
+    100% { transform: translate3d(100%, 0, 0); }
 }
 
 @keyframes smoke-reveal {
@@ -153,25 +160,6 @@
         opacity: 1;
         filter: blur(0);
         transform: translate3d(0, 0, 0) scale(1) skewX(0);
-    }
-}
-
-@keyframes float {
-    0%,
-    100% {
-        transform: translate3d(0, 0, 0) rotate(-6deg);
-    }
-    50% {
-        transform: translate3d(0, -20px, 0) rotate(-3deg);
-    }
-}
-
-@keyframes skeleton-loading {
-    0% {
-        background-position: 200% 0;
-    }
-    100% {
-        background-position: -200% 0;
     }
 }
 
@@ -336,17 +324,21 @@
     }
 
     body {
-        @apply bg-background font-sans text-foreground;
+        @apply bg-background font-sans text-foreground overflow-x-hidden;
         font-feature-settings:
             'rlig' 1,
             'calt' 1;
         font-display: swap;
         letter-spacing: var(--tracking-normal);
         transition: background-color 0.5s ease, color 0.5s ease;
+        width: 100%;
+        position: relative;
     }
 
     html {
         scroll-behavior: auto;
+        overflow-x: hidden;
+        width: 100%;
     }
 
     * {
