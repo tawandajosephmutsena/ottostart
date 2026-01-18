@@ -3,13 +3,32 @@ import MainLayout from '@/layouts/MainLayout';
 import { PortfolioItem } from '@/types';
 import { Head, Link } from '@inertiajs/react';
 import React from 'react';
-import { ArrowLeft, ExternalLink, Calendar, User, Zap } from 'lucide-react';
+import { ArrowLeft, Zap, ArrowUpRight } from 'lucide-react';
+import { Carousel, Card } from '@/components/ui/apple-cards-carousel';
 
 interface Props {
     portfolioItem: PortfolioItem;
 }
 
 export default function PortfolioShow({ portfolioItem }: Props) {
+    const galleryCards = portfolioItem.gallery?.map((img, index) => (
+        <Card
+            key={index}
+            card={{
+                src: img,
+                title: `Gallery Image ${index + 1}`,
+                category: portfolioItem.title,
+                content: (
+                    <div className="flex justify-center items-center h-full">
+                         <img src={img} alt={`Gallery view ${index + 1}`} className="max-h-[80vh] w-auto object-contain rounded-xl" />
+                    </div>
+                ),
+            }}
+            index={index}
+            layout={true}
+        />
+    )) || [];
+
     return (
         <MainLayout title={`${portfolioItem.title} - Avant-Garde Portfolio`}>
             <Head title={portfolioItem.title}>
@@ -34,84 +53,71 @@ export default function PortfolioShow({ portfolioItem }: Props) {
                 </script>
             </Head>
 
-            {/* Back Button */}
-            <div className="fixed top-32 left-8 z-50 hidden xl:block">
-                <Link 
-                    href="/portfolio" 
-                    className="group flex flex-col items-center gap-4 text-agency-primary/40 dark:text-white/40 hover:text-agency-accent transition-colors"
-                >
-                    <div className="size-12 rounded-full border border-current flex items-center justify-center group-hover:bg-agency-accent group-hover:border-transparent group-hover:text-agency-primary transition-all">
-                        <ArrowLeft className="h-5 w-5" />
-                    </div>
-                    <span className="text-[10px] font-bold uppercase tracking-[0.2em] [writing-mode:vertical-rl] rotate-180">Back to Works</span>
-                </Link>
-            </div>
+            {/* Immersive Hero Section - Service Style */}
+            <section className="relative pt-32 pb-20 overflow-hidden bg-background">
+                {/* Animated Grid Pattern */}
+                <div className="absolute inset-0 opacity-[0.15]"
+                    style={{
+                        backgroundImage: `linear-gradient(currentColor 1px, transparent 1px), linear-gradient(90deg, currentColor 1px, transparent 1px)`,
+                        backgroundSize: '40px 40px',
+                        maskImage: 'radial-gradient(circle at center, black 60%, transparent 100%)',
+                        color: 'var(--foreground)'
+                    }}
+                />
+                
+                {/* Floating Elements for depth */}
+                <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-[100px] animate-pulse mix-blend-multiply dark:mix-blend-screen" />
+                <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-accent/20 rounded-full blur-[80px] animate-pulse delay-1000 mix-blend-multiply dark:mix-blend-screen" />
 
-            {/* Project Hero */}
-            <section className="relative min-h-[90vh] flex flex-col justify-end pt-40 pb-20 bg-agency-primary overflow-hidden">
-                {/* Immersive Background Image */}
-                <div className="absolute inset-0 z-0">
-                    {portfolioItem.featured_image ? (
-                        <>
-                            <img 
-                                src={portfolioItem.featured_image} 
-                                alt={portfolioItem.title} 
-                                className="w-full h-full object-cover opacity-40 scale-105"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-agency-primary via-agency-primary/60 to-transparent"></div>
-                        </>
-                    ) : (
-                        <div className="w-full h-full bg-agency-accent/5"></div>
-                    )}
-                </div>
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-20 w-full text-center">
+                    <Link href="/portfolio" className="inline-flex items-center gap-2 text-muted-foreground font-bold uppercase tracking-widest text-xs mb-8 hover:text-primary hover:gap-4 transition-all">
+                        <ArrowLeft className="h-4 w-4" /> Back to Works
+                    </Link>
 
-                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10 w-full">
                     <AnimatedSection animation="slide-up">
-                        <div className="flex flex-wrap gap-4 mb-8">
-                            {portfolioItem.technologies?.map(tech => (
-                                <span key={tech} className="px-4 py-1.5 rounded-full border border-agency-accent/30 bg-agency-accent/10 backdrop-blur-md text-[10px] font-bold uppercase tracking-widest text-agency-accent">
+                        {/* Tags */}
+                        <div className="flex flex-wrap justify-center gap-3 mb-8">
+                            {portfolioItem.technologies?.map((tech, i) => (
+                                <span key={tech} className={`px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest border transition-colors ${i === 0 ? 'bg-agency-accent text-agency-primary border-agency-accent' : 'border-agency-primary/20 dark:border-white/20 text-agency-primary/60 dark:text-white/60'}`}>
                                     {tech}
                                 </span>
                             ))}
                         </div>
-                        <h1 className="text-6xl md:text-[10vw] font-black uppercase tracking-tighter leading-[0.85] text-white mb-12">
-                            {portfolioItem.title.split(' ')[0]} <br/>
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-agency-accent to-agency-accent/50 italic">
-                                {portfolioItem.title.split(' ').slice(1).join(' ')}
-                            </span>
+
+                        {/* Title - Reduced Size */}
+                        <h1 className="text-6xl md:text-8xl font-black uppercase tracking-tighter leading-[0.9] text-agency-primary dark:text-white mb-8">
+                             {portfolioItem.title}
                         </h1>
                         
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 border-t border-white/10 pt-12">
+                        {/* Project Meta Grid - Centered & Compact */}
+                        <div className="flex flex-wrap justify-center gap-x-12 gap-y-6 pt-4 text-left md:text-center">
                             <div className="space-y-1">
-                                <span className="text-[10px] font-bold uppercase tracking-widest text-white/40">Client</span>
-                                <p className="text-lg text-white flex items-center gap-2">
-                                    <User className="h-4 w-4 text-agency-accent" />
+                                <span className="text-[10px] font-bold uppercase tracking-widest text-agency-primary/40 dark:text-white/40 block">Client</span>
+                                <p className="text-lg font-medium text-agency-primary dark:text-white">
                                     {portfolioItem.client || 'Internal Project'}
                                 </p>
                             </div>
                             <div className="space-y-1">
-                                <span className="text-[10px] font-bold uppercase tracking-widest text-white/40">Date</span>
-                                <p className="text-lg text-white flex items-center gap-2">
-                                    <Calendar className="h-4 w-4 text-agency-accent" />
-                                    {portfolioItem.project_date ? new Date(portfolioItem.project_date).toLocaleDateString() : 'Active Development'}
+                                <span className="text-[10px] font-bold uppercase tracking-widest text-agency-primary/40 dark:text-white/40 block">Timeline</span>
+                                <p className="text-lg font-medium text-agency-primary dark:text-white">
+                                    {portfolioItem.project_date ? new Date(portfolioItem.project_date).getFullYear() : '2025'}
                                 </p>
                             </div>
                             <div className="space-y-1">
-                                <span className="text-[10px] font-bold uppercase tracking-widest text-white/40">Impact</span>
-                                <p className="text-lg text-white flex items-center gap-2">
-                                    <Zap className="h-4 w-4 text-agency-accent" />
+                                <span className="text-[10px] font-bold uppercase tracking-widest text-agency-primary/40 dark:text-white/40 block">Impact</span>
+                                <p className="text-lg font-medium text-agency-primary dark:text-white flex items-center gap-2 justify-center">
                                     High Conversion
                                 </p>
                             </div>
-                            <div className="flex items-end">
+                             <div className="flex items-end">
                                 {portfolioItem.project_url && (
                                     <a 
                                         href={portfolioItem.project_url} 
                                         target="_blank" 
                                         rel="noopener noreferrer"
-                                        className="inline-flex items-center gap-3 text-agency-accent font-bold uppercase tracking-widest text-sm hover:underline"
+                                        className="group inline-flex items-center gap-2 text-agency-accent font-black uppercase tracking-widest text-sm hover:underline"
                                     >
-                                        Visit Live Site <ExternalLink className="h-4 w-4" />
+                                        Visit Site <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
                                     </a>
                                 )}
                             </div>
@@ -120,100 +126,132 @@ export default function PortfolioShow({ portfolioItem }: Props) {
                 </div>
             </section>
 
-            {/* Case Study Content */}
-            <section className="bg-white dark:bg-agency-dark py-32 border-b border-agency-primary/5">
+             {/* Featured Image - Overlapping */}
+             {portfolioItem.featured_image && (
+                <section className="bg-transparent relative z-30 mb-[-100px] pointer-events-none">
+                    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                        <AnimatedSection animation="scale" className="aspect-[21/9] rounded-[40px] overflow-hidden shadow-2xl border-8 border-white dark:border-[#1a1a1a]">
+                            <img 
+                                src={portfolioItem.featured_image} 
+                                alt={portfolioItem.title} 
+                                className="w-full h-full object-cover grayscale-[0.2]"
+                            />
+                        </AnimatedSection>
+                    </div>
+                </section>
+            )}
+
+            {/* Content Section - Compact Spacing */}
+            <section className="bg-white dark:bg-[#0a0a0a] pt-40 pb-20 relative z-20">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-20">
-                        {/* Sidebar */}
-                        <aside className="lg:col-span-4 space-y-12">
-                            <div className="sticky top-40">
-                                <div className="p-8 rounded-[30px] bg-agency-secondary dark:bg-white/5 border border-agency-primary/5 dark:border-white/5">
-                                    <h3 className="text-2xl font-black uppercase tracking-tighter mb-6">Brief</h3>
-                                    <p className="text-agency-primary/70 dark:text-white/70 leading-relaxed italic">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
+                        {/* Sticky Brief Sidebar */}
+                        <aside className="lg:col-span-4">
+                            <div className="sticky top-32 space-y-8">
+                                <div className="p-8 rounded-[30px] bg-agency-secondary dark:bg-white/5 border border-agency-primary/5 dark:border-white/5 relative overflow-hidden group">
+                                    <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
+                                        <Zap className="w-20 h-20 text-agency-accent rotate-12" />
+                                    </div>
+                                    <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-agency-primary/40 dark:text-white/40 mb-4 block">The Brief</span>
+                                    <p className="text-lg font-medium text-agency-primary/90 dark:text-white/90 leading-relaxed">
                                         "{portfolioItem.description}"
                                     </p>
                                 </div>
                             </div>
                         </aside>
 
-                        {/* Main Content */}
-                        <main className="lg:col-span-8 space-y-24">
-                            {/* Overview */}
+                        {/* Main Narrative - Compact */}
+                        <main className="lg:col-span-8 space-y-20">
+                            {/* Vision */}
                             {portfolioItem.content?.overview && (
-                                <div className="space-y-6">
-                                    <span className="text-agency-accent font-bold uppercase tracking-[0.4em] text-xs">Overview</span>
-                                    <h2 className="text-4xl md:text-6xl font-black uppercase tracking-tighter">The Vision.</h2>
-                                    <div className="prose prose-xl dark:prose-invert max-w-none text-agency-primary/70 dark:text-white/70 leading-relaxed">
+                                <AnimatedSection className="space-y-6">
+                                    <span className="text-agency-accent font-bold uppercase tracking-[0.4em] text-xs pl-1">Overview</span>
+                                    <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tighter text-agency-primary dark:text-white">
+                                        The Vision.
+                                    </h2>
+                                    <div className="prose prose-xl prose-agency dark:prose-invert max-w-none text-agency-primary/60 dark:text-white/60 font-light leading-relaxed">
                                         {portfolioItem.content.overview}
                                     </div>
-                                </div>
+                                </AnimatedSection>
                             )}
 
-                            {/* Challenge & Solution Grid */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                            {/* Challenge / Solution Grid */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 {portfolioItem.content?.challenge && (
-                                    <div className="p-10 rounded-[40px] bg-red-500/5 border border-red-500/10">
-                                        <span className="text-red-500 font-bold uppercase tracking-[0.4em] text-[10px] mb-4 block">The Challenge</span>
-                                        <p className="text-agency-primary/80 dark:text-white/80 leading-relaxed font-medium">
+                                    <AnimatedSection delay={100} className="p-8 rounded-[30px] bg-agency-secondary dark:bg-white/5 border border-agency-primary/5 dark:border-white/5 group">
+                                        <span className="text-red-500 font-bold uppercase tracking-[0.3em] text-[10px] mb-4 block">The Challenge</span>
+                                        <p className="text-base text-agency-primary/70 dark:text-white/70 leading-relaxed">
                                             {portfolioItem.content.challenge}
                                         </p>
-                                    </div>
+                                    </AnimatedSection>
                                 )}
                                 {portfolioItem.content?.solution && (
-                                    <div className="p-10 rounded-[40px] bg-agency-accent/5 border border-agency-accent/10">
-                                        <span className="text-agency-accent font-bold uppercase tracking-[0.4em] text-[10px] mb-4 block">Our Solution</span>
-                                        <p className="text-agency-primary/80 dark:text-white/80 leading-relaxed font-medium">
+                                    <AnimatedSection delay={200} className="p-8 rounded-[30px] bg-agency-secondary dark:bg-white/5 border border-agency-primary/5 dark:border-white/5 group">
+                                        <span className="text-agency-accent font-bold uppercase tracking-[0.3em] text-[10px] mb-4 block">Our Solution</span>
+                                        <p className="text-base text-agency-primary/70 dark:text-white/70 leading-relaxed">
                                             {portfolioItem.content.solution}
                                         </p>
-                                    </div>
+                                    </AnimatedSection>
                                 )}
                             </div>
 
-                            {/* Gallery Showcase */}
+                            {/* Gallery Carousel */}
                             {portfolioItem.gallery && portfolioItem.gallery.length > 0 && (
-                                <div className="space-y-12">
-                                    <span className="text-agency-accent font-bold uppercase tracking-[0.4em] text-xs">Gallery Showcase</span>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                        {portfolioItem.gallery.map((img, i) => (
-                                            <div key={i} className={`rounded-[40px] overflow-hidden bg-agency-secondary dark:bg-white/5 ${i % 3 === 0 ? 'md:col-span-2' : ''}`}>
-                                                <img 
-                                                    src={img} 
-                                                    alt={`${portfolioItem.title} screenshot ${i + 1}`} 
-                                                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-1000"
-                                                />
-                                            </div>
-                                        ))}
-                                    </div>
+                                <div className="space-y-8">
+                                     <span className="text-agency-accent font-bold uppercase tracking-[0.4em] text-xs pl-1">Gallery Showcase</span>
+                                     <div className="-mx-4 md:-mx-0">
+                                        <Carousel items={galleryCards} />
+                                     </div>
                                 </div>
                             )}
 
-                            {/* Results */}
+                            {/* Results Card - Fixed Dark Mode */}
                             {portfolioItem.content?.results && (
-                                <div className="p-12 md:p-20 rounded-[60px] bg-agency-primary text-white text-center relative overflow-hidden">
-                                     <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-agency-accent/20 to-transparent opacity-50"></div>
-                                     <span className="relative z-10 text-agency-accent font-bold uppercase tracking-[0.4em] text-xs mb-8 block">Project Outcomes</span>
-                                     <h2 className="relative z-10 text-4xl md:text-7xl font-black uppercase tracking-tighter mb-10 leading-none">Measured <br/> <span className="italic opacity-40">Success.</span></h2>
-                                     <div className="relative z-10 text-xl md:text-2xl text-white/70 font-light leading-relaxed max-w-2xl mx-auto">
-                                        {portfolioItem.content.results}
+                                <AnimatedSection className="relative p-10 md:p-12 rounded-[30px] bg-neutral-900 border border-white/10 text-white overflow-hidden">
+                                     <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-gradient-to-br from-agency-accent/20 to-transparent opacity-50 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+                                     
+                                     <div className="relative z-10 flex flex-col md:flex-row gap-8 items-start md:items-center justify-between">
+                                        <div className="max-w-md">
+                                            <span className="text-agency-accent font-bold uppercase tracking-[0.4em] text-xs mb-4 block">Project Outcomes</span>
+                                            <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tighter mb-4 leading-[0.9] text-white">
+                                                Measured <br/>
+                                                <span className="opacity-40 italic">Success.</span>
+                                            </h2>
+                                            <div className="text-lg font-medium opacity-80 leading-relaxed text-white/80">
+                                                {portfolioItem.content.results}
+                                            </div>
+                                        </div>
+                                        
+                                        {/* Dynamic Stats Visualization (Static Mock for layout) */}
+                                        <div className="flex flex-col gap-6">
+                                            <div className="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/10 min-w-[200px]">
+                                                <div className="text-4xl font-black text-agency-accent mb-1">+85%</div>
+                                                <div className="text-[10px] font-bold uppercase tracking-widest text-white/40">Mobile Traffic</div>
+                                            </div>
+                                            <div className="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/10 min-w-[200px]">
+                                                <div className="text-4xl font-black text-white mb-1">-25%</div>
+                                                <div className="text-[10px] font-bold uppercase tracking-widest text-white/40">Bounce Rate</div>
+                                            </div>
+                                        </div>
                                      </div>
-                                </div>
+                                </AnimatedSection>
                             )}
                         </main>
                     </div>
                 </div>
             </section>
 
-            {/* Next Project / Footer CTA */}
-            <section className="bg-agency-secondary dark:bg-[#0a0a0a] py-40 text-center">
-                <div className="mx-auto max-w-4xl px-4">
-                    <span className="text-agency-accent font-bold uppercase tracking-[0.4em] text-xs mb-8 block">Ready for your project?</span>
-                    <h2 className="text-5xl md:text-8xl font-black uppercase tracking-tighter mb-12">
+            {/* Footer CTA - Compact */}
+            <section className="bg-agency-secondary dark:bg-[#050505] py-24 border-t border-agency-primary/5 dark:border-white/5">
+                <div className="mx-auto max-w-4xl px-4 text-center">
+                    <span className="text-agency-accent font-bold uppercase tracking-[0.4em] text-xs mb-6 block">Ready for your project?</span>
+                    <h2 className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-agency-primary dark:text-white mb-8">
                         Let's Create <br/>
                         <span className="italic opacity-30">The Future.</span>
                     </h2>
                     <Link
                         href="/contact"
-                        className="inline-flex h-20 px-12 items-center justify-center rounded-full bg-agency-accent text-agency-primary text-xl font-black uppercase tracking-tighter hover:scale-105 transition-all shadow-2xl"
+                        className="inline-flex h-16 px-10 items-center justify-center rounded-full bg-agency-accent text-agency-primary text-lg font-black uppercase tracking-tighter hover:scale-105 transition-all shadow-lg"
                     >
                         START A CONVERSATION
                     </Link>
