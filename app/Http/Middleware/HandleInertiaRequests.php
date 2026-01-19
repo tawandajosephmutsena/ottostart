@@ -72,8 +72,18 @@ class HandleInertiaRequests extends Middleware
             'name' => config('app.name'),
 
             'auth' => [
-                'user' => $request->user(),
+                'user' => $request->user() ? (function ($user) {
+                    // Eager load roles and permissions if not already loaded to optimize
+                    $user->loadMissing('roles.permissions');
+                    
+                    return array_merge($user->toArray(), [
+                        'roles' => $user->roles->map(fn($r) => ['slug' => $r->slug, 'name' => $r->name]),
+                        'permissions' => $user->permissions()->map(fn($p) => ['slug' => $p->slug]),
+                        'is_super_admin' => $user->hasRole('super-admin'),
+                    ]);
+                })($request->user()) : null,
             ],
+
             'csrf_token' => $request->session()->token(),
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
             'site' => [

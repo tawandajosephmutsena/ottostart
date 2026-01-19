@@ -5,6 +5,8 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
@@ -60,11 +62,30 @@ class User extends Authenticatable
     }
 
     /**
+     * The roles that belong to the user.
+     */
+    public function roles(): BelongsToMany
+    {
+        return $this->belongsToMany(Role::class);
+    }
+
+    /**
+     * The permissions that belong to the user through roles.
+     */
+    public function permissions()
+    {
+        return $this->roles->flatMap(function ($role) {
+            return $role->permissions;
+        })->unique('slug');
+    }
+
+
+    /**
      * Check if user has admin role
      */
     public function isAdmin(): bool
     {
-        return $this->role === 'admin';
+        return $this->role === 'admin' || $this->hasRole('admin') || $this->hasRole('super-admin');
     }
 
     /**
@@ -72,7 +93,8 @@ class User extends Authenticatable
      */
     public function isEditor(): bool
     {
-        return in_array($this->role, ['admin', 'editor']);
+        if ($this->isAdmin()) return true;
+        return in_array($this->role, ['admin', 'editor']) || $this->hasRole('editor');
     }
 
     /**
@@ -80,15 +102,17 @@ class User extends Authenticatable
      */
     public function isViewer(): bool
     {
-        return in_array($this->role, ['admin', 'editor', 'viewer']);
+        if ($this->isEditor()) return true;
+        return in_array($this->role, ['admin', 'editor', 'viewer']) || $this->hasRole('viewer');
     }
+
 
     /**
      * Check if user has specific role
      */
     public function hasRole(string $role): bool
     {
-        return $this->role === $role;
+        return $this->role === $role || $this->roles->contains('slug', $role);
     }
 
     /**
@@ -96,6 +120,21 @@ class User extends Authenticatable
      */
     public function hasAnyRole(array $roles): bool
     {
-        return in_array($this->role, $roles);
+        return in_array($this->role, $roles) || $this->roles->whereIn('slug', $roles)->isNotEmpty();
     }
+
+    /**
+     * Check if user has a specific permission
+     */
+    public function hasPermission(string $permission): bool
+    {
+        if ($this->hasRole('super-admin')) {
+            return true;
+        }
+
+        return $this->roles->some(function ($role) use ($permission) {
+            return $role->hasPermission($permission);
+        });
+    }
+
 }

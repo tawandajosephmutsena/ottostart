@@ -7,7 +7,9 @@ use App\Models\Page;
 use App\Models\PortfolioItem;
 use App\Models\Service;
 use App\Observers\SitemapObserver;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -24,7 +26,22 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Define global RBAC Gate logic
+        Gate::before(function ($user, $ability) {
+            // Super-admins get all permissions bypass
+            if (method_exists($user, 'hasRole') && $user->hasRole('super-admin')) {
+                return true;
+            }
+        });
+
+        Gate::after(function ($user, $ability, $result, $arguments) {
+            if ($result === null && method_exists($user, 'hasPermission')) {
+                return $user->hasPermission($ability);
+            }
+        });
+
         // Register sitemap observer for content models
+
         Insight::observe(SitemapObserver::class);
         Page::observe(SitemapObserver::class);
         PortfolioItem::observe(SitemapObserver::class);

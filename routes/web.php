@@ -1,7 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+
 use Laravel\Fortify\Features;
 use App\Http\Controllers\HomeController;
 
@@ -132,7 +134,7 @@ Route::get('/preview/{token}', [App\Http\Controllers\Admin\PreviewLinkController
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
         /** @var \App\Models\User $user */
-        $user = auth()->user();
+        $user = Auth::user();
 
         if ($user->isAdmin()) {
             return redirect()->route('admin.dashboard');
@@ -149,7 +151,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 // CMS routes - require editor role or higher (no caching)
 Route::middleware(['auth', 'verified', 'cache.headers:no-cache'])->prefix('cms')->name('cms.')->group(function () {
     Route::get('/', function () {
-        $user = auth()->user();
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
 
         if (!$user->isEditor()) {
             abort(403, 'Unauthorized. Editor access required.');
@@ -157,6 +160,8 @@ Route::middleware(['auth', 'verified', 'cache.headers:no-cache'])->prefix('cms')
 
         return Inertia::render('cms/Dashboard');
     })->name('dashboard');
+
+
 });
 
 // Admin routes - require admin role (no caching)
@@ -165,9 +170,11 @@ Route::middleware(['auth', 'verified', 'admin', 'cache.headers:no-cache'])->pref
     Route::get('/analytics', [App\Http\Controllers\Admin\AnalyticsController::class, 'index'])->name('analytics');
     Route::get('/quick-actions', [App\Http\Controllers\Admin\AdminController::class, 'quickActions'])->name('quick-actions');
 
-    Route::get('/users', function () {
-        return Inertia::render('admin/users');
-    })->name('users');
+    // User Management
+    Route::resource('users', App\Http\Controllers\Admin\UserController::class);
+    Route::resource('roles', App\Http\Controllers\Admin\RoleController::class);
+
+
 
     // Settings
     Route::get('/settings', [App\Http\Controllers\Admin\SettingsController::class, 'index'])->name('settings');

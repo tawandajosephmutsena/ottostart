@@ -26,7 +26,10 @@ import {
     BookOpen,
     List,
     TrendingUp,
+    Shield,
 } from 'lucide-react';
+import { usePermissions } from '@/hooks/use-permissions';
+
 import AppLogo from '@/components/app-logo';
 
 const mainNavItems = [
@@ -82,16 +85,31 @@ const contentNavItems = [
 
 const systemNavItems = [
     {
+        title: 'Users',
+        href: '/admin/users',
+        icon: Users,
+        permission: 'users.view',
+    },
+    {
+        title: 'Roles',
+        href: '/admin/roles',
+        icon: Shield,
+        permission: 'roles.manage',
+    },
+    {
         title: 'Media Library',
         href: '/admin/media',
         icon: Image,
+        permission: 'media.manage',
     },
     {
         title: 'Settings',
         href: '/admin/settings',
         icon: Settings,
+        permission: 'settings.manage',
     },
 ];
+
 
 const quickNavItems = [
     {
@@ -108,6 +126,8 @@ const quickNavItems = [
 
 export function AdminSidebar() {
     const { url } = usePage();
+    const { can } = usePermissions();
+
 
     const isActive = (href: string) => {
         if (href === '/admin') {
@@ -181,7 +201,8 @@ export function AdminSidebar() {
                     <SidebarGroupLabel>System</SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>
-                            {systemNavItems.map((item) => (
+                        <SidebarMenu>
+                            {systemNavItems.filter(item => !item.permission || can(item.permission)).map((item) => (
                                 <SidebarMenuItem key={item.title}>
                                     <SidebarMenuButton
                                         asChild
@@ -195,6 +216,8 @@ export function AdminSidebar() {
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>
                             ))}
+                        </SidebarMenu>
+
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>
