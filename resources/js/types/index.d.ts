@@ -47,6 +47,13 @@ export interface SharedData {
             phone?: string;
             email?: string;
         };
+        footer?: {
+            heading_line1?: string;
+            heading_line2?: string;
+            heading_line3?: string;
+            resources_title?: string;
+            resources_links?: string | Array<{ name: string; href: string }>;
+        };
     };
     breadcrumbs?: Array<{
         title: string;

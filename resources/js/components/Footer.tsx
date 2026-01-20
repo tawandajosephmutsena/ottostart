@@ -49,6 +49,27 @@ export const Footer: React.FC<FooterProps> = ({ className }) => {
         { name: 'Instagram', href: site.social?.instagram, icon: Instagram },
     ].filter(link => link.href);
 
+    // Get footer content from settings with fallbacks
+    const footerHeadingLine1 = site.footer?.heading_line1 || "Let's create";
+    const footerHeadingLine2 = site.footer?.heading_line2 || 'digital legacy';
+    const footerHeadingLine3 = site.footer?.heading_line3 || 'juntos.';
+    const footerResourcesTitle = site.footer?.resources_title || 'Resources';
+    
+    // Parse resources links from JSON or use defaults
+    let resourcesLinks = footerLinks.resources;
+    if (site.footer?.resources_links) {
+        try {
+            const parsed = typeof site.footer.resources_links === 'string' 
+                ? JSON.parse(site.footer.resources_links) 
+                : site.footer.resources_links;
+            if (Array.isArray(parsed) && parsed.length > 0) {
+                resourcesLinks = parsed;
+            }
+        } catch (e) {
+            console.warn('Failed to parse footer resources links:', e);
+        }
+    }
+
     return (
         <footer className={cn('bg-agency-dark text-white dark:bg-black pt-32 pb-12 overflow-hidden border-t border-white/5', className)}>
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -62,8 +83,8 @@ export const Footer: React.FC<FooterProps> = ({ className }) => {
                                 />
                             </Link>
                             <h2 className="text-5xl md:text-7xl font-black uppercase tracking-tighter leading-[0.9] mb-8">
-                                Let's create <br/>
-                                <span className="text-agency-accent">digital legacy</span> juntos.
+                                {footerHeadingLine1} <br/>
+                                <span className="text-agency-accent">{footerHeadingLine2}</span> {footerHeadingLine3}
                             </h2>
                         </div>
                         
@@ -108,9 +129,9 @@ export const Footer: React.FC<FooterProps> = ({ className }) => {
                             </ul>
                         </div>
                         <div>
-                            <h3 className="text-xs font-bold uppercase tracking-[0.3em] text-agency-accent mb-8">Resources</h3>
+                            <h3 className="text-xs font-bold uppercase tracking-[0.3em] text-agency-accent mb-8">{footerResourcesTitle}</h3>
                             <ul className="space-y-4">
-                                {footerLinks.resources.map((link) => (
+                                {resourcesLinks.map((link) => (
                                     <li key={link.name}>
                                         <Link href={link.href} className="text-xl font-bold opacity-40 hover:opacity-100 transition-opacity">
                                             {link.name}

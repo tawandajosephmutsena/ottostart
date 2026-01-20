@@ -18,10 +18,14 @@ class SettingsController extends Controller
     {
         $settings = Setting::all()->groupBy('group_name');
         $themePresets = config('theme-presets');
+        $pages = \App\Models\Page::where('is_published', true)
+            ->orderBy('title')
+            ->get(['id', 'title', 'slug']);
 
         return Inertia::render('admin/settings/Index', [
             'settings' => $settings,
             'themePresets' => $themePresets,
+            'pages' => $pages,
         ]);
     }
 

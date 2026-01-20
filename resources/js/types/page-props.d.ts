@@ -22,6 +22,13 @@ export interface SiteSettings {
         phone?: string;
         email?: string;
     };
+    footer?: {
+        heading_line1?: string;
+        heading_line2?: string;
+        heading_line3?: string;
+        resources_title?: string;
+        resources_links?: string | Array<{ name: string; href: string }>;
+    };
 }
 
 export interface StatsData {

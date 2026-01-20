@@ -10,6 +10,7 @@ import React, { useState, useEffect } from 'react';
 import { Save, ImagePlus, X, RotateCcw, Check, Palette } from 'lucide-react';
 import { toast } from 'sonner';
 import MediaLibrary from '@/components/admin/MediaLibrary';
+import { LinkManager } from '@/components/admin/LinkManager';
 import { MediaAsset } from '@/types';
 import { cn } from '@/lib/utils';
 
@@ -49,16 +50,23 @@ interface ThemePresetsConfig {
     themes: Record<string, ThemePreset>;
 }
 
+interface Page {
+    id: number;
+    title: string;
+    slug: string;
+}
+
 interface Props {
     settings: Record<string, SettingItem[]>;
     themePresets?: ThemePresetsConfig;
+    pages?: Page[];
 }
 
 // Define the known settings structure to auto-generate default values if missing
 interface StructItem {
     key: string;
     label: string;
-    type: 'text' | 'textarea' | 'image' | 'color' | 'email';
+    type: 'text' | 'textarea' | 'image' | 'color' | 'email' | 'links';
     placeholder: string;
     description?: string;
 }
@@ -67,8 +75,13 @@ const SETTINGS_STRUCT: Record<string, StructItem[]> = {
     general: [
         { key: 'site_name', label: 'Site Name', type: 'text', placeholder: 'Avant-Garde CMS' },
         { key: 'site_tagline', label: 'Site Tagline', type: 'text', placeholder: 'Digital Innovation Redefined' },
-        { key: 'site_description', label: 'Site Description', type: 'textarea', placeholder: 'A Digital Innovation Agency' },
         { key: 'site_logo', label: 'Site Logo', type: 'image', placeholder: '/logo.svg' },
+        { key: 'site_description', label: 'Site Description', type: 'textarea', placeholder: 'A Digital Innovation Agency' },
+        { key: 'footer_heading_line1', label: 'Footer Heading (Line 1)', type: 'text', placeholder: "Let's create" },
+        { key: 'footer_heading_line2', label: 'Footer Heading (Line 2)', type: 'text', placeholder: 'digital legacy' },
+        { key: 'footer_heading_line3', label: 'Footer Heading (Line 3)', type: 'text', placeholder: 'juntos.' },
+        { key: 'footer_resources_title', label: 'Footer Resources Column Title', type: 'text', placeholder: 'Resources' },
+        { key: 'footer_resources_links', label: 'Footer Resources Links', type: 'links', placeholder: '', description: 'Manage footer resources column links' },
     ],
     contact: [
         { key: 'contact_email', label: 'Contact Email', type: 'text', placeholder: 'hello@example.com' },
@@ -129,7 +142,7 @@ const SETTINGS_STRUCT: Record<string, StructItem[]> = {
     ]
 };
 
-export default function SettingsIndex({ settings, themePresets }: Props) {
+export default function SettingsIndex({ settings, themePresets, pages = [] }: Props) {
     // Flatten settings for easier access
     const flatSettings = Object.values(settings).flat();
 
@@ -143,18 +156,40 @@ export default function SettingsIndex({ settings, themePresets }: Props) {
         return '';
     };
 
+    const getLinksValue = (key: string): Array<{ name: string; href: string; type?: 'page' | 'custom' }> => {
+        const item = flatSettings.find(s => s.key === key);
+        if (item && item.value) {
+            try {
+                const parsed = typeof item.value === 'string' ? JSON.parse(item.value) : item.value;
+                if (Array.isArray(parsed)) {
+                    return parsed.map((link: { name: string; href: string }) => ({
+                        ...link,
+                        type: link.href.startsWith('/') && !link.href.startsWith('http') ? 'page' : 'custom'
+                    }));
+                }
+            } catch (e) {
+                console.warn('Failed to parse links:', e);
+            }
+        }
+        return [];
+    };
+
     // Initialize form data based on SETTINGS_STRUCT
     const initialData = Object.entries(SETTINGS_STRUCT).reduce((acc, [, items]) => {
         items.forEach(item => {
-            acc[item.key] = getSettingValue(item.key);
+            if (item.type === 'links') {
+                acc[item.key] = getLinksValue(item.key);
+            } else {
+                acc[item.key] = getSettingValue(item.key);
+            }
         });
         // Add theme_preset to form data
         acc['theme_preset'] = getSettingValue('theme_preset') || themePresets?.default || 'ottostart_default';
         return acc;
-    }, {} as Record<string, string>);
+    }, {} as Record<string, any>);
 
     const { data, setData: _setData } = useForm(initialData);
-    const setData = _setData as (key: string, value: string | string[] | null) => void;
+    const setData = _setData as (key: string, value: any) => void;
     const [processing, setProcessing] = useState(false);
     const [selectedPreset, setSelectedPreset] = useState<string>(initialData['theme_preset']);
 
@@ -223,6 +258,20 @@ export default function SettingsIndex({ settings, themePresets }: Props) {
                 const found = items.find(i => i.key === key);
                 if (found) {
                     group = g;
+                    // Handle links type - save as JSON
+                    if (found.type === 'links') {
+                        type = 'json';
+                        // Keep as array, the backend/Eloquent cast will handle serialization
+                        const cleanedLinks = Array.isArray(value) 
+                            ? value.map(({ name, href }: any) => ({ name, href }))
+                            : [];
+                        return {
+                            key,
+                            value: cleanedLinks,
+                            type,
+                            group_name: group
+                        };
+                    }
                     type = found.type === 'textarea' ? 'text' : found.type === 'image' ? 'text' : found.type;
                     break;
                 }
@@ -364,25 +413,45 @@ export default function SettingsIndex({ settings, themePresets }: Props) {
                                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4">
                                         {items.filter(i => i.key !== 'theme_preset').map((item) => {
                                             const isColor = item.type === 'color';
-                                            const isFullWidth = item.type === 'textarea' || item.type === 'image';
+                                            
+                                            // Layout logic for grid spans
+                                            let colSpan = "";
+                                            if (item.type === 'textarea') {
+                                                colSpan = "md:col-span-2 lg:col-span-3";
+                                            } else if (item.type === 'links') {
+                                                colSpan = "md:col-span-2 lg:col-span-2";
+                                            } else if (item.type === 'image') {
+                                                // Make site_logo take 1 col on LG, but full-width if we ever add other images that need more space
+                                                colSpan = item.key === 'site_logo' ? "" : "md:col-span-2 lg:col-span-3";
+                                            }
                                             
                                             return (
                                                 <div 
                                                     key={item.key} 
                                                     className={cn(
                                                         "grid gap-1.5",
-                                                        isFullWidth ? "md:col-span-2 lg:col-span-3" : "",
+                                                        colSpan,
                                                         isColor ? "bg-muted/30 p-2 rounded-md border border-border/50" : ""
                                                     )}
                                                 >
-                                                    <div className="flex items-center justify-between">
-                                                        <Label htmlFor={item.key} className="text-[13px] font-semibold text-foreground/80">{item.label}</Label>
-                                                        {isColor && (
-                                                            <span className="text-[10px] font-mono uppercase text-muted-foreground mr-1">{data[item.key]}</span>
-                                                        )}
-                                                    </div>
+                                                    {item.type !== 'links' && (
+                                                        <div className="flex items-center justify-between">
+                                                            <Label htmlFor={item.key} className="text-[13px] font-semibold text-foreground/80">{item.label}</Label>
+                                                            {isColor && (
+                                                                <span className="text-[10px] font-mono uppercase text-muted-foreground mr-1">{data[item.key]}</span>
+                                                            )}
+                                                        </div>
+                                                    )}
                                                     
-                                                    {item.type === 'textarea' ? (
+                                                    {item.type === 'links' ? (
+                                                        <LinkManager
+                                                            value={data[item.key] || []}
+                                                            onChange={(links) => setData(item.key, links)}
+                                                            pages={pages}
+                                                            label={item.label}
+                                                            description={item.description}
+                                                        />
+                                                    ) : item.type === 'textarea' ? (
                                                         <Textarea
                                                             id={item.key}
                                                             value={data[item.key]}

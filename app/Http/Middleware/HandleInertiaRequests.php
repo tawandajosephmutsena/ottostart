@@ -40,9 +40,16 @@ class HandleInertiaRequests extends Middleware
         $cachedData = \Illuminate\Support\Facades\Cache::remember('site_settings_all', 60 * 60, function () {
             $allSettings = \App\Models\Setting::all();
             
-            // Flat format for easy access
-            $flatSettings = $allSettings->pluck('value', 'key')->map(function ($value) {
-                return is_array($value) ? $value[0] ?? null : $value;
+            // Flat format for easy access - respects types and avoids unwrapping actual arrays (like JSON)
+            $flatSettings = $allSettings->mapWithKeys(function ($item) {
+                $value = $item->value;
+                // If the setting is explicitly marked as JSON or it's an array that isn't just a wrapped single value,
+                // we should keep it as an array. Simple text settings are often wrapped in [].
+                if ($item->type === 'json') {
+                    return [$item->key => $value];
+                }
+                
+                return [$item->key => is_array($value) ? ($value[0] ?? null) : $value];
             })->toArray();
 
             // Grouped format for ThemeStyles component
@@ -106,6 +113,13 @@ class HandleInertiaRequests extends Middleware
                     'email' => $settings['contact_email'] ?? 'hello@avant-garde.com',
                     'phone' => $settings['contact_phone'] ?? '+1 (555) 123-4567',
                     'address' => $settings['contact_address'] ?? 'San Francisco, CA',
+                ],
+                'footer' => [
+                    'heading_line1' => $settings['footer_heading_line1'] ?? null,
+                    'heading_line2' => $settings['footer_heading_line2'] ?? null,
+                    'heading_line3' => $settings['footer_heading_line3'] ?? null,
+                    'resources_title' => $settings['footer_resources_title'] ?? null,
+                    'resources_links' => $settings['footer_resources_links'] ?? null,
                 ],
             ],
             'theme' => [
