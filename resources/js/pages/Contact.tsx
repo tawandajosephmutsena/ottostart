@@ -1,11 +1,14 @@
 import AnimatedSection from '@/components/AnimatedSection';
 import MainLayout from '@/layouts/MainLayout';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, usePage } from '@inertiajs/react';
 // import { cn } from '@/lib/utils'; // Removed unused import
 import { Mail, Phone, MapPin, Clock, Send, CheckCircle2, Facebook, Twitter, Instagram, Linkedin } from 'lucide-react';
 import React, { useState } from 'react';
+import { SharedData } from '@/types';
 
 export default function Contact() {
+    const { props } = usePage<SharedData>();
+    const site = props.site;
     const [formSubmitted, setFormSubmitted] = useState(false);
     
     const { data, setData, post, processing, errors } = useForm({
@@ -217,8 +220,8 @@ export default function Contact() {
                                         </div>
                                         <div>
                                             <p className="text-xs font-black uppercase tracking-widest text-agency-primary/40 dark:text-white/40 mb-2">Email</p>
-                                            <a href="mailto:hello@avantgarde.com" className="text-lg font-bold text-agency-primary dark:text-white hover:text-agency-accent transition-colors">
-                                                hello@avantgarde.com
+                                            <a href={`mailto:${site?.contact?.email || 'hello@avantgarde.com'}`} className="text-lg font-bold text-agency-primary dark:text-white hover:text-agency-accent transition-colors">
+                                                {site?.contact?.email || 'hello@avantgarde.com'}
                                             </a>
                                         </div>
                                     </div>
@@ -229,8 +232,8 @@ export default function Contact() {
                                         </div>
                                         <div>
                                             <p className="text-xs font-black uppercase tracking-widest text-agency-primary/40 dark:text-white/40 mb-2">Phone</p>
-                                            <a href="tel:+15551234567" className="text-lg font-bold text-agency-primary dark:text-white hover:text-agency-accent transition-colors">
-                                                +1 (555) 123-4567
+                                            <a href={`tel:${site?.contact?.phone?.replace(/\s+/g, '') || '+15551234567'}`} className="text-lg font-bold text-agency-primary dark:text-white hover:text-agency-accent transition-colors">
+                                                {site?.contact?.phone || '+1 (555) 123-4567'}
                                             </a>
                                         </div>
                                     </div>
@@ -241,9 +244,8 @@ export default function Contact() {
                                         </div>
                                         <div>
                                             <p className="text-xs font-black uppercase tracking-widest text-agency-primary/40 dark:text-white/40 mb-2">Office</p>
-                                            <p className="text-lg font-bold text-agency-primary dark:text-white">
-                                                123 Creative Boulevard<br/>
-                                                Design District, CA 90210
+                                            <p className="text-lg font-bold text-agency-primary dark:text-white whitespace-pre-line">
+                                                {site?.contact?.address || '123 Creative Boulevard\nDesign District, CA 90210'}
                                             </p>
                                         </div>
                                     </div>
@@ -254,9 +256,8 @@ export default function Contact() {
                                         </div>
                                         <div>
                                             <p className="text-xs font-black uppercase tracking-widest text-agency-primary/40 dark:text-white/40 mb-2">Hours</p>
-                                            <p className="text-lg font-bold text-agency-primary dark:text-white">
-                                                Mon - Fri: 9:00 AM - 6:00 PM<br/>
-                                                Weekend: By Appointment
+                                            <p className="text-lg font-bold text-agency-primary dark:text-white whitespace-pre-line">
+                                                {site?.contact?.hours || 'Mon - Fri: 9:00 AM - 6:00 PM\nWeekend: By Appointment'}
                                             </p>
                                         </div>
                                     </div>
@@ -270,10 +271,10 @@ export default function Contact() {
                                 </h3>
                                 <div className="flex gap-4">
                                     {[
-                                        { icon: Facebook, href: 'https://facebook.com', label: 'Facebook' },
-                                        { icon: Twitter, href: 'https://twitter.com', label: 'Twitter' },
-                                        { icon: Instagram, href: 'https://instagram.com', label: 'Instagram' },
-                                        { icon: Linkedin, href: 'https://linkedin.com', label: 'LinkedIn' },
+                                        { icon: Facebook, href: site?.social?.facebook || 'https://facebook.com', label: 'Facebook' },
+                                        { icon: Twitter, href: site?.social?.twitter || 'https://twitter.com', label: 'Twitter' },
+                                        { icon: Instagram, href: site?.social?.instagram || 'https://instagram.com', label: 'Instagram' },
+                                        { icon: Linkedin, href: site?.social?.linkedin || 'https://linkedin.com', label: 'LinkedIn' },
                                     ].map((social) => (
                                         <a
                                             key={social.label}
@@ -295,37 +296,40 @@ export default function Contact() {
             </section>
 
             {/* Map Section */}
-            <section className="bg-white dark:bg-agency-dark py-20">
-                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <AnimatedSection animation="slide-up">
-                        <div className="relative rounded-[60px] overflow-hidden h-[500px] bg-agency-primary/5 dark:bg-white/5 border border-agency-primary/10 dark:border-white/10">
-                            {/* Map Placeholder */}
-                            <div className="absolute inset-0 flex items-center justify-center">
-                                <div className="text-center">
-                                    <MapPin className="size-16 mx-auto mb-4 text-agency-accent opacity-30" />
-                                    <p className="text-lg font-bold uppercase tracking-widest text-agency-primary/40 dark:text-white/40">
-                                        Map Integration Placeholder
-                                    </p>
-                                    <p className="text-sm mt-2 text-agency-primary/30 dark:text-white/30">
-                                        Google Maps or alternative map service
-                                    </p>
-                                </div>
+            {!!site?.contact?.show_map && (
+                <section className="bg-white dark:bg-agency-dark py-20">
+                    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                        <AnimatedSection animation="slide-up">
+                            <div className="relative rounded-[60px] overflow-hidden h-[500px] bg-agency-primary/5 dark:bg-white/5 border border-agency-primary/10 dark:border-white/10">
+                                {site?.contact?.google_maps_url ? (
+                                    <iframe
+                                        src={String(site.contact.google_maps_url)}
+                                        title="Google Maps"
+                                        width="100%"
+                                        height="100%"
+                                        className="border-0"
+                                        allowFullScreen
+                                        loading="lazy"
+                                        referrerPolicy="no-referrer-when-downgrade"
+                                    />
+                                ) : (
+                                    <div className="absolute inset-0 flex items-center justify-center">
+                                        <div className="text-center">
+                                            <MapPin className="size-16 mx-auto mb-4 text-agency-accent opacity-30" />
+                                            <p className="text-lg font-bold uppercase tracking-widest text-agency-primary/40 dark:text-white/40">
+                                                Map Integration Placeholder
+                                            </p>
+                                            <p className="text-sm mt-2 text-agency-primary/30 dark:text-white/30">
+                                                Update Google Maps URL in Admin Settings
+                                            </p>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
-                            
-                            {/* Uncomment to integrate Google Maps */}
-                            {/* <iframe
-                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3305.178!2d-118.3!3d34.06!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzTCsDAzJzM2LjAiTiAxMTjCsDE4JzAwLjAiVw!5e0!3m2!1sen!2sus!4v1234567890"
-                                width="100%"
-                                height="100%"
-                                style={{ border: 0 }}
-                                allowFullScreen
-                                loading="lazy"
-                                referrerPolicy="no-referrer-when-downgrade"
-                            /> */}
-                        </div>
-                    </AnimatedSection>
-                </div>
-            </section>
+                        </AnimatedSection>
+                    </div>
+                </section>
+            )}
         </MainLayout>
     );
 }

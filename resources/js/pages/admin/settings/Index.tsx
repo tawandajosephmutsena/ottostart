@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Switch } from '@/components/ui/switch';
 import { useForm, router } from '@inertiajs/react';
 import React, { useState, useEffect } from 'react';
 import { Save, ImagePlus, X, RotateCcw, Check, Palette } from 'lucide-react';
@@ -66,7 +67,7 @@ interface Props {
 interface StructItem {
     key: string;
     label: string;
-    type: 'text' | 'textarea' | 'image' | 'color' | 'email' | 'links';
+    type: 'text' | 'textarea' | 'image' | 'color' | 'email' | 'links' | 'boolean';
     placeholder: string;
     description?: string;
 }
@@ -87,9 +88,12 @@ const SETTINGS_STRUCT: Record<string, StructItem[]> = {
         { key: 'contact_email', label: 'Contact Email', type: 'text', placeholder: 'hello@example.com' },
         { key: 'contact_phone', label: 'Phone Number', type: 'text', placeholder: '+1 (555) 000-0000' },
         { key: 'contact_address', label: 'Physical Address', type: 'textarea', placeholder: '123 Innovation Dr...' },
+        { key: 'contact_hours', label: 'Office Hours', type: 'textarea', placeholder: 'Mon - Fri: 9:00 AM - 6:00 PM\nWeekend: By Appointment' },
         { key: 'google_maps_url', label: 'Google Maps Embed URL', type: 'text', placeholder: 'https://maps.google.com...' },
+        { key: 'show_contact_map', label: 'Show Map Section', type: 'boolean', placeholder: 'true' },
     ],
     social: [
+        { key: 'facebook_url', label: 'Facebook URL', type: 'text', placeholder: 'https://facebook.com/...' },
         { key: 'linkedin_url', label: 'LinkedIn URL', type: 'text', placeholder: 'https://linkedin.com/company/...' },
         { key: 'twitter_url', label: 'Twitter / X URL', type: 'text', placeholder: 'https://x.com/...' },
         { key: 'github_url', label: 'GitHub URL', type: 'text', placeholder: 'https://github.com/...' },
@@ -150,6 +154,10 @@ export default function SettingsIndex({ settings, themePresets, pages = [] }: Pr
         const item = flatSettings.find(s => s.key === key);
         // If it's stored as an array (JSON cast), take the first item if it's text
         if (item) {
+            if (item.type === 'boolean') {
+                const val = String(item.value);
+                return val === 'true' || val === '1';
+            }
             if (Array.isArray(item.value)) return item.value[0] || '';
             return item.value || '';
         }
@@ -488,6 +496,17 @@ export default function SettingsIndex({ settings, themePresets, pages = [] }: Pr
                                                                     <X className="w-3 h-3" />
                                                                 </Button>
                                                             )}
+                                                        </div>
+                                                    ) : item.type === 'boolean' ? (
+                                                        <div className="flex items-center space-x-2 py-2">
+                                                            <Switch
+                                                                id={item.key}
+                                                                checked={data[item.key] === true || data[item.key] === 'true'}
+                                                                onCheckedChange={(checked) => setData(item.key, checked)}
+                                                            />
+                                                            <Label htmlFor={item.key} className="text-xs font-normal text-muted-foreground">
+                                                                {data[item.key] ? 'Enabled' : 'Disabled'}
+                                                            </Label>
                                                         </div>
                                                     ) : (
                                                         <div className="flex items-center gap-2">

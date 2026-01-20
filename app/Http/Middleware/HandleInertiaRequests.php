@@ -108,11 +108,15 @@ class HandleInertiaRequests extends Middleware
                     'linkedin' => $settings['linkedin_url'] ?? 'https://linkedin.com/company/avantgarde',
                     'github' => $settings['github_url'] ?? 'https://github.com/avantgarde',
                     'instagram' => $settings['instagram_url'] ?? 'https://instagram.com/avantgarde',
+                    'facebook' => $settings['facebook_url'] ?? 'https://facebook.com/avantgarde',
                 ],
                 'contact' => [
                     'email' => $settings['contact_email'] ?? 'hello@avant-garde.com',
                     'phone' => $settings['contact_phone'] ?? '+1 (555) 123-4567',
                     'address' => $settings['contact_address'] ?? 'San Francisco, CA',
+                    'hours' => $settings['contact_hours'] ?? "Mon - Fri: 9:00 AM - 6:00 PM\nWeekend: By Appointment",
+                    'google_maps_url' => $settings['google_maps_url'] ?? null,
+                    'show_map' => filter_var($settings['show_contact_map'] ?? true, FILTER_VALIDATE_BOOLEAN),
                 ],
                 'footer' => [
                     'heading_line1' => $settings['footer_heading_line1'] ?? null,

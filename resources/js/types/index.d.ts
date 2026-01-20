@@ -41,11 +41,15 @@ export interface SharedData {
             twitter?: string;
             linkedin?: string;
             instagram?: string;
+            facebook?: string;
         };
         contact?: {
             address?: string;
             phone?: string;
             email?: string;
+            hours?: string;
+            google_maps_url?: string;
+            show_map?: boolean;
         };
         footer?: {
             heading_line1?: string;

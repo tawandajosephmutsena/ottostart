@@ -582,6 +582,29 @@ export default function BlockEditor({ block, onUpdate }: BlockEditorProps) {
                             ))}
                         </div>
                     </div>
+                    <div className="space-y-4 pt-4 border-t">
+                        <Label className="text-xs font-bold uppercase tracking-wider">Map Configuration</Label>
+                        <div className="flex items-center gap-3 mb-2">
+                            <input 
+                                type="checkbox" 
+                                id="show_map" 
+                                checked={block.content.show_map !== false} 
+                                onChange={(e) => updateContent({ show_map: e.target.checked })}
+                                className="h-4 w-4 rounded border-gray-300 text-agency-accent focus:ring-agency-accent"
+                            />
+                            <Label htmlFor="show_map" className="text-sm cursor-pointer font-bold">Show Map Section</Label>
+                        </div>
+                        <div className="space-y-1">
+                            <Label className="text-[10px]">Google Maps Embed URL</Label>
+                            <Input 
+                                className="h-8 text-xs outline-none"
+                                value={String(block.content.google_maps_url || '')} 
+                                onChange={(e) => updateContent({ google_maps_url: e.target.value })}
+                                placeholder="https://www.google.com/maps/embed?..."
+                            />
+                            <p className="text-[10px] text-muted-foreground">Copy the 'src' value from the Google Maps iframe embed code.</p>
+                        </div>
+                    </div>
                 </div>
             );
         }
