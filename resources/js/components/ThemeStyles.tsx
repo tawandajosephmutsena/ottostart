@@ -79,9 +79,31 @@ export default function ThemeStyles() {
 
     if (!preset) return null;
 
-    // Generate font loading URL for Bunny Fonts (privacy-friendly Google Fonts replacement)
+    // Get specific overrides
+    const customPrimary = getSettingValue('brand_primary');
+    const customAccent = getSettingValue('brand_accent');
+    const customBackground = getSettingValue('brand_background');
+    const customForeground = getSettingValue('brand_foreground');
+    const customBorder = getSettingValue('brand_border');
+    const customRing = getSettingValue('brand_ring');
+    const customRadius = getSettingValue('border_radius');
+    const customFontWeight = getSettingValue('font_weight');
+    const customDisplayFont = getSettingValue('font_display');
+    const customBodyFont = getSettingValue('font_body');
+
+    // Debug logging (remove in production)
+    if (typeof window !== 'undefined' && (window as Record<string, unknown>).DEBUG_THEME) {
+        console.log('[ThemeStyles] Custom overrides:', {
+            customPrimary, customAccent, customBackground, customForeground,
+            customBorder, customRing, customRadius, customFontWeight
+        });
+    }
+
+    // Generate font loading URL for Bunny Fonts
     const generateFontUrl = () => {
         const fontFamilies = new Set<string>();
+        if (customDisplayFont) fontFamilies.add(customDisplayFont);
+        if (customBodyFont) fontFamilies.add(customBodyFont);
         if (preset.fonts.sans) fontFamilies.add(preset.fonts.sans);
         if (preset.fonts.serif) fontFamilies.add(preset.fonts.serif);
         if (preset.fonts.mono) fontFamilies.add(preset.fonts.mono);
@@ -102,7 +124,17 @@ export default function ThemeStyles() {
     const fontUrl = generateFontUrl();
 
     const generateCssVariables = (colors: ThemeColors, indent: string = '    '): string => {
-        return Object.entries(colors)
+        const baseColors = { ...colors };
+        
+        // Apply overrides if any
+        if (customPrimary) baseColors.primary = customPrimary;
+        if (customAccent) baseColors.accent = customAccent;
+        if (customBackground) baseColors.background = customBackground;
+        if (customForeground) baseColors.foreground = customForeground;
+        if (customBorder) baseColors.border = customBorder;
+        if (customRing) baseColors.ring = customRing;
+
+        return Object.entries(baseColors)
             .filter(([, value]) => value !== undefined)
             .map(([key, value]) => `${indent}--${key}: ${value};`)
             .join('\n');
@@ -111,14 +143,16 @@ export default function ThemeStyles() {
     return (
         <>
             {fontUrl && <link rel="stylesheet" href={fontUrl} />}
-            <style dangerouslySetInnerHTML={{
+            <style id="theme-variables" dangerouslySetInnerHTML={{
                 __html: `
                     :root {
-    ${generateCssVariables(preset.light, '                    ')}
-                        --radius: ${preset.radius};
-                        --font-sans: "${preset.fonts.sans}", ui-sans-serif, system-ui, sans-serif;
-                        --font-serif: "${preset.fonts.serif}", ui-serif, Georgia, serif;
-                        --font-mono: "${preset.fonts.mono}", ui-monospace, SFMono-Regular, monospace;
+                        ${generateCssVariables(preset.light, '                        ')}
+                        --radius: ${customRadius || preset.radius || '0.5rem'};
+                        --font-sans: "${customBodyFont || preset.fonts.sans || 'Inter'}", ui-sans-serif, system-ui, sans-serif;
+                        --font-display: "${customDisplayFont || preset.fonts.sans || 'Inter'}", ui-sans-serif, system-ui, sans-serif;
+                        --font-serif: "${preset.fonts.serif || 'Georgia'}", ui-serif, Georgia, serif;
+                        --font-mono: "${preset.fonts.mono || 'monospace'}", ui-monospace, SFMono-Regular, monospace;
+                        --font-weight-base: ${customFontWeight || '400'};
                         
                         /* Agency color mappings */
                         --agency-primary: var(--foreground);
@@ -130,7 +164,7 @@ export default function ThemeStyles() {
                     }
                     
                     .dark {
-    ${generateCssVariables(preset.dark, '                    ')}
+                        ${generateCssVariables(preset.dark, '                        ')}
                         --agency-primary: var(--foreground);
                         --agency-secondary: var(--background);
                         --agency-accent: var(--primary);
@@ -142,10 +176,11 @@ export default function ThemeStyles() {
                     /* Global Font Applications */
                     body {
                         font-family: var(--font-sans);
+                        font-weight: var(--font-weight-base);
                     }
 
                     h1, h2, h3, h4, h5, h6, .font-display {
-                        font-family: var(--font-sans); /* Use sans for headings by default, can be overridden */
+                        font-family: var(--font-display);
                     }
                 `
             }} />

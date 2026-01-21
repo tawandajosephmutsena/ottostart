@@ -18,6 +18,7 @@ import { ImagePlus, X, Plus, Save, ArrowLeft, GripVertical } from 'lucide-react'
 import { Link } from '@inertiajs/react';
 import { Badge } from '@/components/ui/badge';
 import MediaLibrary from '@/components/admin/MediaLibrary';
+import { toast } from 'sonner';
 
 interface Props {
     portfolioItem?: PortfolioItem;
@@ -49,12 +50,17 @@ export default function PortfolioForm({ portfolioItem }: Props) {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         
+        const options = {
+            onSuccess: () => toast.success(portfolioItem ? 'Project updated successfully!' : 'Project created successfully!'),
+            onError: () => toast.error('Failed to save project. Please check the form for errors.'),
+        };
+        
         if (portfolioItem && portfolioItem.id) {
             // Use slug if available as it's the route key, otherwise fallback to ID
             const routeKey = portfolioItem.slug || portfolioItem.id;
-            put(`/admin/portfolio/${routeKey}`);
+            put(`/admin/portfolio/${routeKey}`, options);
         } else {
-            post('/admin/portfolio');
+            post('/admin/portfolio', options);
         }
     };
 

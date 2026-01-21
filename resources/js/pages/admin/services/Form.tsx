@@ -23,6 +23,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import { toast } from 'sonner';
 
 interface Props {
     service?: Service;
@@ -42,7 +43,7 @@ interface ServiceFormData {
         body: string;
         scope: string;
         features?: string[];
-        [key: string]: any;
+        [key: string]: string | string[] | undefined;
     };
 }
 
@@ -71,16 +72,22 @@ export default function ServiceForm({ service }: Props) {
         content: {
             body: (service?.content as Record<string, string>)?.body || '',
             scope: (service?.content as Record<string, string>)?.scope || '',
-            features: (service?.content as any)?.features || [],
+            features: (service?.content as Record<string, string[]>)?.features || [],
         },
     });
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        
+        const options = {
+            onSuccess: () => toast.success(service ? 'Service updated successfully!' : 'Service created successfully!'),
+            onError: () => toast.error('Failed to save service. Please check the form for errors.'),
+        };
+        
         if (service) {
-            put(`/admin/services/${service.slug}`);
+            put(`/admin/services/${service.slug}`, options);
         } else {
-            post('/admin/services');
+            post('/admin/services', options);
         }
     };
 

@@ -115,8 +115,16 @@ class HandleInertiaRequests extends Middleware
                     'phone' => $settings['contact_phone'] ?? '+1 (555) 123-4567',
                     'address' => $settings['contact_address'] ?? 'San Francisco, CA',
                     'hours' => $settings['contact_hours'] ?? "Mon - Fri: 9:00 AM - 6:00 PM\nWeekend: By Appointment",
-                    'google_maps_url' => $settings['google_maps_url'] ?? null,
-                    'show_map' => filter_var($settings['show_contact_map'] ?? true, FILTER_VALIDATE_BOOLEAN),
+                    'google_maps_url' => (function($val) {
+                        $v = is_array($val) ? ($val[0] ?? null) : $val;
+                        return $v ?: null;
+                    })($settings['google_maps_url'] ?? null),
+                    'show_map' => (function($val) {
+                        if ($val === null) return true; // Default to showing map
+                        $v = is_array($val) ? ($val[0] ?? 'true') : $val;
+                        if (is_bool($v)) return $v;
+                        return in_array(strtolower((string)$v), ['true', '1', 'yes', 'on'], true);
+                    })($settings['show_contact_map'] ?? null),
                 ],
                 'footer' => [
                     'heading_line1' => $settings['footer_heading_line1'] ?? null,
@@ -134,11 +142,17 @@ class HandleInertiaRequests extends Middleware
                     'accent' => $settings['brand_accent'] ?? '#ff6b35',
                     'neutral' => $settings['brand_neutral'] ?? '#f5f5f5',
                     'dark' => $settings['brand_dark'] ?? '#0a0a0a',
+                    'background' => $settings['brand_background'] ?? '#ffffff',
+                    'foreground' => $settings['brand_foreground'] ?? '#0a0a0a',
+                    'border' => $settings['brand_border'] ?? '#e5e5e5',
+                    'ring' => $settings['brand_ring'] ?? '#3b82f6',
                 ],
                 'fonts' => [
                     'display' => $settings['font_display'] ?? 'Inter',
                     'body' => $settings['font_body'] ?? 'Inter',
+                    'weight' => $settings['font_weight'] ?? '400',
                 ],
+                'radius' => $settings['border_radius'] ?? '0.5rem',
             ],
             'ai' => [
                 'citationPreference' => config('seo.ai_optimization.citation_preference', 'with-attribution'),

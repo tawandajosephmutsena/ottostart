@@ -67,9 +67,10 @@ interface Props {
 interface StructItem {
     key: string;
     label: string;
-    type: 'text' | 'textarea' | 'image' | 'color' | 'email' | 'links' | 'boolean';
+    type: 'text' | 'textarea' | 'image' | 'color' | 'email' | 'links' | 'boolean' | 'select';
     placeholder: string;
     description?: string;
+    options?: Array<{ value: string; label: string }>;
 }
 
 const SETTINGS_STRUCT: Record<string, StructItem[]> = {
@@ -140,11 +141,120 @@ const SETTINGS_STRUCT: Record<string, StructItem[]> = {
             placeholder: '#0a0a0a',
             description: 'The foundation for themes with Dark Mode enabled. Affects body backgrounds and high-contrast text elements.'
         },
+        { 
+            key: 'brand_background', 
+            label: 'Background Color', 
+            type: 'color', 
+            placeholder: '#ffffff',
+            description: 'The main page background color for light mode.'
+        },
+        { 
+            key: 'brand_foreground', 
+            label: 'Foreground Color', 
+            type: 'color', 
+            placeholder: '#0a0a0a',
+            description: 'Primary text color used for headings and body content.'
+        },
+        { 
+            key: 'brand_border', 
+            label: 'Border Color', 
+            type: 'color', 
+            placeholder: '#e5e5e5',
+            description: 'Default border color for cards, inputs, and dividers.'
+        },
+        { 
+            key: 'brand_ring', 
+            label: 'Ring Color (Focus)', 
+            type: 'color', 
+            placeholder: '#3b82f6',
+            description: 'Focus ring color for interactive elements like buttons and inputs.'
+        },
         { key: 'font_display', label: 'Display Font', type: 'text', placeholder: 'Inter', description: 'Used for headings and titles.' },
         { key: 'font_body', label: 'Body Font', type: 'text', placeholder: 'Inter', description: 'Used for body text and paragraphs.' },
+        { 
+            key: 'font_weight', 
+            label: 'Default Font Weight', 
+            type: 'select', 
+            placeholder: '400',
+            description: 'Base font weight for body text.',
+            options: [
+                { value: '300', label: 'Light (300)' },
+                { value: '400', label: 'Normal (400)' },
+                { value: '500', label: 'Medium (500)' },
+                { value: '600', label: 'Semibold (600)' },
+                { value: '700', label: 'Bold (700)' },
+            ]
+        },
+        { 
+            key: 'border_radius', 
+            label: 'Border Radius', 
+            type: 'select', 
+            placeholder: 'md',
+            description: 'Default corner rounding for UI elements.',
+            options: [
+                { value: '0', label: 'None (0px)' },
+                { value: '0.125rem', label: 'SM (2px)' },
+                { value: '0.375rem', label: 'MD (6px)' },
+                { value: '0.5rem', label: 'LG (8px)' },
+                { value: '0.75rem', label: 'XL (12px)' },
+                { value: '1rem', label: '2XL (16px)' },
+                { value: '9999px', label: 'Full (Pill)' },
+            ]
+        },
         { key: 'theme_preset', label: 'Active Theme Preset', type: 'text', placeholder: 'ottostart_default' },
     ]
 };
+
+/**
+ * Convert OKLCH color strings to hex format for HTML color inputs.
+ * Falls back to the original value if not OKLCH format.
+ */
+function oklchToHex(colorStr: string): string {
+    if (!colorStr) return '#000000';
+    
+    // If already hex, return as-is
+    if (colorStr.startsWith('#')) return colorStr;
+    
+    // If it's an oklch string, we need to convert it
+    // OKLCH format: oklch(L C H) where L is 0-1, C is 0-0.4, H is 0-360
+    const oklchMatch = colorStr.match(/oklch\(([\d.]+)\s+([\d.]+)\s+([\d.]+)\)/);
+    if (oklchMatch) {
+        const [, l, c, h] = oklchMatch.map(Number);
+        // Convert OKLCH to approximate hex - simplified conversion
+        // For more accurate conversion, a color library would be needed
+        const lightness = Math.round(l * 255);
+        if (c < 0.02) {
+            // Near-grayscale
+            const gray = lightness.toString(16).padStart(2, '0');
+            return `#${gray}${gray}${gray}`;
+        }
+        // For chromatic colors, approximate using HSL-like conversion
+        const hue = h || 0;
+        const saturation = Math.min(c * 2.5, 1);
+        return hslToHex(hue, saturation, l);
+    }
+    
+    // If RGB or other format, try to parse
+    if (colorStr.startsWith('rgb')) {
+        const match = colorStr.match(/rgba?\((\d+),?\s*(\d+),?\s*(\d+)/);
+        if (match) {
+            const [, r, g, b] = match;
+            return `#${parseInt(r).toString(16).padStart(2, '0')}${parseInt(g).toString(16).padStart(2, '0')}${parseInt(b).toString(16).padStart(2, '0')}`;
+        }
+    }
+    
+    return colorStr;
+}
+
+function hslToHex(h: number, s: number, l: number): string {
+    const a = s * Math.min(l, 1 - l);
+    const f = (n: number) => {
+        const k = (n + h / 30) % 12;
+        const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+        return Math.round(255 * Math.max(0, Math.min(1, color))).toString(16).padStart(2, '0');
+    };
+    return `#${f(0)}${f(8)}${f(4)}`;
+}
 
 export default function SettingsIndex({ settings, themePresets, pages = [] }: Props) {
     // Flatten settings for easier access
@@ -238,6 +348,40 @@ export default function SettingsIndex({ settings, themePresets, pages = [] }: Pr
     const handlePresetSelect = (presetKey: string) => {
         setSelectedPreset(presetKey);
         setData('theme_preset', presetKey);
+        
+        // Sync custom color/font fields with preset values
+        if (themePresets?.themes[presetKey]) {
+            const preset = themePresets.themes[presetKey];
+            const root = document.documentElement;
+            const isDarkMode = root.classList.contains('dark');
+            const colors = isDarkMode ? preset.dark : preset.light;
+            
+            // Map preset colors to our custom brand fields (converting OKLCH to hex)
+            if (colors.primary) setData('brand_primary', oklchToHex(colors.primary));
+            if (colors.secondary) setData('brand_secondary', oklchToHex(colors.secondary));
+            if (colors.accent) setData('brand_accent', oklchToHex(colors.accent));
+            if (colors.background) setData('brand_neutral', oklchToHex(colors.background));
+            if (isDarkMode && colors.background) {
+                setData('brand_dark', oklchToHex(colors.background));
+            } else if (preset.dark?.background) {
+                setData('brand_dark', oklchToHex(preset.dark.background));
+            }
+            
+            // Sync new color fields
+            if (colors.background) setData('brand_background', oklchToHex(colors.background));
+            if (colors.foreground) setData('brand_foreground', oklchToHex(colors.foreground));
+            if (colors.border) setData('brand_border', oklchToHex(colors.border));
+            if (colors.ring) setData('brand_ring', oklchToHex(colors.ring));
+            
+            // Sync fonts
+            if (preset.fonts.sans) setData('font_display', preset.fonts.sans);
+            if (preset.fonts.sans) setData('font_body', preset.fonts.sans);
+            
+            // Sync border radius if available
+            if (preset.radius) setData('border_radius', preset.radius);
+            
+            toast.success(`Theme "${preset.name}" applied! Custom settings synced.`);
+        }
     };
     
     const handleReset = (group: keyof typeof SETTINGS_STRUCT) => {
@@ -271,7 +415,7 @@ export default function SettingsIndex({ settings, themePresets, pages = [] }: Pr
                         type = 'json';
                         // Keep as array, the backend/Eloquent cast will handle serialization
                         const cleanedLinks = Array.isArray(value) 
-                            ? value.map(({ name, href }: any) => ({ name, href }))
+                            ? value.map(({ name, href }: { name: string; href: string }) => ({ name, href }))
                             : [];
                         return {
                             key,
@@ -508,6 +652,19 @@ export default function SettingsIndex({ settings, themePresets, pages = [] }: Pr
                                                                 {data[item.key] ? 'Enabled' : 'Disabled'}
                                                             </Label>
                                                         </div>
+                                                    ) : item.type === 'select' && item.options ? (
+                                                        <select
+                                                            id={item.key}
+                                                            value={data[item.key] || item.placeholder}
+                                                            onChange={(e) => setData(item.key, e.target.value)}
+                                                            className="h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                                                        >
+                                                            {item.options.map((option) => (
+                                                                <option key={option.value} value={option.value}>
+                                                                    {option.label}
+                                                                </option>
+                                                            ))}
+                                                        </select>
                                                     ) : (
                                                         <div className="flex items-center gap-2">
                                                             {isColor && (
@@ -515,7 +672,7 @@ export default function SettingsIndex({ settings, themePresets, pages = [] }: Pr
                                                                     id={item.key}
                                                                     type="color"
                                                                     className="w-10 h-8 p-0.5 border-none bg-transparent cursor-pointer shrink-0"
-                                                                    value={data[item.key]}
+                                                                    value={oklchToHex(data[item.key])}
                                                                     onChange={(e) => setData(item.key, e.target.value)}
                                                                 />
                                                             )}

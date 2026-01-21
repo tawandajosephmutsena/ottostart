@@ -296,35 +296,21 @@ export default function Contact() {
             </section>
 
             {/* Map Section */}
-            {!!site?.contact?.show_map && (
+            {(site?.contact?.show_map !== false && site?.contact?.google_maps_url) && (
                 <section className="bg-white dark:bg-agency-dark py-20">
                     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                         <AnimatedSection animation="slide-up">
                             <div className="relative rounded-[60px] overflow-hidden h-[500px] bg-agency-primary/5 dark:bg-white/5 border border-agency-primary/10 dark:border-white/10">
-                                {site?.contact?.google_maps_url ? (
-                                    <iframe
-                                        src={String(site.contact.google_maps_url)}
-                                        title="Google Maps"
-                                        width="100%"
-                                        height="100%"
-                                        className="border-0"
-                                        allowFullScreen
-                                        loading="lazy"
-                                        referrerPolicy="no-referrer-when-downgrade"
-                                    />
-                                ) : (
-                                    <div className="absolute inset-0 flex items-center justify-center">
-                                        <div className="text-center">
-                                            <MapPin className="size-16 mx-auto mb-4 text-agency-accent opacity-30" />
-                                            <p className="text-lg font-bold uppercase tracking-widest text-agency-primary/40 dark:text-white/40">
-                                                Map Integration Placeholder
-                                            </p>
-                                            <p className="text-sm mt-2 text-agency-primary/30 dark:text-white/30">
-                                                Update Google Maps URL in Admin Settings
-                                            </p>
-                                        </div>
-                                    </div>
-                                )}
+                                <iframe
+                                    src={String(site.contact.google_maps_url)}
+                                    title="Google Maps"
+                                    width="100%"
+                                    height="100%"
+                                    className="border-0"
+                                    allowFullScreen
+                                    loading="lazy"
+                                    referrerPolicy="no-referrer-when-downgrade"
+                                />
                             </div>
                         </AnimatedSection>
                     </div>

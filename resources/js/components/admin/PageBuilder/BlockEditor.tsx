@@ -148,6 +148,8 @@ export default function BlockEditor({ block, onUpdate }: BlockEditorProps) {
                                 checked={block.content.showFloatingImages !== false} 
                                 onChange={(e) => updateContent({ showFloatingImages: e.target.checked })}
                                 className="h-4 w-4 rounded border-gray-300 text-agency-accent focus:ring-agency-accent"
+                                aria-label="Show Floating Images"
+                                title="Toggle floating background images"
                             />
                             <Label htmlFor="showFloatingImages" className="text-sm cursor-pointer font-bold">Show Floating Images</Label>
                         </div>
@@ -591,6 +593,8 @@ export default function BlockEditor({ block, onUpdate }: BlockEditorProps) {
                                 checked={block.content.show_map !== false} 
                                 onChange={(e) => updateContent({ show_map: e.target.checked })}
                                 className="h-4 w-4 rounded border-gray-300 text-agency-accent focus:ring-agency-accent"
+                                aria-label="Show Map Section"
+                                title="Toggle map section visibility"
                             />
                             <Label htmlFor="show_map" className="text-sm cursor-pointer font-bold">Show Map Section</Label>
                         </div>

@@ -38,7 +38,7 @@ class SettingsController extends Controller
             'settings' => 'required|array',
             'settings.*.key' => 'required|string',
             'settings.*.value' => 'nullable',
-            'settings.*.type' => 'required|in:text,json,boolean,number,color',
+            'settings.*.type' => 'required|in:text,json,boolean,number,color,select',
             'settings.*.group_name' => 'required|string',
         ]);
 
@@ -53,8 +53,9 @@ class SettingsController extends Controller
             );
         }
 
-        // Clear settings cache to propagate changes to all pages
+        // Clear all settings-related caches
         Cache::forget('site_settings_all');
+        Cache::forget('navigation_menus');
 
         return back()->with('success', 'Settings updated successfully.');
 
