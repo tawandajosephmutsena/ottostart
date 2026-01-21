@@ -349,38 +349,30 @@ export default function SettingsIndex({ settings, themePresets, pages = [] }: Pr
         setSelectedPreset(presetKey);
         setData('theme_preset', presetKey);
         
-        // Sync custom color/font fields with preset values
+        // Clear custom color overrides so the preset colors are used directly
+        // Users can still manually edit colors after selecting a preset if needed
         if (themePresets?.themes[presetKey]) {
             const preset = themePresets.themes[presetKey];
-            const root = document.documentElement;
-            const isDarkMode = root.classList.contains('dark');
-            const colors = isDarkMode ? preset.dark : preset.light;
             
-            // Map preset colors to our custom brand fields (converting OKLCH to hex)
-            if (colors.primary) setData('brand_primary', oklchToHex(colors.primary));
-            if (colors.secondary) setData('brand_secondary', oklchToHex(colors.secondary));
-            if (colors.accent) setData('brand_accent', oklchToHex(colors.accent));
-            if (colors.background) setData('brand_neutral', oklchToHex(colors.background));
-            if (isDarkMode && colors.background) {
-                setData('brand_dark', oklchToHex(colors.background));
-            } else if (preset.dark?.background) {
-                setData('brand_dark', oklchToHex(preset.dark.background));
-            }
+            // Clear custom color fields - preset colors will be used instead
+            setData('brand_primary', '');
+            setData('brand_secondary', '');
+            setData('brand_accent', '');
+            setData('brand_neutral', '');
+            setData('brand_dark', '');
+            setData('brand_background', '');
+            setData('brand_foreground', '');
+            setData('brand_border', '');
+            setData('brand_ring', '');
             
-            // Sync new color fields
-            if (colors.background) setData('brand_background', oklchToHex(colors.background));
-            if (colors.foreground) setData('brand_foreground', oklchToHex(colors.foreground));
-            if (colors.border) setData('brand_border', oklchToHex(colors.border));
-            if (colors.ring) setData('brand_ring', oklchToHex(colors.ring));
-            
-            // Sync fonts
+            // Sync fonts - these are safe to keep as they're not color-dependent
             if (preset.fonts.sans) setData('font_display', preset.fonts.sans);
             if (preset.fonts.sans) setData('font_body', preset.fonts.sans);
             
             // Sync border radius if available
             if (preset.radius) setData('border_radius', preset.radius);
             
-            toast.success(`Theme "${preset.name}" applied! Custom settings synced.`);
+            toast.success(`Theme "${preset.name}" applied! Save to make it permanent.`);
         }
     };
     
@@ -444,6 +436,13 @@ export default function SettingsIndex({ settings, themePresets, pages = [] }: Pr
             onSuccess: () => {
                 toast.success("Settings saved successfully");
                 setProcessing(false);
+                
+                // Force page reload to apply theme changes
+                // This ensures the new theme preset is loaded from the server
+                // and applied via ThemeStyles.tsx without any stale cache
+                setTimeout(() => {
+                    window.location.reload();
+                }, 500);
             },
             onError: () => {
                 setProcessing(false);

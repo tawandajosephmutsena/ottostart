@@ -59,11 +59,11 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({
     className,
 }) => {
     return (
-        <section className={cn('bg-agency-primary text-agency-secondary py-32 overflow-hidden', className)}>
+        <section className={cn('bg-foreground text-background dark:bg-card dark:text-card-foreground py-32 overflow-hidden', className)}>
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <header className="mb-24 flex flex-col md:flex-row justify-between items-end gap-8">
                     <div className="max-w-2xl">
-                        <span className="text-agency-accent font-bold uppercase tracking-[0.2em] text-sm mb-6 block">
+                        <span className="text-primary font-bold uppercase tracking-[0.2em] text-sm mb-6 block">
                             {subtitle}
                         </span>
                         <h2 className="text-6xl md:text-8xl font-black uppercase tracking-tighter leading-[0.85]">
@@ -81,7 +81,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({
                         <Link 
                             key={service.id}
                             href={`/services/${service.slug}`}
-                            className="group flex flex-col md:flex-row items-start md:items-center justify-between py-12 border-b border-current/10 hover:bg-agency-accent hover:text-agency-primary transition-all duration-500 px-4 md:px-8 -mx-4 md:-mx-8 relative overflow-hidden"
+                            className="group flex flex-col md:flex-row items-start md:items-center justify-between py-12 border-b border-current/10 hover:bg-primary hover:text-primary-foreground transition-all duration-500 px-4 md:px-8 -mx-4 md:-mx-8 relative overflow-hidden"
                         >
                             <div className="flex items-center gap-8 relative z-10">
                                 <span className="text-sm font-mono opacity-40">0{index + 1}</span>
@@ -96,7 +96,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({
                                 </p>
                             </div>
 
-                            <div className="absolute right-0 top-0 h-full aspect-square bg-agency-accent/20 flex items-center justify-center translate-x-full group-hover:translate-x-0 transition-transform duration-500">
+                            <div className="absolute right-0 top-0 h-full aspect-square bg-primary/20 flex items-center justify-center translate-x-full group-hover:translate-x-0 transition-transform duration-500">
                                 <span className="material-symbols-outlined text-6xl">arrow_outward</span>
                             </div>
                         </Link>

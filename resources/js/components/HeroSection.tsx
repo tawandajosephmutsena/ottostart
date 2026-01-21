@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils';
 import { accessibilityManager } from '@/lib/accessibilityManager';
 import { ArrowRight } from 'lucide-react';
 import React, { useRef, useEffect } from 'react';
+import { gsap } from 'gsap';
 
 interface HeroSectionProps {
     title?: string;
@@ -202,7 +203,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     <Button
                         asChild
                         size="lg"
-                        className="group h-14 px-10 rounded-full bg-agency-accent text-agency-primary font-bold text-lg hover:scale-105 transition-all shadow-xl shadow-agency-accent/20 border-none btn-magnetic"
+                        className="group h-14 px-10 rounded-full bg-primary text-primary-foreground font-bold text-lg hover:scale-105 transition-all shadow-xl shadow-primary/20 border-none btn-magnetic"
                     >
                         <a href={ctaHref}>
                             {ctaText}
@@ -213,10 +214,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     {secondaryCtaText && (
                         <button 
                             onClick={() => secondaryCtaHref && (window.location.href = secondaryCtaHref)}
-                            className="group relative flex items-center gap-2 h-14 px-8 rounded-full border border-current/20 font-bold hover:bg-current/5 transition-all dark:text-white btn-magnetic"
+                            className="group relative flex items-center gap-2 h-14 px-8 rounded-full border-2 border-primary/30 text-foreground font-bold hover:bg-primary/10 hover:border-primary transition-all dark:text-white dark:border-primary/50 btn-magnetic"
                         >
                             <span>{secondaryCtaText}</span>
-                            <div className="size-8 rounded-full bg-agency-accent-soft/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <div className="size-8 rounded-full bg-primary/20 flex items-center justify-center group-hover:scale-110 transition-transform">
                                 <ArrowRight className="h-4 w-4" />
                             </div>
                         </button>

@@ -53,13 +53,13 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
         ...defaultStats.slice(statsArray.length)
     ].slice(0, 4);
     return (
-        <section className={cn('bg-agency-secondary py-32 dark:bg-card/50', className)}>
+        <section className={cn('bg-background py-32 dark:bg-card/50', className)}>
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <header className="mb-16">
-                    <span className="text-agency-accent font-bold uppercase tracking-widest text-sm mb-2 block animate-[bloom_1s_ease-out_0.2s_both]">
+                    <span className="text-primary font-bold uppercase tracking-widest text-sm mb-2 block animate-[bloom_1s_ease-out_0.2s_both]">
                         {subtitle}
                     </span>
-                    <h2 className="text-5xl md:text-7xl font-bold text-agency-primary dark:text-white animate-[bloom_1s_ease-out_0.4s_both]">
+                    <h2 className="text-5xl md:text-7xl font-bold text-foreground dark:text-white animate-[bloom_1s_ease-out_0.4s_both]">
                         {title} <br/>
                         <span className="opacity-40">defined by data.</span>
                     </h2>
@@ -72,15 +72,15 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
                         className="lg:col-span-7 bg-white dark:bg-[#161616] border border-current/5 p-12 rounded-3xl flex flex-col justify-between min-h-[400px] relative overflow-hidden group cursor-default"
                     >
                         <div className="relative z-10">
-                            <div className="size-16 rounded-full bg-agency-accent/10 flex items-center justify-center text-agency-accent mb-8">
+                            <div className="size-16 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-8">
                                 <span className="material-symbols-outlined text-4xl">groups</span>
                             </div>
                             <h3 className="text-xl uppercase tracking-widest opacity-40 font-bold mb-4">{displayStats[0].label}</h3>
-                            <div className="text-9xl font-black text-agency-primary dark:text-white group-hover:scale-110 transition-transform origin-left duration-700">
-                                {displayStats[0].value}<span className="text-agency-accent">{displayStats[0].suffix || '+'}</span>
+                            <div className="text-9xl font-black text-foreground dark:text-white group-hover:scale-110 transition-transform origin-left duration-700">
+                                {displayStats[0].value}<span className="text-primary">{displayStats[0].suffix || '+'}</span>
                             </div>
                         </div>
-                        <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-agency-accent/5 to-transparent pointer-none"></div>
+                        <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-primary/5 to-transparent pointer-none"></div>
                     </AnimatedSection>
 
                     {/* Accent Stat Box */}
@@ -88,7 +88,7 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
                         <AnimatedSection 
                             animation="scale"
                             delay={200}
-                            className="flex-1 bg-agency-accent text-agency-primary p-12 rounded-3xl flex flex-col justify-between min-h-[250px] group transition-transform hover:-translate-y-2 cursor-default"
+                            className="flex-1 bg-primary text-primary-foreground p-12 rounded-3xl flex flex-col justify-between min-h-[250px] group transition-transform hover:-translate-y-2 cursor-default"
                         >
                             <div>
                                 <span className="material-symbols-outlined text-4xl mb-4">bolt</span>
@@ -104,15 +104,15 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
                                 className="bg-white dark:bg-[#161616] border border-current/5 p-8 rounded-3xl group hover:shadow-2xl transition-all cursor-default"
                             >
                                 <h3 className="text-sm uppercase tracking-widest opacity-40 font-bold mb-4 leading-tight">{displayStats[2].label}</h3>
-                                <div className="text-5xl font-black text-agency-primary dark:text-white group-hover:text-agency-accent transition-colors">
-                                    {displayStats[2].value}<span className="text-agency-accent">{displayStats[2].suffix || '+'}</span>
+                                <div className="text-5xl font-black text-foreground dark:text-white group-hover:text-primary transition-colors">
+                                    {displayStats[2].value}<span className="text-primary">{displayStats[2].suffix || '+'}</span>
                                 </div>
                             </AnimatedSection>
 
                             <AnimatedSection 
                                 animation="scale"
                                 delay={600}
-                                className="bg-agency-primary text-agency-secondary p-8 rounded-3xl group hover:scale-105 transition-all cursor-default"
+                                className="bg-foreground text-background dark:bg-card dark:text-card-foreground p-8 rounded-3xl group hover:scale-105 transition-all cursor-default"
                             >
                                 <h3 className="text-sm uppercase tracking-widest opacity-60 font-bold mb-4 leading-tight">{displayStats[3].label}</h3>
                                 <div className="text-5xl font-black">{displayStats[3].value}</div>

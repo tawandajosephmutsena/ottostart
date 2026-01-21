@@ -51,7 +51,7 @@ interface ThemeData {
 }
 
 interface PageProps {
-    theme?: ThemeData;
+    theme?: ThemeData & { preset?: string };
     themePresets?: ThemePresetsConfig;
     settings?: Record<string, Array<{ key: string; value: string | string[] | null }>>;
     [key: string]: unknown; // Index signature for Inertia PageProps compatibility
@@ -60,9 +60,9 @@ interface PageProps {
 
 export default function ThemeStyles() {
     const props = usePage<PageProps>().props;
-    const { themePresets, settings } = props;
+    const { themePresets, settings, theme } = props;
 
-    // Get selected preset key from settings
+    // Get selected preset key from settings (fallback only)
     const getSettingValue = (key: string): string | null => {
         if (!settings) return null;
         const flatSettings = Object.values(settings).flat();
@@ -74,8 +74,20 @@ export default function ThemeStyles() {
         return null;
     };
 
-    const selectedPresetKey = getSettingValue('theme_preset') || themePresets?.default || 'ottostart_default';
+    // Priority: 1) theme.preset from shared props (most reliable), 2) settings lookup, 3) default
+    const selectedPresetKey = theme?.preset || getSettingValue('theme_preset') || themePresets?.default || 'ottostart_default';
     const preset = themePresets?.themes[selectedPresetKey];
+
+    // Debug logging (remove in production)
+    if (typeof window !== 'undefined' && (window as unknown as Record<string, unknown>).DEBUG_THEME) {
+        console.log('[ThemeStyles] Preset selection:', {
+            fromThemeProp: theme?.preset,
+            fromSettings: getSettingValue('theme_preset'),
+            default: themePresets?.default,
+            selected: selectedPresetKey,
+            presetFound: !!preset
+        });
+    }
 
     if (!preset) return null;
 
@@ -92,7 +104,7 @@ export default function ThemeStyles() {
     const customBodyFont = getSettingValue('font_body');
 
     // Debug logging (remove in production)
-    if (typeof window !== 'undefined' && (window as Record<string, unknown>).DEBUG_THEME) {
+    if (typeof window !== 'undefined' && (window as unknown as Record<string, unknown>).DEBUG_THEME) {
         console.log('[ThemeStyles] Custom overrides:', {
             customPrimary, customAccent, customBackground, customForeground,
             customBorder, customRing, customRadius, customFontWeight
@@ -123,16 +135,56 @@ export default function ThemeStyles() {
 
     const fontUrl = generateFontUrl();
 
-    const generateCssVariables = (colors: ThemeColors, indent: string = '    '): string => {
-        const baseColors = { ...colors };
+    /**
+     * Generate fallback values for missing color tokens to ensure proper contrast.
+     * This prevents undefined CSS variables that cause broken styling.
+     */
+    const generateFallbacks = (colors: ThemeColors, isDark: boolean): ThemeColors => {
+        const bg = colors.background || (isDark ? 'oklch(0.15 0 0)' : 'oklch(0.98 0 0)');
+        const fg = colors.foreground || (isDark ? 'oklch(0.95 0 0)' : 'oklch(0.25 0 0)');
         
-        // Apply overrides if any
-        if (customPrimary) baseColors.primary = customPrimary;
-        if (customAccent) baseColors.accent = customAccent;
-        if (customBackground) baseColors.background = customBackground;
-        if (customForeground) baseColors.foreground = customForeground;
-        if (customBorder) baseColors.border = customBorder;
-        if (customRing) baseColors.ring = customRing;
+        const lightDefaults: ThemeColors = {
+            'card': bg,
+            'card-foreground': fg,
+            'popover': bg,
+            'popover-foreground': fg,
+            'secondary-foreground': 'oklch(0.25 0 0)',
+            'muted-foreground': 'oklch(0.45 0 0)',
+            'accent-foreground': 'oklch(0.25 0 0)',
+            'destructive-foreground': 'oklch(1 0 0)',
+            'input': colors.border,
+        };
+        
+        const darkDefaults: ThemeColors = {
+            'card': bg,
+            'card-foreground': fg,
+            'popover': bg,
+            'popover-foreground': fg,
+            'secondary-foreground': 'oklch(0.95 0 0)',
+            'muted-foreground': 'oklch(0.70 0 0)',
+            'accent-foreground': 'oklch(0.95 0 0)',
+            'destructive-foreground': 'oklch(1 0 0)',
+            'input': colors.border,
+        };
+        
+        const defaults = isDark ? darkDefaults : lightDefaults;
+        
+        // Merge: theme values override defaults
+        return { ...defaults, ...colors };
+    };
+
+    const generateCssVariables = (colors: ThemeColors, isDark: boolean, indent: string = '    '): string => {
+        // First apply fallbacks for missing tokens
+        const baseColors = generateFallbacks(colors, isDark);
+        
+        // Then apply user overrides ONLY if they are non-empty
+        // Empty string means use preset colors
+        if (customPrimary && customPrimary.trim()) baseColors.primary = customPrimary;
+        if (customAccent && customAccent.trim()) baseColors.accent = customAccent;
+        if (customBackground && customBackground.trim()) baseColors.background = customBackground;
+        if (customForeground && customForeground.trim()) baseColors.foreground = customForeground;
+        if (customBorder && customBorder.trim()) baseColors.border = customBorder;
+        if (customRing && customRing.trim()) baseColors.ring = customRing;
 
         return Object.entries(baseColors)
             .filter(([, value]) => value !== undefined)
@@ -146,13 +198,20 @@ export default function ThemeStyles() {
             <style id="theme-variables" dangerouslySetInnerHTML={{
                 __html: `
                     :root {
-                        ${generateCssVariables(preset.light, '                        ')}
+                        ${generateCssVariables(preset.light, false, '                        ')}
                         --radius: ${customRadius || preset.radius || '0.5rem'};
                         --font-sans: "${customBodyFont || preset.fonts.sans || 'Inter'}", ui-sans-serif, system-ui, sans-serif;
                         --font-display: "${customDisplayFont || preset.fonts.sans || 'Inter'}", ui-sans-serif, system-ui, sans-serif;
                         --font-serif: "${preset.fonts.serif || 'Georgia'}", ui-serif, Georgia, serif;
                         --font-mono: "${preset.fonts.mono || 'monospace'}", ui-monospace, SFMono-Regular, monospace;
                         --font-weight-base: ${customFontWeight || '400'};
+                        
+                        /* Chart colors - derived from theme */
+                        --chart-1: ${preset.light.primary || 'oklch(0.55 0.13 43)'};
+                        --chart-2: ${preset.light.secondary || 'oklch(0.69 0.16 290)'};
+                        --chart-3: ${preset.light.accent || 'oklch(0.88 0.03 93)'};
+                        --chart-4: ${preset.light.muted || 'oklch(0.88 0.04 298)'};
+                        --chart-5: ${preset.light.ring || 'oklch(0.56 0.13 42)'};
                         
                         /* Agency color mappings */
                         --agency-primary: var(--foreground);
@@ -161,16 +220,31 @@ export default function ThemeStyles() {
                         --agency-accent-soft: var(--secondary);
                         --agency-neutral: var(--background);
                         --agency-dark: var(--foreground);
+                        
+                        /* Primary RGB for effects (approximate) */
+                        --primary-rgb: 194, 94, 46;
                     }
                     
                     .dark {
-                        ${generateCssVariables(preset.dark, '                        ')}
+                        ${generateCssVariables(preset.dark, true, '                        ')}
+                        
+                        /* Chart colors - dark mode variants */
+                        --chart-1: ${preset.dark.primary || 'oklch(0.55 0.13 43)'};
+                        --chart-2: ${preset.dark.secondary || 'oklch(0.69 0.16 290)'};
+                        --chart-3: ${preset.dark.accent || 'oklch(0.21 0.01 95)'};
+                        --chart-4: ${preset.dark.muted || 'oklch(0.31 0.05 289)'};
+                        --chart-5: ${preset.dark.ring || 'oklch(0.56 0.13 42)'};
+                        
+                        /* Agency color mappings - dark mode */
                         --agency-primary: var(--foreground);
                         --agency-secondary: var(--background);
                         --agency-accent: var(--primary);
                         --agency-accent-soft: var(--secondary);
                         --agency-neutral: var(--muted);
                         --agency-dark: var(--background);
+                        
+                        /* Primary RGB for effects - dark mode */
+                        --primary-rgb: 217, 116, 65;
                     }
 
                     /* Global Font Applications */
