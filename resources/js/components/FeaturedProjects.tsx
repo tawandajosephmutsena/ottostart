@@ -59,12 +59,70 @@ export const FeaturedProjects: React.FC<FeaturedProjectsProps> = ({
     className,
     showViewAll = true,
 }) => {
+    const sectionRef = React.useRef<HTMLElement>(null);
+    const [isInView, setIsInView] = React.useState(false);
+
+    // Track when the section is in view to show/hide the fixed sidebar
+    React.useEffect(() => {
+        const section = sectionRef.current;
+        if (!section) return;
+
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                setIsInView(entry.isIntersecting);
+            },
+            { threshold: 0.1 }
+        );
+
+        observer.observe(section);
+        return () => observer.disconnect();
+    }, []);
+
     return (
-        <section className={cn('relative bg-agency-secondary dark:bg-agency-dark', className)}>
+        <section 
+            ref={sectionRef}
+            className={cn('relative bg-agency-secondary dark:bg-agency-dark', className)}
+        >
             <div className="flex flex-col lg:flex-row">
-                {/* Sticky sidebar - uses position:sticky within the flex context */}
-                <div className="lg:w-[40%] lg:relative">
-                    <aside className="lg:sticky lg:top-0 p-10 lg:p-20 lg:h-screen flex flex-col justify-center gap-8">
+                {/* Left column - takes up space but content is fixed */}
+                <div className="lg:w-[40%] relative">
+                    {/* Mobile: normal flow */}
+                    <div className="lg:hidden p-10 flex flex-col justify-center gap-8">
+                        <header>
+                            <span className="text-agency-accent font-bold uppercase tracking-widest text-sm mb-4 block">
+                                {subtitle}
+                            </span>
+                            <h2 className="text-6xl font-black uppercase tracking-tighter text-agency-primary dark:text-white leading-[0.85]">
+                                {title.split(' ')[0]} <br/>
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-current to-transparent opacity-30">
+                                    {title.split(' ').slice(1).join(' ') || 'Projects'}
+                                </span>
+                            </h2>
+                        </header>
+                        <div className="w-20 h-1 bg-agency-accent"></div>
+                        <p className="text-xl text-agency-primary/60 dark:text-white/60 max-w-sm">
+                            Defining digital experiences for forward-thinking brands across the globe.
+                        </p>
+                        {showViewAll && (
+                            <Link
+                                href="/portfolio"
+                                className="group flex items-center gap-4 text-agency-primary dark:text-white font-bold text-lg hover:text-agency-accent transition-colors underline decoration-agency-accent/30 cursor-pointer"
+                            >
+                                <span>View All Projects</span>
+                                <div className="size-10 rounded-full border border-current flex items-center justify-center group-hover:bg-agency-accent group-hover:border-transparent group-hover:text-agency-primary transition-all">
+                                    <span className="material-symbols-outlined">arrow_forward</span>
+                                </div>
+                            </Link>
+                        )}
+                    </div>
+
+                    {/* Desktop: Fixed positioned content */}
+                    <aside 
+                        className={cn(
+                            "hidden lg:flex fixed left-0 top-0 w-[40%] h-screen p-20 flex-col justify-center gap-8 bg-agency-secondary dark:bg-agency-dark z-10 transition-opacity duration-300",
+                            isInView ? "opacity-100" : "opacity-0 pointer-events-none"
+                        )}
+                    >
                         <header>
                             <span className="text-agency-accent font-bold uppercase tracking-widest text-sm mb-4 block">
                                 {subtitle}
@@ -94,7 +152,7 @@ export const FeaturedProjects: React.FC<FeaturedProjectsProps> = ({
                     </aside>
                 </div>
 
-                <main className="lg:w-[60%] p-6 lg:p-20 lg:py-40 flex flex-col gap-12 lg:gap-20 border-l border-agency-primary/5 dark:border-white/5">
+                <main className="lg:w-[60%] lg:ml-auto p-6 lg:p-20 lg:py-40 flex flex-col gap-12 lg:gap-20 border-l border-agency-primary/5 dark:border-white/5">
                 {projects.map((project, index) => (
                     <AnimatedSection
                         key={project.id}
