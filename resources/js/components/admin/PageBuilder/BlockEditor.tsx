@@ -877,6 +877,15 @@ export default function BlockEditor({ block, onUpdate }: BlockEditorProps) {
                     </div>
 
                     <div className="space-y-4 pt-4 border-t">
+                        <div className="space-y-1">
+                            <Label className="text-xs font-bold uppercase tracking-wider">Trusted By Text</Label>
+                            <Input 
+                                className="h-8 text-xs" 
+                                value={String(block.content.trustedByText || '')} 
+                                onChange={(e) => updateContent({ trustedByText: e.target.value })} 
+                                placeholder="Trusted by industry leaders"
+                            />
+                        </div>
                         <div className="flex items-center justify-between">
                             <Label className="text-xs font-bold uppercase tracking-wider">Logo Slider</Label>
                             <Button variant="outline" size="sm" onClick={() => updateContent({ logos: [...logos, { name: '', url: '' }] })}>

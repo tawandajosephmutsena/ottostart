@@ -132,6 +132,7 @@ export interface PortfolioItem {
     project_date: string | null;
     project_url: string | null;
     technologies: string[] | null;
+    stats?: Array<{ value: string; label: string }>;
     is_featured: boolean;
     is_published: boolean;
     sort_order: number;

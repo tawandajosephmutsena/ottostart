@@ -311,6 +311,8 @@ export interface VideoBackgroundHeroBlock extends BaseBlock {
         ctaText2?: string;
         ctaLink2?: string;
         videoUrl?: string;
+        trustedByText?: string;
+        logos?: Array<{ name: string; url: string }>;
     };
 }
 

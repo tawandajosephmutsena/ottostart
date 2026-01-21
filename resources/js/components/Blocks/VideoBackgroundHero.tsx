@@ -15,6 +15,7 @@ interface VideoBackgroundHeroProps {
     ctaLink2?: string;
     videoUrl?: string;
     logos?: Array<{ name: string; url: string }>;
+    trustedByText?: string;
 }
 
 const DEFAULT_LOGOS = [
@@ -60,7 +61,8 @@ export default function VideoBackgroundHero({
     ctaText2 = "Request a demo",
     ctaLink2 = "#",
     videoUrl = "https://videos.pexels.com/video-files/30333849/13003128_2560_1440_25fps.mp4",
-    logos = []
+    logos = [],
+    trustedByText = "Trusted by industry leaders"
 }: VideoBackgroundHeroProps) {
     const activeLogos = logos && logos.length > 0 ? logos : DEFAULT_LOGOS;
     const videoRef = useRef<HTMLVideoElement>(null);
@@ -128,7 +130,7 @@ export default function VideoBackgroundHero({
                                 asChild
                                 size="lg"
                                 variant="outline"
-                                className="h-14 px-8 rounded-full text-lg font-bold text-white border-white/20 hover:bg-white/10"
+                                className="h-14 px-8 rounded-full text-lg font-bold border-white/30 bg-white/10 backdrop-blur-sm text-white hover:bg-white hover:text-black hover:border-white transition-all"
                             >
                                 <Link href={ctaLink2}>
                                     {ctaText2}
@@ -144,7 +146,7 @@ export default function VideoBackgroundHero({
                 <div className="max-w-7xl mx-auto px-6 lg:px-12 flex flex-col md:flex-row items-center gap-8">
                     <div className="shrink-0 px-4">
                         <p className="text-white/40 text-sm font-medium uppercase tracking-widest whitespace-nowrap">
-                            Trusted by industry leaders
+                            {trustedByText}
                         </p>
                     </div>
                     <div className="flex-grow overflow-hidden relative">

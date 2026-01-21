@@ -90,7 +90,7 @@ const SETTINGS_STRUCT: Record<string, StructItem[]> = {
         { key: 'contact_phone', label: 'Phone Number', type: 'text', placeholder: '+1 (555) 000-0000' },
         { key: 'contact_address', label: 'Physical Address', type: 'textarea', placeholder: '123 Innovation Dr...' },
         { key: 'contact_hours', label: 'Office Hours', type: 'textarea', placeholder: 'Mon - Fri: 9:00 AM - 6:00 PM\nWeekend: By Appointment' },
-        { key: 'google_maps_url', label: 'Google Maps Embed URL', type: 'text', placeholder: 'https://maps.google.com...' },
+        { key: 'google_maps_url', label: 'Google Maps Embed URL', type: 'text', placeholder: 'https://www.google.com/maps/embed?pb=...', description: 'Go to Google Maps > Share > Embed a Map > Copy the src URL from the iframe code' },
         { key: 'show_contact_map', label: 'Show Map Section', type: 'boolean', placeholder: 'true' },
     ],
     social: [

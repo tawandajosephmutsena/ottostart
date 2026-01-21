@@ -1,9 +1,9 @@
 import AnimatedSection from '@/components/AnimatedSection';
 import MainLayout from '@/layouts/MainLayout';
 import { Insight, PaginatedData, Category, Page } from '@/types';
-import { Link, Head } from '@inertiajs/react';
+import { Link, Head, useForm } from '@inertiajs/react';
 import { cn } from '@/lib/utils';
-import { Clock, User as UserIcon, ArrowRight, ArrowUpRight } from 'lucide-react';
+import { Clock, User as UserIcon, ArrowRight, ArrowUpRight, CheckCircle2 } from 'lucide-react';
 import React, { useState } from 'react';
 import BlockRenderer from '@/components/Blocks/BlockRenderer';
 
@@ -15,6 +15,23 @@ interface Props {
 
 export default function Blog({ insights, categories, page }: Props) {
     const [activeCategoryId, setActiveCategoryId] = useState<number | 'all'>('all');
+    const [newsletterSubmitted, setNewsletterSubmitted] = useState(false);
+    
+    const { data, setData, post, processing, errors } = useForm({
+        email: '',
+        form_title: 'Newsletter Subscription',
+    });
+    
+    const handleNewsletterSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        post('/contact', {
+            onSuccess: () => {
+                setNewsletterSubmitted(true);
+                setData('email', '');
+                setTimeout(() => setNewsletterSubmitted(false), 5000);
+            },
+        });
+    };
 
     const posts = insights.data;
 
@@ -179,34 +196,47 @@ export default function Blog({ insights, categories, page }: Props) {
                     {/* Newsletter Integration */}
                     <section className="bg-white dark:bg-agency-dark py-40 border-t border-agency-primary/5 dark:border-white/5">
                         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                            <div className="bg-agency-primary dark:bg-black rounded-[80px] p-12 md:p-32 flex flex-col md:flex-row items-center justify-between gap-16 relative overflow-hidden">
+                            <div className="bg-agency-primary dark:bg-neutral-900 rounded-[80px] p-12 md:p-32 flex flex-col md:flex-row items-center justify-between gap-16 relative overflow-hidden">
                                 <div className="absolute top-0 left-0 w-full h-full opacity-[0.05] pointer-events-none agency-grid-overlay"></div>
                                 
                                 <div className="relative z-10 max-w-xl text-center md:text-left">
                                     <h2 className="text-5xl md:text-7xl font-black text-white uppercase tracking-tighter leading-none mb-8">
                                         Stay <span className="text-agency-accent italic">Ahead.</span>
                                     </h2>
-                                    <p className="text-white/60 text-lg md:text-xl font-light">
+                                    <p className="text-white/70 text-lg md:text-xl font-light">
                                         Subscribe to our newsletter for weekly doses of 
                                         unconventional wisdom and digital foresight.
                                     </p>
                                 </div>
 
                                 <div className="relative z-10 w-full max-w-md">
-                                    <form className="relative flex items-center">
-                                        <input 
-                                            type="email" 
-                                            placeholder="YOUR@EMAIL.COM" 
-                                            className="w-full h-20 rounded-full bg-white/5 border border-white/10 px-8 text-xs font-bold uppercase tracking-widest text-white focus:ring-2 focus:ring-agency-accent focus:border-transparent transition-all"
-                                        />
-                                        <button 
-                                            className="absolute right-2 size-16 rounded-full bg-agency-accent text-agency-primary flex items-center justify-center hover:scale-105 transition-all shadow-xl shadow-agency-accent/20"
-                                            title="Subscribe to Newsletter"
-                                            aria-label="Subscribe to Newsletter"
-                                        >
-                                            <ArrowRight className="size-6" />
-                                        </button>
-                                    </form>
+                                    {newsletterSubmitted ? (
+                                        <div className="flex items-center gap-4 p-6 rounded-3xl bg-green-500/20 border border-green-500/30">
+                                            <CheckCircle2 className="size-8 text-green-400" />
+                                            <p className="text-green-300 font-bold text-lg">Thanks for subscribing!</p>
+                                        </div>
+                                    ) : (
+                                        <form onSubmit={handleNewsletterSubmit} className="relative flex items-center">
+                                            <input 
+                                                type="email" 
+                                                value={data.email}
+                                                onChange={e => setData('email', e.target.value)}
+                                                required
+                                                placeholder="YOUR@EMAIL.COM" 
+                                                className="w-full h-20 rounded-full bg-white/10 dark:bg-white/10 border border-white/20 px-8 text-xs font-bold uppercase tracking-widest text-white placeholder:text-white/50 focus:ring-2 focus:ring-agency-accent focus:border-transparent transition-all"
+                                            />
+                                            <button 
+                                                type="submit"
+                                                disabled={processing}
+                                                className="absolute right-2 size-16 rounded-full bg-agency-accent text-agency-primary flex items-center justify-center hover:scale-105 transition-all shadow-xl shadow-agency-accent/20 disabled:opacity-50"
+                                                title="Subscribe to Newsletter"
+                                                aria-label="Subscribe to Newsletter"
+                                            >
+                                                <ArrowRight className="size-6" />
+                                            </button>
+                                        </form>
+                                    )}
+                                    {errors.email && <p className="mt-3 text-sm text-red-400">{errors.email}</p>}
                                 </div>
                             </div>
                         </div>

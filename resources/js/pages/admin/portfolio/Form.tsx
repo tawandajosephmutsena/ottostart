@@ -37,6 +37,7 @@ export default function PortfolioForm({ portfolioItem }: Props) {
         is_published: portfolioItem?.is_published ?? false,
         is_featured: portfolioItem?.is_featured ?? false,
         technologies: portfolioItem?.technologies || [],
+        stats: portfolioItem?.stats || [],
         content: {
             overview: portfolioItem?.content?.overview || '',
             challenge: portfolioItem?.content?.challenge || '',
@@ -387,6 +388,63 @@ export default function PortfolioForm({ portfolioItem }: Props) {
                                 ))}
                                 {data.technologies.length === 0 && (
                                     <p className="text-xs text-muted-foreground italic">No technologies added.</p>
+                                )}
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Project Stats</CardTitle>
+                            <CardDescription>Metrics displayed in the results section</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <Button 
+                                type="button" 
+                                variant="outline" 
+                                size="sm" 
+                                className="w-full"
+                                onClick={() => setData('stats', [...data.stats, { value: '', label: '' }])}
+                            >
+                                <Plus className="h-4 w-4 mr-2" /> Add Stat
+                            </Button>
+                            <div className="space-y-3">
+                                {data.stats.map((stat: { value: string; label: string }, i: number) => (
+                                    <div key={i} className="group relative p-3 border rounded-lg bg-muted/10 space-y-2">
+                                        <button 
+                                            type="button" 
+                                            className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-destructive text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                                            onClick={() => setData('stats', data.stats.filter((_: { value: string; label: string }, idx: number) => idx !== i))}
+                                            title="Remove stat"
+                                        >
+                                            <X className="h-3 w-3" />
+                                        </button>
+                                        <Input
+                                            value={stat.value}
+                                            onChange={(e) => {
+                                                const newStats = [...data.stats];
+                                                newStats[i] = { ...stat, value: e.target.value };
+                                                setData('stats', newStats);
+                                            }}
+                                            placeholder="+85%"
+                                            className="text-lg font-bold"
+                                        />
+                                        <Input
+                                            value={stat.label}
+                                            onChange={(e) => {
+                                                const newStats = [...data.stats];
+                                                newStats[i] = { ...stat, label: e.target.value };
+                                                setData('stats', newStats);
+                                            }}
+                                            placeholder="Mobile Traffic"
+                                            className="text-xs"
+                                        />
+                                    </div>
+                                ))}
+                                {data.stats.length === 0 && (
+                                    <p className="text-xs text-muted-foreground italic text-center py-2">
+                                        No stats added. Default stats will be shown.
+                                    </p>
                                 )}
                             </div>
                         </CardContent>

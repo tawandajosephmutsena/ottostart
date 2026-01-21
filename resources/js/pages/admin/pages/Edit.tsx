@@ -280,6 +280,7 @@ const getDefaultContentForType = (type: BlockType) => {
             ctaText2: 'Request a demo',
             ctaLink2: '#',
             videoUrl: 'https://videos.pexels.com/video-files/30333849/13003128_2560_1440_25fps.mp4',
+            trustedByText: 'Trusted by industry leaders',
             logos: []
         };
         case 'parallax_features': return {

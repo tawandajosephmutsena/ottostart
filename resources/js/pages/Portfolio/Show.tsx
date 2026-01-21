@@ -222,16 +222,21 @@ export default function PortfolioShow({ portfolioItem }: Props) {
                                             </div>
                                         </div>
                                         
-                                        {/* Dynamic Stats Visualization (Static Mock for layout) */}
+                                        {/* Dynamic Stats Visualization */}
                                         <div className="flex flex-col gap-6">
-                                            <div className="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/10 min-w-[200px]">
-                                                <div className="text-4xl font-black text-agency-accent mb-1">+85%</div>
-                                                <div className="text-[10px] font-bold uppercase tracking-widest text-white/40">Mobile Traffic</div>
-                                            </div>
-                                            <div className="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/10 min-w-[200px]">
-                                                <div className="text-4xl font-black text-white mb-1">-25%</div>
-                                                <div className="text-[10px] font-bold uppercase tracking-widest text-white/40">Bounce Rate</div>
-                                            </div>
+                                            {(portfolioItem.stats && portfolioItem.stats.length > 0 ? portfolioItem.stats : [
+                                                { value: '+85%', label: 'Mobile Traffic' },
+                                                { value: '-25%', label: 'Bounce Rate' }
+                                            ]).map((stat, index) => (
+                                                <div key={index} className="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/10 min-w-[200px]">
+                                                    <div className={`text-4xl font-black mb-1 ${index === 0 ? 'text-agency-accent' : 'text-white'}`}>
+                                                        {stat.value}
+                                                    </div>
+                                                    <div className="text-[10px] font-bold uppercase tracking-widest text-white/40">
+                                                        {stat.label}
+                                                    </div>
+                                                </div>
+                                            ))}
                                         </div>
                                      </div>
                                 </AnimatedSection>
