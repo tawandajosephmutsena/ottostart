@@ -312,37 +312,47 @@ export default function SettingsIndex({ settings, themePresets, pages = [] }: Pr
     const [selectedPreset, setSelectedPreset] = useState<string>(initialData['theme_preset']);
 
     // Apply theme preview when preset changes - respects current dark/light mode
+    // Apply theme preview when preset OR data changes
     useEffect(() => {
-        if (!themePresets?.themes[selectedPreset]) return;
-        
-        const preset = themePresets.themes[selectedPreset];
         const root = document.documentElement;
-        const isDarkMode = root.classList.contains('dark');
         
-        // Choose colors based on current theme mode
-        const colors = isDarkMode ? preset.dark : preset.light;
-        
-        // Store which keys we set so we can clean them up
-        const setKeys: string[] = [];
-        
-        Object.entries(colors).forEach(([key, value]) => {
-            if (value) {
-                root.style.setProperty(`--${key}`, value);
-                setKeys.push(key);
-            }
-        });
-        root.style.setProperty('--radius', preset.radius);
-        root.style.setProperty('--font-sans', `${preset.fonts.sans}, sans-serif`);
-        
-        return () => {
-            // Reset inline styles on cleanup - removes ALL inline styles we set
-            setKeys.forEach(key => {
-                root.style.removeProperty(`--${key}`);
-            });
-            root.style.removeProperty('--radius');
-            root.style.removeProperty('--font-sans');
+        // Function to apply a variable if it exists
+        const applyVar = (key: string, value: string | undefined | null) => {
+             if (value) root.style.setProperty(key, value);
         };
-    }, [selectedPreset, themePresets]);
+
+        // 1. Apply Preset Base (if valid preset selected)
+        if (themePresets?.themes[selectedPreset]) {
+            const preset = themePresets.themes[selectedPreset];
+            const isDarkMode = root.classList.contains('dark');
+            const colors = isDarkMode ? preset.dark : preset.light;
+            
+            Object.entries(colors).forEach(([key, value]) => {
+                if (value) root.style.setProperty(`--${key}`, value);
+            });
+            root.style.setProperty('--radius', preset.radius);
+            root.style.setProperty('--font-sans', `${preset.fonts.sans}, sans-serif`);
+        }
+
+        // 2. Apply Custom Overrides from Form Data (takes precedence)
+        // We only apply if the field is not empty
+        if (data.brand_primary) applyVar('--primary', data.brand_primary);
+        if (data.brand_secondary) applyVar('--secondary', data.brand_secondary);
+        if (data.brand_accent) applyVar('--accent', data.brand_accent);
+        if (data.brand_neutral) applyVar('--muted', data.brand_neutral);
+        if (data.brand_background) applyVar('--background', data.brand_background);
+        if (data.brand_foreground) applyVar('--foreground', data.brand_foreground);
+        if (data.brand_border) applyVar('--border', data.brand_border);
+        if (data.brand_ring) applyVar('--ring', data.brand_ring);
+        
+        // Apply Radius Override
+        if (data.border_radius) root.style.setProperty('--radius', data.border_radius);
+
+        return () => {
+             // Cleanup if needed, though usually next effect run overwrites
+             // We don't remove everything to avoid flashing defaults
+        };
+    }, [selectedPreset, themePresets, data]);
 
 
     const handlePresetSelect = (presetKey: string) => {
@@ -354,18 +364,19 @@ export default function SettingsIndex({ settings, themePresets, pages = [] }: Pr
         if (themePresets?.themes[presetKey]) {
             const preset = themePresets.themes[presetKey];
             
-            // Clear custom color fields - preset colors will be used instead
-            setData('brand_primary', '');
-            setData('brand_secondary', '');
-            setData('brand_accent', '');
-            setData('brand_neutral', '');
-            setData('brand_dark', '');
-            setData('brand_background', '');
-            setData('brand_foreground', '');
-            setData('brand_border', '');
-            setData('brand_ring', '');
+            // Populate custom color fields with the selected preset's colors
+            // This ensures users can visualize what colors are being applied and edit them
+            setData('brand_primary', preset.light.primary || '');
+            setData('brand_secondary', preset.light.secondary || '');
+            setData('brand_accent', preset.light.accent || '');
+            setData('brand_neutral', preset.light.muted || '');
+            setData('brand_dark', preset.dark.background || ''); // Usually dark bg is the "dark" brand color reference
+            setData('brand_background', preset.light.background || '');
+            setData('brand_foreground', preset.light.foreground || '');
+            setData('brand_border', preset.light.border || '');
+            setData('brand_ring', preset.light.ring || '');
             
-            // Sync fonts - these are safe to keep as they're not color-dependent
+            // Sync fonts
             if (preset.fonts.sans) setData('font_display', preset.fonts.sans);
             if (preset.fonts.sans) setData('font_body', preset.fonts.sans);
             
@@ -440,9 +451,10 @@ export default function SettingsIndex({ settings, themePresets, pages = [] }: Pr
                 // Force page reload to apply theme changes
                 // This ensures the new theme preset is loaded from the server
                 // and applied via ThemeStyles.tsx without any stale cache
-                setTimeout(() => {
-                    window.location.reload();
-                }, 500);
+                // UPDATE: Inertia handling is sufficient, reload removed for smoother UX
+                // setTimeout(() => {
+                //     window.location.reload();
+                // }, 500);
             },
             onError: () => {
                 setProcessing(false);

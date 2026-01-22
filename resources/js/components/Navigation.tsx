@@ -34,8 +34,8 @@ const NavLink = ({
             className={cn(
                 'relative overflow-hidden rounded-full px-4 py-2 text-[11px] font-bold tracking-widest uppercase transition-all duration-500',
                 isActive
-                    ? 'bg-agency-accent text-agency-primary shadow-lg shadow-agency-accent/20'
-                    : 'text-agency-primary/60 hover:bg-agency-accent/5 hover:text-agency-accent dark:text-white/60',
+                    ? 'bg-agency-accent text-primary-foreground shadow-lg shadow-agency-accent/20'
+                    : 'text-agency-primary/80 hover:bg-agency-accent/5 hover:text-agency-accent dark:text-white/60',
             )}
         >
             <span className="relative z-10">{item.name}</span>
@@ -171,7 +171,7 @@ export const Navigation: React.FC<NavigationProps> = ({ className }) => {
                             {auth?.user ? (
                                 <Link
                                     href="/admin"
-                                    className="inline-flex h-10 items-center gap-2 rounded-full border border-agency-accent/20 bg-agency-accent/10 px-5 text-[10px] font-bold tracking-widest text-agency-accent uppercase transition-all hover:bg-agency-accent hover:text-agency-primary"
+                                    className="inline-flex h-10 items-center gap-2 rounded-full border border-agency-accent/20 bg-agency-accent/15 px-5 text-[10px] font-bold tracking-widest text-agency-accent uppercase transition-all hover:bg-agency-accent hover:text-primary-foreground dark:bg-agency-accent/10 dark:text-agency-accent"
                                 >
                                     <LayoutDashboard className="size-3" />{' '}
                                     Dashboard
@@ -180,7 +180,7 @@ export const Navigation: React.FC<NavigationProps> = ({ className }) => {
                                 <>
                                     <Link
                                         href="/login"
-                                        className="inline-flex h-10 items-center gap-2 rounded-full px-5 text-[10px] font-bold tracking-widest text-agency-primary/60 uppercase transition-all hover:text-agency-accent dark:text-white/60"
+                                        className="inline-flex h-10 items-center gap-2 rounded-full px-5 text-[10px] font-bold tracking-widest text-agency-primary/80 uppercase transition-all hover:text-agency-accent dark:text-white/60"
                                     >
                                         <LogIn className="size-3" /> Sign In
                                     </Link>
