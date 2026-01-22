@@ -69,13 +69,15 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
     // Robust GSAP Marquee for Hero Background
     useEffect(() => {
-        if (!marqueeRef.current || reducedMotion) return;
+        if (!marqueeRef.current) return;
         
         const el = marqueeRef.current;
-        const width = el.offsetWidth / 2;
         
+        // Ensure starting position
+        gsap.set(el, { xPercent: 0 });
+
         const tween = gsap.to(el, {
-            x: -width,
+            xPercent: -50,
             duration: 40,
             ease: 'none',
             repeat: -1,
@@ -85,13 +87,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         return () => {
             tween.kill();
         };
-    }, [reducedMotion, marqueeText]);
+    }, [marqueeText]);
 
     return (
         <section
             ref={containerRef}
             className={cn(
-                'relative flex min-h-screen flex-col items-center justify-center overflow-hidden',
+                'relative flex min-h-screen flex-col items-center overflow-hidden',
                 'bg-agency-secondary dark:bg-agency-dark pt-20',
                 className,
             )}
@@ -172,7 +174,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             )}
 
             {/* Content Container */}
-            <div className="relative z-20 max-w-[90vw] md:max-w-5xl px-4 flex flex-col items-center text-center">
+            <div className="relative z-20 max-w-[90vw] md:max-w-5xl px-4 flex flex-col items-center text-center flex-grow justify-center">
                 {/* Floating Tag */}
                 <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-current/10 bg-current/5 backdrop-blur-sm mb-8 animate-[bloom_1s_ease-out_0.2s_both]">
                     <div className="size-2 rounded-full bg-agency-accent animate-pulse"></div>
@@ -226,7 +228,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             </div>
 
             {/* Scroll Indicator */}
-            <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 opacity-40 animate-bounce">
+            <div className="relative z-20 flex flex-col items-center gap-2 opacity-40 animate-bounce pb-10 mt-8">
                 <span className="text-[10px] uppercase tracking-widest font-bold">Scroll Down</span>
                 <div className="w-[1px] h-10 bg-current"></div>
             </div>
